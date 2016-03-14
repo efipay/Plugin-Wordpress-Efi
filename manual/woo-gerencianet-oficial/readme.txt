@@ -1,4 +1,4 @@
-﻿=== WooCommerce Gerencianet Oficial ===
+﻿=== Woo Gerencianet Oficial ===
 Contributors: Gerencianet
 Tags: woocommerce, gerencianet, payment, transparent checkout, card, billet, brazil, payments brazil
 Requires at least: 4.1
