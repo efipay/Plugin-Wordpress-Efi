@@ -492,6 +492,8 @@ class WC_Gerencianet_Oficial_Gateway extends WC_Payment_Gateway {
 				'type' => 'currency',
 				'value' => $discountTotalValue
 			];
+		} else {
+			$discount=null;
 		}
 		
 		$gnApiResult = $this->gnIntegration->pay_billet($_POST['charge_id'],$expirationDate,$customer,$discount);
