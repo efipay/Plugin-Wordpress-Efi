@@ -13,7 +13,7 @@ if ( ! defined( 'ABSPATH' ) ) {
         <div class="gn-success-payment">
             <div class="gn-row gn-box-emission">
                 <div class="pull-left gn-left-space-2">
-                    <img src="<?php echo home_url( '/'); ?>wp-content/plugins/woocommerce-gerencianet-oficial/assets/images/gerencianet-configurations.png" alt="Gerencianet" title="Gerencianet" />
+                    <img src="<?php echo home_url( '/'); ?>wp-content/plugins/woo-gerencianet-oficial/assets/images/gerencianet-configurations.png" alt="Gerencianet" title="Gerencianet" />
                 </div>
                 <div class="pull-left gn-title-emission">
                     <?php if ($generated_payment_type=="billet") { 

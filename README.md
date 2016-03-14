@@ -12,7 +12,7 @@ Caso você tenha alguma dúvida ou sugestão, entre em contato conosco pelo site
 ## Instalação
 
 1. Faça o download da última versão do plugin no repositório Wordpress.org ou no [repositório no GitHub](https://github.com/gerencianet/gn-api-woocommerce)
-2. Extraia o conteúdo do arquivo 'woocommerce-gerencianet-oficial.zip' dentro do diretório '/wp-content/plugins/' da loja.
+2. Extraia o conteúdo do arquivo 'woo-gerencianet-oficial.zip' dentro do diretório '/wp-content/plugins/' da loja.
 3. Configure o plugin em WooCommerce > Settings > Checkout > Gerencianet e comece a receber pagamentos.
 
 Opcional: Instale o plugin [WooCommerce Extra Checkout Fields for Brazil](https://wordpress.org/plugins/woocommerce-extra-checkout-fields-for-brazil/) para evitar que o comprador tenha que inserir CPF, número do endereço e bairro no momento do pagamento.

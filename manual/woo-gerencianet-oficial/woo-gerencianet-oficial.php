@@ -1,13 +1,13 @@
 <?php
 /**
  * Plugin Name: WooCommerce Gerencianet Oficial
- * Plugin URI: https://wordpress.org/plugins/woocommerce-gerencianet-oficial/
+ * Plugin URI: https://wordpress.org/plugins/woo-gerencianet-oficial/
  * Description: Gateway de pagamento Gerencianet para WooCommerce.
  * Author: Gerencianet
  * Author URI: http://www.gerencianet.com.br
  * Version: 0.1.0
  * License: GPLv2 or later
- * Text Domain: woocommerce-gerencianet-oficial
+ * Text Domain: woo-gerencianet-oficial
  * Domain Path: /languages/
  */
 
@@ -36,7 +36,7 @@ class WCGerencianetOficial {
 	 */
 	protected static $gateway_id = 'gerencianet_oficial';
 
-	protected static $textDomain = "woocommerce-gerencianet-oficial";
+	protected static $textDomain = "woo-gerencianet-oficial";
 
 	/**
 	 * Instance of this class.
@@ -148,7 +148,7 @@ class WCGerencianetOficial {
 	public function load_plugin_textdomain() {
 		$locale = apply_filters( 'plugin_locale', get_locale(), WCGerencianetOficial::getTextDomain() );
 
-		load_textdomain( WCGerencianetOficial::getTextDomain(), trailingslashit( WP_LANG_DIR ) . 'woocommerce-gerencianet-oficial/woocommerce-gerencianet-oficial-' . $locale . '.mo' );
+		load_textdomain( WCGerencianetOficial::getTextDomain(), trailingslashit( WP_LANG_DIR ) . 'woo-gerencianet-oficial/woo-gerencianet-oficial-' . $locale . '.mo' );
 		load_plugin_textdomain( WCGerencianetOficial::getTextDomain(), false, dirname( plugin_basename( __FILE__ ) ) . '/languages/' );
 	}
 

@@ -511,8 +511,8 @@ msgid "WooCommerce Gerencianet Oficial"
 msgstr "WooCommerce Gerencianet Oficial"
 
 #. URI of the plugin
-msgid "https://wordpress.org/plugins/woocommerce-gerencianet-oficial"
-msgstr "https://wordpress.org/plugins/woocommerce-gerencianet-oficial"
+msgid "https://wordpress.org/plugins/woo-gerencianet-oficial"
+msgstr "https://wordpress.org/plugins/woo-gerencianet-oficial"
 
 #. Description of the plugin
 msgid "Gateway de pagamento Gerencianet para WooCommerce."
@@ -526,7 +526,7 @@ msgstr "Gerencianet"
 msgid "http://www.gerencianet.com.br"
 msgstr "http://www.gerencianet.com.br"
 
-#: woocommerce-gerencianet-oficial.php:185
+#: woo-gerencianet-oficial.php:185
 #, php-format
 msgid "Gerencianet Gateway depends on the last version of %s to work!"
 msgstr "O módulo da Gerencianet depende da última versão do %s para funcionar!"
