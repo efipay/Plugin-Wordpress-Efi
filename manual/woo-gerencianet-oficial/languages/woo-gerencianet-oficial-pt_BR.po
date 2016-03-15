@@ -94,6 +94,20 @@ msgstr ""
 msgid "Gerencianet Credentials"
 msgstr "Credenciais Gerencianet"
 
+#: includes/class-wc-gerencianet-gateway.php:263
+msgid ""
+"Where will you find your credentials: <a id='showKeysProductionTutorial' "
+"class='gn-admin-cursor-pointer'>Client ID/Secret Production</a>, <a "
+"id='showKeysDevelopmentTutorial' class='gn-admin-cursor-pointer'>Client ID/Secret "
+"Development</a> and <a id='showPayeeCodeTutorial' class='gn-admin-cursor-pointer'>"
+"Payee Code</a>"
+msgstr ""
+"Onde encontrar sua credenciais: <a id='showKeysProductionTutorial' "
+"class='gn-admin-cursor-pointer'>Client ID/Secret Produção</a>, <a "
+"id='showKeysDevelopmentTutorial' class='gn-admin-cursor-pointer'>Client ID/Secret "
+"Desenvolvimento</a> e <a id='showPayeeCodeTutorial' class='gn-admin-cursor-pointer'>"
+"Identificador da Conta</a>"
+
 #: includes/class-wc-gerencianet-gateway.php:266
 msgid "Client Id Production"
 msgstr "Client Id Production"

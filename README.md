@@ -12,8 +12,8 @@ Caso você tenha alguma dúvida ou sugestão, entre em contato conosco pelo site
 ## Instalação
 
 1. Faça o download da [última versão](auto/) do plugin.
-2. Extraia o conteúdo do arquivo 'woo-gerencianet-oficial.zip' dentro do diretório '/wp-content/plugins/' da loja ou acesse sua a administração do seu site WordPress, clique em "Plugins" > "Adicionar novo" > "Fazer upload do Plugin", selecione o arquivo 'woo-gerencianet-oficial.zip' e clique em "Instalar agora".
-3. Após a instalação, clique em ativar o Plugin.
+2. Extraia o conteúdo do arquivo 'woo-gerencianet-oficial.zip' dentro do diretório '/wp-content/plugins/' da loja ou acesse a administração do seu site WordPress, clique em "Plugins" > "Adicionar novo" > "Fazer upload do Plugin", selecione o arquivo 'woo-gerencianet-oficial.zip' e clique em "Instalar agora".
+3. Após a instalação, clique em "Ativar o Plugin".
 4. Configure o plugin em "WooCommerce" > "Configurações" > "Finalizar Compra" > "Gerencianet" e comece a receber pagamentos.
 
 Opcional: Instale o plugin [WooCommerce Extra Checkout Fields for Brazil](https://wordpress.org/plugins/woocommerce-extra-checkout-fields-for-brazil/) para evitar que o comprador tenha que inserir CPF, número do endereço e bairro no momento do pagamento.
@@ -21,7 +21,7 @@ Opcional: Instale o plugin [WooCommerce Extra Checkout Fields for Brazil](https:
 
 ## Configuração
 
-1. Ative o módulo
+1. Ative o plugin.
 2. Configure as credenciais de sua Aplicação Gerencianet. Para criar uma nova Aplicação, entre em sua conta Gerencianet, acesse o menu "API" e clique em "Minhas Aplicações" -> "Nova aplicação". Insira as credenciais disponíveis neste link (Client ID e Client Secret de produção e desenvolvimento) nos respectivos campos de configuração do plugin.
 3. Insira o Payee Code (identificador) de sua conta Gerencianet.
 4. Configure as opções de pagamento que deseja receber: Boleto e/ou Cartão de Crédito.

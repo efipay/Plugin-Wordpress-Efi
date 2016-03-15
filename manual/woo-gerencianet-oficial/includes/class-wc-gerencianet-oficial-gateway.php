@@ -260,7 +260,7 @@ class WC_Gerencianet_Oficial_Gateway extends WC_Payment_Gateway {
 			'api_section' => array(
 				'title' => __( 'Gerencianet Credentials', WCGerencianetOficial::getTextDomain()),
 				'type' => 'title',
-				'description' => 'Where will you find your credentials: <a id="showKeysProductionTutorial" class="gn-admin-cursor-pointer">Client ID/Secret Production</a> and <a id="showKeysDevelopmentTutorial" class="gn-admin-cursor-pointer">Client ID/Secret Development</a>',
+				'description' => __("Where will you find your credentials: <a id='showKeysProductionTutorial' class='gn-admin-cursor-pointer'>Client ID/Secret Production</a>, <a id='showKeysDevelopmentTutorial' class='gn-admin-cursor-pointer'>Client ID/Secret Development</a> and <a id='showPayeeCodeTutorial' class='gn-admin-cursor-pointer'>Payee Code</a>", WCGerencianetOficial::getTextDomain()),
 			),
 			'client_id_production' => array(
 				'title' => __( 'Client Id Production', WCGerencianetOficial::getTextDomain() ),
