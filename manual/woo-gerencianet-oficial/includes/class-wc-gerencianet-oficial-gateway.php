@@ -268,7 +268,7 @@ class WC_Gerencianet_Oficial_Gateway extends WC_Payment_Gateway {
 				'description' => __( 'Please enter your Client Id Production; this is needed in order to take payment.', WCGerencianetOficial::getTextDomain()),
 				'desc_tip' => true,
 				'default' => ''
-			),			
+			),	
 			'client_secret_production' => array(
 				'title' => __( 'Client Secret Production', WCGerencianetOficial::getTextDomain()),
 				'type' => 'text',
@@ -414,10 +414,8 @@ class WC_Gerencianet_Oficial_Gateway extends WC_Payment_Gateway {
 	public function gerencianet_create_charge() {
 		$order = new WC_Order( $_POST['order_id'] );
 		$order_items = $order->get_items();
-
-					
+	
 		$items = array ();
-			
 		foreach ( $order_items as $items_key => $item ) {
 			$items [] = Array (
 					"name" => $item ['name'],

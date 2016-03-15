@@ -483,12 +483,13 @@ if ( ! defined( 'ABSPATH' ) ) {
                                 <input type="text" name="input-payment-card-cvv" id="input-payment-card-cvv" value="" class="form-control gn-cvv-input" />
                             </div>
                             <div class="pull-left">
-                                <div class="clear gn-cvv-info">
+                                <div class="gn-cvv-info">
                                     <div class="pull-left gn-icon-card-input">
                                     </div>
                                     <div class="pull-left">
                                         <?php echo $gn_card_cvv_tip; ?>
                                     </div>
+                                    <div class="clear"></div>
                                 </div>
                             </div>
                             <div class="clear"></div>
@@ -520,7 +521,7 @@ if ( ! defined( 'ABSPATH' ) ) {
 <?php } ?>
 </div>
 
-<div class="checkout-footer clear">
+<div class="checkout-footer">
     <div class="pull-left">
     	<p>
             <a class="button cancel" href="<?php echo esc_url( $order->get_cancel_order_url() ) ?>"><?php _e( 'Cancel order &amp; restore cart', WCGerencianetOficial::getTextDomain() ) ?></a>

@@ -154,7 +154,7 @@ msgstr ""
 
 #: includes/class-wc-gerencianet-gateway.php:294
 msgid "Payee Code"
-msgstr "Payee Code"
+msgstr "Identificador da Conta"
 
 #: includes/class-wc-gerencianet-gateway.php:296
 msgid ""
