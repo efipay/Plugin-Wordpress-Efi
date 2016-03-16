@@ -409,6 +409,9 @@ class GerencianetIntegration {
 			case "street":
 				return 'Endereço';
 				break;
+			case "complement":
+				return 'Complemento';
+				break;
 			case "number":
 				return 'Número';
 				break;

@@ -209,7 +209,7 @@ class WC_Gerencianet_Oficial_Gateway extends WC_Payment_Gateway {
 		$this->generate_settings_html();
 		echo '</table>';
 
-		echo '<script>var home_url = "' . home_url( '/') . '";</script>
+		echo '<script>var plugin_images_url = "' . plugins_url( 'assets/images/', plugin_dir_path( __FILE__ ) ) . '";</script>
 			<div id="tutorialGnBox" class="gn-admin-tutorial-box">
 				<div class="gn-admin-tutorial-row">
 				    <div class="gn-admin-tutorial-line">
@@ -388,19 +388,25 @@ class WC_Gerencianet_Oficial_Gateway extends WC_Payment_Gateway {
 	 */
 	public function gerencianet_get_installments() {
 
-		$order = new WC_Order( $_POST['order_id'] );
+		$post_order_id = sanitize_text_field($_POST['order_id']);
+		$post_brand = sanitize_text_field($_POST['brand']);
+		$order = new WC_Order( $post_order_id );
 		$total = $this->gn_price_format($order->get_total());		
-		$brand = esc_attr( $_POST['brand'] );
-
+		$brand = esc_attr( $post_brand );
 		$gnApiResult = $this->gnIntegration->get_installments($total,$brand);
 
-		if (json_decode($gnApiResult, true)['code']==200) {		
-			if ( 'yes' == $this->debug ) {
-				write_log('GERENCIANET :: gerencianet_get_installments Request : SUCCESS' );
-			}
-		} else {
-			if ( 'yes' == $this->debug ) {
-				write_log('GERENCIANET :: gerencianet_get_installments Request : ERROR' );
+		$resultCheck = array();
+		$resultCheck = json_decode($gnApiResult, true);
+
+		if (isset($resultCheck["code"])) {
+			if ($resultCheck["code"]==200) {		
+				if ( 'yes' == $this->debug ) {
+					write_log('GERENCIANET :: gerencianet_get_installments Request : SUCCESS' );
+				}
+			} else {
+				if ( 'yes' == $this->debug ) {
+					write_log('GERENCIANET :: gerencianet_get_installments Request : ERROR' );
+				}
 			}
 		}
 		return $gnApiResult;
@@ -412,7 +418,23 @@ class WC_Gerencianet_Oficial_Gateway extends WC_Payment_Gateway {
 	 * @return string  
 	 */
 	public function gerencianet_create_charge() {
-		$order = new WC_Order( $_POST['order_id'] );
+
+		if (count($_POST)<1){
+	    	$errorResponse = array(
+		        "message" => __("An error occurred during your request. Please, try again.", WCGerencianetOficial::getTextDomain() )
+		    );
+			return json_encode($errorResponse);
+	    }
+
+		$arrayDadosPost = array();
+	    foreach ($_POST as $key => $value) {
+	    	$arrayDadosPost[$key] = sanitize_text_field($value);
+	    }
+
+
+		$post_order_id = $arrayDadosPost['order_id'];
+
+		$order = new WC_Order( $post_order_id );
 		$order_items = $order->get_items();
 	
 		$items = array ();
@@ -435,15 +457,24 @@ class WC_Gerencianet_Oficial_Gateway extends WC_Payment_Gateway {
 			$shipping=null;
 		}
 
-		$gnApiResult =  $this->gnIntegration->create_charge($_POST['order_id'],$items,$shipping,home_url( '/?wc-api=WC_Gerencianet_Oficial_Gateway' ));
+		$gnApiResult =  $this->gnIntegration->create_charge($post_order_id,$items,$shipping,home_url( '/?wc-api=WC_Gerencianet_Oficial_Gateway' ));
 
-		if (json_decode($gnApiResult, true)['code']==200) {		
-			if ( 'yes' == $this->debug ) {
-				write_log('GERENCIANET :: gerencianet_get_installments Request : SUCCESS' );
+		$resultCheck = array();
+		$resultCheck = json_decode($gnApiResult, true);
+
+		if (isset($resultCheck["code"])) {
+			if ($resultCheck["code"]==200) {		
+				if ( 'yes' == $this->debug ) {
+					write_log('GERENCIANET :: gerencianet_create_charge Request : SUCCESS' );
+				}
+			} else {
+				if ( 'yes' == $this->debug ) {
+					write_log('GERENCIANET :: gerencianet_create_charge Request : ERROR : ' . $gnApiResult->code );
+				}
 			}
 		} else {
 			if ( 'yes' == $this->debug ) {
-				write_log('GERENCIANET :: gerencianet_create_charge Request : ERROR : ' . json_decode($gnApiResult, true)['code'] );
+				write_log( 'GERENCIANET :: gerencianet_create_charge Request : ERROR : Ajax Request Fail' );
 			}
 		}
 		return $gnApiResult;
@@ -460,27 +491,48 @@ class WC_Gerencianet_Oficial_Gateway extends WC_Payment_Gateway {
 
 	    $expirationDate = date("Y-m-d", mktime (0, 0, 0, date("m")  , date("d")+intval($billetExpireDays), date("Y")));
 
-	    if ($_POST['pay_billet_with_cnpj'] && $_POST['corporate_name'] && $_POST['cnpj']) {
+	    if (count($_POST)<1){
+	    	$errorResponse = array(
+		        "message" => __("An error occurred during your request. Please, try again.", WCGerencianetOficial::getTextDomain() )
+		    );
+			return json_encode($errorResponse);
+	    }
+
+		$arrayDadosPost = array();
+	    foreach ($_POST as $key => $value) {
+	    	$arrayDadosPost[$key] = sanitize_text_field($value);
+	    }
+
+	    $post_order_id = $arrayDadosPost['order_id'];
+	    $post_pay_billet_with_cnpj = $arrayDadosPost['pay_billet_with_cnpj'];
+	    $post_corporate_name = $arrayDadosPost['corporate_name'];
+	    $post_cnpj = $arrayDadosPost['cnpj'];
+	    $post_name = $arrayDadosPost['name'];
+	    $post_cpf = $arrayDadosPost['cpf'];
+	    $post_phone_number = $arrayDadosPost['phone_number'];
+	    $post_charge_id = $arrayDadosPost['charge_id'];
+
+	    if ($post_pay_billet_with_cnpj && $post_corporate_name && $post_cnpj) {
 			$juridical_data = [
-			  'corporate_name' => $_POST['corporate_name'],
-			  'cnpj' => $_POST['cnpj']
+			  'corporate_name' => $post_corporate_name,
+			  'cnpj' => $post_cnpj
 			];
 
 			$customer = [
-			    'name' => $_POST['name'],
-			    'cpf' => $_POST['cpf'],
-			    'phone_number' => $_POST['phone_number'],
-					'juridical_person' => $juridical_data
+			    'name' => $post_name,
+			    'cpf' => $post_cpf,
+			    'phone_number' => $post_phone_number,
+				'juridical_person' => $juridical_data
 			];
 		} else {
 			$customer = [
-			    'name' => $_POST['name'],
-			    'cpf' => $_POST['cpf'],
-			    'phone_number' => $_POST['phone_number']
+			    'name' => $post_name,
+			    'cpf' => $post_cpf,
+			    'phone_number' => $post_phone_number
 			];
 		}
 
-		$order = wc_get_order( $_POST['order_id'] );
+		$order = wc_get_order( $post_order_id );
 		$discountBillet = $this->discountBillet;
 		$discountTotalValue = (int)($this->gn_price_format($order->get_total_discount()) + floor($this->gn_price_format($order->get_total())*(((float)$discountBillet/100))));
 		$discountBilletTotal = (int) floor($this->gn_price_format($order->get_total())*(((float)$discountBillet/100)));
@@ -494,30 +546,40 @@ class WC_Gerencianet_Oficial_Gateway extends WC_Payment_Gateway {
 			$discount=null;
 		}
 		
-		$gnApiResult = $this->gnIntegration->pay_billet($_POST['charge_id'],$expirationDate,$customer,$discount);
+		$gnApiResult = $this->gnIntegration->pay_billet($post_charge_id,$expirationDate,$customer,$discount);
 
-		if (json_decode($gnApiResult, true)['code']==200) {		
-			if ( 'yes' == $this->debug ) {
-				write_log( 'GERENCIANET :: gerencianet_pay_billet Request : SUCCESS ' );
-			}
-			global $wpdb;
-			$wpdb->insert($wpdb->prefix . "woocommerce_order_items", array('order_item_name' => __('Discount of ', WCGerencianetOficial::getTextDomain() ) . str_replace(".",",",$discountBillet) . __('% Billet', WCGerencianetOficial::getTextDomain() ), 'order_item_type' => 'fee', 'order_id' => intval($_POST['order_id'])  ) );
-			$lastid = $wpdb->insert_id;
-			$wpdb->insert($wpdb->prefix . "woocommerce_order_itemmeta", array('order_item_id' => $lastid, 'meta_key' => '_tax_class', 'meta_value' => '0'  ) );
-			$wpdb->insert($wpdb->prefix . "woocommerce_order_itemmeta", array('order_item_id' => $lastid, 'meta_key' => '_line_total', 'meta_value' => '-'.number_format(intval(floor($this->gn_price_format($order->get_total())*(((float)$discountBillet/100))))/100, 2, '.', '')  ) );
-			$wpdb->insert($wpdb->prefix . "woocommerce_order_itemmeta", array('order_item_id' => $lastid, 'meta_key' => '_line_tax', 'meta_value' => '0'  ) );
-			$wpdb->insert($wpdb->prefix . "woocommerce_order_itemmeta", array('order_item_id' => $lastid, 'meta_key' => '_line_tax_data', 'meta_value' => '0'  ) );
-			$wpdb->update($wpdb->prefix . 'postmeta', array( 'meta_value' => number_format(intval(ceil($this->gn_price_format($order->get_total()) - ($discountBilletTotal)))/100, 2, '.', '') ), array( 'post_id' => intval($_POST['order_id']), 'meta_key' => '_order_total') );
+		$resultCheck = array();
+		$resultCheck = json_decode($gnApiResult, true);
 
-			update_post_meta( intval($_POST['order_id']), '_payment_method_title', sanitize_text_field(__('Billet Banking - Gerencianet', WCGerencianetOficial::getTextDomain() )) );
-			add_post_meta( intval($_POST['order_id']), 'billet', json_decode($gnApiResult, true)['data']['link'], true );
+		if (isset($resultCheck["code"])) {
+			if ($resultCheck["code"]=200) {		
+				if ( 'yes' == $this->debug ) {
+					write_log( 'GERENCIANET :: gerencianet_pay_billet Request : SUCCESS ' );
+				}
+				global $wpdb;
+				$wpdb->insert($wpdb->prefix . "woocommerce_order_items", array('order_item_name' => __('Discount of ', WCGerencianetOficial::getTextDomain() ) . str_replace(".",",",$discountBillet) . __('% Billet', WCGerencianetOficial::getTextDomain() ), 'order_item_type' => 'fee', 'order_id' => intval($post_order_id)  ) );
+				$lastid = $wpdb->insert_id;
+				$wpdb->insert($wpdb->prefix . "woocommerce_order_itemmeta", array('order_item_id' => $lastid, 'meta_key' => '_tax_class', 'meta_value' => '0'  ) );
+				$wpdb->insert($wpdb->prefix . "woocommerce_order_itemmeta", array('order_item_id' => $lastid, 'meta_key' => '_line_total', 'meta_value' => '-'.number_format(intval(floor($this->gn_price_format($order->get_total())*(((float)$discountBillet/100))))/100, 2, '.', '')  ) );
+				$wpdb->insert($wpdb->prefix . "woocommerce_order_itemmeta", array('order_item_id' => $lastid, 'meta_key' => '_line_tax', 'meta_value' => '0'  ) );
+				$wpdb->insert($wpdb->prefix . "woocommerce_order_itemmeta", array('order_item_id' => $lastid, 'meta_key' => '_line_tax_data', 'meta_value' => '0'  ) );
 
-			$order->update_status( 'processing', __ ( 'Processing' ) );
-			$order->reduce_order_stock();
-			WC()->cart->empty_cart();
+				update_post_meta( intval($post_order_id), '_order_total', number_format(intval(ceil($this->gn_price_format($order->get_total()) - ($discountBilletTotal)))/100, 2, '.', '') );
+
+				update_post_meta( intval($post_order_id), '_payment_method_title', sanitize_text_field(__('Billet Banking - Gerencianet', WCGerencianetOficial::getTextDomain() )) );
+				add_post_meta( intval($post_order_id), 'billet', json_decode($gnApiResult, true)['data']['link'], true );
+
+				$order->update_status( 'processing', __ ( 'Processing' ) );
+				$order->reduce_order_stock();
+				WC()->cart->empty_cart();
+		    } else {
+		    	if ( 'yes' == $this->debug ) {
+					write_log( 'GERENCIANET :: gerencianet_pay_billet Request : ERROR : ' . $gnApiResult->code );
+				}
+		    }
 	    } else {
 	    	if ( 'yes' == $this->debug ) {
-				write_log( 'GERENCIANET :: gerencianet_pay_billet Request : ERROR : ' . json_decode($gnApiResult, true)['code'] );
+				write_log( 'GERENCIANET :: gerencianet_pay_billet Request : ERROR : Ajax request fail' );
 			}
 	    }
 		
@@ -531,41 +593,84 @@ class WC_Gerencianet_Oficial_Gateway extends WC_Payment_Gateway {
 	 */
 	public function gerencianet_pay_card() {
 
-	    if (isset($_POST['pay_billet_with_cnpj']) && isset($_POST['corporate_name']) && isset($_POST['cnpj'])) {
+		if (count($_POST)<1){
+	    	$errorResponse = array(
+		        "message" => __("An error occurred during your request. Please, try again.", WCGerencianetOficial::getTextDomain() )
+		    );
+			return json_encode($errorResponse);
+	    }
+
+		$arrayDadosPost = array();
+	    foreach ($_POST as $key => $value) {
+	    	if ($key!="email") {
+	    		$arrayDadosPost[$key] = sanitize_text_field($value);
+	    	} else {
+	    		$arrayDadosPost[$key] = $value;
+	    	}
+	    }
+
+		$post_order_id = $arrayDadosPost['order_id'];
+		if (isset($arrayDadosPost['pay_card_with_cnpj'])) {
+		    $post_pay_card_with_cnpj = $arrayDadosPost['pay_card_with_cnpj'];
+		}
+		if (isset($arrayDadosPost['corporate_name'])) {
+		    $post_corporate_name = $arrayDadosPost['corporate_name'];
+		}
+		if (isset($arrayDadosPost['cnpj'])) {
+			$post_cnpj = $arrayDadosPost['cnpj'];
+		}
+	    
+	    $post_name = $arrayDadosPost['name'];
+	    $post_cpf = $arrayDadosPost['cpf'];
+	    $post_phone_number = $arrayDadosPost['phone_number'];
+	    $post_email = sanitize_email($arrayDadosPost['email']);
+	    $post_birth = $arrayDadosPost['birth'];
+	    $post_street = $arrayDadosPost['street'];
+	    $post_number = $arrayDadosPost['number'];
+	    $post_neighborhood = $arrayDadosPost['neighborhood'];
+	    $post_zipcode = $arrayDadosPost['zipcode'];
+	    $post_city = $arrayDadosPost['city'];
+	    $post_state = $arrayDadosPost['state'];
+	    $post_complement = $arrayDadosPost['complement'];
+	    $post_payment_token = $arrayDadosPost['payment_token'];
+	    $post_installments = $arrayDadosPost['installments'];
+	    $post_charge_id = $arrayDadosPost['charge_id'];
+
+	    if (isset($post_pay_card_with_cnpj) && isset($post_corporate_name) && isset($post_cnpj)) {
 			$juridical_data = [
-			  'corporate_name' => $_POST['corporate_name'],
-			  'cnpj' => $_POST['cnpj']
+			  'corporate_name' => $post_corporate_name,
+			  'cnpj' => $post_cnpj
 			];
 
 			$customer = [
-			    'name' => $_POST['name'],
-			    'cpf' => $_POST['cpf'],
-			    'phone_number' => $_POST['phone_number'],
+			    'name' => $post_name,
+			    'cpf' => $post_cpf,
+			    'phone_number' => $post_phone_number,
 				'juridical_person' => $juridical_data,
-			    'email' => $_POST['email'],
-			    'birth' => $_POST['birth']
+			    'email' => $post_email,
+			    'birth' => $post_birth
 			];
 		} else {
 			$customer = [
-			    'name' => $_POST['name'],
-			    'cpf' => $_POST['cpf'],
-			    'phone_number' => $_POST['phone_number'],
-			    'email' => $_POST['email'],
-			    'birth' => $_POST['birth']
+			    'name' => $post_name,
+			    'cpf' => $post_cpf,
+			    'phone_number' => $post_phone_number,
+			    'email' => $post_email,
+			    'birth' => $post_birth
 			];
 		}
 
 		$billingAddress = [
-		    'street' => $_POST['street'],
-		    'number' => $_POST['number'],
-		    'neighborhood' => $_POST['neighborhood'],
-		    'zipcode' => $_POST['zipcode'],
-		    'city' => $_POST['city'],
-		    'state' => $_POST['state'],
-		    'complement' => $_POST['complement']
+		    'street' => $post_street,
+		    'number' => $post_number,
+		    'neighborhood' => $post_neighborhood,
+		    'zipcode' => $post_zipcode,
+		    'city' => $post_city,
+		    'state' => $post_state,
+		    'complement' => $post_complement
 		];
 
-		$order = wc_get_order( $_POST['order_id'] );
+		$order = wc_get_order( $post_order_id );
 		$discountTotalValue = (int)($this->gn_price_format($order->get_total_discount()));
 
 		if ($discountTotalValue>0) {
@@ -577,22 +682,30 @@ class WC_Gerencianet_Oficial_Gateway extends WC_Payment_Gateway {
 			$discount=null;
 		}
 		
-		$gnApiResult = $this->gnIntegration->pay_card((int)$_POST['charge_id'],$_POST['payment_token'],(int)$_POST['installments'],$billingAddress,$customer,$discount);
+		$gnApiResult = $this->gnIntegration->pay_card((int)$post_charge_id,$post_payment_token,(int)$post_installments,$billingAddress,$customer,$discount);
 
-		if (json_decode($gnApiResult, true)['code']==200) {	
-			if ( 'yes' == $this->debug ) {
-				write_log( 'GERENCIANET :: gerencianet_pay_card Request : SUCCESS ' );
+		$resultCheck = array();
+		$resultCheck = json_decode($gnApiResult, true);
+
+		if (isset($resultCheck["code"])) {
+			if ($resultCheck["code"]==200) {	
+				if ( 'yes' == $this->debug ) {
+					write_log( 'GERENCIANET :: gerencianet_pay_card Request : SUCCESS ' );
+				}
+				update_post_meta( intval($post_order_id), '_payment_method_title', sanitize_text_field( __('Credit Card - Gerencianet', WCGerencianetOficial::getTextDomain() )) );
+				$order->update_status( 'processing', __ ( 'Processing' ) );
+				$order->reduce_order_stock();
+				WC()->cart->empty_cart();
+			} else {
+				if ( 'yes' == $this->debug ) {
+					write_log( 'GERENCIANET :: gerencianet_pay_card Request : ERROR : ' . $gnApiResult->code );
+				}
 			}
-			update_post_meta( intval($_POST['order_id']), '_payment_method_title', sanitize_text_field( __('Credit Card - Gerencianet', WCGerencianetOficial::getTextDomain() )) );
-			$order->update_status( 'processing', __ ( 'Processing' ) );
-			$order->reduce_order_stock();
-			WC()->cart->empty_cart();
 		} else {
 			if ( 'yes' == $this->debug ) {
-				write_log( 'GERENCIANET :: gerencianet_pay_card Request : ERROR : ' . json_decode($gnApiResult, true)['code'] );
+				write_log( 'GERENCIANET :: gerencianet_pay_card Request : ERROR : Ajax Request Fail' );
 			}
 		}
-		
 		return $gnApiResult;
 	}
 
@@ -736,8 +849,8 @@ class WC_Gerencianet_Oficial_Gateway extends WC_Payment_Gateway {
 		$order = new WC_Order($order_id);
 		$email = $order->billing_email;
 
-		$generated_payment_type = $_GET['method'];
-		$charge_id = $_POST['charge'];
+		$generated_payment_type = sanitize_text_field($_GET['method']);
+		$charge_id = sanitize_text_field($_POST['charge']);
 
 		$gn_success_payment_box_title_billet = __("Billet emitted by Gerencianet", WCGerencianetOficial::getTextDomain() );
 		$gn_success_payment_box_title_card = __("Your order was successful and your payment is being processed. Wait until you receive confirmation of payment by email.", WCGerencianetOficial::getTextDomain() );
@@ -761,7 +874,8 @@ class WC_Gerencianet_Oficial_Gateway extends WC_Payment_Gateway {
 	 */
 	public function validate_notification() {
 		@ob_clean();
-		if ( isset( $_POST['notification'] ) ) {
+		$post_notification = sanitize_text_field($_POST['notification']);
+		if ( isset( $post_notification ) ) {
 			header( 'HTTP/1.0 200 OK' );
 			do_action( 'validate_notification_request', stripslashes_deep( $_POST ) );
 		} else {

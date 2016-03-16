@@ -13,7 +13,7 @@ if ( ! defined( 'ABSPATH' ) ) {
         <div class="gn-success-payment">
             <div class="gn-row gn-box-emission">
                 <div class="pull-left gn-left-space-2">
-                    <img src="<?php echo home_url( '/'); ?>wp-content/plugins/woo-gerencianet-oficial/assets/images/gerencianet-configurations.png" alt="Gerencianet" title="Gerencianet" />
+                    <img src="<?php echo esc_url(plugins_url( 'assets/images/', plugin_dir_path( __FILE__ ) )); ?>gerencianet-configurations.png" alt="Gerencianet" title="Gerencianet" />
                 </div>
                 <div class="pull-left gn-title-emission">
                     <?php if ($generated_payment_type=="billet") { 
@@ -49,7 +49,7 @@ if ( ! defined( 'ABSPATH' ) ) {
 
                 <?php if ($generated_payment_type=="billet") { ?>
                 <div class="gn-align-center">
-                    <button class="button" id="showBillet" name="showBillet" onclick="window.open('<?php echo urldecode($_POST["billet"]); ?>', '_blank');">
+                    <button class="button" id="showBillet" name="showBillet" onclick="window.open('<?php echo sanitize_text_field(esc_url(urldecode($_POST["billet"]))); ?>', '_blank');">
                         <div class="gn-success-payment-button-icon pull-left"><span class="icon-download"></span></div> 
                         <div class="gn-button-divisor pull-left" ></div>
                         <div class="pull-left"><?php echo $gn_success_payment_open_billet; ?></div>

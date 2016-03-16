@@ -14,7 +14,7 @@ if ( ! defined( 'ABSPATH' ) ) {
 
     <?php echo html_entity_decode($script);?>
     
-    var home_url = "<?php echo $order_received_url; ?>";
+    var home_url = "<?php echo esc_url($order_received_url); ?>";
     
     var payCnpj = false;
     var showCnpjFields = true;
@@ -69,7 +69,9 @@ if ( ! defined( 'ABSPATH' ) ) {
         <div class="gn-row-right">
             <div>
                 <div class="gn-left gn-price-payment-info">
+                    <?php if (floatval($discount)>0) { ?>
                     <center><span class="payment-old-price-gerencianet"><?php echo strip_tags($order->get_formatted_order_total()); ?></span><br><span class="payment-discount-gerencianet"><b><?php echo $gn_discount_billet; ?><?=  str_replace(".",",",$discount); ?>%</b></span></center>
+                    <?php } ?>
                 </div>
                 <div class="gn-right gn-price-payment-selected total-gerencianet">
                     <?php echo $order_with_billet_discount; ?>
@@ -235,12 +237,12 @@ if ( ! defined( 'ABSPATH' ) ) {
               </div>
             </div>
 
-            <div class=" required gn-row <?php if ($order->billing_first_name=!'' || $order->billing_last_name!='') { ?> gn-hide <?php } ?>" >
+            <div class=" required gn-row <?php if ($order->get_formatted_billing_full_name()!='') { ?> gn-hide <?php } ?>" >
               <div class="gn-col-2 gn-label">
                 <label for="input-payment-card-name"><?php echo $gn_name; ?></label>
               </div>
               <div class="gn-col-10">
-                <input type="text" name="input-payment-card-name" id="input-payment-card-name" value="<?php echo $order->billing_first_name . ' '. $order->billing_last_name;?>" class="form-control" />
+                <input type="text" name="input-payment-card-name" id="input-payment-card-name" value="<?php echo $order->get_formatted_billing_full_name();?>" class="form-control" />
               </div>
             </div>
 
