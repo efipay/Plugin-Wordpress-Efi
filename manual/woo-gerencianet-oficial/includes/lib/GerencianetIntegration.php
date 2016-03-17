@@ -29,18 +29,18 @@ class GerencianetIntegration {
 	public function get_gn_api_credentials() {
 
 		if ($this->sandbox) {
-			$gn_credentials_options = [
+			$gn_credentials_options = array (
 			  'client_id' =>  $this->client_id_development,
 			  'client_secret' => $this->client_secret_development,
 			  'sandbox' => true
-			];
+			);
 
 		} else {
-			$gn_credentials_options = [
+			$gn_credentials_options = array (
 			  'client_id' =>  $this->client_id_production,
 			  'client_secret' => $this->client_secret_production,
 			  'sandbox' => false
-			];
+			);
 
 		}
 
@@ -60,11 +60,11 @@ class GerencianetIntegration {
 	public function max_installments($total) {
 
 		$options = GerencianetIntegration::get_gn_api_credentials();
-
-		$params = ['total' => $total, 'brand' => 'visa'];
+		$params = array ('total' => $total, 'brand' => 'visa');
 
 		try {
 		    $api = new Gerencianet($options);
+		    $installments = array();
 		    $installments = $api->getInstallments($params, []);
 		    $max_installments = end($installments['data']['installments'])['installment'] . "x de " . 'R$' . GerencianetIntegration::formatCurrencyBRL(end($installments['data']['installments'])['value']);
 
@@ -80,7 +80,7 @@ class GerencianetIntegration {
 
 		$options = GerencianetIntegration::get_gn_api_credentials();
 
-		$params = ['total' => $total, 'brand' => $brand];
+		$params = array('total' => $total, 'brand' => $brand);
 
 		try {
 		    $api = new Gerencianet($options);
@@ -110,22 +110,22 @@ class GerencianetIntegration {
 
 		$options = GerencianetIntegration::get_gn_api_credentials();
 
-		$metadata = [
+		$metadata = array (
 		    'custom_id' => strval($order_id),
 		    'notification_url' => $notification_url
-		];
+		);
 
 		if ($shipping) {
-			$body = [
+			$body = array (
 			    'items' => $items,
 	    		'shippings' => $shipping,
 	    		'metadata' => $metadata
-			];
+			);
 		} else {
-			$body = [
+			$body = array (
 			    'items' => $items,
 	    		'metadata' => $metadata
-			];
+			);
 		}
 
 		try {
@@ -154,27 +154,27 @@ class GerencianetIntegration {
 	public function pay_billet($charge_id,$expirationDate,$customer,$discount) {
 
 		$options = GerencianetIntegration::get_gn_api_credentials();
-		$params = ['id' => $charge_id];
+		$params = array ('id' => $charge_id);
 		
 		if ($discount) {
-			$body = [
-			    'payment' => [
-			        'banking_billet' => [
+			$body = array (
+			    'payment' => array (
+			        'banking_billet' => array (
 			            'expire_at' => $expirationDate,
 			            'customer' => $customer,
 			            'discount' => $discount
-			        ]
-			    ]
-			];
+			        )
+			    )
+			);
 		} else {
-			$body = [
-			    'payment' => [
-			        'banking_billet' => [
+			$body = array (
+			    'payment' => array (
+			        'banking_billet' => array (
 			            'expire_at' => $expirationDate,
 			            'customer' => $customer
-			        ]
-			    ]
-			];
+			        )
+			    )
+			);
 		}
 
 		try {
@@ -202,33 +202,33 @@ class GerencianetIntegration {
 	public function pay_card($charge_id,$paymentTokenCard,$installments,$billingAddress,$customer,$discount) {
 
 		$options = GerencianetIntegration::get_gn_api_credentials();
-		$params = ['id' => $charge_id];
+		$params = array ('id' => $charge_id);
 
 		$paymentToken = $paymentTokenCard;
 
 		if ($discount>0) {
-			$body = [
-			    'payment' => [
-			        'credit_card' => [
+			$body = array (
+			    'payment' => array (
+			        'credit_card' => array (
 			            'installments' => $installments,
 			            'billing_address' => $billingAddress,
 			            'payment_token' => $paymentToken,
 			            'customer' => $customer,
 			            'discount' => $discount
-			        ]
-			    ]
-			];
+			        )
+			    )
+			);
 		} else {
-			$body = [
-			    'payment' => [
-			        'credit_card' => [
+			$body = array (
+			    'payment' => array (
+			        'credit_card' => array (
 			            'installments' => $installments,
 			            'billing_address' => $billingAddress,
 			            'payment_token' => $paymentToken,
 			            'customer' => $customer
-			        ]
-			    ]
-			];
+			        )
+			    )
+			);
 		}
 		
 		try {
@@ -257,9 +257,9 @@ class GerencianetIntegration {
 
 		$options = GerencianetIntegration::get_gn_api_credentials();
 
-		$params = [
+		$params = array (
 		  	'token' => $notificationToken
-		];
+		);
 
 		try {
 		    $api = new Gerencianet($options);

@@ -439,7 +439,7 @@ class WC_Gerencianet_Oficial_Gateway extends WC_Payment_Gateway {
 	
 		$items = array ();
 		foreach ( $order_items as $items_key => $item ) {
-			$items [] = Array (
+			$items [] = array (
 					"name" => $item ['name'],
 					"value" => (int) $this->gn_price_format ( $item ['line_subtotal']/$item ['qty'] ),
 					"amount" => (int) $item ['qty']
@@ -447,12 +447,12 @@ class WC_Gerencianet_Oficial_Gateway extends WC_Payment_Gateway {
 		}
 
 		if ($this->gn_price_format($order->get_total_shipping())>0) {
-			$shipping = [
-			    [
+			$shipping = array (
+			    array (
 			        'name' => $order->get_shipping_method(),
 			        'value' => (int) $this->gn_price_format($order->get_total_shipping())
-			    ]
-			];
+			    )
+			);
 		} else {
 			$shipping=null;
 		}
@@ -513,23 +513,23 @@ class WC_Gerencianet_Oficial_Gateway extends WC_Payment_Gateway {
 	    $post_charge_id = $arrayDadosPost['charge_id'];
 
 	    if ($post_pay_billet_with_cnpj && $post_corporate_name && $post_cnpj) {
-			$juridical_data = [
+			$juridical_data = array (
 			  'corporate_name' => $post_corporate_name,
 			  'cnpj' => $post_cnpj
-			];
+			);
 
-			$customer = [
+			$customer = array (
 			    'name' => $post_name,
 			    'cpf' => $post_cpf,
 			    'phone_number' => $post_phone_number,
 				'juridical_person' => $juridical_data
-			];
+			);
 		} else {
-			$customer = [
+			$customer = array (
 			    'name' => $post_name,
 			    'cpf' => $post_cpf,
 			    'phone_number' => $post_phone_number
-			];
+			);
 		}
 
 		$order = wc_get_order( $post_order_id );
@@ -538,10 +538,10 @@ class WC_Gerencianet_Oficial_Gateway extends WC_Payment_Gateway {
 		$discountBilletTotal = (int) floor($this->gn_price_format($order->get_total())*(((float)$discountBillet/100)));
 
 		if ($discountTotalValue>0) {
-			$discount = [
+			$discount = array (
 				'type' => 'currency',
 				'value' => $discountTotalValue
-			];
+			);
 		} else {
 			$discount=null;
 		}
@@ -567,7 +567,7 @@ class WC_Gerencianet_Oficial_Gateway extends WC_Payment_Gateway {
 				update_post_meta( intval($post_order_id), '_order_total', number_format(intval(ceil($this->gn_price_format($order->get_total()) - ($discountBilletTotal)))/100, 2, '.', '') );
 
 				update_post_meta( intval($post_order_id), '_payment_method_title', sanitize_text_field(__('Billet Banking - Gerencianet', WCGerencianetOficial::getTextDomain() )) );
-				add_post_meta( intval($post_order_id), 'billet', json_decode($gnApiResult, true)['data']['link'], true );
+				add_post_meta( intval($post_order_id), 'billet', $resultCheck['data']['link'], true );
 
 				$order->update_status( 'processing', __ ( 'Processing' ) );
 				$order->reduce_order_stock();
@@ -637,30 +637,30 @@ class WC_Gerencianet_Oficial_Gateway extends WC_Payment_Gateway {
 	    $post_charge_id = $arrayDadosPost['charge_id'];
 
 	    if (isset($post_pay_card_with_cnpj) && isset($post_corporate_name) && isset($post_cnpj)) {
-			$juridical_data = [
+			$juridical_data = array (
 			  'corporate_name' => $post_corporate_name,
 			  'cnpj' => $post_cnpj
-			];
+			);
 
-			$customer = [
+			$customer = array (
 			    'name' => $post_name,
 			    'cpf' => $post_cpf,
 			    'phone_number' => $post_phone_number,
 				'juridical_person' => $juridical_data,
 			    'email' => $post_email,
 			    'birth' => $post_birth
-			];
+			);
 		} else {
-			$customer = [
+			$customer = array (
 			    'name' => $post_name,
 			    'cpf' => $post_cpf,
 			    'phone_number' => $post_phone_number,
 			    'email' => $post_email,
 			    'birth' => $post_birth
-			];
+			);
 		}
 
-		$billingAddress = [
+		$billingAddress = array (
 		    'street' => $post_street,
 		    'number' => $post_number,
 		    'neighborhood' => $post_neighborhood,
@@ -668,16 +668,16 @@ class WC_Gerencianet_Oficial_Gateway extends WC_Payment_Gateway {
 		    'city' => $post_city,
 		    'state' => $post_state,
 		    'complement' => $post_complement
-		];
+		);
 
 		$order = wc_get_order( $post_order_id );
 		$discountTotalValue = (int)($this->gn_price_format($order->get_total_discount()));
 
 		if ($discountTotalValue>0) {
-			$discount = [
+			$discount = array (
 				'type' => 'currency',
 				'value' => $discountTotalValue
-			];
+			);
 		} else {
 			$discount=null;
 		}

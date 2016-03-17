@@ -525,12 +525,12 @@ msgid "Click here to see the Billet"
 msgstr "Clique aqui para visualizar o Boleto"
 
 #. Name of the plugin
-msgid "WooCommerce Gerencianet Oficial"
-msgstr "WooCommerce Gerencianet Oficial"
+msgid "Woo Gerencianet Oficial"
+msgstr "Woo Gerencianet Oficial"
 
 #. URI of the plugin
-msgid "https://wordpress.org/plugins/woo-gerencianet-oficial"
-msgstr "https://wordpress.org/plugins/woo-gerencianet-oficial"
+msgid "https://wordpress.org/plugins/woo-gerencianet-official"
+msgstr "https://wordpress.org/plugins/woo-gerencianet-official"
 
 #. Description of the plugin
 msgid "Gateway de pagamento Gerencianet para WooCommerce."

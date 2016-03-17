@@ -1,11 +1,11 @@
 <?php
 /**
  * Plugin Name: Woo Gerencianet Oficial
- * Plugin URI: https://wordpress.org/plugins/woo-gerencianet-oficial/
+ * Plugin URI: https://wordpress.org/plugins/woo-gerencianet-official/
  * Description: Gateway de pagamento Gerencianet para WooCommerce.
  * Author: Gerencianet
  * Author URI: http://www.gerencianet.com.br
- * Version: 0.1.0
+ * Version: 0.1.1
  * License: GPLv2 or later
  * Text Domain: woo-gerencianet-oficial
  * Domain Path: /languages/
