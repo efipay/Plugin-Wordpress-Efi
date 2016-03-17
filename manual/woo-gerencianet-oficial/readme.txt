@@ -46,7 +46,7 @@ Opcional: Instale o plugin [WooCommerce Extra Checkout Fields for Brazil](https:
 
 = Changelog =
 
-= 0.1.0 =
+= 0.1.1 =
 * Versão Beta disponibilizada.
 
 == Installation ==
@@ -70,5 +70,5 @@ Opcional: Instale o plugin [WooCommerce Extra Checkout Fields for Brazil](https:
 
 == Changelog ==
 
-= 0.1.0 =
+= 0.1.1 =
 * Versão Beta disponibilizada.
