@@ -1,3 +1,7 @@
+# v0.1.2
+
+* Fix: erro de compatibilidade
+
 # v0.1.1
 
 * Fix Style

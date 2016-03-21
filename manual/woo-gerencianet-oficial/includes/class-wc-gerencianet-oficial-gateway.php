@@ -720,7 +720,7 @@ class WC_Gerencianet_Oficial_Gateway extends WC_Payment_Gateway {
 		$this->styles();
 		$this->scripts();
 
-		if ($this->sandbox) {
+		if ($this->sandbox == "yes") {
 			$script = htmlentities(html_entity_decode("var s=document.createElement('script');s.type='text/javascript';var v=parseInt(Math.random()*1000000);s.src='https://sandbox.gerencianet.com.br/v1/cdn/".$this->payee_code."/'+v;s.async=false;s.id='".$this->payee_code."';if(!document.getElementById('".$this->payee_code."')){document.getElementsByTagName('head')[0].appendChild(s);};&#36;gn={validForm:true,processed:false,done:{},ready:function(fn){&#36;gn.done=fn;}};"));
 		} else {
 			$script = htmlentities(html_entity_decode("var s=document.createElement('script');s.type='text/javascript';var v=parseInt(Math.random()*1000000);s.src='https://api.gerencianet.com.br/v1/cdn/".$this->payee_code."/'+v;s.async=false;s.id='".$this->payee_code."';if(!document.getElementById('".$this->payee_code."')){document.getElementsByTagName('head')[0].appendChild(s);};&#36;gn={validForm:true,processed:false,done:{},ready:function(fn){&#36;gn.done=fn;}};"));

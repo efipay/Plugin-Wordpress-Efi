@@ -28,7 +28,7 @@ class GerencianetIntegration {
 
 	public function get_gn_api_credentials() {
 
-		if ($this->sandbox) {
+		if ($this->sandbox == "yes") {
 			$gn_credentials_options = array (
 			  'client_id' =>  $this->client_id_development,
 			  'client_secret' => $this->client_secret_development,
@@ -49,7 +49,7 @@ class GerencianetIntegration {
 
 	public function get_gn_script() {
 
-		if ($this->sandbox) {
+		if ($this->sandbox == "yes") {
 			return html_entity_decode("<script type='text/javascript'>var s=document.createElement('script');s.type='text/javascript';var v=parseInt(Math.random()*1000000);s.src='https://sandbox.gerencianet.com.br/v1/cdn/".$this->payee_code."/'+v;s.async=false;s.id='".$this->payee_code."';if(!document.getElementById('".$this->payee_code."')){document.getElementsByTagName('head')[0].appendChild(s);};&#36;gn={validForm:true,processed:false,done:{},ready:function(fn){&#36;gn.done=fn;}};</script>");
 		} else {
 			return html_entity_decode("<script type='text/javascript'>var s=document.createElement('script');s.type='text/javascript';var v=parseInt(Math.random()*1000000);s.src='https://api.gerencianet.com.br/v1/cdn/".$this->payee_code."/'+v;s.async=false;s.id='".$this->payee_code."';if(!document.getElementById('".$this->payee_code."')){document.getElementsByTagName('head')[0].appendChild(s);};&#36;gn={validForm:true,processed:false,done:{},ready:function(fn){&#36;gn.done=fn;}};</script>");

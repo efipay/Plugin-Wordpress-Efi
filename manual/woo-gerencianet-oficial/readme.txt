@@ -28,8 +28,8 @@ Compatível com as versões 2.1.x, 2.2.x, 2.3.x, 2.4.x e 2.5.x do WooCommerce.
 = Instalação =
 
 1. Faça o download da última versão do plugin no repositório Wordpress.org ou no [repositório no GitHub](https://github.com/gerencianet/gn-api-woocommerce)
-2. Extraia o conteúdo do arquivo 'woo-gerencianet-oficial.zip' dentro do diretório '/wp-content/plugins/' da loja.
-3. Configure o plugin em "WooCommerce > Settings > Checkout > Gerencianet" e comece a receber pagamentos.
+2. Acesse o link em sua loja "Plugins" -> " "Adicionar novo" -> "Fazer o upload do plugin" e envie o arquivo 'woo-gerencianet-oficial.zip' ou extraia o conteúdo do arquivo dentro do diretório de plugins da loja.
+3. Ative o plugin  e configure em "WooCommerce > Configurações > Finalizar Compra > Gerencianet" e comece a receber pagamentos.
 
 Opcional: Instale o plugin [WooCommerce Extra Checkout Fields for Brazil](https://wordpress.org/plugins/woocommerce-extra-checkout-fields-for-brazil/) para evitar que o comprador tenha que inserir CPF, número do endereço e bairro no momento do pagamento.
 
@@ -46,14 +46,17 @@ Opcional: Instale o plugin [WooCommerce Extra Checkout Fields for Brazil](https:
 
 = Changelog =
 
+= 0.1.2 =
+* Fix: erro de compatibilidade
+
 = 0.1.1 =
 * Versão Beta disponibilizada.
 
 == Installation ==
 
 1. Faça o download da última versão do plugin no repositório Wordpress.org ou no [repositório no GitHub](https://github.com/gerencianet/gn-api-woocommerce)
-2. Extraia o conteúdo do arquivo 'woo-gerencianet-oficial.zip' dentro do diretório '/wp-content/plugins/' da loja.
-3. Configure o plugin em "WooCommerce > Settings > Checkout > Gerencianet" e comece a receber pagamentos.
+2. Acesse o link em sua loja "Plugins" -> " "Adicionar novo" -> "Fazer o upload do plugin" e envie o arquivo 'woo-gerencianet-oficial.zip' ou extraia o conteúdo do arquivo dentro do diretório de plugins da loja.
+3. Ative o plugin  e configure em "WooCommerce > Configurações > Finalizar Compra > Gerencianet" e comece a receber pagamentos.
 
 Opcional: Instale o plugin [WooCommerce Extra Checkout Fields for Brazil](https://wordpress.org/plugins/woocommerce-extra-checkout-fields-for-brazil/) para evitar que o comprador tenha que inserir CPF, número do endereço e bairro no momento do pagamento.
 
@@ -69,6 +72,9 @@ Opcional: Instale o plugin [WooCommerce Extra Checkout Fields for Brazil](https:
 8. Recomendamos que antes de disponibilizar pagamentos com a Gerencianet, o lojista realize testes de cobrança com o sandbox(ambiente de testes) ativado para verificar se o procedimento de pagamento está acontecendo conforme esperado.
 
 == Changelog ==
+
+= 0.1.2 =
+* Fix: erro de compatibilidade
 
 = 0.1.1 =
 * Versão Beta disponibilizada.
