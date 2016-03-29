@@ -286,12 +286,17 @@ class GerencianetIntegration {
 		if ($success) {
 			return json_encode($result);
 		} else {
-			$property = explode("/",$result['message']['property']);
-			$propertyName = end($property);
+			if (isset($result['message']['property'])) {
+				$property = explode("/",$result['message']['property']);
+				$propertyName = end($property);
+			} else {
+				$propertyName="";
+			}
 			
 			$messageShow = $this->getErrorMessage(intval($result['code']), $propertyName);
 
 			$errorResponse = array(
+				"code" => 0,
 		        "message" => $messageShow
 		    );
 			return json_encode($errorResponse);

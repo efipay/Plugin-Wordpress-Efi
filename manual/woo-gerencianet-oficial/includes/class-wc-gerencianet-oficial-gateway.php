@@ -628,7 +628,7 @@ class WC_Gerencianet_Oficial_Gateway extends WC_Payment_Gateway {
 	    $post_street = $arrayDadosPost['street'];
 	    $post_number = $arrayDadosPost['number'];
 	    $post_neighborhood = $arrayDadosPost['neighborhood'];
-	    $post_zipcode = $arrayDadosPost['zipcode'];
+	    $post_zipcode = preg_replace( '/[^0-9]/', '', $arrayDadosPost['zipcode']);
 	    $post_city = $arrayDadosPost['city'];
 	    $post_state = $arrayDadosPost['state'];
 	    $post_complement = $arrayDadosPost['complement'];

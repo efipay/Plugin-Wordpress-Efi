@@ -1,3 +1,8 @@
+# v0.2.0
+
+* Fix: erros de javascript e styles
+* Otimização de layout de pagamento via cartão de crédito.
+
 # v0.1.2
 
 * Fix: erro de compatibilidade

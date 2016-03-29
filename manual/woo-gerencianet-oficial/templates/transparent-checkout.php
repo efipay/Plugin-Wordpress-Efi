@@ -64,6 +64,7 @@ if ( ! defined( 'ABSPATH' ) ) {
             <div class="gn-left payment-option-gerencianet">
                 <?php echo $gn_pay_billet_option; ?>
             </div>
+            <div class="gn-left gn-payment-option-sizer"></div>
             <div class="clear"></div>
         </div>
         <div class="gn-row-right">
@@ -184,6 +185,7 @@ if ( ! defined( 'ABSPATH' ) ) {
             <div class="gn-left payment-option-gerencianet">
                 <?php echo $gn_pay_card_option; ?>
             </div>
+            <div class="gn-left gn-payment-option-sizer"></div>
             <div class="clear"></div>
         </div>
         <div class="gn-row-right">
@@ -246,29 +248,33 @@ if ( ! defined( 'ABSPATH' ) ) {
               </div>
             </div>
 
-            <div class=" required gn-row <?php if (isset($order->billing_cpf) && $order->billing_phone!='' && $order->billing_birthdate != '') { ?> gn-hide <?php } ?>" >
+            <div class=" required gn-row <?php if (isset($order->billing_cpf) && $order->billing_phone!='') { ?> gn-hide <?php } ?>" >
             
                 <div class="gn-col-2 gn-label">
                     <label for="input-payment-card-cpf"><?php echo $gn_cpf; ?></label>
                 </div>
-                <div class="gn-col-2">
+                <div class="gn-col-4">
                     <input type="text" name="input-payment-card-cpf" id="input-payment-card-cpf" value="<?php echo (isset($order->billing_cpf) ? $order->billing_cpf : '' );?>" class="form-control cpf-mask gn-minimum-size-field" />
                 </div>
-                <div class="gn-col-8">
-                <div class="gn-col-2 gn-label">
-                    <label class=" gn-left-space-2" for="input-payment-card-phone"><?php echo $gn_phone; ?></label>
+                <div class="gn-col-6">
+                  <div class="gn-col-4 gn-label">
+                      <label class=" gn-left-space-2" for="input-payment-card-phone"><?php echo $gn_phone; ?></label>
+                  </div>
+                  <div class="gn-col-8">
+                      <input type="text" name="input-payment-card-phone" value="<?php echo $order->billing_phone;?>" id="input-payment-card-phone" class="form-control phone-mask gn-minimum-size-field" />
+                  </div>
+                  
                 </div>
-                <div class="gn-col-3">
-                    <input type="text" name="input-payment-card-phone" value="<?php echo $order->billing_phone;?>" id="input-payment-card-phone" class="form-control phone-mask gn-minimum-size-field" />
-                </div>
-                
-                <div class="gn-col-4 gn-label">
-                    <label class=" gn-left-space-2" for="input-payment-card-birth"><?php echo $gn_birth; ?></label>
-                </div>
-                <div class="gn-col-3">
-                    <input type="text" name="input-payment-card-birth" id="input-payment-card-birth" value="<?php echo $order->billing_birthdate?>" class="form-control birth-mask" />
-                </div>
-                </div>
+            </div>
+
+
+            <div class=" required gn-row <?php if ($order->billing_birthdate != '') { ?> gn-hide <?php } ?>" >
+              <div class="gn-col-3 gn-label-birth">
+                  <label for="input-payment-card-birth"><?php echo $gn_birth; ?></label>
+              </div>
+              <div class="gn-col-3">
+                  <input type="text" name="input-payment-card-birth" id="input-payment-card-birth" value="<?php echo $order->billing_birthdate?>" class="form-control birth-mask" />
+              </div>
             </div>
 
             <div class=" required <?php if ($order->billing_email!='') { ?> gn-hide <?php } ?>" >
@@ -439,7 +445,7 @@ if ( ! defined( 'ABSPATH' ) ) {
                             <div class="clear"></div>
                         </div>
                     </div>
-                    <div class="gn-col-3" sytle="overflow: auto;">
+                    <div class="gn-col-4" sytle="overflow: auto;">
                         <div>   
                             <?php echo $gn_card_expiration; ?>
                         </div>
@@ -472,11 +478,10 @@ if ( ! defined( 'ABSPATH' ) ) {
                                 }
                                 ?>
                             </select>
-                            <div></div>
                             <div class="clear"></div>
                         </div>
                     </div>
-                    <div class="gn-col-4">
+                    <div class="gn-col-3">
                         <div>
                             <?php echo $gn_card_cvv; ?>
                         </div>
