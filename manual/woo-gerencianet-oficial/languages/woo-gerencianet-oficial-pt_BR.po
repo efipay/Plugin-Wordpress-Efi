@@ -2,9 +2,9 @@ msgid ""
 msgstr ""
 "Project-Id-Version: class-wc-gerencianet-oficial-gateway.php conversion\n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: Wed Mar 16 2016 15:02:07 GMT-0300 (Hora oficial do "
+"POT-Creation-Date: Fri Apr 01 2016 09:22:19 GMT-0300 (Hora oficial do "
 "Brasil)\n"
-"PO-Revision-Date: Wed Mar 16 2016 15:02:20 GMT-0300 (Hora oficial do Brasil)\n"
+"PO-Revision-Date: Fri Apr 01 2016 09:23:06 GMT-0300 (Hora oficial do Brasil)\n"
 "Last-Translator: \n"
 "Language-Team: \n"
 "Language: Unknown\n"
@@ -18,27 +18,27 @@ msgstr ""
 "X-Loco-Target-Locale: zxx\n"
 "X-Generator: Loco - https://localise.biz/"
 
-#: includes/class-wc-gerencianet-gateway.php:21 includes/class-wc-gerencianet-gateway.php:39 includes/class-wc-gerencianet-gateway.php:245
+#: woo-gerencianet-oficial.php:21 woo-gerencianet-oficial.php:39 woo-gerencianet-oficial.php:245
 msgid "Gerencianet"
 msgstr "Gerencianet"
 
-#: includes/class-wc-gerencianet-gateway.php:33
+#: woo-gerencianet-oficial.php:33
 msgid "Billet"
 msgstr "Boleto Bancário"
 
-#: includes/class-wc-gerencianet-gateway.php:35 includes/class-wc-gerencianet-gateway.php:312
+#: woo-gerencianet-oficial.php:35 woo-gerencianet-oficial.php:312
 msgid "Credit Card"
 msgstr "Cartão de Crédito"
 
-#: includes/class-wc-gerencianet-gateway.php:37
+#: woo-gerencianet-oficial.php:37
 msgid "Billet or Credit Card"
 msgstr "Boleto Bancário ou Cartão de Crédito"
 
-#: includes/class-wc-gerencianet-gateway.php:204
+#: woo-gerencianet-oficial.php:204
 msgid "Gerencianet Payments - Official Module"
 msgstr "Gerencianet - Módulo Oficial"
 
-#: includes/class-wc-gerencianet-gateway.php:205
+#: woo-gerencianet-oficial.php:205
 msgid ""
 "This module is the official module of Gerencianet Payment Gateway. If you "
 "have any doubths or suggestions, contact us at <a href=\"http://www."
@@ -48,39 +48,39 @@ msgstr ""
 "possui alguma dúvida ou sugestão, entre em contato conosco em "
 "<a href='http://www.gerencianet.com.br'>www.gerencianet.com.br</a>"
 
-#: includes/class-wc-gerencianet-gateway.php:235
+#: woo-gerencianet-oficial.php:235
 msgid "Enable/Disable"
 msgstr "Ativado/Desativado"
 
-#: includes/class-wc-gerencianet-gateway.php:237
+#: woo-gerencianet-oficial.php:237
 msgid "Enable Gerencianet Payments"
 msgstr "Habilitar o Módulo de Pagamentos da Gerencianet"
 
-#: includes/class-wc-gerencianet-gateway.php:241
+#: woo-gerencianet-oficial.php:241
 msgid "Title"
 msgstr "Título"
 
-#: includes/class-wc-gerencianet-gateway.php:243
+#: woo-gerencianet-oficial.php:243
 msgid "This controls the title which the user sees during checkout."
 msgstr "Este campo é o título que o cliente irá visualizar na tela de Checkout."
 
-#: includes/class-wc-gerencianet-gateway.php:248
+#: woo-gerencianet-oficial.php:248
 msgid "Description"
 msgstr "Descrição"
 
-#: includes/class-wc-gerencianet-gateway.php:250
+#: woo-gerencianet-oficial.php:250
 msgid "This controls the description which the user sees during checkout."
 msgstr "Este campo é a descrição que o cliente irá visualizar na tela de Checkout."
 
-#: includes/class-wc-gerencianet-gateway.php:251
+#: woo-gerencianet-oficial.php:251
 msgid "Pay via gerencianet"
 msgstr "Pagar com Gerencianet"
 
-#: includes/class-wc-gerencianet-gateway.php:254
+#: woo-gerencianet-oficial.php:254
 msgid "Invoice Prefix"
 msgstr "Prefixo do Pedido"
 
-#: includes/class-wc-gerencianet-gateway.php:256
+#: woo-gerencianet-oficial.php:256
 msgid ""
 "Please enter a prefix for your invoice numbers. If you use your gerencianet "
 "account for multiple stores ensure this prefix is unqiue as gerencianet will "
@@ -90,11 +90,11 @@ msgstr ""
 "gerencianet para várias lojas, assegure que é prefixo escolhido é único "
 "pois a gerencianet poderá bloquear a cobrança."
 
-#: includes/class-wc-gerencianet-gateway.php:261
+#: woo-gerencianet-oficial.php:261
 msgid "Gerencianet Credentials"
 msgstr "Credenciais Gerencianet"
 
-#: includes/class-wc-gerencianet-gateway.php:263
+#: woo-gerencianet-oficial.php:263
 msgid ""
 "Where will you find your credentials: <a id='showKeysProductionTutorial' "
 "class='gn-admin-cursor-pointer'>Client ID/Secret Production</a>, <a "
@@ -108,11 +108,11 @@ msgstr ""
 "Desenvolvimento</a> e <a id='showPayeeCodeTutorial' class='gn-admin-cursor-pointer'>"
 "Identificador da Conta</a>"
 
-#: includes/class-wc-gerencianet-gateway.php:266
+#: woo-gerencianet-oficial.php:266
 msgid "Client Id Production"
 msgstr "Client Id Produção"
 
-#: includes/class-wc-gerencianet-gateway.php:268
+#: woo-gerencianet-oficial.php:268
 msgid ""
 "Please enter your Client Id Production; this is needed in order to take "
 "payment."
@@ -120,11 +120,11 @@ msgstr ""
 "Por favor, informe o seu Client Id de Produção; esta credencial é obrigatória para "
 "gerar o pagamento."
 
-#: includes/class-wc-gerencianet-gateway.php:273
+#: woo-gerencianet-oficial.php:273
 msgid "Client Secret Production"
 msgstr "Client Secret Produção"
 
-#: includes/class-wc-gerencianet-gateway.php:275
+#: woo-gerencianet-oficial.php:275
 msgid ""
 "Please enter your Client Secret Production; this is needed in order to take "
 "payment."
@@ -132,31 +132,31 @@ msgstr ""
 "Por favor, informe o seu Client Secret de Produção; esta credencial é obrigatória para "
 "gerar o pagamento."
 
-#: includes/class-wc-gerencianet-gateway.php:280
+#: woo-gerencianet-oficial.php:280
 msgid "Client ID Development"
 msgstr "Client ID Desenvolvimento"
 
-#: includes/class-wc-gerencianet-gateway.php:282
+#: woo-gerencianet-oficial.php:282
 msgid "Please enter your Client Id Development; this is needed to test payment."
 msgstr ""
 "Por favor, informe o seu Client Id de Desenvolvimento; esta credencial é obrigatória para "
 "testar o pagamento."
 
-#: includes/class-wc-gerencianet-gateway.php:287
+#: woo-gerencianet-oficial.php:287
 msgid "Client Secret Development"
 msgstr "Client Secret Desenvolvimento"
 
-#: includes/class-wc-gerencianet-gateway.php:289
+#: woo-gerencianet-oficial.php:289
 msgid "Please enter your Client Secret Development; this is needed to test payment."
 msgstr ""
 "Por favor, informe o seu Client Secret de Desenvolvimento; esta credencial é obrigatória para "
 "testar o pagamento."
 
-#: includes/class-wc-gerencianet-gateway.php:294
+#: woo-gerencianet-oficial.php:294
 msgid "Payee Code"
 msgstr "Identificador da Conta"
 
-#: includes/class-wc-gerencianet-gateway.php:296
+#: woo-gerencianet-oficial.php:296
 msgid ""
 "Please enter your account payee code; this is needed in order to take "
 "payment."
@@ -164,104 +164,104 @@ msgstr ""
 "Por favor, insira o Payee Code (Identificador da Conta); Esta credencial é obrigatória "
 "para gerar as cobranças."
 
-#: includes/class-wc-gerencianet-gateway.php:301
+#: woo-gerencianet-oficial.php:301
 msgid "Payment Settings"
 msgstr "Configurações de Pagamento"
 
-#: includes/class-wc-gerencianet-gateway.php:303
+#: woo-gerencianet-oficial.php:303
 msgid "These options need to be available to you in your gerencianet account."
 msgstr "Estas opções devem estar disponíveis para você em sua conta Gerencianet."
 
-#: includes/class-wc-gerencianet-gateway.php:306
+#: woo-gerencianet-oficial.php:306
 msgid "Billet Banking"
 msgstr "Boleto Bancário"
 
-#: includes/class-wc-gerencianet-gateway.php:308
+#: woo-gerencianet-oficial.php:308
 msgid "Enable Billet Banking"
 msgstr "Habilitar Boleto Bancário"
 
-#: includes/class-wc-gerencianet-gateway.php:314
+#: woo-gerencianet-oficial.php:314
 msgid "Enable Credit Card"
 msgstr "Habilitar Cartão de Crédito"
 
-#: includes/class-wc-gerencianet-gateway.php:318
+#: woo-gerencianet-oficial.php:318
 msgid "Billet Settings"
 msgstr "Configurações do Boleto Bancário"
 
-#: includes/class-wc-gerencianet-gateway.php:323
+#: woo-gerencianet-oficial.php:323
 msgid "Billet discount"
 msgstr "Desconto no Boleto"
 
-#: includes/class-wc-gerencianet-gateway.php:325
+#: woo-gerencianet-oficial.php:325
 msgid "Discount for payment with billet."
 msgstr "Desconto para pagamentos no Boleto Bancário"
 
-#: includes/class-wc-gerencianet-gateway.php:331
+#: woo-gerencianet-oficial.php:331
 msgid "Number of Days"
 msgstr "Número de Dias para vencer"
 
-#: includes/class-wc-gerencianet-gateway.php:333
+#: woo-gerencianet-oficial.php:333
 msgid "Days to expire the billet after printed."
 msgstr "Número de dias corridos para vencer depois de gerado."
 
-#: includes/class-wc-gerencianet-gateway.php:339
+#: woo-gerencianet-oficial.php:339
 msgid "Callback"
 msgstr "Notificação"
 
-#: includes/class-wc-gerencianet-gateway.php:344
+#: woo-gerencianet-oficial.php:344
 msgid "Auto order status update"
 msgstr "Atualizar automaticamente o status do pedido no WooCommerce"
 
-#: includes/class-wc-gerencianet-gateway.php:346
+#: woo-gerencianet-oficial.php:346
 msgid "Enable order auto update"
 msgstr "Habilitar o update automático do pedido."
 
-#: includes/class-wc-gerencianet-gateway.php:350
+#: woo-gerencianet-oficial.php:350
 msgid "Tests"
 msgstr "Testes"
 
-#: includes/class-wc-gerencianet-gateway.php:355
+#: woo-gerencianet-oficial.php:355
 msgid "Sandbox"
 msgstr "Sandbox"
 
-#: includes/class-wc-gerencianet-gateway.php:357
+#: woo-gerencianet-oficial.php:357
 msgid "Enable gerencianet sandbox"
 msgstr "Habilitar Sandbox Gerencianet (Ambiente de testes)"
 
-#: includes/class-wc-gerencianet-gateway.php:361
+#: woo-gerencianet-oficial.php:361
 msgid "Debug"
 msgstr "Debug"
 
-#: includes/class-wc-gerencianet-gateway.php:363
+#: woo-gerencianet-oficial.php:363
 msgid "Enable debug for Gerencianet"
 msgstr "Habilitar debug para o módulo da Gerencianet"
 
-#: includes/class-wc-gerencianet-gateway.php:424 includes/class-wc-gerencianet-gateway.php:496 includes/class-wc-gerencianet-gateway.php:598
+#: woo-gerencianet-oficial.php:424 woo-gerencianet-oficial.php:496 woo-gerencianet-oficial.php:598
 msgid "An error occurred during your request. Please, try again."
 msgstr "Ocorreu um erro durante a sua requisição. Pro favor, tente novamente."
 
-#: includes/class-wc-gerencianet-gateway.php:560 includes/class-wc-gerencianet-gateway.php:774
+#: woo-gerencianet-oficial.php:560 woo-gerencianet-oficial.php:774
 msgid "Discount of "
 msgstr "Desconto de "
 
-#: includes/class-wc-gerencianet-gateway.php:560
+#: woo-gerencianet-oficial.php:560
 #, php-format
 msgid "% Billet"
 msgstr "% no Boleto "
 
-#: includes/class-wc-gerencianet-gateway.php:569
+#: woo-gerencianet-oficial.php:569
 msgid "Billet Banking - Gerencianet"
 msgstr "Boleto Bancário - Gerencianet"
 
-#: includes/class-wc-gerencianet-gateway.php:572 includes/class-wc-gerencianet-gateway.php:696
-msgid "Processing"
-msgstr "Processando"
+#: woo-gerencianet-oficial.php:572 woo-gerencianet-oficial.php:696
+msgid "Waiting"
+msgstr "Aguardando"
 
-#: includes/class-wc-gerencianet-gateway.php:695
+#: woo-gerencianet-oficial.php:695
 msgid "Credit Card - Gerencianet"
 msgstr "Cartão de Crédito - Gerencianet"
 
-#: includes/class-wc-gerencianet-gateway.php:748
+#: woo-gerencianet-oficial.php:748
 msgid ""
 "Opting to pay by credit card, the payment is processed and the confirmation "
 "will take place within 48 hours."
@@ -269,11 +269,11 @@ msgstr ""
 "Optando pelo pagamento com cartão de crédito, o pagamento é processado e a "
 "confirmação ocorrerá em até 48 horas."
 
-#: includes/class-wc-gerencianet-gateway.php:749
+#: woo-gerencianet-oficial.php:749
 msgid "CNPJ"
 msgstr "CNPJ"
 
-#: includes/class-wc-gerencianet-gateway.php:750
+#: woo-gerencianet-oficial.php:750
 msgid ""
 "Opting to pay by Banking Billet, the confirmation will be performed on the "
 "next business day after payment."
@@ -281,87 +281,87 @@ msgstr ""
 "Optando pelo pagamento por Boleto, a confirmação será realizada no dia útil "
 "seguinte ao pagamento."
 
-#: includes/class-wc-gerencianet-gateway.php:751
+#: woo-gerencianet-oficial.php:751
 msgid "Company:"
 msgstr "Razão Social:"
 
-#: includes/class-wc-gerencianet-gateway.php:752
+#: woo-gerencianet-oficial.php:752
 msgid "Name:"
 msgstr "Nome:"
 
-#: includes/class-wc-gerencianet-gateway.php:753
+#: woo-gerencianet-oficial.php:753
 msgid "CPF: "
 msgstr "CPF: "
 
-#: includes/class-wc-gerencianet-gateway.php:754
+#: woo-gerencianet-oficial.php:754
 msgid "Phone: "
 msgstr "Telefone: "
 
-#: includes/class-wc-gerencianet-gateway.php:755
+#: woo-gerencianet-oficial.php:755
 msgid "Birth Date: "
 msgstr "Data de nascimento: "
 
-#: includes/class-wc-gerencianet-gateway.php:756
+#: woo-gerencianet-oficial.php:756
 msgid "E-mail: "
 msgstr "E-mail: "
 
-#: includes/class-wc-gerencianet-gateway.php:757
+#: woo-gerencianet-oficial.php:757
 msgid "Address: "
 msgstr "Endereço: "
 
-#: includes/class-wc-gerencianet-gateway.php:758
+#: woo-gerencianet-oficial.php:758
 msgid "Number: "
 msgstr "Número: "
 
-#: includes/class-wc-gerencianet-gateway.php:759
+#: woo-gerencianet-oficial.php:759
 msgid "Neighborhood: "
 msgstr "Bairro: "
 
-#: includes/class-wc-gerencianet-gateway.php:760
+#: woo-gerencianet-oficial.php:760
 msgid "Complement: "
 msgstr "Complemento: "
 
-#: includes/class-wc-gerencianet-gateway.php:761
+#: woo-gerencianet-oficial.php:761
 msgid "Zipcode: "
 msgstr "CEP: "
 
-#: includes/class-wc-gerencianet-gateway.php:762
+#: woo-gerencianet-oficial.php:762
 msgid "City: "
 msgstr "Cidade: "
 
-#: includes/class-wc-gerencianet-gateway.php:763
+#: woo-gerencianet-oficial.php:763
 msgid "State: "
 msgstr "Estado: "
 
-#: includes/class-wc-gerencianet-gateway.php:764
+#: woo-gerencianet-oficial.php:764
 msgid "Billing Data"
 msgstr "Dados de pagamento"
 
-#: includes/class-wc-gerencianet-gateway.php:765
+#: woo-gerencianet-oficial.php:765
 msgid "Card Number: "
 msgstr "Número do cartao: "
 
-#: includes/class-wc-gerencianet-gateway.php:766
+#: woo-gerencianet-oficial.php:766
 msgid "Expiration date: "
 msgstr "Validade: "
 
-#: includes/class-wc-gerencianet-gateway.php:767
+#: woo-gerencianet-oficial.php:767
 msgid "Security Code: "
 msgstr "Código de Segurança: "
 
-#: includes/class-wc-gerencianet-gateway.php:768
+#: woo-gerencianet-oficial.php:768
 msgid "Installments: "
 msgstr "Quantidade de parcelas: "
 
-#: includes/class-wc-gerencianet-gateway.php:769
+#: woo-gerencianet-oficial.php:769
 msgid "Select the card brand"
 msgstr "Selecione a bandeira do cartão"
 
-#: includes/class-wc-gerencianet-gateway.php:770
+#: woo-gerencianet-oficial.php:770
 msgid "Pay as juridical person"
 msgstr "Pagar com dados de Pessoa Jurídica"
 
-#: includes/class-wc-gerencianet-gateway.php:772
+#: woo-gerencianet-oficial.php:772
 msgid ""
 "You can not pay this order with Gerencianet because the total value is less "
 "than R$5,00."
@@ -369,49 +369,49 @@ msgstr ""
 "Você não pode pagar este pedido com a Gerencianet pois o valor total do "
 "pedido é inferior à R$5,00."
 
-#: includes/class-wc-gerencianet-gateway.php:773
+#: woo-gerencianet-oficial.php:773
 msgid "Pay with Billet Banking"
 msgstr "Pagar com Boleto Bancário"
 
-#: includes/class-wc-gerencianet-gateway.php:775
+#: woo-gerencianet-oficial.php:775
 msgid "Pay with Credit Card"
 msgstr "Pagar com Cartão de Crédito"
 
-#: includes/class-wc-gerencianet-gateway.php:776
+#: woo-gerencianet-oficial.php:776
 msgid "Pay in"
 msgstr "Pague em até"
 
-#: includes/class-wc-gerencianet-gateway.php:777
+#: woo-gerencianet-oficial.php:777
 msgid "Billing Address"
 msgstr "Endereço da Cobrança"
 
-#: includes/class-wc-gerencianet-gateway.php:778
+#: woo-gerencianet-oficial.php:778
 msgid "Select the state"
 msgstr "Selecione o estado"
 
-#: includes/class-wc-gerencianet-gateway.php:779
+#: woo-gerencianet-oficial.php:779
 msgid "Are the last three digits<br>on the back of the card."
 msgstr "São os três últimos<br>dígitos no verso do cartão."
 
-#: includes/class-wc-gerencianet-gateway.php:780
+#: woo-gerencianet-oficial.php:780
 msgid "Select the Card Brand"
 msgstr "Selecione a bandeira do cartão"
 
-#: includes/class-wc-gerencianet-gateway.php:781
+#: woo-gerencianet-oficial.php:781
 msgid "Please, wait..."
 msgstr "Aguarde um instante..."
 
-#: includes/class-wc-gerencianet-gateway.php:783
+#: woo-gerencianet-oficial.php:783
 msgid "Sandbox mode is active. The payments will not be valid."
 msgstr ""
 "O modo Sandbox (Ambiente de testes) está ativo. Suas cobranças não "
 "serão validadas."
 
-#: includes/class-wc-gerencianet-gateway.php:855
+#: woo-gerencianet-oficial.php:855
 msgid "Billet emitted by Gerencianet"
 msgstr "Boleto emitido através da Gerencianet"
 
-#: includes/class-wc-gerencianet-gateway.php:856
+#: woo-gerencianet-oficial.php:856
 msgid ""
 "Your order was successful and your payment is being processed. Wait until "
 "you receive confirmation of payment by email."
@@ -419,7 +419,7 @@ msgstr ""
 "Seu pedido foi realizado com sucesso e seu pagamento está sendo processado. "
 "Aguarde até receber a confirmação do pagamento por e-mail."
 
-#: includes/class-wc-gerencianet-gateway.php:857
+#: woo-gerencianet-oficial.php:857
 msgid ""
 "The Banking Billet was successfully generated. Make payment in bank, lottery,"
 " post office or bankline. Stay tuned to the expiration date of the banking "
@@ -429,7 +429,7 @@ msgstr ""
 "banco conveniado, lotéricas, correios ou bankline. Fique atento à data de "
 "vencimento do boleto."
 
-#: includes/class-wc-gerencianet-gateway.php:858
+#: woo-gerencianet-oficial.php:858
 msgid ""
 "The charge on your card is being processed. Soon as it is confirmed, we will "
 "send an e-mail to <b>"
@@ -437,7 +437,7 @@ msgstr ""
 "A cobrança em seu cartão está sendo processada. Assim que houver a confirmação, "
 "enviaremos um e-mail para o endereço <b>"
 
-#: includes/class-wc-gerencianet-gateway.php:859
+#: woo-gerencianet-oficial.php:859
 msgid ""
 "</b>, informed in your registration. If you do not receive the product or "
 "service purchased, you have <b>14 days from the payment confirmation</b> "
@@ -449,69 +449,69 @@ msgstr ""
 para abrir uma contestação.<br> Informe-se em "
 "<a href='http://www.gerencianet.com.br/contestacao' target='_blank'>www.gerencianet.com.br/contestacao</a>."
 
-#: includes/class-wc-gerencianet-gateway.php:860
+#: woo-gerencianet-oficial.php:860
 msgid "Charge number:"
 msgstr "Número da cobrança:"
 
-#: includes/class-wc-gerencianet-gateway.php:861 includes/class-wc-gerencianet-gateway.php:1021
+#: woo-gerencianet-oficial.php:861 woo-gerencianet-oficial.php:1021
 msgid "Show Billet"
 msgstr "Visualizar Boleto"
 
-#: includes/class-wc-gerencianet-gateway.php:882
+#: woo-gerencianet-oficial.php:882
 msgid "Request Failure"
 msgstr "Requisição falhou"
 
-#: includes/class-wc-gerencianet-gateway.php:916
+#: woo-gerencianet-oficial.php:916
 msgid "Paid "
 msgstr "Pago "
 
-#: includes/class-wc-gerencianet-gateway.php:919
+#: woo-gerencianet-oficial.php:919
 msgid "Unpaid  "
 msgstr "Não Pago "
 
-#: includes/class-wc-gerencianet-gateway.php:922
+#: woo-gerencianet-oficial.php:922
 msgid "Refunded "
 msgstr "Reembolsado "
 
-#: includes/class-wc-gerencianet-gateway.php:925
+#: woo-gerencianet-oficial.php:925
 msgid "Contested "
 msgstr "Contestado "
 
-#: includes/class-wc-gerencianet-gateway.php:928
+#: woo-gerencianet-oficial.php:928
 msgid "Canceled "
 msgstr "Cancelado "
 
-#: includes/class-wc-gerencianet-gateway.php:966 includes/class-wc-gerencianet-gateway.php:976 includes/class-wc-gerencianet-gateway.php:985 includes/class-wc-gerencianet-gateway.php:995 includes/class-wc-gerencianet-gateway.php:1004
+#: woo-gerencianet-oficial.php:966 woo-gerencianet-oficial.php:976 woo-gerencianet-oficial.php:985 woo-gerencianet-oficial.php:995 woo-gerencianet-oficial.php:1004
 msgid "Gerencianet Disabled"
 msgstr "Gerencianet Desabilitada"
 
-#: includes/class-wc-gerencianet-gateway.php:966
+#: woo-gerencianet-oficial.php:966
 #, php-format
 msgid "Sandbox mode is active. The payments will not be valid. %s"
 msgstr ""
 "O modo Sandbox (Ambiente de testes) está ativo. Suas cobranças não "
 "serão validadas."
 
-#: includes/class-wc-gerencianet-gateway.php:966 includes/class-wc-gerencianet-gateway.php:976 includes/class-wc-gerencianet-gateway.php:985 includes/class-wc-gerencianet-gateway.php:995
+#: woo-gerencianet-oficial.php:966 woo-gerencianet-oficial.php:976 woo-gerencianet-oficial.php:985 woo-gerencianet-oficial.php:995
 msgid "Click here to configure"
 msgstr "Clique aqui para configurar"
 
-#: includes/class-wc-gerencianet-gateway.php:976
+#: woo-gerencianet-oficial.php:976
 #, php-format
 msgid "You should inform your Gerencianet Account Payee Code. %s"
 msgstr "Você deve informar o Identificar de sua conta Gerencianet. %s"
 
-#: includes/class-wc-gerencianet-gateway.php:985
+#: woo-gerencianet-oficial.php:985
 #, php-format
 msgid "You should activate at least one payment option to activate the module. %s"
 msgstr "Você deve ativar ao menos uma opção de recebimento para ativar o módulo. %s"
 
-#: includes/class-wc-gerencianet-gateway.php:995
+#: woo-gerencianet-oficial.php:995
 #, php-format
 msgid "You should inform your Gerencianet Application Credentials. %s"
 msgstr "Você deve informar suas credenciais da Aplicação Gerencianet. %s"
 
-#: includes/class-wc-gerencianet-gateway.php:1004
+#: woo-gerencianet-oficial.php:1004
 #, php-format
 msgid ""
 "Currency <code>%s</code> is not supported by Gerencianet. Works only with "
@@ -520,7 +520,7 @@ msgstr ""
 "A moeda <code>%s</code> não é suportada pela Gerencianet. O módulo só funciona com "
 "a moeda <code>BRL</code> (Real Brasileiro)."
 
-#: includes/class-wc-gerencianet-gateway.php:1038
+#: woo-gerencianet-oficial.php:1038
 msgid "Click here to see the Billet"
 msgstr "Clique aqui para visualizar o Boleto"
 

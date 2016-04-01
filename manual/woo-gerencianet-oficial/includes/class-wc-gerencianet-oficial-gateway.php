@@ -552,7 +552,7 @@ class WC_Gerencianet_Oficial_Gateway extends WC_Payment_Gateway {
 		$resultCheck = json_decode($gnApiResult, true);
 
 		if (isset($resultCheck["code"])) {
-			if ($resultCheck["code"]=200) {		
+			if ($resultCheck["code"]==200) {		
 				if ( 'yes' == $this->debug ) {
 					write_log( 'GERENCIANET :: gerencianet_pay_billet Request : SUCCESS ' );
 				}
@@ -569,7 +569,7 @@ class WC_Gerencianet_Oficial_Gateway extends WC_Payment_Gateway {
 				update_post_meta( intval($post_order_id), '_payment_method_title', sanitize_text_field(__('Billet Banking - Gerencianet', WCGerencianetOficial::getTextDomain() )) );
 				add_post_meta( intval($post_order_id), 'billet', $resultCheck['data']['link'], true );
 
-				$order->update_status( 'processing', __ ( 'Processing' ) );
+				$order->update_status( 'waiting', __ ( 'Waiting' ) );
 				$order->reduce_order_stock();
 				WC()->cart->empty_cart();
 		    } else {
@@ -693,7 +693,7 @@ class WC_Gerencianet_Oficial_Gateway extends WC_Payment_Gateway {
 					write_log( 'GERENCIANET :: gerencianet_pay_card Request : SUCCESS ' );
 				}
 				update_post_meta( intval($post_order_id), '_payment_method_title', sanitize_text_field( __('Credit Card - Gerencianet', WCGerencianetOficial::getTextDomain() )) );
-				$order->update_status( 'processing', __ ( 'Processing' ) );
+				$order->update_status( 'waiting', __ ( 'Waiting' ) );
 				$order->reduce_order_stock();
 				WC()->cart->empty_cart();
 			} else {
@@ -913,7 +913,7 @@ class WC_Gerencianet_Oficial_Gateway extends WC_Payment_Gateway {
 			    if ($this->callback == 'yes') {
 					switch($orderStatusFromNotification) {
 						case 'paid':
-							$order->update_status ( 'completed', __ ( 'Paid ' ));
+							$order->update_status ( 'processing', __ ( 'Paid ' ));
 							break;
 						case 'unpaid':
 							$order->update_status ( 'failed', __ ( 'Unpaid  ' ));
@@ -1016,7 +1016,7 @@ function gn_order_view_billet_link($order){
 
 	$billet = get_post_meta( $order->id, 'billet', true );
 	if ( ! empty( $billet ) ) {
-		if ($order->get_status() == "processing" || $order->get_status() == "pending") {
+		if ($order->get_status() == "waiting" || $order->get_status() == "pending") {
 	    	echo "
 			<div style='text-align: right;'><a class='button' href='" . $billet . "' target='_blank'>" .  __( 'Show Billet', WCGerencianetOficial::getTextDomain() ) . "</a></div>";
 		}

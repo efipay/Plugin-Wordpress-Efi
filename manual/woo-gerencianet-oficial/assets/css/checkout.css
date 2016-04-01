@@ -212,6 +212,10 @@
     margin-right: 30px;
 }
 
+.gn-right-padding-1 {
+    padding-right: 10px;
+}
+
 .gn-icon-card-input {
     background:url(../images/sprite-gn.png);
     background-position:-120px -45px;
@@ -467,6 +471,10 @@
     font-weight: bold;
 }
 
+.gn-form .required label:after {
+    content: ' ';
+}
+
 .gn-form .gn-card-brand:before {
     content: none !important;
 }
@@ -485,14 +493,15 @@
 
 .gn-label {
     height:30px;
-    padding: 7px 15px 7px 0;
+    padding-top: 7px;
+    padding-bottom: 7px;
     text-align: right;
 }
 
 .gn-label-birth {
     height:35px;
     line-height: 18px;
-    padding: 5px 15px 0px 0;
+    padding-top: 5px;
     text-align: right;
     vertical-align: center;
 }
@@ -596,10 +605,14 @@
         margin-left: 0;
     }
 
-    .gn-label {
+    .gn-label, .gn-label-birth {
         height:35px;
         padding: 10px 0 0 0;
         text-align: left;
+    }
+
+    .gn-payment-option-sizer {
+        display: none;
     }
 }
 

@@ -66,7 +66,7 @@ class GerencianetIntegration {
 		    $api = new Gerencianet($options);
 		    $installments = array();
 		    $installments = $api->getInstallments($params, array());
-		    $max_installments = end($installments['data']['installments'])['installment'] . "x de " . 'R$' . GerencianetIntegration::formatCurrencyBRL(end($installments['data']['installments'])['value']);
+		    $max_installments = end($installments['data']['installments'])['installment'] . "x de " . GerencianetIntegration::formatCurrencyBRL(end($installments['data']['installments'])['value']);
 
 		    return $max_installments;
 		} catch (GerencianetException $e) {
@@ -282,7 +282,6 @@ class GerencianetIntegration {
 	}
 
 	public function result_api($result, $success) {
-
 		if ($success) {
 			return json_encode($result);
 		} else {
@@ -293,7 +292,19 @@ class GerencianetIntegration {
 				$propertyName="";
 			}
 			
-			$messageShow = $this->getErrorMessage(intval($result['code']), $propertyName);
+			if (isset($result['code'])) {
+				if (isset($result['message']) && $propertyName=="") {
+					$messageShow = $this->getErrorMessage(intval($result['code']), $result['message']);
+				} else {
+					$messageShow = $this->getErrorMessage(intval($result['code']), $propertyName);
+				}
+			} else {
+				if (isset($result['message'])) {
+					$messageShow = $result['message'];
+				} else {
+					$messageShow = $this->getErrorMessage(1, $propertyName);
+				}
+			}
 
 			$errorResponse = array(
 				"code" => 0,
@@ -342,6 +353,9 @@ class GerencianetIntegration {
 			case 4600002:
 				$message = $messageErrorDefault;
 				break;
+			case 4600012:
+				$message = 'Ocorreu um erro ao tentar realizar o pagamento: ' . $property;
+				break;
 			case 4600022:
 				$message = $messageErrorDefault;
 				break;
@@ -383,6 +397,9 @@ class GerencianetIntegration {
 				break;
 			case 4600212:
 				$message = 'Número de telefone já associado a outro CPF. Não é possível cadastrar o mesmo telefone para mais de um CPF.';
+				break;
+			case 4600219:
+				$message = 'Ocorreu um erro ao validar seus dados: ' . $property;
 				break;
 			case 4600224:
 				$message = $messageErrorDefault;

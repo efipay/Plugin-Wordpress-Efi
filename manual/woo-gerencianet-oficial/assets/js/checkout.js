@@ -271,7 +271,7 @@ jQuery(document).ready(function($){
                     redirect.submit();
                 } else {
                     $('#gn-pay-billet-button').prop("disabled",false);
-                    $('.form-group').show();
+                    $('.gn-billet-field').show();
                     $('.gn-loading-request').fadeOut();
                     showError(obj.message);
                 }
@@ -430,7 +430,7 @@ jQuery(document).ready(function($){
                     } else {
                         $('#gn-pay-card-button').prop("disabled",false);
                         showError(obj.message);
-                        $('.form-group').show();
+                        $('.gn-card-field').show();
                         $('.gn-loading-request').fadeOut();
                     }
                     

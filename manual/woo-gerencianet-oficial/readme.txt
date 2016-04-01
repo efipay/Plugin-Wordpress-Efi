@@ -46,9 +46,11 @@ Opcional: Instale o plugin [WooCommerce Extra Checkout Fields for Brazil](https:
 
 = Changelog =
 
+= 0.2.1 =
+* Fix: mensagens de erros durante pagamento.
+
 = 0.2.0 =
-* Fix: erros de javascript e styles;
-* Otimização de layout de pagamento via cartão de crédito.
+* Fix: erros de javascript e styles; optimização de layout de pagamento via cartão de crédito.
 
 = 0.1.2 =
 * Fix: erro de compatibilidade
@@ -76,6 +78,9 @@ Opcional: Instale o plugin [WooCommerce Extra Checkout Fields for Brazil](https:
 8. Recomendamos que antes de disponibilizar pagamentos com a Gerencianet, o lojista realize testes de cobrança com o sandbox(ambiente de testes) ativado para verificar se o procedimento de pagamento está acontecendo conforme esperado.
 
 == Changelog ==
+
+= 0.2.1 =
+* Fix: mensagens de erros durante pagamento.
 
 = 0.2.0 =
 * Fix: erros de javascript e styles; optimização de layout de pagamento via cartão de crédito.

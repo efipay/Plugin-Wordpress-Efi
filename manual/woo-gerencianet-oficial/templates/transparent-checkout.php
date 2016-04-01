@@ -100,10 +100,10 @@ if ( ! defined( 'ABSPATH' ) ) {
     </div>
 
     <div id="pay_cnpj" class="required gn-row gn-hide">
-      <div class="gn-col-1 gn-label">
-        <label for="input-payment-billet-cnpj"><?php echo $gn_cnpj; ?></label>
+      <div class="gn-col-2 gn-label">
+        <label for="input-payment-billet-cnpj" class="gn-right-padding-1"><?php echo $gn_cnpj; ?></label>
       </div>
-      <div class="gn-col-11">
+      <div class="gn-col-10">
         
         <div>
           <div class="gn-col-3 required">
@@ -111,7 +111,9 @@ if ( ! defined( 'ABSPATH' ) ) {
           </div>
           <div class="gn-col-8">
             <div class="required">
-              <label class="gn-col-4 gn-label" for="input-payment-corporate-name"><?php echo $gn_corporate_name; ?></label>
+              <div class="gn-col-4 gn-label">
+                <label class=" gn-col-12 gn-right-padding-1" for="input-payment-corporate-name"><?php echo $gn_corporate_name; ?></label>
+              </div>
               <div class="gn-col-8">
                 <input type="text" name="corporate_name" id="corporate_name" class="form-control" value="<?php echo $order->billing_company;?>" />
               </div>
@@ -121,28 +123,30 @@ if ( ! defined( 'ABSPATH' ) ) {
       </div>
     </div>
 
-    <div class="required gn-row <?php if ($order->billing_first_name!='' || $order->billing_last_name!='') { ?> gn-hide <?php } ?>" >
-      <div class="gn-col-1 gn-label">
-        <label for="input-payment-billet-name"><?php echo $gn_name; ?></label>
+    <div class="required gn-row gn-billet-field <?php if ($order->billing_first_name!='' || $order->billing_last_name!='') { ?> gn-hide <?php } ?>" >
+      <div class="gn-col-2 gn-label">
+        <label for="input-payment-billet-name" class="gn-right-padding-1"><?php echo $gn_name; ?></label>
       </div>
-      <div class="gn-col-11">
+      <div class="gn-col-10">
         <input type="text" name="first_name" id="first_name" value="<?php echo $order->billing_first_name . ' '. $order->billing_last_name;?>" class="form-control" />
       </div>
     </div>
 
 
-    <div class=" required <?php if ($order->billing_email!='') { ?> gn-hide <?php } ?>" >
-      <label class="gn-col-2 gn-label" for="input-payment-billet-email"><?php echo $gn_email; ?></label>
+    <div class=" required gn-row gn-billet-field <?php if ($order->billing_email!='') { ?> gn-hide <?php } ?>" >
+      <div class="gn-col-2 gn-label">
+        <label class="gn-col-12 gn-right-padding-1" for="input-payment-billet-email"><?php echo $gn_email; ?></label>
+      </div>
       <div class="gn-col-10">
         <input type="text" name="input-payment-billet-email" value="<?php echo $order->billing_email;?>" id="input-payment-billet-email" class="form-control" />
       </div>
     </div>
 
-    <div class="required gn-row <?php if (isset($order->billing_cpf) && $order->billing_phone!='') { ?> gn-hide <?php } ?>" >
-      <div class="gn-col-1">
-        <label class="gn-label" for="input-payment-billet-cpf"><?php echo $gn_cpf; ?></label>
+    <div class="required gn-row gn-billet-field <?php if (isset($order->billing_cpf) && $order->billing_phone!='') { ?> gn-hide <?php } ?>" >
+      <div class="gn-col-2 gn-label">
+        <label for="input-payment-billet-cpf" class="gn-right-padding-1"><?php echo $gn_cpf; ?></label>
       </div>
-      <div class="gn-col-11">
+      <div class="gn-col-10">
         
         <div>
           <div class="gn-col-3 required">
@@ -150,7 +154,9 @@ if ( ! defined( 'ABSPATH' ) ) {
           </div>
           <div class="gn-col-8">
             <div class=" required">
-              <label class="gn-col-4 gn-label" for="input-payment-billet-phone"><?php echo $gn_phone; ?></label>
+              <div class="gn-col-4 gn-label">
+              <label class="gn-col-12 gn-right-padding-1" for="input-payment-billet-phone" ><?php echo $gn_phone; ?></label>
+              </div>
               <div class="gn-col-4">
                 <input type="text" name="phone_number" id="phone_number" value="<?php echo $order->billing_phone;?>" class="form-control phone-mask" />
               </div>
@@ -220,7 +226,9 @@ if ( ! defined( 'ABSPATH' ) ) {
             </div>
 
             <div id="pay_cnpj_card" class=" required gn-row gn-hide" >
-              <label class="gn-col-2 gn-label" for="input-payment-card-cnpj"><?php echo $gn_cnpj; ?></label>
+              <div class="gn-col-2 gn-label">
+              <label class="gn-col-12 gn-right-padding-1" for="input-payment-card-cnpj"><?php echo $gn_cnpj; ?></label>
+              </div>
               <div class="gn-col-10">
                 
                 <div>
@@ -229,7 +237,9 @@ if ( ! defined( 'ABSPATH' ) ) {
                   </div>
                   <div class="gn-col-9">
                     <div class=" required gn-left-space-2">
-                      <label class="gn-col-4 gn-label" for="input-payment-corporate-name"><?php echo $gn_corporate_name; ?></label>
+                      <div class="gn-col-4 gn-label">
+                        <label class="gn-col-12 gn-right-padding-1" for="input-payment-corporate-name"><?php echo $gn_corporate_name; ?></label>
+                      </div>
                       <div class="gn-col-8">
                         <input type="text" name="corporate_name_card" id="corporate_name_card" class="form-control" value="<?php echo $order->billing_company;?>" />
                       </div>
@@ -239,26 +249,26 @@ if ( ! defined( 'ABSPATH' ) ) {
               </div>
             </div>
 
-            <div class=" required gn-row <?php if ($order->get_formatted_billing_full_name()!='') { ?> gn-hide <?php } ?>" >
+            <div class=" required gn-row gn-card-field <?php if ($order->get_formatted_billing_full_name()!='') { ?> gn-hide <?php } ?>" >
               <div class="gn-col-2 gn-label">
-                <label for="input-payment-card-name"><?php echo $gn_name; ?></label>
+                <label class="gn-col-12 gn-right-padding-1" for="input-payment-card-name"><?php echo $gn_name; ?></label>
               </div>
               <div class="gn-col-10">
                 <input type="text" name="input-payment-card-name" id="input-payment-card-name" value="<?php echo $order->get_formatted_billing_full_name();?>" class="form-control" />
               </div>
             </div>
 
-            <div class=" required gn-row <?php if (isset($order->billing_cpf) && $order->billing_phone!='') { ?> gn-hide <?php } ?>" >
+            <div class=" required gn-row gn-card-field <?php if (isset($order->billing_cpf) && $order->billing_phone!='') { ?> gn-hide <?php } ?>" >
             
                 <div class="gn-col-2 gn-label">
-                    <label for="input-payment-card-cpf"><?php echo $gn_cpf; ?></label>
+                    <label for="input-payment-card-cpf" class="gn-right-padding-1" ><?php echo $gn_cpf; ?></label>
                 </div>
                 <div class="gn-col-4">
                     <input type="text" name="input-payment-card-cpf" id="input-payment-card-cpf" value="<?php echo (isset($order->billing_cpf) ? $order->billing_cpf : '' );?>" class="form-control cpf-mask gn-minimum-size-field" />
                 </div>
                 <div class="gn-col-6">
                   <div class="gn-col-4 gn-label">
-                      <label class=" gn-left-space-2" for="input-payment-card-phone"><?php echo $gn_phone; ?></label>
+                      <label class="gn-left-space-2 gn-right-padding-1"for="input-payment-card-phone"><?php echo $gn_phone; ?></label>
                   </div>
                   <div class="gn-col-8">
                       <input type="text" name="input-payment-card-phone" value="<?php echo $order->billing_phone;?>" id="input-payment-card-phone" class="form-control phone-mask gn-minimum-size-field" />
@@ -268,17 +278,19 @@ if ( ! defined( 'ABSPATH' ) ) {
             </div>
 
 
-            <div class=" required gn-row <?php if ($order->billing_birthdate != '') { ?> gn-hide <?php } ?>" >
+            <div class=" required gn-row gn-card-field <?php if ($order->billing_birthdate != '') { ?> gn-hide <?php } ?>" >
               <div class="gn-col-3 gn-label-birth">
-                  <label for="input-payment-card-birth"><?php echo $gn_birth; ?></label>
+                  <label class="gn-right-padding-1" for="input-payment-card-birth"><?php echo $gn_birth; ?></label>
               </div>
               <div class="gn-col-3">
                   <input type="text" name="input-payment-card-birth" id="input-payment-card-birth" value="<?php echo $order->billing_birthdate?>" class="form-control birth-mask" />
               </div>
             </div>
 
-            <div class=" required <?php if ($order->billing_email!='') { ?> gn-hide <?php } ?>" >
-              <label class="gn-col-2 gn-label" for="input-payment-card-email"><?php echo $gn_email; ?></label>
+            <div class=" required gn-card-field <?php if ($order->billing_email!='') { ?> gn-hide <?php } ?>" >
+              <div class="gn-col-2">
+                <label class="gn-col-12 gn-label gn-right-padding-1" for="input-payment-card-email"><?php echo $gn_email; ?></label>
+              </div>
               <div class="gn-col-10">
                 <input type="text" name="input-payment-card-email" value="<?php echo $order->billing_email;?>" id="input-payment-card-email" class="form-control" />
               </div>
@@ -286,14 +298,16 @@ if ( ! defined( 'ABSPATH' ) ) {
         </div>
 
         <div id="billing-adress" class="gn-section">
-            <div class="gn-row <?php if ($order->billing_address_1!='' && $order->billing_number!='' && $order->billing_neighborhood!='' && $order->billing_city!='' && $order->billing_postcode!='' && $order->billing_state!='') { ?> gn-hide <?php } ?>">
+            <div class="gn-row gn-card-field <?php if ($order->billing_address_1!='' && $order->billing_number!='' && $order->billing_neighborhood!='' && $order->billing_city!='' && $order->billing_postcode!='' && $order->billing_state!='') { ?> gn-hide <?php } ?>">
                 <p>
                 <strong><?php echo $gn_billing_address_title; ?></strong>
                 </p>
             </div>
 
-            <div class="required gn-row <?php if ($order->billing_address_1!='' && $order->billing_number!='') { ?> gn-hide <?php } ?>" >
-                <label class="gn-col-2 gn-label" for="input-payment-card-street"><?php echo $gn_street; ?></label>
+            <div class="required gn-row gn-card-field <?php if ($order->billing_address_1!='' && $order->billing_number!='') { ?> gn-hide <?php } ?>" >
+                <div class="gn-col-2">
+                    <label class="gn-col-12 gn-label gn-right-padding-1" for="input-payment-card-street"><?php echo $gn_street; ?></label>
+                </div>
                 
                 <div class="gn-col-10">
                     <div class="gn-col-6 required">
@@ -301,7 +315,9 @@ if ( ! defined( 'ABSPATH' ) ) {
                     </div>
                     <div class="gn-col-6">
                         <div class=" required gn-left-space-2">
-                            <label class="gn-col-5 gn-label" for="input-payment-card-address-number"><?php echo $gn_street_number; ?></label>
+                            <div class="gn-col-5">
+                                <label class="gn-col-12 gn-label gn-right-padding-1" for="input-payment-card-address-number"><?php echo $gn_street_number; ?></label>
+                            </div>
                             <div class="gn-col-7">
                                 <input type="text" name="input-payment-card-address-number" id="input-payment-card-address-number" value="<?php echo $order->billing_number;?>" class="form-control" />
                             </div>
@@ -309,9 +325,9 @@ if ( ! defined( 'ABSPATH' ) ) {
                     </div>
                 </div>
             </div>
-            <div class="gn-row <?php if ($order->billing_neighborhood!='') { ?> gn-hide <?php } ?>">
+            <div class="gn-row gn-card-field <?php if ($order->billing_neighborhood!='') { ?> gn-hide <?php } ?>">
                 <div class="gn-col-2 required">
-                    <label class="gn-col-12 gn-label required" for="input-payment-card-neighborhood"><?php echo $gn_neighborhood; ?></label>
+                    <label class="gn-col-12 gn-label required gn-right-padding-1" for="input-payment-card-neighborhood"><?php echo $gn_neighborhood; ?></label>
                 </div>
         
                 <div class="gn-col-3">
@@ -320,7 +336,9 @@ if ( ! defined( 'ABSPATH' ) ) {
                 </div>
                 <div class="gn-col-7">
                     <div class=" gn-left-space-2">
-                      <label class="gn-col-5 gn-label" for="input-payment-card-complement"><?php echo $gn_address_complement; ?></label>
+                      <div class="gn-col-5">
+                      <label class="gn-col-12 gn-label gn-right-padding-1" for="input-payment-card-complement"><?php echo $gn_address_complement; ?></label>
+                      </div>
                       <div class="gn-col-7">
                         <input type="text" name="input-payment-card-complement" id="input-payment-card-complement" value="<?php echo $order->billing_address_2;?>" class="form-control" />
                       </div>
@@ -328,9 +346,9 @@ if ( ! defined( 'ABSPATH' ) ) {
                 </div>
             </div>
 
-            <div class="required billing-address-data gn-row <?php if ($order->billing_city!='' && $order->billing_postcode!='') { ?> gn-hide <?php } ?>" >
+            <div class="required billing-address-data gn-card-field gn-row <?php if ($order->billing_city!='' && $order->billing_postcode!='') { ?> gn-hide <?php } ?>" >
                 <div class="gn-col-2">
-                    <label class="gn-col-12 gn-label" for="input-payment-card-zipcode"><?php echo $gn_cep; ?></label>
+                    <label class="gn-col-12 gn-label gn-right-padding-1" for="input-payment-card-zipcode"><?php echo $gn_cep; ?></label>
                 </div>
                 <div class="gn-col-10">
                     <div class="gn-col-4 required">
@@ -339,7 +357,9 @@ if ( ! defined( 'ABSPATH' ) ) {
                     </div>
                     <div class="gn-col-8">
                         <div class=" required gn-left-space-2">
-                          <label class="gn-col-4 gn-label" for="input-payment-card-city"><?php echo $gn_city; ?></label>
+                          <div class="gn-col-4">
+                              <label class="gn-col-12 gn-label gn-right-padding-1" for="input-payment-card-city"><?php echo $gn_city; ?></label>
+                          </div>
                           <div class="gn-col-6">
                             <input type="text" name="input-payment-card-city" id="input-payment-card-city" value="<?php echo $order->billing_city;?>" class="form-control" />
                           </div>
@@ -348,8 +368,10 @@ if ( ! defined( 'ABSPATH' ) ) {
                 </div>
             </div>
 
-            <div class=" required billing-address-data gn-row <?php if ($order->billing_state!='') { ?> gn-hide <?php } ?>" >
-              <label class="gn-col-2 gn-label" for="input-payment-card-state"><?php echo $gn_state; ?></label>
+            <div class=" required billing-address-data gn-card-field gn-row <?php if ($order->billing_state!='') { ?> gn-hide <?php } ?>" >
+              <div class="gn-col-2">
+                <label class="gn-col-12 gn-label gn-right-padding-1" for="input-payment-card-state"><?php echo $gn_state; ?></label>
+              </div>
               <div class="gn-col-10">
                 <select name="input-payment-card-state" id="input-payment-card-state" class="form-control gn-form-select">
                   <option value=""><?php echo $gn_billing_state_select; ?></option> 

@@ -1,3 +1,7 @@
+
+# v0.2.1
+* Fix: mensagens de erros durante pagamento.
+
 # v0.2.0
 
 * Fix: erros de javascript e styles
