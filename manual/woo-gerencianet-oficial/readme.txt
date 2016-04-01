@@ -48,8 +48,7 @@ Opcional: Instale o plugin [WooCommerce Extra Checkout Fields for Brazil](https:
 
 = 0.2.1 =
 * Fix: mensagens de erros durante pagamento.
-* Fix: bugs no formulário de pagamento.
-* Modificação: Status do pedido no WooCommerce - Quando o cliente gera um pagamento, o status do pedido no WooCommerce será atualizado para "Aguardando" e quando o pagamento for confirmado o status do pedido será alterado para "Processando".
+* Fix: estilos no formulário de pagamento.
 
 = 0.2.0 =
 * Fix: erros de javascript e styles; optimização de layout de pagamento via cartão de crédito.
@@ -81,10 +80,12 @@ Opcional: Instale o plugin [WooCommerce Extra Checkout Fields for Brazil](https:
 
 == Changelog ==
 
+= 0.2.2 =
+* Fix: correção de versão
+
 = 0.2.1 =
 * Fix: mensagens de erros durante pagamento.
-* Fix: bugs no formulário de pagamento.
-* Modificação: Status do pedido no WooCommerce - Quando o cliente gera um pagamento, o status do pedido no WooCommerce será atualizado para "Aguardando" e quando o pagamento for confirmado o status do pedido será alterado para "Processando".
+* Fix: estilos no formulário de pagamento.
 
 = 0.2.0 =
 * Fix: erros de javascript e styles; optimização de layout de pagamento via cartão de crédito.

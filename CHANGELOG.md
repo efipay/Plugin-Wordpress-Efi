@@ -1,4 +1,7 @@
 
+# v0.2.2
+* Fix: correção de versão
+
 # v0.2.1
 * Fix: mensagens de erros durante pagamento.
 * Fix: bugs no formulário de pagamento.
