@@ -1,6 +1,8 @@
 
 # v0.2.1
 * Fix: mensagens de erros durante pagamento.
+* Fix: bugs no formulário de pagamento.
+* Modificação: Status do pedido no WooCommerce - Quando o cliente gera um pagamento, o status do pedido no WooCommerce será atualizado para "Aguardando" e quando o pagamento for confirmado o status do pedido será alterado para "Processando".
 
 # v0.2.0
 
