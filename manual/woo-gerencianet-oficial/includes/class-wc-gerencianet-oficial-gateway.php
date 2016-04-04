@@ -201,7 +201,7 @@ class WC_Gerencianet_Oficial_Gateway extends WC_Payment_Gateway {
 		wp_enqueue_script( 'jquery' );
 		wp_enqueue_script( 'jquery-mask', plugins_url( 'assets/js/jquery.mask.min.js', plugin_dir_path( __FILE__ ) ), array( 'jquery'), '', true );
 
-		echo '<h3>' . __( 'Gerencianet Payments - Official Module', WCGerencianetOficial::getTextDomain() ) . '</h3>';
+		echo '<h3>' . __( 'Gerencianet Payments - Official Module', WCGerencianetOficial::getTextDomain() ) . ' v' . WCGerencianetOficial::VERSION . '</h3>';
 		echo '<p>' . __( 'This module is the official module of Gerencianet Payment Gateway. If you have any doubths or suggestions, contact us at <a href="http://www.gerencianet.com.br">www.gerencianet.com.br</a>', WCGerencianetOficial::getTextDomain() ) . '</p>';
 
 		// Generate the HTML For the settings form.
@@ -574,7 +574,7 @@ class WC_Gerencianet_Oficial_Gateway extends WC_Payment_Gateway {
 				WC()->cart->empty_cart();
 		    } else {
 		    	if ( 'yes' == $this->debug ) {
-					write_log( 'GERENCIANET :: gerencianet_pay_billet Request : ERROR : ' . $gnApiResult->code );
+					write_log( 'GERENCIANET :: gerencianet_pay_billet Request : ERROR : ' . $resultCheck["code"] );
 				}
 		    }
 	    } else {
@@ -698,7 +698,7 @@ class WC_Gerencianet_Oficial_Gateway extends WC_Payment_Gateway {
 				WC()->cart->empty_cart();
 			} else {
 				if ( 'yes' == $this->debug ) {
-					write_log( 'GERENCIANET :: gerencianet_pay_card Request : ERROR : ' . $gnApiResult->code );
+					write_log( 'GERENCIANET :: gerencianet_pay_card Request : ERROR : ' . $resultCheck["code"] );
 				}
 			}
 		} else {
