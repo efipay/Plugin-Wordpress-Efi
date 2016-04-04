@@ -1,4 +1,4 @@
-# v0.2.3 =
+# v0.2.3
 * Fix: especificações de mensagem de erros durante pagamento.
 
 # v0.2.2
