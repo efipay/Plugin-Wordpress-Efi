@@ -46,6 +46,9 @@ Opcional: Instale o plugin [WooCommerce Extra Checkout Fields for Brazil](https:
 
 = Changelog =
 
+= 0.3.0 =
+* Modificação na atualização do status do pedido de acordo com o pagamento: A partir da versão 0.3.0, o status do pedido será modificado para "Aguardando" quando o cliente gerar a cobrança com cartão de crédito ou boleto bancário. Caso a configuração de atualização de status automática estiver ativa, quando o pagamento for confirmado o status do pedido será alterado para "Processando".
+
 = 0.2.3 =
 * Fix: especificações de mensagem de erros durante pagamento.
 
@@ -85,6 +88,9 @@ Opcional: Instale o plugin [WooCommerce Extra Checkout Fields for Brazil](https:
 8. Recomendamos que antes de disponibilizar pagamentos com a Gerencianet, o lojista realize testes de cobrança com o sandbox(ambiente de testes) ativado para verificar se o procedimento de pagamento está acontecendo conforme esperado.
 
 == Changelog ==
+
+= 0.3.0 =
+* Modificação na atualização do status do pedido de acordo com o pagamento: A partir da versão 0.3.0, o status do pedido será modificado para "Aguardando" quando o cliente gerar a cobrança com cartão de crédito ou boleto bancário. Caso a configuração de atualização de status automática estiver ativa, quando o pagamento for confirmado o status do pedido será alterado para "Processando".
 
 = 0.2.3 =
 * Fix: especificações de mensagem de erros durante pagamento.

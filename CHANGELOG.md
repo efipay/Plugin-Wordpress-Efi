@@ -1,3 +1,6 @@
+# v0.3.0
+* Modificação na atualização do status do pedido de acordo com o pagamento: A partir da versão 0.3.0, o status do pedido será modificado para "Aguardando" quando o cliente gerar a cobrança com cartão de crédito ou boleto bancário. Caso a configuração de atualização de status automática estiver ativa, quando o pagamento for confirmado o status do pedido será alterado para "Processando".
+
 # v0.2.3
 * Fix: especificações de mensagem de erros durante pagamento.
 

@@ -1,3 +1,5 @@
+//0.3.0
+
 var errorMessage;
 var id_charge = 0;
 var active = 0;
