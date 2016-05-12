@@ -1,4 +1,4 @@
-//0.3.0
+//0.3.1
 
 var errorMessage;
 var id_charge = 0;
@@ -6,52 +6,74 @@ var active = 0;
 
 jQuery(document).ready(function($){
     
-    $('.cpf-mask').mask('000.000.000-00', {
-        onComplete: function(val, e, field, options) {
-            if (!verifyCPF(val)) {
-                showError('CPF inválido. Digite novamente.');
-            } else {
-                hideError();
-            }
-        },
-        placeholder: "___.___.___-__"
-    });
+    if(jQuery.mask) {
+        $(".cpf-mask").mask("999.999.999-99",{
+            completed:function(){ 
+                if (!verifyCPF(this.val())) {
+                    showError('CPF inválido. Digite novamente.');
+                } else {
+                    hideError();
+                }
+            },placeholder:"___.___.___-__"});
 
-    $('.cnpj-mask').mask('00.000.000/0000-00', {
-        onComplete: function(val, e, field, options) {
-            if (!verifyCNPJ(val)) {
-                showError('CNPJ inválido. Digite novamente.');
-            } else {
-                hideError();
-            }
-        },
-        placeholder: "__.___.___/____-__"
-    });
+        jQuery(".cnpj-mask").mask("99.999.999/9999-99",{
+            completed:function(){ 
+                if (!verifyCNPJ(this.val())) {
+                    showError('CNPJ inválido. Digite novamente.');
+                } else {
+                    hideError();
+                }
+            },placeholder:"__.___.___/____-__"});
 
-    $('.phone-mask').mask('(00) 90000-0000', {
-        onComplete: function(val, e, field, options) {
-            if (!verifyPhone(val)) {
+        $(".phone-mask").focusout(function(){
+            $(".phone-mask").unmask();
+                var phone = $(".phone-mask").val().replace(/[^\d]+/g,'');
+                if(phone.length > 10) {
+                    $(".phone-mask").mask("(99) 99999-999?9");
+                } else {
+                    $(".phone-mask").mask("(99) 9999-9999?9");
+                }
+            }).trigger("focusout");
+
+        $('.birth-mask').mask("99/99/9999",{
+            completed:function(){ 
+                if (!verifyBirthDate(this.val())) {
+                    showError('Data de nascimento inválida. Digite novamente.');
+                } else {
+                    hideError();
+                }
+            },placeholder:"__/__/____"});
+
+        $('#input-payment-card-number').mask('9999999999999999?999',{placeholder:""});
+        $('#input-payment-card-cvv').mask('999?99',{placeholder:""});
+    }
+
+    $('.phone-mask').change(function() {
+        var pattern = new RegExp(/^[ ]*(?:[^\\s]+[ ]+)+[^\\s]+[ ]*$/);
+            if (!verifyPhone(this.val())) {
                 showError('Telefone inválido. Digite novamente.');
             } else {
                 hideError();
             }
-        },
-        placeholder: "(__) _____-____"
+        });
+
+    jQuery('.corporate-name-validade').change(function() {
+        var pattern = new RegExp(/^[ ]*(?:[^\\s]+[ ]+)+[^\\s]+[ ]*$/);
+        if (!pattern.test(jQuery(this).val())) {
+            showError('Razão Social inválida. Digite novamente.');
+        } else {
+            hideError();
+        }
     });
 
-    $('.birth-mask').mask('00/00/0000', {
-        onComplete: function(val, e, field, options) {
-            if (!verifyBirthDate(val)) {
-                showError('Data de nascimento inválida. Digite novamente.');
-            } else {
-                hideError();
-            }
-        },
-        placeholder: "__/__/____"
+    jQuery('.name-validate').change(function() {
+        var pattern = new RegExp(/^[ ]*(?:[^\\s]+[ ]+)+[^\\s]+[ ]*$/);
+        if (!pattern.test(jQuery(this).val())) {
+            showError('Nome inválido. Digite novamente.');
+        } else {
+            hideError();
+        }
     });
-
-    jQuery('#input-payment-card-number').mask('0000000000000000000');
-    jQuery('#input-payment-card-cvv').mask('00000');
 
     jQuery('#background-card').click(function(e){
         if (active!=2) {

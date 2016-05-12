@@ -172,7 +172,7 @@ class WC_Gerencianet_Oficial_Gateway extends WC_Payment_Gateway {
 	public function scripts() {
 		wp_enqueue_script( 'jquery' );
 		wp_enqueue_script( 'wc-gerencianet-checkout', plugins_url( 'assets/js/checkout.js', plugin_dir_path( __FILE__ ) ), array( 'jquery'), '', true );
-		wp_enqueue_script( 'jquery-mask-gn', plugins_url( 'assets/js/jquery.mask.min.js', plugin_dir_path( __FILE__ ) ), array( 'jquery'), '', true );
+		wp_enqueue_script( 'jquery-mask-gn', plugins_url( 'assets/js/jquery.maskedinput.js', plugin_dir_path( __FILE__ ) ), array( 'jquery'), '', true );
 		wp_localize_script(
 			'wc-gerencianet-checkout',
 			'woocommerce_gerencianet_api',
@@ -469,7 +469,7 @@ class WC_Gerencianet_Oficial_Gateway extends WC_Payment_Gateway {
 				}
 			} else {
 				if ( 'yes' == $this->debug ) {
-					write_log('GERENCIANET :: gerencianet_create_charge Request : ERROR : ' . $gnApiResult->code );
+					write_log('GERENCIANET :: gerencianet_create_charge Request : ERROR : ' .$resultCheck["code"] );
 				}
 			}
 		} else {
@@ -533,10 +533,15 @@ class WC_Gerencianet_Oficial_Gateway extends WC_Payment_Gateway {
 		}
 
 		$order = wc_get_order( $post_order_id );
-		$discountBillet = $this->discountBillet;
-		$discountTotalValue = (int)($this->gn_price_format($order->get_total_discount()) + floor($this->gn_price_format($order->get_total())*(((float)$discountBillet/100))));
-		$discountBilletTotal = (int) floor($this->gn_price_format($order->get_total())*(((float)$discountBillet/100)));
-
+		if ($order->get_status() == "failed") {
+			$discountBillet = $this->discountBillet;
+			$discountTotalValue = (int)($this->gn_price_format($order->get_total_discount()));
+			$discountBilletTotal = (int) floor($this->gn_price_format($order->get_total())*(((float)$discountBillet/100)));
+		} else {
+			$discountBillet = $this->discountBillet;
+			$discountTotalValue = (int)($this->gn_price_format($order->get_total_discount()) + floor($this->gn_price_format($order->get_total())*(((float)$discountBillet/100))));
+			$discountBilletTotal = (int) floor($this->gn_price_format($order->get_total())*(((float)$discountBillet/100)));
+		}
 		if ($discountTotalValue>0) {
 			$discount = array (
 				'type' => 'currency',
@@ -557,18 +562,20 @@ class WC_Gerencianet_Oficial_Gateway extends WC_Payment_Gateway {
 					write_log( 'GERENCIANET :: gerencianet_pay_billet Request : SUCCESS ' );
 				}
 				global $wpdb;
-				$wpdb->insert($wpdb->prefix . "woocommerce_order_items", array('order_item_name' => __('Discount of ', WCGerencianetOficial::getTextDomain() ) . str_replace(".",",",$discountBillet) . __('% Billet', WCGerencianetOficial::getTextDomain() ), 'order_item_type' => 'fee', 'order_id' => intval($post_order_id)  ) );
-				$lastid = $wpdb->insert_id;
-				$wpdb->insert($wpdb->prefix . "woocommerce_order_itemmeta", array('order_item_id' => $lastid, 'meta_key' => '_tax_class', 'meta_value' => '0'  ) );
-				$wpdb->insert($wpdb->prefix . "woocommerce_order_itemmeta", array('order_item_id' => $lastid, 'meta_key' => '_line_total', 'meta_value' => '-'.number_format(intval(floor($this->gn_price_format($order->get_total())*(((float)$discountBillet/100))))/100, 2, '.', '')  ) );
-				$wpdb->insert($wpdb->prefix . "woocommerce_order_itemmeta", array('order_item_id' => $lastid, 'meta_key' => '_line_tax', 'meta_value' => '0'  ) );
-				$wpdb->insert($wpdb->prefix . "woocommerce_order_itemmeta", array('order_item_id' => $lastid, 'meta_key' => '_line_tax_data', 'meta_value' => '0'  ) );
 
-				update_post_meta( intval($post_order_id), '_order_total', number_format(intval(ceil($this->gn_price_format($order->get_total()) - ($discountBilletTotal)))/100, 2, '.', '') );
+				if ($order->get_status() != "failed") {
+					$wpdb->insert($wpdb->prefix . "woocommerce_order_items", array('order_item_name' => __('Discount of ', WCGerencianetOficial::getTextDomain() ) . str_replace(".",",",$discountBillet) . __('% Billet', WCGerencianetOficial::getTextDomain() ), 'order_item_type' => 'fee', 'order_id' => intval($post_order_id)  ) );
+					$lastid = $wpdb->insert_id;
+					$wpdb->insert($wpdb->prefix . "woocommerce_order_itemmeta", array('order_item_id' => $lastid, 'meta_key' => '_tax_class', 'meta_value' => '0'  ) );
+					$wpdb->insert($wpdb->prefix . "woocommerce_order_itemmeta", array('order_item_id' => $lastid, 'meta_key' => '_line_total', 'meta_value' => '-'.number_format(intval(floor($this->gn_price_format($order->get_total())*(((float)$discountBillet/100))))/100, 2, '.', '')  ) );
+					$wpdb->insert($wpdb->prefix . "woocommerce_order_itemmeta", array('order_item_id' => $lastid, 'meta_key' => '_line_tax', 'meta_value' => '0'  ) );
+					$wpdb->insert($wpdb->prefix . "woocommerce_order_itemmeta", array('order_item_id' => $lastid, 'meta_key' => '_line_tax_data', 'meta_value' => '0'  ) );
 
-				update_post_meta( intval($post_order_id), '_payment_method_title', sanitize_text_field(__('Billet Banking - Gerencianet', WCGerencianetOficial::getTextDomain() )) );
-				add_post_meta( intval($post_order_id), 'billet', $resultCheck['data']['link'], true );
+					update_post_meta( intval($post_order_id), '_order_total', number_format(intval(ceil($this->gn_price_format($order->get_total()) - ($discountBilletTotal)))/100, 2, '.', '') );
 
+					update_post_meta( intval($post_order_id), '_payment_method_title', sanitize_text_field(__('Billet Banking - Gerencianet', WCGerencianetOficial::getTextDomain() )) );
+					add_post_meta( intval($post_order_id), 'billet', $resultCheck['data']['link'], true );
+				}
 				$order->update_status( 'on-hold', __ ( 'Waiting' ) );
 				$order->reduce_order_stock();
 				WC()->cart->empty_cart();
@@ -781,7 +788,108 @@ class WC_Gerencianet_Oficial_Gateway extends WC_Payment_Gateway {
 		$gn_loading_payment_request = __("Please, wait...", WCGerencianetOficial::getTextDomain() );
 
 		$gn_warning_sandbox_message = __("Sandbox mode is active. The payments will not be valid.", WCGerencianetOficial::getTextDomain() );
+
+
+		$gn_billing_cpf_validate = false;
+		$gn_billing_name_validate = false;
+		$gn_billing_cnpj_validate = false;
+		$gn_billing_corporate_validate = false;
+		$gn_billing_phone_number_validate = false;
+		$gn_billing_email_validate = false;
+		$gn_billing_birthdate_validate = false;
+		$gn_billing_street_validate = false;
+		$gn_billing_number_validate = false;
+		$gn_billing_neighborhood_validate = false;
+		$gn_billing_complement_validate = false;
+		$gn_billing_state_validate = false;
+		$gn_billing_city_validate = false;
+		$gn_billing_zipcode_validate = false;
+
+		$validate = new GerencianetValidation();
+
+		if (isset($order->billing_cpf)) {
+			if ($validate->_cpf($order->billing_cpf)) {
+				$gn_billing_cpf_validate = true;
+			}
+		}
 	
+		if (isset($order->billing_cnpj)) {
+			if ($validate->_cnpj($order->billing_cnpj)) {
+				$gn_billing_cnpj_validate = true;
+			} 
+		}
+
+		if ($validate->_name($order->get_formatted_billing_full_name())) {
+			$gn_billing_name_validate = true;
+		} 
+
+		if (isset($order->billing_email)) {
+			if ($validate->_email($order->billing_email)) {
+				$gn_billing_email_validate = true;
+			} 
+		}
+		
+		if (isset($order->billing_phone)) {
+			if ($validate->_phone_number($order->billing_phone)) {
+				$gn_billing_phone_number_validate = true;
+			} 
+		}
+
+		if (isset($order->billing_company)) {
+			if ($validate->_corporate($order->billing_company)) {
+				$gn_billing_corporate_validate = true;
+			} 
+		}
+		
+		if (isset($order->billing_birthdate)) {
+			if ($validate->_birthdate($order->billing_birthdate)) {
+				$gn_billing_birthdate_validate = true;
+			}
+		}
+		
+		if (isset($order->billing_address_1)) {
+			if ($validate->_street($order->billing_address_1)) {
+				$gn_billing_street_validate = true;
+			} 
+		}
+		
+		if (isset($order->billing_number)) {
+			if ($validate->_number($order->billing_number)) {
+				$gn_billing_number_validate = true;
+			} 
+		}
+		
+		if (isset($order->billing_neighborhood)) {
+			if ($validate->_neighborhood($order->billing_neighborhood)) {
+				$gn_billing_neighborhood_validate = true;
+			} 
+		}
+		
+		if (isset($order->billing_city)) {
+			if ($validate->_city($order->billing_city)) {
+				$gn_billing_city_validate = true;
+			} 
+		}
+		
+		if (isset($order->billing_city)) {
+			if ($validate->_city($order->billing_city)) {
+				$gn_billing_city_validate = true;
+			} 
+		}
+		
+		if (isset($order->billing_postcode)) {
+			if ($validate->_zipcode($order->billing_postcode)) {
+				$gn_billing_zipcode_validate = true;
+			} 
+		}
+		
+		if (isset($order->billing_state)) {
+			if ($validate->_state($order->billing_state)) {
+				$gn_billing_state_validate = true;
+			} 
+		}
+		
+
 		ob_start();
 		include plugin_dir_path( dirname( __FILE__ ) ) . 'templates/transparent-checkout.php';
 		$html = ob_get_clean();

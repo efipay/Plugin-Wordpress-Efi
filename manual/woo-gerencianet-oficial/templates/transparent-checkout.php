@@ -49,7 +49,6 @@ if ( ! defined( 'ABSPATH' ) ) {
     <?php } ?>
 </div>
 
-
 <div class="panel-group" id="accordion">
 <?php if ($billet_option == 'yes' && $order_total_billet>=500) { ?>
 <div class="panel panel-default" id="billet-option" style="border: 1px solid #CCC; margin-bottom: 20px;">
@@ -99,7 +98,7 @@ if ( ! defined( 'ABSPATH' ) ) {
       </div>
     </div>
 
-    <div id="pay_cnpj" class="required gn-row gn-hide">
+    <div id="pay_cnpj" class="required gn-row <?php if ($gn_billing_corporate_validate && $order->billing_persontype==2 && $gn_billing_cnpj_validate || $order->billing_persontype==1) { echo 'gn-hide'; } ?>">
       <div class="gn-col-2 gn-label">
         <label for="input-payment-billet-cnpj" class="gn-right-padding-1"><?php echo $gn_cnpj; ?></label>
       </div>
@@ -123,17 +122,17 @@ if ( ! defined( 'ABSPATH' ) ) {
       </div>
     </div>
 
-    <div class="required gn-row gn-billet-field <?php if ($order->billing_first_name!='' || $order->billing_last_name!='') { ?> gn-hide <?php } ?>" >
+    <div class="required gn-row gn-billet-field <?php if ($gn_billing_name_validate) { ?> gn-hide <?php } ?>" >
       <div class="gn-col-2 gn-label">
         <label for="input-payment-billet-name" class="gn-right-padding-1"><?php echo $gn_name; ?></label>
       </div>
       <div class="gn-col-10">
-        <input type="text" name="first_name" id="first_name" value="<?php echo $order->billing_first_name . ' '. $order->billing_last_name;?>" class="form-control" />
+        <input type="text" name="first_name" id="first_name" value="<?php echo $order->get_formatted_billing_full_name(); ?>" class="form-control" />
       </div>
     </div>
 
 
-    <div class=" required gn-row gn-billet-field <?php if ($order->billing_email!='') { ?> gn-hide <?php } ?>" >
+    <div class=" required gn-row gn-billet-field <?php if ($gn_billing_email_validate) { ?> gn-hide <?php } ?>" >
       <div class="gn-col-2 gn-label">
         <label class="gn-col-12 gn-right-padding-1" for="input-payment-billet-email"><?php echo $gn_email; ?></label>
       </div>
@@ -142,7 +141,7 @@ if ( ! defined( 'ABSPATH' ) ) {
       </div>
     </div>
 
-    <div class="required gn-row gn-billet-field <?php if (isset($order->billing_cpf) && $order->billing_phone!='') { ?> gn-hide <?php } ?>" >
+    <div class="required gn-row gn-billet-field <?php if ($gn_billing_cpf_validate && $gn_billing_phone_number_validate) { ?> gn-hide <?php } ?>" >
       <div class="gn-col-2 gn-label">
         <label for="input-payment-billet-cpf" class="gn-right-padding-1"><?php echo $gn_cpf; ?></label>
       </div>
@@ -225,7 +224,7 @@ if ( ! defined( 'ABSPATH' ) ) {
               </div>
             </div>
 
-            <div id="pay_cnpj_card" class=" required gn-row gn-hide" >
+            <div id="pay_cnpj_card" class=" required gn-row <?php if ($gn_billing_corporate_validate && $order->billing_persontype==2 && $gn_billing_cnpj_validate || $order->billing_persontype==1) { echo 'gn-hide'; } ?>" >
               <div class="gn-col-2 gn-label">
               <label class="gn-col-12 gn-right-padding-1" for="input-payment-card-cnpj"><?php echo $gn_cnpj; ?></label>
               </div>
@@ -249,7 +248,7 @@ if ( ! defined( 'ABSPATH' ) ) {
               </div>
             </div>
 
-            <div class=" required gn-row gn-card-field <?php if ($order->get_formatted_billing_full_name()!='') { ?> gn-hide <?php } ?>" >
+            <div class=" required gn-row gn-card-field <?php if ($gn_billing_name_validate) { ?> gn-hide <?php } ?>" >
               <div class="gn-col-2 gn-label">
                 <label class="gn-col-12 gn-right-padding-1" for="input-payment-card-name"><?php echo $gn_name; ?></label>
               </div>
@@ -258,7 +257,7 @@ if ( ! defined( 'ABSPATH' ) ) {
               </div>
             </div>
 
-            <div class=" required gn-row gn-card-field <?php if (isset($order->billing_cpf) && $order->billing_phone!='') { ?> gn-hide <?php } ?>" >
+            <div class=" required gn-row gn-card-field <?php if ($gn_billing_cpf_validate && $gn_billing_phone_number_validate) { ?> gn-hide <?php } ?>" >
             
                 <div class="gn-col-2 gn-label">
                     <label for="input-payment-card-cpf" class="gn-right-padding-1" ><?php echo $gn_cpf; ?></label>
@@ -278,7 +277,7 @@ if ( ! defined( 'ABSPATH' ) ) {
             </div>
 
 
-            <div class=" required gn-row gn-card-field <?php if ($order->billing_birthdate != '') { ?> gn-hide <?php } ?>" >
+            <div class=" required gn-row gn-card-field <?php if ($gn_billing_birthdate_validate) { ?> gn-hide <?php } ?>" >
               <div class="gn-col-3 gn-label-birth">
                   <label class="gn-right-padding-1" for="input-payment-card-birth"><?php echo $gn_birth; ?></label>
               </div>
@@ -287,7 +286,7 @@ if ( ! defined( 'ABSPATH' ) ) {
               </div>
             </div>
 
-            <div class=" required gn-card-field <?php if ($order->billing_email!='') { ?> gn-hide <?php } ?>" >
+            <div class=" required gn-card-field <?php if ($gn_billing_email_validate) { ?> gn-hide <?php } ?>" >
               <div class="gn-col-2">
                 <label class="gn-col-12 gn-label gn-right-padding-1" for="input-payment-card-email"><?php echo $gn_email; ?></label>
               </div>
@@ -298,13 +297,13 @@ if ( ! defined( 'ABSPATH' ) ) {
         </div>
 
         <div id="billing-adress" class="gn-section">
-            <div class="gn-row gn-card-field <?php if ($order->billing_address_1!='' && $order->billing_number!='' && $order->billing_neighborhood!='' && $order->billing_city!='' && $order->billing_postcode!='' && $order->billing_state!='') { ?> gn-hide <?php } ?>">
+            <div class="gn-row gn-card-field <?php if ($gn_billing_street_validate && $gn_billing_number_validate && $gn_billing_neighborhood_validate && $gn_billing_city_validate && $gn_billing_zipcode_validate && $gn_billing_state_validate) { ?> gn-hide <?php } ?>">
                 <p>
                 <strong><?php echo $gn_billing_address_title; ?></strong>
                 </p>
             </div>
 
-            <div class="required gn-row gn-card-field <?php if ($order->billing_address_1!='' && $order->billing_number!='') { ?> gn-hide <?php } ?>" >
+            <div class="required gn-row gn-card-field <?php if ($gn_billing_street_validate && $gn_billing_number_validate) { ?> gn-hide <?php } ?>" >
                 <div class="gn-col-2">
                     <label class="gn-col-12 gn-label gn-right-padding-1" for="input-payment-card-street"><?php echo $gn_street; ?></label>
                 </div>
@@ -325,7 +324,7 @@ if ( ! defined( 'ABSPATH' ) ) {
                     </div>
                 </div>
             </div>
-            <div class="gn-row gn-card-field <?php if ($order->billing_neighborhood!='') { ?> gn-hide <?php } ?>">
+            <div class="gn-row gn-card-field <?php if ($gn_billing_neighborhood_validate) { ?> gn-hide <?php } ?>">
                 <div class="gn-col-2 required">
                     <label class="gn-col-12 gn-label required gn-right-padding-1" for="input-payment-card-neighborhood"><?php echo $gn_neighborhood; ?></label>
                 </div>
@@ -346,7 +345,7 @@ if ( ! defined( 'ABSPATH' ) ) {
                 </div>
             </div>
 
-            <div class="required billing-address-data gn-card-field gn-row <?php if ($order->billing_city!='' && $order->billing_postcode!='') { ?> gn-hide <?php } ?>" >
+            <div class="required billing-address-data gn-card-field gn-row <?php if ($gn_billing_city_validate && $gn_billing_zipcode_validate) { ?> gn-hide <?php } ?>" >
                 <div class="gn-col-2">
                     <label class="gn-col-12 gn-label gn-right-padding-1" for="input-payment-card-zipcode"><?php echo $gn_cep; ?></label>
                 </div>
@@ -368,7 +367,7 @@ if ( ! defined( 'ABSPATH' ) ) {
                 </div>
             </div>
 
-            <div class=" required billing-address-data gn-card-field gn-row <?php if ($order->billing_state!='') { ?> gn-hide <?php } ?>" >
+            <div class=" required billing-address-data gn-card-field gn-row <?php if ($gn_billing_state_validate) { ?> gn-hide <?php } ?>" >
               <div class="gn-col-2">
                 <label class="gn-col-12 gn-label gn-right-padding-1" for="input-payment-card-state"><?php echo $gn_state; ?></label>
               </div>

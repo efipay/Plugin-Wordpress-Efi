@@ -48,10 +48,9 @@ if ( ! defined( 'ABSPATH' ) ) {
                 </div>
 
                 <?php if ($generated_payment_type=="billet") { ?>
-                <div class="gn-align-center">
+                <div class="gn-align-center gn-success-payment-button">
                     <button class="button" id="showBillet" name="showBillet" onclick="window.open('<?php echo sanitize_text_field(esc_url(urldecode($_POST["billet"]))); ?>', '_blank');">
-                        <div class="gn-success-payment-button-icon pull-left"><span class="icon-download"></span></div> 
-                        <div class="gn-button-divisor pull-left" ></div>
+                        <div class="gn-success-payment-button-icon pull-left"><span class="icon-download"></span></div>
                         <div class="pull-left"><?php echo $gn_success_payment_open_billet; ?></div>
                         <div class="clear"></div>
                     </button>
