@@ -423,7 +423,7 @@ jQuery(document).ready(function($){
                 cpf: jQuery('#input-payment-card-cpf').val().replace(/[^\d]+/g,''),
                 phone_number: jQuery('#input-payment-card-phone').val().replace(/[^\d]+/g,''),
                 cnpj: jQuery('#cnpj_card').val().replace(/[^\d]+/g,''),
-                corporate_name: jQuery('#corporate_name_cnpj').val(),
+                corporate_name: jQuery('#corporate_name_card').val(),
                 pay_card_with_cnpj: jQuery('#pay_card_with_cnpj').val(),
                 payment_token: response.data.payment_token,
                 birth: dateBirth[2] + "-" + dateBirth[1] + "-" + dateBirth[0],
