@@ -28,6 +28,9 @@ class WC_Gerencianet_Oficial_Gateway extends WC_Payment_Gateway {
 		$this->billet_banking    = $this->get_option( 'billet_banking' );
 		$this->credit_card       = $this->get_option( 'credit_card' );
 
+		// OSC option
+		$this->osc 				 = $this->get_option( 'osc_option' , 'no' );
+
 		// Display payment options.
 		if ($this->credit_card == 'no') {
 			$this->title       = __("Billet", WCGerencianetOficial::getTextDomain() );
@@ -38,7 +41,19 @@ class WC_Gerencianet_Oficial_Gateway extends WC_Payment_Gateway {
 		} else {
 			$this->title       = __("Gerencianet", WCGerencianetOficial::getTextDomain() );
 		}
-		$this->description = $this->get_option( 'description' );
+
+		if ($this->osc == 'no') {
+			$this->checkout_type = "checkout_page";
+		} else {
+			$this->checkout_type = "OSC";
+		}
+		
+
+		if ($this->checkout_type=="OSC") {
+			$this->description = get_template(plugin_dir_path( dirname( __FILE__ ) )  . 'templates/transparent-osc.php' );
+		} else {
+			$this->description = $this->get_option( 'description' );
+		}
 
 		// Gateway options.
 		$this->invoice_prefix = $this->get_option( 'invoice_prefix', 'WC-' );
@@ -209,7 +224,8 @@ class WC_Gerencianet_Oficial_Gateway extends WC_Payment_Gateway {
 		$this->generate_settings_html();
 		echo '</table>';
 
-		echo '<script>var plugin_images_url = "' . plugins_url( 'assets/images/', plugin_dir_path( __FILE__ ) ) . '";</script>
+		echo '<script>var plugin_images_url = "' . plugins_url( 'assets/images/', plugin_dir_path( __FILE__ ) ) . '";
+		var ajax_url = "'.admin_url( 'admin-ajax.php' ).'";</script>
 			<div id="tutorialGnBox" class="gn-admin-tutorial-box">
 				<div class="gn-admin-tutorial-row">
 				    <div class="gn-admin-tutorial-line">
@@ -296,6 +312,22 @@ class WC_Gerencianet_Oficial_Gateway extends WC_Payment_Gateway {
 				'description' => __( 'Please enter your account payee code; this is needed in order to take payment.', WCGerencianetOficial::getTextDomain()),
 				'desc_tip' => true,
 				'default' => ''
+			),
+			'credentials_validation' => array(
+				'title' => __( 'Credentials Validation', WCGerencianetOficial::getTextDomain() ),
+				'type' => 'title',
+				'description' => __( '<a id="verifyCredentials" class="gn-admin-cursor-pointer">Click here to check if your credentials was correctly inserted in fields.</a><br><span id="validationProduction"></span><br><span id="validationDevelopment"></span><br><span id="validationPayeeCode"></span>', WCGerencianetOficial::getTextDomain() ),
+			),
+			'osc_section' => array(
+				'title' => __( 'One Step Checkout', WCGerencianetOficial::getTextDomain() ),
+				'type' => 'title',
+				'description' => __( 'This option allow the payment direct on checkout page. Before use on production, please do some test payments in sandbox mode to verify if it is compatible with your store.', WCGerencianetOficial::getTextDomain() ),
+			),
+			'osc_option' => array(
+				'title' => __( 'One Step Checkout', WCGerencianetOficial::getTextDomain() ),
+				'type' => 'checkbox',
+				'label' => __( 'Enable One Step Checkout', WCGerencianetOficial::getTextDomain() ),
+				'default' => 'no'
 			),
 			'payment_section' => array(
 				'title' => __( 'Payment Settings', WCGerencianetOficial::getTextDomain() ),
@@ -386,12 +418,31 @@ class WC_Gerencianet_Oficial_Gateway extends WC_Payment_Gateway {
 	 *
 	 * @return string  
 	 */
+	public function gerencianet_validate_credentials() {
+
+		$gnApiResult = $this->gnIntegration->validate_credentials($_POST['client_id'],$_POST['client_secret'],$_POST['mode']);
+		return $gnApiResult;
+	}
+
+	/**
+	 * Request Gerencianet API Installments.
+	 *
+	 * @return string  
+	 */
 	public function gerencianet_get_installments() {
 
 		$post_order_id = sanitize_text_field($_POST['order_id']);
 		$post_brand = sanitize_text_field($_POST['brand']);
-		$order = new WC_Order( $post_order_id );
-		$total = $this->gn_price_format($order->get_total());		
+
+		if ($post_order_id=="") {
+			$value = WC()->cart->get_cart_total();
+			$total =  ((int)preg_replace("/[^0-9]/", "", html_entity_decode($value)));
+		} else {
+			$order = new WC_Order( $post_order_id );
+			$total = $this->gn_price_format($order->get_total());	
+		}
+			
+
 		$brand = esc_attr( $post_brand );
 		$gnApiResult = $this->gnIntegration->get_installments($total,$brand);
 
@@ -417,22 +468,25 @@ class WC_Gerencianet_Oficial_Gateway extends WC_Payment_Gateway {
 	 *
 	 * @return string  
 	 */
-	public function gerencianet_create_charge() {
+	public function gerencianet_create_charge($checkout_type, $order_id) {
 
-		if (count($_POST)<1){
-	    	$errorResponse = array(
-		        "message" => __("An error occurred during your request. Please, try again.", WCGerencianetOficial::getTextDomain() )
-		    );
-			return json_encode($errorResponse);
-	    }
+		if ($checkout_type=="OSC") {
+			$post_order_id = $order_id;
+		} else {
+			if (count($_POST)<1){
+		    	$errorResponse = array(
+			        "message" => __("An error occurred during your request. Please, try again.", WCGerencianetOficial::getTextDomain() )
+			    );
+				return json_encode($errorResponse);
+		    }
 
-		$arrayDadosPost = array();
-	    foreach ($_POST as $key => $value) {
-	    	$arrayDadosPost[$key] = sanitize_text_field($value);
-	    }
+			$arrayDadosPost = array();
+		    foreach ($_POST as $key => $value) {
+		    	$arrayDadosPost[$key] = sanitize_text_field($value);
+		    }
 
-
-		$post_order_id = $arrayDadosPost['order_id'];
+			$post_order_id = $arrayDadosPost['order_id'];
+		}
 
 		$order = new WC_Order( $post_order_id );
 		$order_items = $order->get_items();
@@ -485,34 +539,70 @@ class WC_Gerencianet_Oficial_Gateway extends WC_Payment_Gateway {
 	 *
 	 * @return string  
 	 */
-	public function gerencianet_pay_billet() {
+	public function gerencianet_pay_billet($checkout_type, $order_id, $charge_id) {
 
 		$billetExpireDays = $this->billet_number_days;
 
 	    $expirationDate = date("Y-m-d", mktime (0, 0, 0, date("m")  , date("d")+intval($billetExpireDays), date("Y")));
 
-	    if (count($_POST)<1){
-	    	$errorResponse = array(
-		        "message" => __("An error occurred during your request. Please, try again.", WCGerencianetOficial::getTextDomain() )
-		    );
-			return json_encode($errorResponse);
-	    }
+	    if ($checkout_type=="OSC") {
+		    if (count($_POST)<1){
+		    	$errorResponse = array(
+			        "message" => __("An error occurred during your request. Please, try again.", WCGerencianetOficial::getTextDomain() )
+			    );
+				return json_encode($errorResponse);
+		    }
 
-		$arrayDadosPost = array();
-	    foreach ($_POST as $key => $value) {
-	    	$arrayDadosPost[$key] = sanitize_text_field($value);
-	    }
+			$arrayDadosPost = array();
+		    foreach ($_POST as $key => $value) {
+		    	if ($key!="email") {
+		    		$arrayDadosPost[$key] = sanitize_text_field($value);
+		    	} else {
+		    		$arrayDadosPost[$key] = $value;
+		    	}
+		    }
 
-	    $post_order_id = $arrayDadosPost['order_id'];
-	    $post_pay_billet_with_cnpj = $arrayDadosPost['pay_billet_with_cnpj'];
-	    $post_corporate_name = $arrayDadosPost['corporate_name'];
-	    $post_cnpj = $arrayDadosPost['cnpj'];
-	    $post_name = $arrayDadosPost['name'];
-	    $post_cpf = $arrayDadosPost['cpf'];
-	    $post_phone_number = $arrayDadosPost['phone_number'];
-	    $post_charge_id = $arrayDadosPost['charge_id'];
+		    $post_pay_billet_with_cnpj = $arrayDadosPost['pay_billet_with_cnpj'];
 
-	    if ($post_pay_billet_with_cnpj && $post_corporate_name && $post_cnpj) {
+		    $post_order_id = $order_id;
+		    $post_corporate_name = $arrayDadosPost['gn_billet_corporate_name'];
+		    $post_cnpj = preg_replace('/[^0-9]/', '',$arrayDadosPost['gn_billet_cnpj']);
+		    $post_name = $arrayDadosPost['gn_billet_full_name'];
+		    $post_cpf = preg_replace('/[^0-9]/', '',$arrayDadosPost['gn_billet_cpf']);
+		    $post_email = sanitize_email($arrayDadosPost['gn_billet_email']);
+		    $post_phone_number = preg_replace('/[^0-9]/', '',$arrayDadosPost['gn_billet_phone_number']);
+		    $post_charge_id = $charge_id;
+		} else {
+			if (count($_POST)<1){
+		    	$errorResponse = array(
+			        "message" => __("An error occurred during your request. Please, try again.", WCGerencianetOficial::getTextDomain() )
+			    );
+				return json_encode($errorResponse);
+		    }
+
+			$arrayDadosPost = array();
+		    foreach ($_POST as $key => $value) {
+		    	if ($key!="email") {
+		    		$arrayDadosPost[$key] = sanitize_text_field($value);
+		    	} else {
+		    		$arrayDadosPost[$key] = $value;
+		    	}
+		    }
+
+		    $post_pay_billet_with_cnpj = $arrayDadosPost['pay_billet_with_cnpj'];
+
+		    $post_order_id = $arrayDadosPost['order_id'];
+		    $post_corporate_name = $arrayDadosPost['corporate_name'];
+		    $post_cnpj = $arrayDadosPost['cnpj'];
+		    $post_name = $arrayDadosPost['name'];
+		    $post_cpf = $arrayDadosPost['cpf'];
+		    $post_email = sanitize_email($arrayDadosPost['email']);
+		    $post_phone_number = $arrayDadosPost['phone_number'];
+		    $post_charge_id = $arrayDadosPost['charge_id'];
+
+		}
+
+	    if ($post_pay_billet_with_cnpj=="1") {
 			$juridical_data = array (
 			  'corporate_name' => $post_corporate_name,
 			  'cnpj' => $post_cnpj
@@ -522,13 +612,15 @@ class WC_Gerencianet_Oficial_Gateway extends WC_Payment_Gateway {
 			    'name' => $post_name,
 			    'cpf' => $post_cpf,
 			    'phone_number' => $post_phone_number,
+			    'email' => $post_email,
 				'juridical_person' => $juridical_data
 			);
 		} else {
 			$customer = array (
 			    'name' => $post_name,
 			    'cpf' => $post_cpf,
-			    'phone_number' => $post_phone_number
+			    'phone_number' => $post_phone_number,
+			    'email' => $post_email
 			);
 		}
 
@@ -598,52 +690,117 @@ class WC_Gerencianet_Oficial_Gateway extends WC_Payment_Gateway {
 	 *
 	 * @return string  
 	 */
-	public function gerencianet_pay_card() {
+	public function gerencianet_pay_card($checkout_type, $order_id, $charge_id) {
 
-		if (count($_POST)<1){
-	    	$errorResponse = array(
-		        "message" => __("An error occurred during your request. Please, try again.", WCGerencianetOficial::getTextDomain() )
-		    );
-			return json_encode($errorResponse);
-	    }
+		if ($checkout_type=="OSC") {
+			if (count($_POST)<1){
+		    	$errorResponse = array(
+			        "message" => __("An error occurred during your request. Please, try again.", WCGerencianetOficial::getTextDomain() )
+			    );
+				return json_encode($errorResponse);
+		    }
 
-		$arrayDadosPost = array();
-	    foreach ($_POST as $key => $value) {
-	    	if ($key!="email") {
-	    		$arrayDadosPost[$key] = sanitize_text_field($value);
-	    	} else {
-	    		$arrayDadosPost[$key] = $value;
-	    	}
-	    }
+			$arrayDadosPost = array();
+		    foreach ($_POST as $key => $value) {
+		    	if ($key!="email") {
+		    		$arrayDadosPost[$key] = sanitize_text_field($value);
+		    	} else {
+		    		$arrayDadosPost[$key] = $value;
+		    	}
+		    }
 
-		$post_order_id = $arrayDadosPost['order_id'];
-		if (isset($arrayDadosPost['pay_card_with_cnpj'])) {
+			$post_order_id = $order_id;
+			
+			$post_pay_card_with_cnpj = $arrayDadosPost['pay_card_with_cnpj'];
+
+			if (isset($arrayDadosPost['gn_card_corporate_name'])) {
+				if ($arrayDadosPost['gn_card_corporate_name']!="") {
+			    	$post_corporate_name = $arrayDadosPost['gn_card_corporate_name'];
+			    } else {
+			    	$post_corporate_name="";
+			    }
+			}
+			if (isset($arrayDadosPost['gn_card_cnpj'])) {
+				if ($arrayDadosPost['gn_card_cnpj']!="") {
+			    	$post_cnpj = preg_replace('/[^0-9]/', '',$arrayDadosPost['gn_card_cnpj']);
+			    } else {
+			    	$post_cnpj="";
+			    }
+			}
+
+			$birth = explode("/", $arrayDadosPost['gn_card_birth']);
+			$birth = $birth[2]."-".$birth[1]."-".$birth[0];
+		    
+		    $post_name = $arrayDadosPost['gn_card_full_name'];
+		    $post_cpf = preg_replace('/[^0-9]/', '',$arrayDadosPost['gn_card_cpf']);
+		    $post_phone_number = preg_replace('/[^0-9]/', '',$arrayDadosPost['gn_card_phone_number']);
+		    $post_email = sanitize_email($arrayDadosPost['gn_card_email']);
+		    $post_birth = $birth;
+		    $post_street = $arrayDadosPost['gn_card_street'];
+		    $post_number = $arrayDadosPost['gn_card_street_number'];
+		    $post_neighborhood = $arrayDadosPost['gn_card_neighborhood'];
+		    $post_zipcode = preg_replace( '/[^0-9]/', '', $arrayDadosPost['gn_card_zipcode']);
+		    $post_city = $arrayDadosPost['gn_card_city'];
+		    $post_state = $arrayDadosPost['gn_card_state'];
+		    $post_complement = $arrayDadosPost['gn_card_complement'];
+		    $post_payment_token = $arrayDadosPost['gn_card_payment_token'];
+		    $post_installments = $arrayDadosPost['gn_card_installments'];
+		    $post_charge_id = $charge_id;
+		} else {
+			if (count($_POST)<1){
+		    	$errorResponse = array(
+			        "message" => __("An error occurred during your request. Please, try again.", WCGerencianetOficial::getTextDomain() )
+			    );
+				return json_encode($errorResponse);
+		    }
+
+			$arrayDadosPost = array();
+		    foreach ($_POST as $key => $value) {
+		    	if ($key!="email") {
+		    		$arrayDadosPost[$key] = sanitize_text_field($value);
+		    	} else {
+		    		$arrayDadosPost[$key] = $value;
+		    	}
+		    }
+
+			$post_order_id = $arrayDadosPost['order_id'];
+
+			
 		    $post_pay_card_with_cnpj = $arrayDadosPost['pay_card_with_cnpj'];
+		  
+			if (isset($arrayDadosPost['corporate_name'])) {
+				if ($arrayDadosPost['corporate_name']!="") {
+			    	$post_corporate_name = $arrayDadosPost['corporate_name'];
+			    } else {
+			    	$post_corporate_name="";
+			    }
+			}
+			if (isset($arrayDadosPost['cnpj'])) {
+				if ($arrayDadosPost['cnpj']!="") {
+			    	$post_cnpj = $arrayDadosPost['cnpj'];
+			    } else {
+			    	$post_cnpj="";
+			    }
+			}
+		    
+		    $post_name = $arrayDadosPost['name'];
+		    $post_cpf = $arrayDadosPost['cpf'];
+		    $post_phone_number = $arrayDadosPost['phone_number'];
+		    $post_email = sanitize_email($arrayDadosPost['email']);
+		    $post_birth = $arrayDadosPost['birth'];
+		    $post_street = $arrayDadosPost['street'];
+		    $post_number = $arrayDadosPost['number'];
+		    $post_neighborhood = $arrayDadosPost['neighborhood'];
+		    $post_zipcode = preg_replace( '/[^0-9]/', '', $arrayDadosPost['zipcode']);
+		    $post_city = $arrayDadosPost['city'];
+		    $post_state = $arrayDadosPost['state'];
+		    $post_complement = $arrayDadosPost['complement'];
+		    $post_payment_token = $arrayDadosPost['payment_token'];
+		    $post_installments = $arrayDadosPost['installments'];
+		    $post_charge_id = $arrayDadosPost['charge_id'];
 		}
-		if (isset($arrayDadosPost['corporate_name'])) {
-		    $post_corporate_name = $arrayDadosPost['corporate_name'];
-		}
-		if (isset($arrayDadosPost['cnpj'])) {
-			$post_cnpj = $arrayDadosPost['cnpj'];
-		}
-	    
-	    $post_name = $arrayDadosPost['name'];
-	    $post_cpf = $arrayDadosPost['cpf'];
-	    $post_phone_number = $arrayDadosPost['phone_number'];
-	    $post_email = sanitize_email($arrayDadosPost['email']);
-	    $post_birth = $arrayDadosPost['birth'];
-	    $post_street = $arrayDadosPost['street'];
-	    $post_number = $arrayDadosPost['number'];
-	    $post_neighborhood = $arrayDadosPost['neighborhood'];
-	    $post_zipcode = preg_replace( '/[^0-9]/', '', $arrayDadosPost['zipcode']);
-	    $post_city = $arrayDadosPost['city'];
-	    $post_state = $arrayDadosPost['state'];
-	    $post_complement = $arrayDadosPost['complement'];
-	    $post_payment_token = $arrayDadosPost['payment_token'];
-	    $post_installments = $arrayDadosPost['installments'];
-	    $post_charge_id = $arrayDadosPost['charge_id'];
 
-	    if (isset($post_pay_card_with_cnpj) && isset($post_corporate_name) && isset($post_cnpj)) {
+	    if ($post_pay_card_with_cnpj=="1") {
 			$juridical_data = array (
 			  'corporate_name' => $post_corporate_name,
 			  'cnpj' => $post_cnpj
@@ -898,6 +1055,101 @@ class WC_Gerencianet_Oficial_Gateway extends WC_Payment_Gateway {
 	}
 
 	/**
+	 * Payment fields.
+	 */
+	public function payment_fields() {
+
+		global $woocommerce, $post, $order_id;
+
+		if ($this->checkout_type=="OSC") {
+
+			$this->styles();
+			wp_enqueue_script( 'jquery' );
+			wp_enqueue_script( 'jquery-mask-gn', plugins_url( 'assets/js/jquery.maskedinput.js', plugin_dir_path( __FILE__ ) ), array( 'jquery'), '', true );
+			wp_enqueue_script( 'wc-gerencianet-checkout-osc', plugins_url( 'assets/js/checkout-osc.js', plugin_dir_path( __FILE__ ) ), array( 'jquery'), '', true );
+			wp_localize_script(
+				'wc-gerencianet-checkout',
+				'woocommerce_gerencianet_api',
+				array(
+					'ajax_url' => admin_url( 'admin-ajax.php' ),
+					'security' => wp_create_nonce( 'woocommerce_gerencianet' ),
+				)
+			);
+			
+			if ($this->sandbox == "yes") {
+				$script = htmlentities(html_entity_decode("var s=document.createElement('script');s.type='text/javascript';var v=parseInt(Math.random()*1000000);s.src='https://sandbox.gerencianet.com.br/v1/cdn/".$this->payee_code."/'+v;s.async=false;s.id='".$this->payee_code."';if(!document.getElementById('".$this->payee_code."')){document.getElementsByTagName('head')[0].appendChild(s);};&#36;gn={validForm:true,processed:false,done:{},ready:function(fn){&#36;gn.done=fn;}};"));
+			} else {
+				$script = htmlentities(html_entity_decode("var s=document.createElement('script');s.type='text/javascript';var v=parseInt(Math.random()*1000000);s.src='https://api.gerencianet.com.br/v1/cdn/".$this->payee_code."/'+v;s.async=false;s.id='".$this->payee_code."';if(!document.getElementById('".$this->payee_code."')){document.getElementsByTagName('head')[0].appendChild(s);};&#36;gn={validForm:true,processed:false,done:{},ready:function(fn){&#36;gn.done=fn;}};"));
+			}
+
+			$order_total =  ((int)preg_replace("/[^0-9]/", "", html_entity_decode(WC()->cart->get_cart_total())))/100;
+
+			$discount = $this->discountBillet;
+			$discountBilletFormatted = str_replace(".",",",$discount);
+
+			$total_order_pay_by_billet = ceil($this->gn_price_format($order_total)*(1-((float)$discount/100)));
+			$total_order_pay_by_card = $this->gn_price_format($order_total);
+			$discount_value = $total_order_pay_by_card - $total_order_pay_by_billet;
+
+			wc_get_template( 'transparent-osc.php', array(
+				'ajax_url' => admin_url( 'admin-ajax.php' ),
+				'script_load' => $script,
+				'discount' => $discount,
+				'discount_formatted' => $discountBilletFormatted,
+				'billet_option' => $this->billet_banking,
+				'card_option' => $this->credit_card,
+				'max_installments' => $this->gnIntegration->max_installments($this->gn_price_format($order_total)),
+				'order_with_billet_discount' => $this->gnIntegration->formatCurrencyBRL($total_order_pay_by_billet),
+				'order_billet_discount' => $this->gnIntegration->formatCurrencyBRL($discount_value),
+				'order_total' => $this->gnIntegration->formatCurrencyBRL($total_order_pay_by_card),
+				'order_total_card' => $total_order_pay_by_card,
+				'order_total_billet' => $total_order_pay_by_billet,
+				'sandbox'        => $this->sandbox,
+				'gn_card_payment_comments' => __("Opting to pay by credit card, the payment is processed and the confirmation will take place within 48 hours.", WCGerencianetOficial::getTextDomain() ),
+				'gn_cnpj' => __("CNPJ", WCGerencianetOficial::getTextDomain() ),
+				'gn_billet_payment_method_comments' =>  __("Opting to pay by Banking Billet, the confirmation will be performed on the next business day after payment.", WCGerencianetOficial::getTextDomain() ),
+				'gn_corporate_name' =>  __("Company:", WCGerencianetOficial::getTextDomain() ),
+				'gn_name' =>  __("Name:", WCGerencianetOficial::getTextDomain() ),
+				'gn_cpf' =>  __("CPF: ", WCGerencianetOficial::getTextDomain() ),
+				'gn_phone' =>  __("Phone: ", WCGerencianetOficial::getTextDomain() ),
+				'gn_birth' =>  __("Birth Date: ", WCGerencianetOficial::getTextDomain() ),
+				'gn_email' =>  __("E-mail: ", WCGerencianetOficial::getTextDomain() ),
+				'gn_street' =>  __("Address: ", WCGerencianetOficial::getTextDomain() ),
+				'gn_street_number' =>  __("Number: ", WCGerencianetOficial::getTextDomain() ),
+				'gn_neighborhood' =>  __("Neighborhood: ", WCGerencianetOficial::getTextDomain() ),
+				'gn_address_complement' =>  __("Complement: ", WCGerencianetOficial::getTextDomain() ),
+				'gn_cep' =>  __("Zipcode: ", WCGerencianetOficial::getTextDomain() ),
+				'gn_city' =>  __("City: ", WCGerencianetOficial::getTextDomain() ),
+				'gn_state' =>  __("State: ", WCGerencianetOficial::getTextDomain() ),
+				'gn_card_title' =>  __("Billing Data", WCGerencianetOficial::getTextDomain() ),
+				'gn_card_number' =>  __("Card Number: ", WCGerencianetOficial::getTextDomain() ),
+				'gn_card_expiration' =>  __("Expiration date: ", WCGerencianetOficial::getTextDomain() ),
+				'gn_card_cvv' =>  __("Security Code: ", WCGerencianetOficial::getTextDomain() ),
+				'gn_card_installments_options' =>  __("Installments: ", WCGerencianetOficial::getTextDomain() ),
+				'gn_card_brand' =>  __("Select the card brand", WCGerencianetOficial::getTextDomain() ),
+				'gn_cnpj_option' =>  __("Pay as juridical person", WCGerencianetOficial::getTextDomain() ),
+
+				'gn_mininum_gn_charge_price' =>  __("You can not pay this order with Gerencianet because the total value is less than R$5,00.", WCGerencianetOficial::getTextDomain() ),
+				'gn_pay_billet_option' =>  __("Pay with Billet Banking", WCGerencianetOficial::getTextDomain() ),
+				'gn_discount_billet' =>  __("Discount of ", WCGerencianetOficial::getTextDomain() ),
+				'gn_pay_card_option' =>  __("Pay with Credit Card", WCGerencianetOficial::getTextDomain() ),
+				'gn_installments_pay' => __("Pay in", WCGerencianetOficial::getTextDomain() ),
+				'gn_billing_address_title' =>  __("Billing Address", WCGerencianetOficial::getTextDomain() ),
+				'gn_billing_state_select' =>  __("Select the state", WCGerencianetOficial::getTextDomain() ),
+				'gn_card_cvv_tip' =>  __("Are the last three digits<br>on the back of the card.", WCGerencianetOficial::getTextDomain() ),
+				'gn_card_brand_select' =>  __("Select the Card Brand", WCGerencianetOficial::getTextDomain() ),
+				'gn_loading_payment_request' =>  __("Please, wait...", WCGerencianetOficial::getTextDomain() ),
+
+				'gn_warning_sandbox_message' => __("Sandbox mode is active. The payments will not be valid.", WCGerencianetOficial::getTextDomain() )
+			), 'woocommerce/woo-gerencianet-official/', plugin_dir_path( dirname( __FILE__ ) ) .'templates/' );
+
+		} else {
+			echo $this->description;
+		}
+	}
+
+
+	/**
 	 * Process the payment and return the result.
 	 *
 	 * @param int    $order_id Order ID.
@@ -907,18 +1159,83 @@ class WC_Gerencianet_Oficial_Gateway extends WC_Payment_Gateway {
 	public function process_payment( $order_id ) {
 		
 		$order = new WC_Order( $order_id );
+		$charge_id = json_encode($_POST);
 
-		if ( version_compare( WOOCOMMERCE_VERSION, '2.1', '>=' ) ) {
-			return array(
-				'result'   => 'success',
-				'redirect' => $order->get_checkout_payment_url( true )
-			);
+		if ($this->checkout_type=="OSC") {
+
+			$create_charge = $this->gerencianet_create_charge('OSC',$order_id);
+
+			$resultCheck = array();
+			$resultCheck = json_decode($create_charge, true);
+
+			if (isset($resultCheck["code"])) {
+				if ($resultCheck["code"]==200) {
+					if ($_POST['paymentMethodRadio']=="billet") {
+						$pay_charge = $this->gerencianet_pay_billet('OSC',$order_id,(int)$resultCheck["data"]["charge_id"]);
+						$resultCheckPay = array();
+						$resultCheckPay = json_decode($pay_charge, true);
+						if (isset($resultCheckPay["code"])) {
+							if ($resultCheckPay["code"]==200) {
+								return array(
+									'result'   => 'success',
+									'redirect' => $order->get_checkout_order_received_url().'&method=billet&charge_id='.(int)$resultCheck["data"]["charge_id"].'&'
+								);
+							}
+						}
+					} else {
+						$pay_charge = $this->gerencianet_pay_card('OSC',$order_id,(int)$resultCheck["data"]["charge_id"]);
+						$resultCheckPay = array();
+						$resultCheckPay = json_decode($pay_charge, true);
+						if (isset($resultCheckPay["code"])) {
+							if ($resultCheckPay["code"]==200) {
+								return array(
+									'result'   => 'success',
+									'redirect' => $order->get_checkout_order_received_url().'&method=card&charge_id='.(int)$resultCheck["data"]["charge_id"].'&'
+								);
+							}
+						}
+					}
+					
+
+					wc_add_notice( $resultCheckPay['message'], 'error' );
+
+					return array(
+						'result'   => 'fail',
+						'redirect' => '',
+					);
+
+				} else {
+					wc_add_notice( 'Ocorreu um erro ao tentar realizar o pagamento. Tente novamente.' , 'error' );
+
+					return array(
+						'result'   => 'fail',
+						'redirect' => '',
+					);
+				}
+			} else {
+				wc_add_notice( $resultCheck['message'], 'error' );
+
+				return array(
+					'result'   => 'fail',
+					'redirect' => '',
+				);
+			}
+			
 		} else {
-			return array(
-				'result'   => 'success',
-				'redirect' => add_query_arg( 'order', $order->id, add_query_arg( 'key', $order->order_key, get_permalink( woocommerce_get_page_id( 'pay' ) ) ) )
-			);
+			if ( version_compare( WOOCOMMERCE_VERSION, '2.1', '>=' ) ) {
+				return array(
+					'result'   => 'success',
+					'redirect' => $order->get_checkout_payment_url( true )
+				);
+			} else {
+				return array(
+					'result'   => 'success',
+					'redirect' => add_query_arg( 'order', $order->id, add_query_arg( 'key', $order->order_key, get_permalink( woocommerce_get_page_id( 'pay' ) ) ) )
+				);
+			}
 		}
+
+
 		
 	}
 
@@ -957,8 +1274,10 @@ class WC_Gerencianet_Oficial_Gateway extends WC_Payment_Gateway {
 		$order = new WC_Order($order_id);
 		$email = $order->billing_email;
 
+		$billet_url = get_post_meta( $order_id, 'billet', true );
+
 		$generated_payment_type = sanitize_text_field($_GET['method']);
-		$charge_id = sanitize_text_field($_POST['charge']);
+		$charge_id = sanitize_text_field($_GET['charge_id']);
 
 		$gn_success_payment_box_title_billet = __("Billet emitted by Gerencianet", WCGerencianetOficial::getTextDomain() );
 		$gn_success_payment_box_title_card = __("Your order was successful and your payment is being processed. Wait until you receive confirmation of payment by email.", WCGerencianetOficial::getTextDomain() );

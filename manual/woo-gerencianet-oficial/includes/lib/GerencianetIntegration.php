@@ -26,6 +26,33 @@ class GerencianetIntegration {
 		$this->payee_code = $payeeCode;
 	}
 
+	public function validate_credentials($client_id,$client_secret,$mode) {
+
+		if ($mode=="production") {
+			$sandbox = false;
+		} else {
+			$sandbox = true;
+		}
+
+		$options = array (
+		  'client_id' =>  $client_id,
+		  'client_secret' => $client_secret,
+		  'sandbox' => $sandbox
+		);
+
+		$params = array('total' => 1000, 'brand' => 'visa');
+
+		try {
+		    $api = new Gerencianet($options);
+		    $installments = $api->getInstallments($params, array());
+		    return 'true';
+		} catch (GerencianetException $e) {
+		    return 'false';
+		} catch (Exception $e) {
+			return 'false';
+		}
+	}
+
 	public function get_gn_api_credentials() {
 
 		if ($this->sandbox == "yes") {
@@ -455,8 +482,14 @@ class GerencianetIntegration {
 			case "email":
 				return 'Email';
 				break;
-			case "cpf":
-				return 'CPF';
+			case "cnpj":
+				return 'CNPJ';
+				break;
+			case "corporate_name":
+				return 'Razão Social';
+				break;
+			case "installments":
+				return 'Quantidade de Parcelas';
 				break;
 			case "birth":
 				return 'Data de nascimento';

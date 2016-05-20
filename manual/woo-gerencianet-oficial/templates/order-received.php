@@ -29,7 +29,7 @@ if ( ! defined( 'ABSPATH' ) ) {
                 <div class="gn-row">
                     <div class="gn-col-1">
                       <div class="gn-icon-emission-success">
-                          <span class="icon-check-circle-o"></span>
+                          <span class="gn-icon-check-circle-o"></span>
                       </div>
                     </div>
 
@@ -39,7 +39,6 @@ if ( ! defined( 'ABSPATH' ) ) {
                         } else {
                             echo $gn_success_payment_box_comments_card_part1 . " " . $email . " " . $gn_success_payment_box_comments_card_part2;
                         } ?>
-                        
                         <p>
                             <?php echo $gn_success_payment_charge_number; ?> <b><?php echo $charge_id; ?></b>
                         </p>
@@ -47,10 +46,10 @@ if ( ! defined( 'ABSPATH' ) ) {
 
                 </div>
 
-                <?php if ($generated_payment_type=="billet") { ?>
+                <?php if ($generated_payment_type=="billet" && $billet_url!="") { ?>
                 <div class="gn-align-center gn-success-payment-button">
-                    <button class="button" id="showBillet" name="showBillet" onclick="window.open('<?php echo sanitize_text_field(esc_url(urldecode($_POST["billet"]))); ?>', '_blank');">
-                        <div class="gn-success-payment-button-icon pull-left"><span class="icon-download"></span></div>
+                    <button class="button" id="showBillet" name="showBillet" onclick="window.open('<?php echo $billet_url; ?>', '_blank');" style="height: auto;">
+                        <div class="gn-success-payment-button-icon pull-left"><span class="gn-icon-download"></span></div>
                         <div class="pull-left"><?php echo $gn_success_payment_open_billet; ?></div>
                         <div class="clear"></div>
                     </button>

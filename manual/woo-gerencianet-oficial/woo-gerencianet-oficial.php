@@ -5,7 +5,7 @@
  * Description: Gateway de pagamento Gerencianet para WooCommerce.
  * Author: Gerencianet
  * Author URI: http://www.gerencianet.com.br
- * Version: 0.3.1
+ * Version: 0.4.0
  * License: GPLv2 or later
  * Text Domain: woo-gerencianet-oficial
  * Domain Path: /languages/
@@ -27,7 +27,7 @@ class WCGerencianetOficial {
 	 *
 	 * @var string
 	 */
-	const VERSION = '0.3.1';
+	const VERSION = '0.4.0';
 
 	/**
 	 * Integration id.
@@ -52,7 +52,6 @@ class WCGerencianetOficial {
 		// Load plugin text domain
 		add_action( 'init', array( $this, 'load_plugin_textdomain' ) );
 
-		
 		if ( class_exists( 'WC_Payment_Gateway' ) ) {
 			
 			include_once 'includes/class-wc-gerencianet-oficial-gateway.php';
@@ -61,6 +60,7 @@ class WCGerencianetOficial {
 
 			add_filter( 'woocommerce_payment_gateways', array( $this, 'add_gateway' ) );
 
+			add_action( 'wp_ajax_woocommerce_gerencianet_validate_credentials', array( $this, 'woocommerce_gerencianet_validate_credentials' ) );
 			add_action( 'wp_ajax_woocommerce_gerencianet_get_installments', array( $this, 'woocommerce_gerencianet_get_installments' ) );
 			add_action( 'wp_ajax_nopriv_woocommerce_gerencianet_get_installments', array( $this, 'woocommerce_gerencianet_get_installments' ) );
 			add_action( 'wp_ajax_woocommerce_gerencianet_pay_billet', array( $this, 'woocommerce_gerencianet_pay_billet' ) );
@@ -93,6 +93,17 @@ class WCGerencianetOficial {
 	 *
 	 * @return string
 	 */
+	public function woocommerce_gerencianet_validate_credentials() {
+		$gnGateway = new WC_Gerencianet_Oficial_Gateway();
+		echo $gnGateway->gerencianet_validate_credentials();
+		die();
+	}
+
+	/**
+	 * Return ajax request
+	 *
+	 * @return string
+	 */
 	public function woocommerce_gerencianet_get_installments() {
 		$gnGateway = new WC_Gerencianet_Oficial_Gateway();
 		echo $gnGateway->gerencianet_get_installments();
@@ -106,7 +117,7 @@ class WCGerencianetOficial {
 	 */
 	public function woocommerce_gerencianet_pay_billet() {
 		$gnGateway = new WC_Gerencianet_Oficial_Gateway();
-		echo $gnGateway->gerencianet_pay_billet();
+		echo $gnGateway->gerencianet_pay_billet('checkout_page', null, null);
 		die();
 	}
 
@@ -117,7 +128,7 @@ class WCGerencianetOficial {
 	 */
 	public function woocommerce_gerencianet_pay_card() {
 		$gnGateway = new WC_Gerencianet_Oficial_Gateway();
-		echo $gnGateway->gerencianet_pay_card();
+		echo $gnGateway->gerencianet_pay_card('checkout_page', null, null);
 		die();
 	}
 
@@ -128,7 +139,7 @@ class WCGerencianetOficial {
 	 */
 	public function woocommerce_gerencianet_create_charge() {
 		$gnGateway = new WC_Gerencianet_Oficial_Gateway();
-		echo $gnGateway->gerencianet_create_charge();
+		echo $gnGateway->gerencianet_create_charge('checkout_page', null);
 		die();
 	}
 

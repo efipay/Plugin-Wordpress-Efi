@@ -1,4 +1,4 @@
-//0.3.1
+//0.4.0
 
 var errorMessage;
 var id_charge = 0;
@@ -266,6 +266,12 @@ jQuery(document).ready(function($){
     function payBilletCharge() {
         $('.gn-loading-request').fadeIn();
 
+        var juridical;
+        if($('#pay_billet_with_cnpj').attr('checked')) {
+            juridical="1";
+        } else {
+            juridical="0";
+        }
         var data = {
             action: "woocommerce_gerencianet_pay_billet",
             security: woocommerce_gerencianet_api.security,
@@ -274,9 +280,10 @@ jQuery(document).ready(function($){
             name: jQuery('#first_name').val(),
             cpf: jQuery('#cpf').val().replace(/[^\d]+/g,''),
             phone_number: jQuery('#phone_number').val().replace(/[^\d]+/g,''),
+            email: jQuery('#input-payment-billet-email').val(),
             cnpj: jQuery('#cnpj').val().replace(/[^\d]+/g,''),
             corporate_name: jQuery('#corporate_name').val(),
-            pay_billet_with_cnpj: jQuery('#pay_billet_with_cnpj').val()
+            pay_billet_with_cnpj: juridical
         };
         
         jQuery.ajax({
@@ -287,7 +294,7 @@ jQuery(document).ready(function($){
                 var obj = $.parseJSON(response);
                 if (obj.code==200) {
                     var url = encodeURIComponent(obj.data.link);
-                    var redirect = $('<form action="' + home_url + '&method=billet&" method="post">' +
+                    var redirect = $('<form action="' + home_url + '&method=billet&charge_id=' + obj.data.charge_id + '" method="post">' +
                       '<input type="text" name="billet" value="' + url + '" />' +
                       '<input type="text" name="charge" value="' + obj.data.charge_id + '" />' +
                       '</form>');
@@ -414,6 +421,13 @@ jQuery(document).ready(function($){
           } else {
             var dateBirth = $('#input-payment-card-birth').val().split("/");
 
+            var juridical;
+            if($('#pay_card_with_cnpj').attr('checked')) {
+                juridical="1";
+            } else {
+                juridical="0";
+            }
+
             var data = {
                 action: "woocommerce_gerencianet_pay_card",
                 security: woocommerce_gerencianet_api.security,
@@ -424,7 +438,7 @@ jQuery(document).ready(function($){
                 phone_number: jQuery('#input-payment-card-phone').val().replace(/[^\d]+/g,''),
                 cnpj: jQuery('#cnpj_card').val().replace(/[^\d]+/g,''),
                 corporate_name: jQuery('#corporate_name_card').val(),
-                pay_card_with_cnpj: jQuery('#pay_card_with_cnpj').val(),
+                pay_card_with_cnpj: juridical,
                 payment_token: response.data.payment_token,
                 birth: dateBirth[2] + "-" + dateBirth[1] + "-" + dateBirth[0],
                 email: $('#input-payment-card-email').val(),
@@ -446,7 +460,7 @@ jQuery(document).ready(function($){
                     var obj = $.parseJSON(response);
                     if (obj.code==200) {
                         var url = encodeURIComponent(obj.data.link);
-                        var redirect = $('<form action="' + home_url + '&method=card&" method="post">' +
+                        var redirect = $('<form action="' + home_url + '&method=card&charge_id=' + obj.data.charge_id + '" method="post">' +
                           '<input type="text" name="charge" value="' + obj.data.charge_id + '" />' +
                           '</form>');
                         $('body').append(redirect);

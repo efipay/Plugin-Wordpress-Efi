@@ -28,12 +28,12 @@ if ( ! defined( 'ABSPATH' ) ) {
     <?php if ($order->billing_persontype==2) {?>
         payCnpj = true; 
     <?php } ?>
+    
     <?php if (isset($order->billing_cnpj) && isset($order->billing_company)) {?>
         showCnpjFields = false; 
     <?php } ?>
 
 </script>
-
 
 <p><?php echo apply_filters( 'woocommerce_gerencianet_transparent_checkout_message', __( 'This payment will be processed by Gerencianet Payments.', WCGerencianetOficial::getTextDomain() ) ); ?></p>
 <?php if ($sandbox == "yes") { ?>
@@ -41,7 +41,6 @@ if ( ! defined( 'ABSPATH' ) ) {
     <div class="woocommerce-error"><?php echo $gn_warning_sandbox_message; ?></div>
 </div>
 <?php } ?>
-
 
 <div class="warning-payment" id="wc-gerencianet-messages">
     <?php if (($card_option && $order_total_card<500) && ($billet_option && $order_total_billet<500)) { ?>
@@ -57,8 +56,8 @@ if ( ! defined( 'ABSPATH' ) ) {
             <div id="billet-radio-button" class="gn-left">
                 <input type="radio" name="paymentMethodBilletRadio" id="paymentMethodBilletRadio" value="0" />
             </div>
-            <div class="gn-left icon-gerencianet">
-                <span class="icon-icones-personalizados_boleto"></span>
+            <div class="gn-left gn-icon-gerencianet">
+                <span class="gn-icon-icones-personalizados_boleto"></span>
             </div>
             <div class="gn-left payment-option-gerencianet">
                 <?php echo $gn_pay_billet_option; ?>
@@ -184,8 +183,8 @@ if ( ! defined( 'ABSPATH' ) ) {
             <div id="card-radio-button" class="gn-left">
                 <input type="radio" name="paymentMethodCardRadio" id="paymentMethodCardRadio" value="0" />
             </div>
-            <div class="gn-left icon-gerencianet">
-                <span class="icon-credit-card2"></span>
+            <div class="gn-left gn-icon-gerencianet">
+                <span class="gn-icon-credit-card2"></span>
             </div>
             <div class="gn-left payment-option-gerencianet">
                 <?php echo $gn_pay_card_option; ?>
@@ -205,7 +204,7 @@ if ( ! defined( 'ABSPATH' ) ) {
             </div>
         </div>
     </div>
-    <div id="collapse-payment-card"  class="panel-collapse gn-hide" style="border-top: 1px solid #CCC;">
+    <div id="collapse-payment-card"  class="panel-collapse gn-hide" style="border-top: 1px solid #CCC; background-color: #FFF;">
     <div class="panel-body">
 
 <form class="form-horizontal" id="payment-card-form">
@@ -578,7 +577,7 @@ if ( ! defined( 'ABSPATH' ) ) {
             <div class="pull-left gn-loading-request-text">
             <?php echo $gn_loading_payment_request; ?>
             </div>
-            <div class="spin pull-left gn-loading-request-spin-box"><div class="icon-spinner6 gn-loading-request-spin-icon"></div></div>
+            <div class="spin pull-left gn-loading-request-spin-box"><div class="gn-icon-spinner6 gn-loading-request-spin-icon"></div></div>
           </div>
       </div>
     <div class="clear"></div>

@@ -1,5 +1,5 @@
 @font-face {
-    font-family: 'icomoon';
+    font-family: 'gn-icomoon';
     src:    url('../fonts/icomoon.eot?vjd4tw');
     src:    url('../fonts/icomoon.eot?vjd4tw#iefix') format('embedded-opentype'),
         url('../fonts/icomoon.ttf?vjd4tw') format('truetype'),
@@ -9,9 +9,9 @@
     font-style: normal;
 }
 
-[class^="icon-"], [class*=" icon-"] {
+[class^="gn-icon-"], [class*=" gn-icon-"] {
     /* use !important to prevent issues with browser extensions that change fonts */
-    font-family: 'icomoon' !important;
+    font-family: 'gn-icomoon' !important;
     speak: none;
     font-style: normal;
     font-weight: normal;
@@ -24,19 +24,19 @@
     -moz-osx-font-smoothing: grayscale;
 }
 
-.icon-spinner6:before {
+.gn-icon-spinner6:before {
     content: "\e74e";
 }
-.icon-credit-card2:before {
+.gn-icon-credit-card2:before {
     content: "\e900";
 }
-.icon-icones-personalizados_boleto:before {
+.gn-icon-icones-personalizados_boleto:before {
     content: "\e901";
 }
-.icon-download:before {
+.gn-icon-download:before {
     content: "\e902";
 }
-.icon-check-circle-o:before {
+.gn-icon-check-circle-o:before {
     content: "\e903";
 }
 
@@ -59,16 +59,16 @@
 .panel-gerencianet {
 }
 
-.icon-gerencianet {
+.gn-icon-gerencianet {
     color: #666666;
 }
 
-.icon-gerencianet a, .icon-gerencianet a:hover {
+.gn-icon-gerencianet a, .gn-icon-gerencianet a:hover {
     color: #666666;
     text-decoration: none;
 }
 
-.icon-gerencianet span{
+.gn-icon-gerencianet span{
     font-size: 26px;
 }
 
@@ -399,6 +399,7 @@
 }
 
 .gn-cvv-row {
+    width: 80px;
     margin-right: 15px; 
     margin-bottom: 3px;
 }
@@ -583,12 +584,194 @@
       width: 8.333333333333332%;
 }  
 
+.gn-osc-payment-option {
+    background-color: #FFF; 
+    float: left;
+    padding: 10px 15px;
+    cursor: pointer;
+}
+
+.gn-osc-payment-option-selected {
+    border-left: 1px solid #CCCCCC;
+    border-right: 1px solid #CCCCCC;
+    border-top: 1px solid #CCCCCC;
+    border-bottom: 0px;
+    background-color: #FFFFFF;
+}
+
+.gn-osc-payment-option-unselected {
+    border-left: 1px solid #CCCCCC;
+    border-right: 1px solid #CCCCCC;
+    border-top: 1px solid #CCCCCC;
+    border-bottom: 0px;
+    background-color: #F0F0F0;
+}
+
+
+.gn-osc-icon-gerencianet {
+    color: #666666;
+}
+
+.gn-osc-icon-gerencianet a, .gn-osc-icon-gerencianet a:hover {
+    color: #666666;
+    text-decoration: none;
+}
+
+.gn-osc-icon-gerencianet span{
+    font-size: 25px;
+}
+
+.gn-osc-left {
+    display: table-cell;
+    vertical-align: middle;
+    height:auto;
+    padding: 3px;
+}
+
+.gn-osc-payment-option-gerencianet {
+    font-size: 16px;
+    color: #000;
+    padding-left: 15px;
+}
+
+.gn-osc-payment-option-gerencianet a {
+    color: #000;
+    text-decoration: none;
+}
+
+.gn-osc-payment-option-gerencianet a:hover {
+    text-decoration: underline;
+}
+
+.gn-osc-background {
+    background-color: #FFFFFF; 
+    margin-top: 0px; 
+    padding-top: 10px; 
+    border-left: 1px solid #CCCCCC;
+    border-right: 1px solid #CCCCCC;
+    border-top: 0px;
+    border-bottom: 1px solid #CCCCCC;
+}
+
+.gn-osc-radio {
+    margin: 0px !important;
+}
+
+.gn-osc-payment-option-sizer {
+    height: 60px;
+    width: 1px;
+}
+
+.gn-row select, input[type="text"] {
+    color: #262626;
+    background-color: #FFF;
+    padding: 5px;
+    border: 1px solid #CCC;
+    border-radius: 3px;
+    font-size: 14px;
+    line-height: 1.4;
+}
+
+.gn-osc-row {
+    height:auto;
+    vertical-align: middle;
+    overflow:hidden;
+    margin:10px auto;
+    padding:2px;
+}
+
+
+.gn-osc-row select, input[type="text"] {
+    color: #262626;
+    background-color: #FFF;
+    padding: 5px;
+    border: 1px solid #CCC;
+    border-radius: 3px;
+    font-size: 14px;
+    line-height: 1.4;
+}
+
+.gn-inputs-error {
+    border: 1px solid #bd7977 !important;
+    background-color: #f4dddd !important;
+}
+
+.gn-osc-warning-payment {
+    color: #a94442;
+    border: 1px solid #bd7977;
+    background-color: #f2dede;
+    padding: 15px;
+    margin-bottom: 15px;
+    display: none;
+}
+.gn-osc-pay-comments {
+    margin: 0px;
+}
+
+.gn-billet-button {
+    height: auto;
+}
+
+
+
+
+
+.gerencianet-container-fix-size .gn-row-left, .gerencianet-container-fix-size .gn-row-right {
+    display: block;
+    width: 100%;
+}
+.gerencianet-container-fix-size .gn-left{
+    float: left;
+    display: inline-block;
+}
+.gerencianet-container-fix-size .gn-right{
+    float: right;
+    display: inline-block;
+}
+
+.gerencianet-container-fix-size .gn-col-1, .gerencianet-container-fix-size .gn-col-2, .gerencianet-container-fix-size .gn-col-3, 
+.gerencianet-container-fix-size .gn-col-4, .gerencianet-container-fix-size .gn-col-5, .gerencianet-container-fix-size .gn-col-6,
+.gerencianet-container-fix-size .gn-col-7, .gerencianet-container-fix-size .gn-col-8, .gerencianet-container-fix-size .gn-col-9,
+.gerencianet-container-fix-size .gn-col-10, .gerencianet-container-fix-size .gn-col-11, .gerencianet-container-fix-size .gn-col-12 {
+   float: none;
+   width: 100%;
+   display: block;               
+}
+
+.gerencianet-container-fix-size .gn-left-space-2 {
+    margin-left: 0;
+}
+
+.gerencianet-container-fix-size .gn-label, .gerencianet-container-fix-size .gn-label-birth {
+    height:35px;
+    padding: 10px 0 0 0;
+    text-align: left;
+}
+
+.gerencianet-container-fix-size .gn-payment-option-sizer {
+    display: none;
+}
+
+.gerencianet-container-fix-size .gn-osc-payment-option {
+    float: none;
+    display: block;
+}
+
+.gerencianet-container-fix-size .gn-osc-pay-comments {
+    padding-top: 0px;
+    padding-left: 15px;
+    padding-right: 15px;
+    padding-bottom: 15px;
+}
+
+
+
 @media only screen and (max-width: 992px) {
+
     .gn-row-left, .gn-row-right {
         display: block;
         width: 100%;
     }
-
     .gn-left{
         float: left;
         display: inline-block;
@@ -618,8 +801,20 @@
     .gn-payment-option-sizer {
         display: none;
     }
-}
 
+    .gn-osc-payment-option {
+        float: none;
+        display: block;
+    }
+
+    .gn-osc-pay-comments {
+        padding-top: 0px;
+        padding-left: 15px;
+        padding-right: 15px;
+        padding-bottom: 15px;
+    }
+
+}
 
 
 
