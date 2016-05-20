@@ -46,7 +46,7 @@ Opcional: Instale o plugin [WooCommerce Extra Checkout Fields for Brazil](https:
 
 = Changelog =
 
-= 0.4.0 =
+= 0.4.1 =
 * Added: Opção de checkout na tela de Finalizar Compra.
 * Added: Validação de credenciais na configuração do plugin.
 
@@ -97,7 +97,7 @@ Opcional: Instale o plugin [WooCommerce Extra Checkout Fields for Brazil](https:
 
 == Changelog ==
 
-= 0.4.0 =
+= 0.4.1 =
 * Added: Opção de checkout na tela de Finalizar Compra.
 * Added: Validação de credenciais na configuração do plugin.
 

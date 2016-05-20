@@ -1033,9 +1033,8 @@ jQuery(document).ready(function($){
 </script>
 
 
-
-<?php if ($sandbox == "yes") { ?>
 <div id="gerencianet-container">
+    <?php if ($sandbox == "yes") { ?>
     <div class="warning-payment" id="wc-gerencianet-messages-sandbox">
         <div class="woocommerce-error"><?php echo $gn_warning_sandbox_message; ?></div>
     </div>
