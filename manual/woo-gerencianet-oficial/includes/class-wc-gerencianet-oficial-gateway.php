@@ -313,11 +313,6 @@ class WC_Gerencianet_Oficial_Gateway extends WC_Payment_Gateway {
 				'desc_tip' => true,
 				'default' => ''
 			),
-			'credentials_validation' => array(
-				'title' => __( 'Credentials Validation', WCGerencianetOficial::getTextDomain() ),
-				'type' => 'title',
-				'description' => __( '<a id="verifyCredentials" class="gn-admin-cursor-pointer">Click here to check if your credentials was correctly inserted in fields.</a><br><span id="validationProduction"></span><br><span id="validationDevelopment"></span><br><span id="validationPayeeCode"></span>', WCGerencianetOficial::getTextDomain() ),
-			),
 			'osc_section' => array(
 				'title' => __( 'One Step Checkout', WCGerencianetOficial::getTextDomain() ),
 				'type' => 'title',

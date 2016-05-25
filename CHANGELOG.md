@@ -1,4 +1,8 @@
-# v0.4.0 
+# v0.4.2
+* Fix: Bandeira dos cartões.
+* Added: Validação da versão do PHP.
+
+# v0.4.1
 * Added: Opção de checkout na tela de Finalizar Compra.
 * Added: Validação de credenciais na configuração do plugin.
 

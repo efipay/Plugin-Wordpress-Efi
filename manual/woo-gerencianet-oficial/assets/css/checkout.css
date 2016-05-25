@@ -165,7 +165,7 @@
     cursor:pointer;
     background-size: 200px 80px !important;
     background-repeat:no-repeat;
-    display:inline-block;
+    display:inline-block !important;
     width:42px;height:42px;
     background-color: #FFFFFF;
     -webkit-border-radius: 5px;
@@ -402,6 +402,10 @@
     width: 80px;
     margin-right: 15px; 
     margin-bottom: 3px;
+}
+
+.gn-cvv-row input[type="text"] {
+    width: 80px;
 }
 
 .gn-cvv-input {

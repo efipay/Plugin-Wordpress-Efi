@@ -581,10 +581,15 @@ msgstr "Gerencianet"
 msgid "http://www.gerencianet.com.br"
 msgstr "http://www.gerencianet.com.br"
 
-#: includes/woo-gerencianet-oficial.php:185
+#: includes/woo-gerencianet-oficial.php:201
 #, php-format
 msgid "Gerencianet Gateway depends on the last version of %s to work!"
 msgstr "O módulo da Gerencianet depende da última versão do %s para funcionar!"
+
+#: includes/woo-gerencianet-oficial.php:210
+#, php-format
+msgid "The minimum PHP version compatible with Gerencianet Payment plugin is 5.4.0. Please, update your PHP version."
+msgstr "A versão mínima compatível com o Plugin de Pagamentos da Gerencianet é 5.4.0. Por favor, atualize a versão do PHP instalado."
 
 #: templates/transparent-checkout.php:38
 msgid "This payment will be processed by Gerencianet Payments."

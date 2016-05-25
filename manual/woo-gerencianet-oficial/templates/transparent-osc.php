@@ -38,8 +38,12 @@ jQuery(document).ready(function($){
         $("#gn-card-payment-option").addClass('gn-osc-payment-option-selected');
     }
 
-    if ($('#gn_billet_full_name').val()=="") 
-        $('#gn_billet_full_name').val($('#billing_first_name').val() + " " + $('#billing_last_name').val());
+    if ($('#gn_billet_full_name').val()=="")  {
+        if ($('#billing_first_name'))
+            $('#gn_billet_full_name').val($('#billing_first_name').val());
+        if ($('#billing_last_name'))
+            $('#gn_billet_full_name').val($('#gn_billet_full_name').val() + " " + $('#billing_last_name').val());
+    }
     if ($('#gn_billet_email').val()=="")
         $('#gn_billet_email').val($('#billing_email').val());
     if ($('#gn_billet_phone_number').val()=="")    
@@ -51,8 +55,13 @@ jQuery(document).ready(function($){
     if ($('#gn_billet_cnpj').val()=="")
         $('#gn_billet_cnpj').val($('#billing_cnpj').val());
 
-    if ($('#gn_card_full_name').val()=="") 
-        $('#gn_card_full_name').val($('#billing_first_name').val() + " " + $('#billing_last_name').val());
+    if ($('#gn_card_full_name').val()=="") {
+        if ($('#billing_first_name'))
+            $('#gn_card_full_name').val($('#billing_first_name').val());
+        if ($('#billing_last_name'))
+            $('#gn_card_full_name').val($('#gn_card_full_name').val() + " " + $('#billing_last_name').val());
+    }
+
     if ($('#gn_card_email').val()=="")
         $('#gn_card_email').val($('#billing_email').val());
     if ($('#gn_card_phone_number').val()=="")    
@@ -1211,7 +1220,7 @@ jQuery(document).ready(function($){
                         <div style="background-color: #F3F3F3; border: 1px solid #F3F3F3;">
                         <div class="gn-osc-row">
                           <div class="gn-col-12 gn-cnpj-row">
-                          <input type="checkbox" name="pay_card_with_cnpj" id="pay_card_with_cnpj" value="1" />  <?php echo $gn_cnpj_option; ?>
+                            <input type="checkbox" name="pay_card_with_cnpj" id="pay_card_with_cnpj" value="1" />  <?php echo $gn_cnpj_option; ?>
                           </div>
                         </div>
 
