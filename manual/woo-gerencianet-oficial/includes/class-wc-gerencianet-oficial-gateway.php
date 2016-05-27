@@ -401,11 +401,7 @@ class WC_Gerencianet_Oficial_Gateway extends WC_Payment_Gateway {
 	 * @return string  
 	 */
 	protected function add_error( $message ) {
-		if ( version_compare( WOOCOMMERCE_VERSION, '2.1', '>=' ) ) {
-			wc_add_notice( $message, 'error' );
-		} else {
-			$this->woocommerce_instance()->add_error( $message );
-		}
+		wc_add_notice( $message, 'error' );
 	}
 
 	/**
@@ -433,7 +429,7 @@ class WC_Gerencianet_Oficial_Gateway extends WC_Payment_Gateway {
 			$value = WC()->cart->get_cart_total();
 			$total =  ((int)preg_replace("/[^0-9]/", "", html_entity_decode($value)));
 		} else {
-			$order = new WC_Order( $post_order_id );
+			$order = wc_get_order( $post_order_id );
 			$total = $this->gn_price_format($order->get_total());	
 		}
 			
@@ -483,7 +479,8 @@ class WC_Gerencianet_Oficial_Gateway extends WC_Payment_Gateway {
 			$post_order_id = $arrayDadosPost['order_id'];
 		}
 
-		$order = new WC_Order( $post_order_id );
+		$order = wc_get_order( $post_order_id );
+		
 		$order_items = $order->get_items();
 	
 		$items = array ();
@@ -620,6 +617,7 @@ class WC_Gerencianet_Oficial_Gateway extends WC_Payment_Gateway {
 		}
 
 		$order = wc_get_order( $post_order_id );
+		
 		if ($order->get_status() == "failed") {
 			$discountBillet = $this->discountBillet;
 			$discountTotalValue = (int)($this->gn_price_format($order->get_total_discount()));
@@ -830,6 +828,7 @@ class WC_Gerencianet_Oficial_Gateway extends WC_Payment_Gateway {
 		);
 
 		$order = wc_get_order( $post_order_id );
+		
 		$discountTotalValue = (int)($this->gn_price_format($order->get_total_discount()));
 
 		if ($discountTotalValue>0) {
@@ -887,7 +886,7 @@ class WC_Gerencianet_Oficial_Gateway extends WC_Payment_Gateway {
 
 		$sandbox = $this->sandbox;
 
-		$order = new WC_Order( $order_id );
+		$order = wc_get_order( $order_id );
 
 		$discount = $this->discountBillet;
 
@@ -1153,7 +1152,8 @@ class WC_Gerencianet_Oficial_Gateway extends WC_Payment_Gateway {
 	 */
 	public function process_payment( $order_id ) {
 		
-		$order = new WC_Order( $order_id );
+		$order = wc_get_order( $order_id );
+
 		$charge_id = json_encode($_POST);
 
 		if ($this->checkout_type=="OSC") {
@@ -1217,17 +1217,10 @@ class WC_Gerencianet_Oficial_Gateway extends WC_Payment_Gateway {
 			}
 			
 		} else {
-			if ( version_compare( WOOCOMMERCE_VERSION, '2.1', '>=' ) ) {
-				return array(
-					'result'   => 'success',
-					'redirect' => $order->get_checkout_payment_url( true )
-				);
-			} else {
-				return array(
-					'result'   => 'success',
-					'redirect' => add_query_arg( 'order', $order->id, add_query_arg( 'key', $order->order_key, get_permalink( woocommerce_get_page_id( 'pay' ) ) ) )
-				);
-			}
+			return array(
+				'result'   => 'success',
+				'redirect' => $order->get_checkout_payment_url( true )
+			);
 		}
 
 
@@ -1266,7 +1259,8 @@ class WC_Gerencianet_Oficial_Gateway extends WC_Payment_Gateway {
 	protected function generate_gn_thankyou_page( $order_id ) {
 		$this->styles();
 
-		$order = new WC_Order($order_id);
+		$order = wc_get_order( $order_id );
+
 		$email = $order->billing_email;
 
 		$billet_url = get_post_meta( $order_id, 'billet', true );
@@ -1330,7 +1324,7 @@ class WC_Gerencianet_Oficial_Gateway extends WC_Payment_Gateway {
 			    	$orderStatusFromNotification = $notification_data->status->current;
 			    }
 
-			    $order = new WC_Order($orderIdFromNotification);
+				$order = wc_get_order( $orderIdFromNotification );
 
 			    if ($this->callback == 'yes') {
 					switch($orderStatusFromNotification) {
@@ -1373,11 +1367,7 @@ class WC_Gerencianet_Oficial_Gateway extends WC_Payment_Gateway {
 	 * @return string
 	 */
 	protected function admin_url() {
-		if ( version_compare( WOOCOMMERCE_VERSION, '2.1', '>=' ) ) {
-			return admin_url( 'admin.php?page=wc-settings&tab=checkout&section=WC_Gerencianet_Oficial_Gateway' );
-		}
-
-		return admin_url( 'admin.php?page=woocommerce_settings&tab=payment_gateways&section=WC_Gerencianet_Oficial_Gateway' );
+		return admin_url( 'admin.php?page=wc-settings&tab=checkout&section=WC_Gerencianet_Oficial_Gateway' );
 	}
 
 	/**

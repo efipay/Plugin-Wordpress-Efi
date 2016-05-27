@@ -368,7 +368,11 @@ class GerencianetIntegration {
 				$message = 'Esta transação já possui uma forma de pagamento definida.';
 				break;
 			case 3500034:
-				$message = 'O campo ' . $this->getFieldName($property) . ' não está preenchido corretamente.';
+				if ($property=="payment_token") {
+					$message = 'Os dados do cartão não foram validados. Por favor, digite todos dados do cartão novamente.';
+				} else {
+					$message = 'O campo ' . $this->getFieldName($property) . ' não está preenchido corretamente.';
+				}
 				break;
 			case 3500042:
 				$message = $messageErrorDefault;

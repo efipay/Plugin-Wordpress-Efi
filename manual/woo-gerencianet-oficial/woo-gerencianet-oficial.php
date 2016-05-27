@@ -53,25 +53,29 @@ class WCGerencianetOficial {
 		add_action( 'init', array( $this, 'load_plugin_textdomain' ) );
 
 		if (version_compare(phpversion(), '5.4.0', '>=')) {
-			if ( class_exists( 'WC_Payment_Gateway' ) ) {
-				
-				include_once 'includes/class-wc-gerencianet-oficial-gateway.php';
-				include_once 'includes/lib/GerencianetIntegration.php';
-				include_once 'includes/lib/GerencianetValidation.php';
+			if (version_compare(WOOCOMMERCE_VERSION, '2.2', '>=')) {
+				if ( class_exists( 'WC_Payment_Gateway' ) ) {
+					
+					include_once 'includes/class-wc-gerencianet-oficial-gateway.php';
+					include_once 'includes/lib/GerencianetIntegration.php';
+					include_once 'includes/lib/GerencianetValidation.php';
 
-				add_filter( 'woocommerce_payment_gateways', array( $this, 'add_gateway' ) );
+					add_filter( 'woocommerce_payment_gateways', array( $this, 'add_gateway' ) );
 
-				add_action( 'wp_ajax_woocommerce_gerencianet_validate_credentials', array( $this, 'woocommerce_gerencianet_validate_credentials' ) );
-				add_action( 'wp_ajax_woocommerce_gerencianet_get_installments', array( $this, 'woocommerce_gerencianet_get_installments' ) );
-				add_action( 'wp_ajax_nopriv_woocommerce_gerencianet_get_installments', array( $this, 'woocommerce_gerencianet_get_installments' ) );
-				add_action( 'wp_ajax_woocommerce_gerencianet_pay_billet', array( $this, 'woocommerce_gerencianet_pay_billet' ) );
-				add_action( 'wp_ajax_nopriv_woocommerce_gerencianet_pay_billet', array( $this, 'woocommerce_gerencianet_pay_billet' ) );
-				add_action( 'wp_ajax_woocommerce_gerencianet_pay_card', array( $this, 'woocommerce_gerencianet_pay_card' ) );
-				add_action( 'wp_ajax_nopriv_woocommerce_gerencianet_pay_card', array( $this, 'woocommerce_gerencianet_pay_card' ) );
-				add_action( 'wp_ajax_woocommerce_gerencianet_create_charge', array( $this, 'woocommerce_gerencianet_create_charge' ) );
-				add_action( 'wp_ajax_nopriv_woocommerce_gerencianet_create_charge', array( $this, 'woocommerce_gerencianet_create_charge' ) );
+					add_action( 'wp_ajax_woocommerce_gerencianet_validate_credentials', array( $this, 'woocommerce_gerencianet_validate_credentials' ) );
+					add_action( 'wp_ajax_woocommerce_gerencianet_get_installments', array( $this, 'woocommerce_gerencianet_get_installments' ) );
+					add_action( 'wp_ajax_nopriv_woocommerce_gerencianet_get_installments', array( $this, 'woocommerce_gerencianet_get_installments' ) );
+					add_action( 'wp_ajax_woocommerce_gerencianet_pay_billet', array( $this, 'woocommerce_gerencianet_pay_billet' ) );
+					add_action( 'wp_ajax_nopriv_woocommerce_gerencianet_pay_billet', array( $this, 'woocommerce_gerencianet_pay_billet' ) );
+					add_action( 'wp_ajax_woocommerce_gerencianet_pay_card', array( $this, 'woocommerce_gerencianet_pay_card' ) );
+					add_action( 'wp_ajax_nopriv_woocommerce_gerencianet_pay_card', array( $this, 'woocommerce_gerencianet_pay_card' ) );
+					add_action( 'wp_ajax_woocommerce_gerencianet_create_charge', array( $this, 'woocommerce_gerencianet_create_charge' ) );
+					add_action( 'wp_ajax_nopriv_woocommerce_gerencianet_create_charge', array( $this, 'woocommerce_gerencianet_create_charge' ) );
+				} else {
+					add_action( 'admin_notices', array( $this, 'woocommerce_missing_notice' ) );
+				}
 			} else {
-				add_action( 'admin_notices', array( $this, 'woocommerce_missing_notice' ) );
+				add_action( 'admin_notices', array( $this, 'woocommerce_not_supported_by_gn_notice' ) );
 			}
 		} else {
 			add_action( 'admin_notices', array( $this, 'php_not_supported_by_gn_notice' ) );
@@ -208,6 +212,15 @@ class WCGerencianetOficial {
 	 */
 	public function php_not_supported_by_gn_notice() {
 		echo '<div class="error"><p>' . sprintf( __( 'The minimum PHP version compatible with Gerencianet Payment plugin is 5.4.0. Please, update your PHP version.', WCGerencianetOficial::getTextDomain() )). '</p></div>';
+	}
+
+	/**
+	 * WooCommerce Version not supported by Gerencianet Plugin notice.
+	 *
+	 * @return string
+	 */
+	public function woocommerce_not_supported_by_gn_notice() {
+		echo '<div class="error"><p>' . sprintf( __( 'The minimum WooCommerce version compatible with Gerencianet Payment plugin is 2.2.0. Please, update your WooCommerce version.', WCGerencianetOficial::getTextDomain() )). '</p></div>';
 	}
 }
 

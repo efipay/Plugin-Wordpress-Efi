@@ -1,7 +1,7 @@
 # Módulo de Integração Gerencianet para WooCommerce Oficial - Versão 0.4.2 #
 
 O módulo Gerencianet para WooCommerce permite receber pagamentos por meio do checkout transparente da nossa API.
-Compatível com as versões 2.1.x, 2.2.x, 2.3.x, 2.4.x e 2.5.x do WooCommerce.
+Compatível com as versões 2.2.x, 2.3.x, 2.4.x e 2.5.x do WooCommerce.
 
 Este é o Módulo Oficial de integração fornecido pela [Gerencianet](https://gerencianet.com.br/) para WooCommerce. Com ele, o proprietário da loja pode optar por receber pagamentos por boleto bancário e/ou cartão de crédito. Todo processo é realizado por meio do checkout transparente. Com isso, o comprador não precisa sair do site da loja para efetuar o pagamento.
 
@@ -34,6 +34,6 @@ Opcional: Instale o plugin [WooCommerce Extra Checkout Fields for Brazil](https:
 ## Requisitos
 
 * Versão mínima do PHP: 5.4.0
-* Versão mínima do WooCommerce: 2.1.x
+* Versão mínima do WooCommerce: 2.2.x
 * Versão mínima do WordPress: 4.1
 

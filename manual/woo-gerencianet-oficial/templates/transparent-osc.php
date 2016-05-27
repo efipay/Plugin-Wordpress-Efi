@@ -762,10 +762,11 @@ jQuery(document).ready(function($){
 
     function validateName(data) {
         if (data) {
-            var pattern = new RegExp(/^[ ]*(?:[^\\s]+[ ]+)+[^\\s]+[ ]*$/);
-            return pattern.test(data);
-        } else {
-            return false;
+            if (data.length > 3) {
+                return true;
+            } else {
+                return false;
+            }
         }
     }
 

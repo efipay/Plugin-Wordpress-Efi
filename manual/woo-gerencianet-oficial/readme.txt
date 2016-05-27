@@ -23,7 +23,7 @@ Caso você tenha alguma dúvida ou sugestão, entre em contato conosco pelo site
 
 = Compatibilidade =
 
-Compatível com as versões 2.1.x, 2.2.x, 2.3.x, 2.4.x e 2.5.x do WooCommerce.
+Compatível com as versões 2.2.x, 2.3.x, 2.4.x e 2.5.x do WooCommerce.
 
 = Instalação =
 
