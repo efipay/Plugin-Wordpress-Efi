@@ -46,6 +46,10 @@ Opcional: Instale o plugin [WooCommerce Extra Checkout Fields for Brazil](https:
 
 = Changelog =
 
+= 0.4.3 =
+* Fix: Correção layout responsivo.
+* Fix: Compatibilidade.
+
 = 0.4.2 =
 * Fix: Bandeira dos cartões.
 * Added: Validação da versão do PHP.
@@ -100,6 +104,10 @@ Opcional: Instale o plugin [WooCommerce Extra Checkout Fields for Brazil](https:
 8. Recomendamos que antes de disponibilizar pagamentos com a Gerencianet, o lojista realize testes de cobrança com o sandbox(ambiente de testes) ativado para verificar se o procedimento de pagamento está acontecendo conforme esperado.
 
 == Changelog ==
+
+= 0.4.3 =
+* Fix: Correção layout responsivo.
+* Fix: Compatibilidade.
 
 = 0.4.2 =
 * Fix: Bandeira dos cartões.

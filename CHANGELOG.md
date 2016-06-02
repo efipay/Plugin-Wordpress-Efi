@@ -1,3 +1,7 @@
+# v0.4.3
+* Fix: Correção layout responsivo.
+* Fix: Compatibilidade.
+
 # v0.4.2
 * Fix: Bandeira dos cartões.
 * Added: Validação da versão do PHP.

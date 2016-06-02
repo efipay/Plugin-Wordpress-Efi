@@ -39,9 +39,9 @@ jQuery(document).ready(function($){
     }
 
     if ($('#gn_billet_full_name').val()=="")  {
-        if ($('#billing_first_name'))
+        if (typeof $('#billing_first_name').val() != "undefined")
             $('#gn_billet_full_name').val($('#billing_first_name').val());
-        if ($('#billing_last_name'))
+        if (typeof $('#billing_last_name').val() != "undefined")
             $('#gn_billet_full_name').val($('#gn_billet_full_name').val() + " " + $('#billing_last_name').val());
     }
     if ($('#gn_billet_email').val()=="")
@@ -56,9 +56,9 @@ jQuery(document).ready(function($){
         $('#gn_billet_cnpj').val($('#billing_cnpj').val());
 
     if ($('#gn_card_full_name').val()=="") {
-        if ($('#billing_first_name'))
+        if (typeof $('#billing_first_name').val() != "undefined")
             $('#gn_card_full_name').val($('#billing_first_name').val());
-        if ($('#billing_last_name'))
+        if (typeof $('#billing_last_name').val() != "undefined")
             $('#gn_card_full_name').val($('#gn_card_full_name').val() + " " + $('#billing_last_name').val());
     }
 
@@ -164,16 +164,29 @@ jQuery(document).ready(function($){
     });
 
     $('form[name="checkout"] input[type="submit"]').click(function(event){
+
         if ($('input[type=radio][name=paymentMethodRadio]:checked').val()=="billet") {
             if (!billetValidateFields()) {
-                event.preventDefault();
+                if (typeof $('#payment_method_gerencianet_oficial').val() != "undefined") {
+                    if ($("#payment_method_gerencianet_oficial:checked").val() == "gerencianet_oficial") {
+                        event.preventDefault();
+                    }
+                }
             }
         } else {
             if (!cardValidateFields()) {
-                event.preventDefault();
+                if (typeof $('#payment_method_gerencianet_oficial').val() != "undefined") {
+                    if ($("#payment_method_gerencianet_oficial:checked").val() == "gerencianet_oficial") {
+                        event.preventDefault();
+                    }
+                }
             } else if ($('#gn_card_number_card').val()=="") {
                 if (!generatePaymentToken()) {
-                    event.preventDefault();
+                    if (typeof $('#payment_method_gerencianet_oficial').val() != "undefined") {
+                        if ($("#payment_method_gerencianet_oficial:checked").val() == "gerencianet_oficial") {
+                            event.preventDefault();
+                        }
+                    }
                     showError("Dados do cartão inválidos. Digite Novamente.");
                 }
             }
@@ -265,7 +278,7 @@ jQuery(document).ready(function($){
             hideError();
         } else {
             $('#gn_billet_phone_number').addClass("gn-inputs-error");
-            showError("CPF inválido. Por favor, digite novamente.");
+            showError("Telefone inválido. Por favor, digite novamente.");
         }
     });
 
@@ -704,6 +717,7 @@ jQuery(document).ready(function($){
         $("#gn-billet-payment-option").addClass('gn-osc-payment-option-selected');
         $("#gn-card-payment-option").removeClass('gn-osc-payment-option-selected');
         $("#gn-card-payment-option").addClass('gn-osc-payment-option-unselected');
+        fixScreenSize();
     });
 
     jQuery('#gn-card-payment-option').click(function(e){
@@ -715,6 +729,7 @@ jQuery(document).ready(function($){
         $("#gn-billet-payment-option").addClass('gn-osc-payment-option-unselected');
         $("#gn-card-payment-option").removeClass('gn-osc-payment-option-unselected');
         $("#gn-card-payment-option").addClass('gn-osc-payment-option-selected');
+        fixScreenSize();
     });
 
     if(jQuery.mask) {
@@ -1037,6 +1052,11 @@ jQuery(document).ready(function($){
         }
     }
     fixScreenSize();
+
+    $('#payment_method_gerencianet_oficial').on('change', function() {
+        fixScreenSize();
+    });
+    
 
 });
 
