@@ -353,8 +353,8 @@ msgid "Neighborhood: "
 msgstr "Bairro: "
 
 #: includes/woo-gerencianet-oficial.php:924 includes/woo-gerencianet-oficial.php:1120
+msgid "Complement: "
 msgstr "Complemento: "
-msgstr ""
 
 #: includes/woo-gerencianet-oficial.php:925 includes/woo-gerencianet-oficial.php:1121
 msgid "Zipcode: "
@@ -418,7 +418,7 @@ msgstr "Pague em até"
 
 #: includes/woo-gerencianet-oficial.php:941 includes/woo-gerencianet-oficial.php:1137
 msgid "Billing Address"
-msgstr "Endereço da Cobrança"
+msgstr "ENDEREÇO DA COBRANÇA: "
 
 #: includes/woo-gerencianet-oficial.php:942 includes/woo-gerencianet-oficial.php:1138
 msgid "Select the state"

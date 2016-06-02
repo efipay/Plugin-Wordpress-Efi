@@ -93,28 +93,50 @@ jQuery(document).ready(function($){
     validateCardCustomerData();
 
     $('#billing_first_name').change(function() {
-        $('#gn_billet_full_name').val($('#billing_first_name').val() + " " + $('#billing_last_name').val());
-        $('#gn_card_full_name').val($('#billing_first_name').val() + " " + $('#billing_last_name').val());
+        if (typeof $('#billing_first_name').val() != "undefined") {
+            $('#gn_billet_full_name').val($('#billing_first_name').val());
+            $('#gn_card_full_name').val($('#billing_first_name').val());
+        }
+        if (typeof $('#billing_last_name').val() != "undefined") {
+            $('#gn_billet_full_name').val($('#gn_billet_full_name').val() + " " + $('#billing_last_name').val());
+            $('#gn_card_full_name').val($('#gn_card_full_name').val() + " " + $('#billing_last_name').val());
+        }
+        validateBilletCustomerData();
+        validateCardCustomerData();
     });
 
     $('#billing_last_name').change(function() {
-        $('#gn_billet_full_name').val($('#billing_first_name').val() + " " + $('#billing_last_name').val());
-        $('#gn_card_full_name').val($('#billing_first_name').val() + " " + $('#billing_last_name').val());
+        if (typeof $('#billing_first_name').val() != "undefined") {
+            $('#gn_billet_full_name').val($('#billing_first_name').val());
+            $('#gn_card_full_name').val($('#billing_first_name').val());
+        }
+        if (typeof $('#billing_last_name').val() != "undefined") {
+            $('#gn_billet_full_name').val($('#gn_billet_full_name').val() + " " + $('#billing_last_name').val());
+            $('#gn_card_full_name').val($('#gn_card_full_name').val() + " " + $('#billing_last_name').val());
+        }
+        validateBilletCustomerData();
+        validateCardCustomerData();
     });
 
     $('#billing_email').change(function() {
         $('#gn_billet_email').val($('#billing_email').val());
         $('#gn_card_email').val($('#billing_email').val());
+        validateBilletCustomerData();
+        validateCardCustomerData();
     });
 
     $('#billing_phone').change(function() {
         $('#gn_billet_phone_number').val($('#billing_phone').val());
         $('#gn_card_phone_number').val($('#billing_phone').val());
+        validateBilletCustomerData();
+        validateCardCustomerData();
     });
 
     $('#billing_cpf').change(function() {
         $('#gn_billet_cpf').val($('#billing_cpf').val());
         $('#gn_card_cpf').val($('#billing_cpf').val());
+        validateBilletCustomerData();
+        validateCardCustomerData();
     });
 
     $('#billing_company').change(function() {
@@ -129,34 +151,42 @@ jQuery(document).ready(function($){
 
     $('#billing_birthdate').change(function() {
         $('#gn_card_birth').val($('#billing_birthdate').val());
+        validateCardCustomerData();
     });
 
     $('#billing_address_1').change(function() {
         $('#gn_card_street').val($('#billing_address_1').val());
+        validateCardCustomerData();
     });
 
     $('#billing_number').change(function() {
         $('#gn_card_street_number').val($('#billing_number').val());
+        validateCardCustomerData();
     });
 
     $('#billing_neighborhood').change(function() {
         $('#gn_card_neighborhood').val($('#billing_neighborhood').val());
+        validateCardCustomerData();
     });
 
     $('#billing_address_2').change(function() {
         $('#gn_card_complement').val($('#billing_address_2').val());
+        validateCardCustomerData();
     });
 
     $('#billing_postcode').change(function() {
         $('#gn_card_zipcode').val($('#billing_postcode').val());
+        validateCardCustomerData();
     });
 
     $('#billing_city').change(function() {
         $('#gn_card_city').val($('#billing_city').val());
+        validateCardCustomerData();
     });
 
     $('#billing_state').change(function() {
         $('#gn_card_state').val($('#billing_state').val());
+        validateCardCustomerData();
     });
 
     $('#gn_card_number_card,#gn_card_cvv,#gn_card_expiration_month,#gn_card_expiration_year,input[name=gn_card_brand]').change(function() {
@@ -777,7 +807,7 @@ jQuery(document).ready(function($){
 
     function validateName(data) {
         if (data) {
-            if (data.length > 3) {
+            if (data.length > 7) {
                 return true;
             } else {
                 return false;
@@ -1125,7 +1155,7 @@ jQuery(document).ready(function($){
           </div>
           <div class="gn-form">
             <div id="billet-data">
-                <div style="background-color: #F3F3F3; border: 1px solid #F3F3F3;">
+                <div style="background-color: #F3F3F3; border: 1px solid #F3F3F3; margin-top: 10px; margin-bottom: 10px;">
               <div class="gn-osc-row">
                 <div class="gn-col-12 gn-cnpj-row">
                 <input type="checkbox" name="pay_billet_with_cnpj" id="pay_billet_with_cnpj" value="1" />  <?php echo $gn_cnpj_option; ?>
@@ -1237,85 +1267,84 @@ jQuery(document).ready(function($){
 
                 <div class="gn-form">
                 <div id="card-data" >
-                    <div class="gn-initial-section">
-                        <div style="background-color: #F3F3F3; border: 1px solid #F3F3F3;">
-                        <div class="gn-osc-row">
-                          <div class="gn-col-12 gn-cnpj-row">
-                            <input type="checkbox" name="pay_card_with_cnpj" id="pay_card_with_cnpj" value="1" />  <?php echo $gn_cnpj_option; ?>
-                          </div>
-                        </div>
+                    <div style="background-color: #F3F3F3; border: 1px solid #F3F3F3; margin-top: 10px; margin-bottom: 10px;">
+                    <div class="gn-osc-row">
+                      <div class="gn-col-12 gn-cnpj-row">
+                        <input type="checkbox" name="pay_card_with_cnpj" id="pay_card_with_cnpj" value="1" />  <?php echo $gn_cnpj_option; ?>
+                      </div>
+                    </div>
 
-                        <div id="pay_cnpj_card" class=" required gn-osc-row" >
-                          <div class="gn-col-2 gn-label">
-                          <label class="gn-right-padding-1" for="gn_card_cnpj"><?php echo $gn_cnpj; ?></label>
-                          </div>
-                          <div class="gn-col-10">
-                            
-                            <div>
-                              <div class="gn-col-3 required">
-                                <input type="text" name="gn_card_cnpj" id="gn_card_cnpj" class="form-control cnpj-mask" value="" />
-                              </div>
-                              <div class="gn-col-8">
-                                <div class=" required gn-left-space-2">
-                                  <div class="gn-col-4 gn-label">
-                                    <label class="gn-col-12 gn-right-padding-1" for="gn_card_corporate_name"><?php echo $gn_corporate_name; ?></label>
-                                  </div>
-                                  <div class="gn-col-8">
-                                    <input type="text" name="gn_card_corporate_name" id="gn_card_corporate_name" class="form-control" value="" />
-                                  </div>
-                                </div>
-                              </div>
-                            </div>
-                          </div>
-                        </div>
-                        </div>
-
-                        <div id="gn_card_name_row" class="required gn-osc-row gn-card-field" >
-                          <div class="gn-col-2 gn-label">
-                            <label class="gn-col-12 gn-right-padding-1" for="gn_card_full_name"><?php echo $gn_name; ?></label>
-                          </div>
-                          <div class="gn-col-10">
-                            <input type="text" name="gn_card_full_name" id="gn_card_full_name" value="" class="form-control" />
-                          </div>
-                        </div>
-
-                        <div id="gn_card_cpf_phone_row" class="required gn-osc-row gn-card-field" >
+                    <div id="pay_cnpj_card" class=" required gn-osc-row" >
+                      <div class="gn-col-2 gn-label">
+                      <label class="gn-right-padding-1" for="gn_card_cnpj"><?php echo $gn_cnpj; ?></label>
+                      </div>
+                      <div class="gn-col-10">
                         
-                            <div class="gn-col-2 gn-label">
-                                <label for="gn_card_cpf" class="gn-right-padding-1" ><?php echo $gn_cpf; ?></label>
-                            </div>
-                            <div class="gn-col-4">
-                                <input type="text" name="gn_card_cpf" id="gn_card_cpf" value="" class="form-control cpf-mask gn-minimum-size-field" />
-                            </div>
-                            <div class="gn-col-6">
+                        <div>
+                          <div class="gn-col-3 required">
+                            <input type="text" name="gn_card_cnpj" id="gn_card_cnpj" class="form-control cnpj-mask" value="" />
+                          </div>
+                          <div class="gn-col-8">
+                            <div class=" required gn-left-space-2">
                               <div class="gn-col-4 gn-label">
-                                  <label class="gn-left-space-2 gn-right-padding-1" for="gn_card_phone_number"><?php echo $gn_phone; ?></label>
+                                <label class="gn-col-12 gn-right-padding-1" for="gn_card_corporate_name"><?php echo $gn_corporate_name; ?></label>
                               </div>
                               <div class="gn-col-8">
-                                  <input type="text" name="gn_card_phone_number" value="" id="gn_card_phone_number" class="form-control phone-mask gn-minimum-size-field" />
+                                <input type="text" name="gn_card_corporate_name" id="gn_card_corporate_name" class="form-control" value="" />
                               </div>
-                              
                             </div>
-                        </div>
-
-                        <div id="gn_card_birth_row" class=" required gn-osc-row gn-card-field" >
-                          <div class="gn-col-3 gn-label-birth">
-                              <label class="gn-right-padding-1" for="gn_card_birth"><?php echo $gn_birth; ?></label>
-                          </div>
-                          <div class="gn-col-3">
-                              <input type="text" name="gn_card_birth" id="gn_card_birth" value="" class="form-control birth-mask" />
                           </div>
                         </div>
+                      </div>
+                    </div>
+                    </div>
 
-                        <div id="gn_card_email_row" class=" required gn-card-field" >
-                          <div class="gn-col-2">
-                            <label class="gn-col-12 gn-label gn-right-padding-1" for="gn_card_email"><?php echo $gn_email; ?></label>
+                    <div id="gn_card_name_row" class="required gn-osc-row gn-card-field" >
+                      <div class="gn-col-2 gn-label">
+                        <label class="gn-col-12 gn-right-padding-1" for="gn_card_full_name"><?php echo $gn_name; ?></label>
+                      </div>
+                      <div class="gn-col-10">
+                        <input type="text" name="gn_card_full_name" id="gn_card_full_name" value="" class="form-control" />
+                      </div>
+                    </div>
+
+                    <div id="gn_card_cpf_phone_row" class="required gn-osc-row gn-card-field" >
+                    
+                        <div class="gn-col-2 gn-label">
+                            <label for="gn_card_cpf" class="gn-right-padding-1" ><?php echo $gn_cpf; ?></label>
+                        </div>
+                        <div class="gn-col-4">
+                            <input type="text" name="gn_card_cpf" id="gn_card_cpf" value="" class="form-control cpf-mask gn-minimum-size-field" />
+                        </div>
+                        <div class="gn-col-6">
+                          <div class="gn-col-4 gn-label">
+                              <label class="gn-left-space-2 gn-right-padding-1" for="gn_card_phone_number"><?php echo $gn_phone; ?></label>
                           </div>
-                          <div class="gn-col-10">
-                            <input type="text" name="gn_card_email" value="" id="gn_card_email" class="form-control" />
+                          <div class="gn-col-8">
+                              <input type="text" name="gn_card_phone_number" value="" id="gn_card_phone_number" class="form-control phone-mask gn-minimum-size-field" />
                           </div>
+                          
                         </div>
                     </div>
+
+                    <div id="gn_card_birth_row" class=" required gn-osc-row gn-card-field" >
+                      <div class="gn-col-3 gn-label-birth">
+                          <label class="gn-right-padding-1" for="gn_card_birth"><?php echo $gn_birth; ?></label>
+                      </div>
+                      <div class="gn-col-3">
+                          <input type="text" name="gn_card_birth" id="gn_card_birth" value="" class="form-control birth-mask" />
+                      </div>
+                    </div>
+
+                    <div id="gn_card_email_row" class=" required gn-card-field" >
+                      <div class="gn-col-2">
+                        <label class="gn-col-12 gn-label gn-right-padding-1" for="gn_card_email"><?php echo $gn_email; ?></label>
+                      </div>
+                      <div class="gn-col-10">
+                        <input type="text" name="gn_card_email" value="" id="gn_card_email" class="form-control" />
+                      </div>
+                    </div>
+                    <div class="clear"></div>
 
                     <div id="billing-adress" class="gn-section">
                         <div class="gn-osc-row gn-card-field">
@@ -1427,9 +1456,7 @@ jQuery(document).ready(function($){
                     </div>
                     <div class="clear"></div>
 
-                    <div class="gn-section">
-                        <p><strong><?php echo $gn_card_title; ?></strong></p>
-
+                    <div class="gn-section" style="background-color: #F0F0F0; padding: 5px 10px;">
                         <div class="required gn-osc-row">
                             <div>
                             <label class="" for="gn_card_brand"><?php echo $gn_card_brand; ?></label>
