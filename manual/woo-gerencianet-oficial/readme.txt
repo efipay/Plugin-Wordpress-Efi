@@ -46,6 +46,9 @@ Opcional: Instale o plugin [WooCommerce Extra Checkout Fields for Brazil](https:
 
 = Changelog =
 
+= 0.4.4 =
+* Fix: Compatibilidade com versão 2.6.0 do WooCommerce
+
 = 0.4.3 =
 * Fix: Correção layout responsivo.
 * Fix: Compatibilidade.

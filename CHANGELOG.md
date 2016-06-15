@@ -1,3 +1,6 @@
+# v0.4.4
+* Fix: Compatibilidade com versão 2.6.0 do WooCommerce
+
 # v0.4.3
 * Fix: Correção layout responsivo.
 * Fix: Compatibilidade.

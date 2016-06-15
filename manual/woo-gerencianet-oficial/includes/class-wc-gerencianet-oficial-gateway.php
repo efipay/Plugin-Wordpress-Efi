@@ -400,7 +400,7 @@ class WC_Gerencianet_Oficial_Gateway extends WC_Payment_Gateway {
 	 *
 	 * @return string  
 	 */
-	protected function add_error( $message ) {
+	public function add_error( $message ) {
 		wc_add_notice( $message, 'error' );
 	}
 

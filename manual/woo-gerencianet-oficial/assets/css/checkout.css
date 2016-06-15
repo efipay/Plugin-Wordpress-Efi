@@ -166,7 +166,8 @@
     background-size: 200px 80px !important;
     background-repeat:no-repeat;
     display:inline-block !important;
-    width:42px;height:42px;
+    width:42px !important;
+    height:42px;
     background-color: #FFFFFF;
     -webkit-border-radius: 5px;
     -moz-border-radius: 5px;
@@ -763,8 +764,6 @@
     padding-right: 15px;
     padding-bottom: 15px;
 }
-
-
 
 @media only screen and (max-width: 992px) {
 
