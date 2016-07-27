@@ -1,3 +1,6 @@
+# v0.5.0
+* Added: Configuração das linhas de instrução presentes no Boleto bancário
+
 # v0.4.4
 * Fix: Compatibilidade com versão 2.6.0 do WooCommerce
 

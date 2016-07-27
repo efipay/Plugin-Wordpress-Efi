@@ -1259,7 +1259,7 @@ jQuery(document).ready(function($){
 
     <?php } ?>  
     <?php if ($card_option=="yes") { ?>
-      <div id="collapse-payment-card"  class="panel-collapse gn-hide gn-osc-background" >
+      <div id="collapse-payment-card" class="panel-collapse <?php if ($billet_option=="yes") { ?>gn-hide<?php } ?> gn-osc-background" >
         <div class="panel-body">
                 <div class="gn-osc-row gn-osc-pay-comments">
                    <p class="gn-left-space-2"><strong><?php echo $gn_card_payment_comments; ?></strong></p>

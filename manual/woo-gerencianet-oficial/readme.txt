@@ -23,7 +23,7 @@ Caso você tenha alguma dúvida ou sugestão, entre em contato conosco pelo site
 
 = Compatibilidade =
 
-Compatível com as versões 2.2.x, 2.3.x, 2.4.x e 2.5.x do WooCommerce.
+Compatível com as versões 2.2.x, 2.3.x, 2.4.x, 2.5.x e 2.6.x do WooCommerce.
 
 = Instalação =
 
@@ -45,6 +45,9 @@ Opcional: Instale o plugin [WooCommerce Extra Checkout Fields for Brazil](https:
 8. Recomendamos que antes de disponibilizar pagamentos pela Gerencianet, o lojista realize testes de cobrança com o sandbox(ambiente de testes) ativado para verificar se o procedimento de pagamento está acontecendo conforme esperado.
 
 = Changelog =
+
+= 0.5.0 =
+* Added: Configuração das linhas de instrução presentes no Boleto bancário
 
 = 0.4.4 =
 * Fix: Compatibilidade com versão 2.6.0 do WooCommerce

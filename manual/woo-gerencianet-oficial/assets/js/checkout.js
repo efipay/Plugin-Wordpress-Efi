@@ -1,4 +1,4 @@
-//0.4.4
+//0.5.0
 
 var errorMessage;
 var id_charge = 0;

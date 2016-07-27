@@ -177,12 +177,12 @@ class GerencianetIntegration {
 		}
 	}
 
-	public function pay_billet($charge_id,$expirationDate,$customer,$discount) {
+	public function pay_billet($charge_id,$expirationDate,$customer,$instructions, $discount=false) {
 
 		$options = GerencianetIntegration::get_gn_api_credentials();
 		$params = array ('id' => $charge_id);
 		
-		if ($discount) {
+		/*if ($discount) {
 			$body = array (
 			    'payment' => array (
 			        'banking_billet' => array (
@@ -201,8 +201,47 @@ class GerencianetIntegration {
 			        )
 			    )
 			);
+		}*/
+
+		if ($discount) {
+			if(sizeof($instructions) == 0)
+			{
+				$banking_billet = array (
+		            'expire_at' => $expirationDate,
+		            'customer' => $customer,
+		            'discount' => $discount
+		      	);
+			} else {
+				$banking_billet = array (
+		            'expire_at' => $expirationDate,
+		            'customer' => $customer,
+		            'instructions' => $instructions,
+		            'discount' => $discount
+		      	);
+			}
+
+		} else {
+			if(sizeof($instructions) == 0)
+			{
+				$banking_billet = array (
+		            'expire_at' => $expirationDate,
+		            'customer' => $customer
+		      	);
+			} else {
+				$banking_billet = array (
+		            'expire_at' => $expirationDate,
+		            'customer' => $customer,
+		            'instructions' => $instructions
+		      	);
+			}
 		}
 
+		$body = array (
+		    'payment' => array (
+		        'banking_billet' => $banking_billet
+		    )
+		);
+		
 		try {
 		    $api = new Gerencianet($options);
 		    $charge = $api->payCharge($params, $body);
@@ -369,7 +408,7 @@ class GerencianetIntegration {
 				break;
 			case 3500034:
 				if ($property=="payment_token") {
-					$message = 'Os dados do cartão não foram validados. Por favor, digite todos dados do cartão novamente.';
+					$message = 'Os dados do cartão não foram validados. Por favor, digite os dados do cartão novamente.';
 				} else {
 					$message = 'O campo ' . $this->getFieldName($property) . ' não está preenchido corretamente.';
 				}
@@ -404,6 +443,9 @@ class GerencianetIntegration {
 			case 4600037:
 				$message = 'O valor da emissão é superior ao limite operacional da conta. Por favor, solicite que o recebedor entre em contato com o suporte Gerencianet.';
 				break;
+			case 4600073:
+				$message = 'O telefone informado não é válido.';
+				break;
 			case 4600111:
 				$message = 'valor de cada parcela deve ser igual ou maior que R$5,00';
 				break;
@@ -427,6 +469,9 @@ class GerencianetIntegration {
 				break;
 			case 4600212:
 				$message = 'Número de telefone já associado a outro CPF. Não é possível cadastrar o mesmo telefone para mais de um CPF.';
+				break;
+			case 4600222:
+				$message = 'Recebedor e cliente não podem ser a mesma pessoa.';
 				break;
 			case 4600219:
 				$message = 'Ocorreu um erro ao validar seus dados: ' . $property;
