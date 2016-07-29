@@ -198,7 +198,7 @@ if ( ! defined( 'ABSPATH' ) ) {
                     <center><span class="payment-installments-gerencianet"><?php echo $gn_installments_pay; ?></span><br><span class="payment-discount-gerencianet"><b><?php echo $max_installments; ?></b></span></center>
                 </div>
                 <div class="gn-right gn-price-payment-selected total-gerencianet">
-                    <?php echo strip_tags($order->get_formatted_order_total()); ?>
+                    <?php echo $order_total; ?>
                 </div>
                 <div class="clear"></div>
             </div>
@@ -562,7 +562,7 @@ if ( ! defined( 'ABSPATH' ) ) {
         </div>
         <div id="price-card" name="price-card" class="gn-hide">
             <p>
-                <button class="button alt" id="gn-pay-card-button"><?php _e( 'Pay with Credit Card', WCGerencianetOficial::getTextDomain() ); echo ' &nbsp; | &nbsp; '.strip_tags($order->get_formatted_order_total()); ?></button>
+                <button class="button alt" id="gn-pay-card-button"><?php _e( 'Pay with Credit Card', WCGerencianetOficial::getTextDomain() ); echo ' &nbsp; | &nbsp; '.$order_total; ?></button>
             </p>
         </div>
         <div id="price-no-payment-selected" name="price-no-payment-selected">

@@ -564,7 +564,6 @@ class GerencianetIntegration {
 	    }
 	}
 
-
 	public static function formatCurrencyBRL($value) {
 		$formated = "R$".number_format(intval($value)/100, 2, ',', '.');
 

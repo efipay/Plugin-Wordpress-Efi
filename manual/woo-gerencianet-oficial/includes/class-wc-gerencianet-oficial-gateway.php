@@ -479,10 +479,17 @@ class WC_Gerencianet_Oficial_Gateway extends WC_Payment_Gateway {
 
 		if ($post_order_id=="") {
 			$value = WC()->cart->get_cart_total();
-			$total =  ((int)preg_replace("/[^0-9]/", "", html_entity_decode($value)));
+			$shipping = WC()->cart->get_cart_shipping_total();
+			$total =  ((int)preg_replace("/[^0-9]/", "", html_entity_decode($value)) + (int)preg_replace("/[^0-9]/", "", html_entity_decode($shipping)));
 		} else {
+			$meta_discount_value_array = get_post_meta( intval($post_order_id), 'billet_discount_value');
+			if (isset($meta_discount_value_array[0])) {
+				$meta_discount_value = $meta_discount_value_array[0];
+			} else {
+				$meta_discount_value = 0;
+			}
 			$order = wc_get_order( $post_order_id );
-			$total = $this->gn_price_format($order->get_total());	
+			$total = $this->gn_price_format($order->get_total())+$meta_discount_value;	
 		}
 			
 
@@ -675,8 +682,10 @@ class WC_Gerencianet_Oficial_Gateway extends WC_Payment_Gateway {
 		} else {
 			$totalShipping=0;
 		}
-		
-		if ($order->get_status() == "failed") {
+
+		$meta_discount_value_array = get_post_meta( intval($post_order_id), 'billet_discount_value');
+
+		if ($order->get_status() == "failed" || isset($meta_discount_value_array[0])) {
 			$discountBillet = $this->discountBillet;
 			$discountTotalValue = (int)($this->gn_price_format($order->get_total_discount()));
 			if ($this->billet_discount_shipping=="products") {
@@ -696,6 +705,8 @@ class WC_Gerencianet_Oficial_Gateway extends WC_Payment_Gateway {
 			}
 			
 		}
+
+
 		if ($discountTotalValue>0) {
 			$discount = array (
 				'type' => 'currency',
@@ -724,7 +735,7 @@ class WC_Gerencianet_Oficial_Gateway extends WC_Payment_Gateway {
 				}
 				global $wpdb;
 
-				if ($order->get_status() != "failed") {
+				if ($order->get_status() != "failed" && !isset($meta_discount_value_array[0])) {
 					$wpdb->insert($wpdb->prefix . "woocommerce_order_items", array('order_item_name' => __('Discount of ', WCGerencianetOficial::getTextDomain() ) . str_replace(".",",",$discountBillet) . __('% Billet', WCGerencianetOficial::getTextDomain() ), 'order_item_type' => 'fee', 'order_id' => intval($post_order_id)  ) );
 					$lastid = $wpdb->insert_id;
 					$wpdb->insert($wpdb->prefix . "woocommerce_order_itemmeta", array('order_item_id' => $lastid, 'meta_key' => '_tax_class', 'meta_value' => '0'  ) );
@@ -735,7 +746,6 @@ class WC_Gerencianet_Oficial_Gateway extends WC_Payment_Gateway {
 						$wpdb->insert($wpdb->prefix . "woocommerce_order_itemmeta", array('order_item_id' => $lastid, 'meta_key' => '_line_total', 'meta_value' => '-'.number_format(intval(floor(($this->gn_price_format($order->get_total()))*(((float)$discountBillet/100))))/100, 2, '.', '')  ) );
 					}
 					
-
 					$wpdb->insert($wpdb->prefix . "woocommerce_order_itemmeta", array('order_item_id' => $lastid, 'meta_key' => '_line_tax', 'meta_value' => '0'  ) );
 					$wpdb->insert($wpdb->prefix . "woocommerce_order_itemmeta", array('order_item_id' => $lastid, 'meta_key' => '_line_tax_data', 'meta_value' => '0'  ) );
 
@@ -743,6 +753,7 @@ class WC_Gerencianet_Oficial_Gateway extends WC_Payment_Gateway {
 
 					update_post_meta( intval($post_order_id), '_payment_method_title', sanitize_text_field(__('Billet Banking - Gerencianet', WCGerencianetOficial::getTextDomain() )) );
 					add_post_meta( intval($post_order_id), 'billet', $resultCheck['data']['link'], true );
+					add_post_meta( intval($post_order_id), 'billet_discount_value', $discountBilletTotal, true );
 				}
 				$order->update_status( 'on-hold', __ ( 'Waiting' ) );
 				$order->reduce_order_stock();
@@ -934,6 +945,18 @@ class WC_Gerencianet_Oficial_Gateway extends WC_Payment_Gateway {
 					write_log( 'GERENCIANET :: gerencianet_pay_card Request : SUCCESS ' );
 				}
 				update_post_meta( intval($post_order_id), '_payment_method_title', sanitize_text_field( __('Credit Card - Gerencianet', WCGerencianetOficial::getTextDomain() )) );
+
+				$meta_discount_value_array = get_post_meta( intval($post_order_id), 'billet_discount_value');
+
+				if (isset($meta_discount_value_array[0])) {
+					if ((int)$meta_discount_value_array[0]>0) {
+						update_post_meta( intval($post_order_id), '_order_total', number_format(intval(ceil($this->gn_price_format($order->get_total()) + ($meta_discount_value_array[0])))/100, 2, '.', '') );
+
+						add_post_meta( intval($post_order_id), 'billet', '', true );
+						add_post_meta( intval($post_order_id), 'billet_discount_value', '0', true );
+					}
+				}
+				
 				$order->update_status( 'on-hold', __ ( 'Waiting' ) );
 
 				WC()->cart->empty_cart();
@@ -978,13 +1001,21 @@ class WC_Gerencianet_Oficial_Gateway extends WC_Payment_Gateway {
 		}
 
 		$discount = $this->discountBillet;
+		$meta_discount_value_array = get_post_meta( intval($order_id), 'billet_discount_value');
+
+		if (isset($meta_discount_value_array[0])) {
+			$discount=0;
+			$meta_discount_value = (int)$meta_discount_value_array[0];
+		} else {
+			$meta_discount_value = 0;
+		}
 
 		$billet_option = $this->billet_banking;
 		$card_option = $this->credit_card;
 
 		$order_received_url = $order->get_checkout_order_received_url();
 
-		$max_installments = $this->gnIntegration->max_installments($this->gn_price_format($order->get_total()));
+		$max_installments = $this->gnIntegration->max_installments($this->gn_price_format($order->get_total())+$meta_discount_value);
 
 
 		if ($this->billet_discount_shipping=="products") {
@@ -994,14 +1025,14 @@ class WC_Gerencianet_Oficial_Gateway extends WC_Payment_Gateway {
 		}
 
 		
-		$order_total = $this->gnIntegration->formatCurrencyBRL($this->gn_price_format($order->get_total()));
+		$order_total = $this->gnIntegration->formatCurrencyBRL($this->gn_price_format($order->get_total())+$meta_discount_value);
 
-		$order_total_card = $this->gn_price_format($order->get_total());
+		$order_total_card = $this->gn_price_format($order->get_total())+$meta_discount_value;
 
 		if ($this->billet_discount_shipping=="products") {
-			$order_total_billet = ceil(($this->gn_price_format($order->get_total())-$totalShipping)*(1-((float)$discount/100)));
+			$order_total_billet = ceil(($this->gn_price_format($order->get_total())-$totalShipping)*(1-((float)$discount/100))+$meta_discount_value);
 		} else {
-			$order_total_billet = ceil(($this->gn_price_format($order->get_total()))*(1-((float)$discount/100)));
+			$order_total_billet = ceil(($this->gn_price_format($order->get_total()))*(1-((float)$discount/100))+$meta_discount_value);
 		}
 
 
@@ -1178,30 +1209,64 @@ class WC_Gerencianet_Oficial_Gateway extends WC_Payment_Gateway {
 				$script = htmlentities(html_entity_decode("var s=document.createElement('script');s.type='text/javascript';var v=parseInt(Math.random()*1000000);s.src='https://api.gerencianet.com.br/v1/cdn/".$this->payee_code."/'+v;s.async=false;s.id='".$this->payee_code."';if(!document.getElementById('".$this->payee_code."')){document.getElementsByTagName('head')[0].appendChild(s);};&#36;gn={validForm:true,processed:false,done:{},ready:function(fn){&#36;gn.done=fn;}};"));
 			}
 
-			$order_total =  ((int)preg_replace("/[^0-9]/", "", html_entity_decode(WC()->cart->get_cart_total())))/100 + ((int)preg_replace("/[^0-9]/", "", html_entity_decode(WC()->cart->get_cart_shipping_total())))/100;
+			if (!$order_id && isset($_GET[key])) {
+				$order_id = wc_get_order_id_by_order_key(sanitize_text_field($_GET[key]));
+			}
+			if ($order_id) {
+				$order = wc_get_order( $order_id );
+			} else {
+				$order = null;
+			}
+			if ($order) {
+				$meta_discount_value_array = get_post_meta( intval($order_id), 'billet_discount_value');
+				if (isset($meta_discount_value_array[0])) {
+					$meta_discount_value = $meta_discount_value_array[0];
+				} else {
+					$meta_discount_value = 0;
+				}
+				if ($this->gn_price_format($order->get_total_shipping())>0) {
+					$totalShipping = (int) $this->gn_price_format($order->get_total_shipping());
+				} else {
+					$totalShipping=0;
+				}
+				$order_total_value_without_shipping = $this->gn_price_format($order->get_total())-$totalShipping;
+				$order_total_shipping_value = $totalShipping;
+			} else {
+				$meta_discount_value = 0;
+				$order_total_value_without_shipping = WC()->cart->get_cart_total();
+				$order_total_shipping_value = WC()->cart->get_cart_shipping_total();
+			}
 
-			$order_total_without_shipping =  ((int)preg_replace("/[^0-9]/", "", html_entity_decode(WC()->cart->get_cart_total())))/100;
+			$order_total =  ((int)preg_replace("/[^0-9]/", "", html_entity_decode($order_total_value_without_shipping)))/100 + ((int)preg_replace("/[^0-9]/", "", html_entity_decode($order_total_shipping_value)))/100;
 
-			$discount = $this->discountBillet;
+			$order_total_without_shipping =  ((int)preg_replace("/[^0-9]/", "", html_entity_decode($order_total_value_without_shipping)))/100;
+
+			if ($meta_discount_value>0) {
+				$discount = 0;
+			} else {
+				$discount = $this->discountBillet;
+			}
+			
 			$discountBilletFormatted = str_replace(".",",",$discount);
 
 			if ($this->billet_discount_shipping=="products") {
-				$total_order_pay_by_billet = ceil($this->gn_price_format($order_total_without_shipping)*(1-((float)$discount/100)) + ((int)preg_replace("/[^0-9]/", "", html_entity_decode(WC()->cart->get_cart_shipping_total()))));
+				$total_order_pay_by_billet = ceil($this->gn_price_format($order_total_without_shipping)*(1-((float)$discount/100)) + ((int)preg_replace("/[^0-9]/", "", html_entity_decode($order_total_shipping_value))));
 			} else {
 				$total_order_pay_by_billet = ceil($this->gn_price_format($order_total)*(1-((float)$discount/100)));
 			}
 
-			$total_order_pay_by_card = $this->gn_price_format($order_total);
+			$total_order_pay_by_card = $this->gn_price_format($order_total)+$meta_discount_value;
 			$discount_value = $total_order_pay_by_card - $total_order_pay_by_billet;
 
 			wc_get_template( 'transparent-osc.php', array(
+				'order_id' => $order_id,
 				'ajax_url' => admin_url( 'admin-ajax.php' ),
 				'script_load' => $script,
 				'discount' => $discount,
 				'discount_formatted' => $discountBilletFormatted,
 				'billet_option' => $this->billet_banking,
 				'card_option' => $this->credit_card,
-				'max_installments' => $this->gnIntegration->max_installments($this->gn_price_format($order_total)),
+				'max_installments' => $this->gnIntegration->max_installments($total_order_pay_by_card),
 				'order_with_billet_discount' => $this->gnIntegration->formatCurrencyBRL($total_order_pay_by_billet),
 				'order_billet_discount' => $this->gnIntegration->formatCurrencyBRL($discount_value),
 				'order_total' => $this->gnIntegration->formatCurrencyBRL($total_order_pay_by_card),

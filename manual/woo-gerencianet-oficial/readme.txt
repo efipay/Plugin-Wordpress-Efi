@@ -39,18 +39,24 @@ Opcional: Instale o plugin [WooCommerce Extra Checkout Fields for Brazil](https:
 2. Configure as credenciais de sua Aplicação Gerencianet. Para criar uma nova Aplicação, entre em sua conta Gerencianet, acesse o menu "API" e clique em "Minhas Aplicações" -> "Nova aplicação". Insira as credenciais Client ID e Client Secret de produção e desenvolvimento nos respectivos campos de configuração do plugin.
 3. Insira o Payee Code (identificador) de sua conta Gerencianet.
 4. Configure as opções de pagamento que deseja receber: Boleto e/ou Cartão de Crédito.
-5. Defina se deseja aplicar desconto para pagamentos com Boleto e insira o número de dias corridos para vencimento.
-6. Escolha se deseja que o plugin atualize os status dos pedidos da loja automaticamente, de acordo com as notificações de alteração do status da cobrança Gerencianet.
-7. Configure se deseja ativar o Sandbox (ambiente de testes).
-8. Recomendamos que antes de disponibilizar pagamentos pela Gerencianet, o lojista realize testes de cobrança com o sandbox(ambiente de testes) ativado para verificar se o procedimento de pagamento está acontecendo conforme esperado.
+5. Defina se deseja aplicar desconto para pagamentos com Boleto, o modo de aplicar esse desconto e insira o número de dias corridos para vencimento.
+6. Defina as instruções para pagamento no Boleto em quatro linhas de até 90 caracteres cada uma. Caso essas linhas não sejam definidas pelo lojista, será exibido no boleto as instruções padrões da Gerencianet.
+7. Escolha se deseja que o plugin atualize os status dos pedidos da loja automaticamente, de acordo com as notificações de alteração do status da cobrança Gerencianet.
+8. Escolha se deseja que o plugin atualize os status dos pedidos da loja automaticamente, de acordo com as notificações de alteração do status da cobrança Gerencianet.
+9. Configure se deseja ativar o Sandbox (ambiente de testes).
+10. Recomendamos que antes de disponibilizar pagamentos pela Gerencianet, o lojista realize testes de cobrança com o sandbox(ambiente de testes) ativado para verificar se o procedimento de pagamento está acontecendo conforme esperado.
 
 = Changelog =
 
+= 0.5.1 =
+* Fix: Link para pagamento da cobrança.
+
 = 0.5.0 =
-* Added: Configuração das linhas de instrução presentes no Boleto bancário
+* Added: Configuração das linhas de instrução presentes no Boleto bancário.
+* Added: Opção da forma de aplicar desconto no boleto.
 
 = 0.4.4 =
-* Fix: Compatibilidade com versão 2.6.0 do WooCommerce
+* Fix: Compatibilidade com versão 2.6.0 do WooCommerce.
 
 = 0.4.3 =
 * Fix: Correção layout responsivo.
@@ -104,12 +110,24 @@ Opcional: Instale o plugin [WooCommerce Extra Checkout Fields for Brazil](https:
 2. Configure as credenciais de sua Aplicação Gerencianet. Para criar uma nova Aplicação, entre em sua conta Gerencianet, acesse o menu "API" e clique em "Minhas Aplicações" -> "Nova aplicação". Insira as credenciais Client ID e Client Secret de produção e desenvolvimento nos respectivos campos de configuração do plugin.
 3. Insira o Payee Code (identificador) de sua conta Gerencianet.
 4. Configure as opções de pagamento que deseja receber: Boleto e/ou Cartão de Crédito.
-5. Defina se deseja aplicar desconto para pagamentos com Boleto e insira o número de dias corridos para vencimento.
-6. Escolha se deseja que o plugin atualize os status dos pedidos da loja automaticamente, de acordo com as notificações de alteração do status da cobrança Gerencianet.
-7. Configure se deseja ativar o Sandbox (ambiente de testes).
-8. Recomendamos que antes de disponibilizar pagamentos com a Gerencianet, o lojista realize testes de cobrança com o sandbox(ambiente de testes) ativado para verificar se o procedimento de pagamento está acontecendo conforme esperado.
+5. Defina se deseja aplicar desconto para pagamentos com Boleto, o modo de aplicar esse desconto e insira o número de dias corridos para vencimento.
+6. Defina as instruções para pagamento no Boleto em quatro linhas de até 90 caracteres cada uma. Caso essas linhas não sejam definidas pelo lojista, será exibido no boleto as instruções padrões da Gerencianet.
+7. Escolha se deseja que o plugin atualize os status dos pedidos da loja automaticamente, de acordo com as notificações de alteração do status da cobrança Gerencianet.
+8. Escolha se deseja que o plugin atualize os status dos pedidos da loja automaticamente, de acordo com as notificações de alteração do status da cobrança Gerencianet.
+9. Configure se deseja ativar o Sandbox (ambiente de testes).
+10. Recomendamos que antes de disponibilizar pagamentos pela Gerencianet, o lojista realize testes de cobrança com o sandbox(ambiente de testes) ativado para verificar se o procedimento de pagamento está acontecendo conforme esperado.
 
 == Changelog ==
+
+= 0.5.1 =
+* Fix: Link para pagamento da cobrança.
+
+= 0.5.0 =
+* Added: Configuração das linhas de instrução presentes no Boleto bancário.
+* Added: Opção da forma de aplicar desconto no boleto.
+
+= 0.4.4 =
+* Fix: Compatibilidade com versão 2.6.0 do WooCommerce
 
 = 0.4.3 =
 * Fix: Correção layout responsivo.

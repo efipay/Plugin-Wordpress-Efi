@@ -1,4 +1,4 @@
-# Módulo de Integração Gerencianet para WooCommerce Oficial - Versão 0.5.0 #
+# Módulo de Integração Gerencianet para WooCommerce Oficial - Versão 0.5.1 #
 
 O módulo Gerencianet para WooCommerce permite receber pagamentos por meio do checkout transparente da nossa API.
 Compatível com as versões 2.2.x, 2.3.x, 2.4.x, 2.5.x e 2.6.x do WooCommerce.
@@ -25,10 +25,11 @@ Opcional: Instale o plugin [WooCommerce Extra Checkout Fields for Brazil](https:
 2. Configure as credenciais de sua Aplicação Gerencianet. Para criar uma nova Aplicação, entre em sua conta Gerencianet, acesse o menu "API" e clique em "Minhas Aplicações" -> "Nova aplicação". Insira as credenciais disponíveis neste link (Client ID e Client Secret de produção e desenvolvimento) nos respectivos campos de configuração do plugin.
 3. Insira o Payee Code (identificador) de sua conta Gerencianet.
 4. Configure as opções de pagamento que deseja receber: Boleto e/ou Cartão de Crédito.
-5. Defina se deseja aplicar desconto para pagamentos com Boleto e insira o número de dias corridos para vencimento.
-6. Escolha se deseja que o plugin atualize os status dos pedidos da loja automaticamente, de acordo com as notificações de alteração do status da cobrança Gerencianet.
-7. Configure se deseja ativar o Sandbox (ambiente de testes) e Debug.
-8. Recomendamos que antes de disponibilizar pagamentos pela Gerencianet, o lojista realize testes de cobrança com o sandbox(ambiente de testes) ativado para verificar se o procedimento de pagamento está acontecendo conforme esperado.
+5. Defina se deseja aplicar desconto para pagamentos com Boleto, o modo de aplicar esse desconto e insira o número de dias corridos para vencimento.
+6. Defina as instruções para pagamento no Boleto em quatro linhas de até 90 caracteres cada uma. Caso essas linhas não sejam definidas pelo lojista, será exibido no boleto as instruções padrões da Gerencianet.
+7. Escolha se deseja que o plugin atualize os status dos pedidos da loja automaticamente, de acordo com as notificações de alteração do status da cobrança Gerencianet.
+8. Configure se deseja ativar o Sandbox (ambiente de testes) e Debug.
+9. Recomendamos que antes de disponibilizar pagamentos pela Gerencianet, o lojista realize testes de cobrança com o sandbox(ambiente de testes) ativado para verificar se o procedimento de pagamento está acontecendo conforme esperado.
 
 
 ## Requisitos

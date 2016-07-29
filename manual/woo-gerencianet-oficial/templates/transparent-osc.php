@@ -1042,10 +1042,11 @@ jQuery(document).ready(function($){
 
     function getInstallments(card_brand) {
         $('#gn_card_installments').html('<option value="">Aguarde, carregando...</option>').show();
+        var order_id = jQuery('input[name="wc_order_id"]').val();
         var data = {
             action: "woocommerce_gerencianet_get_installments",
             security: "woocommerce_gerencianet",
-            order_id: "",
+            order_id: order_id,
             brand: card_brand
         };
         
@@ -1149,6 +1150,7 @@ jQuery(document).ready(function($){
     </div>
     <?php if ($billet_option=="yes") { ?>
     <div id="collapse-payment-billet" class="gn-osc-background" >
+        <input name="wc_order_id" id="wc_order_id" type="hidden" value="<?php echo $order_id;?>"/>
       <div class="panel-body">
           <div class="gn-osc-row gn-osc-pay-comments">
               <p class="gn-left-space-2"><strong><?php echo $gn_billet_payment_method_comments; ?></strong></p>

@@ -1,4 +1,4 @@
-//0.5.0
+//0.5.1
 var getPaymentToken;
 $gn.ready(function(checkout) {
     getPaymentToken = checkout.getPaymentToken;

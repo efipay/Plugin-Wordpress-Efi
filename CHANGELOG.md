@@ -1,3 +1,7 @@
+# v0.5.1
+* Fix: Link para pagamento da cobrança.
+* Added: Opção da forma de aplicar desconto no boleto.
+
 # v0.5.0
 * Added: Configuração das linhas de instrução presentes no Boleto bancário
 
