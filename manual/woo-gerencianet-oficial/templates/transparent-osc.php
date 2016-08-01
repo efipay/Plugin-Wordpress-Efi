@@ -1148,9 +1148,9 @@ jQuery(document).ready(function($){
         <?php } ?>
         <div class="clear"></div>
     </div>
+    <input name="wc_order_id" id="wc_order_id" type="hidden" value="<?php echo $order_id;?>"/>
     <?php if ($billet_option=="yes") { ?>
     <div id="collapse-payment-billet" class="gn-osc-background" >
-        <input name="wc_order_id" id="wc_order_id" type="hidden" value="<?php echo $order_id;?>"/>
       <div class="panel-body">
           <div class="gn-osc-row gn-osc-pay-comments">
               <p class="gn-left-space-2"><strong><?php echo $gn_billet_payment_method_comments; ?></strong></p>
