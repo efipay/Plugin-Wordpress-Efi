@@ -345,12 +345,20 @@ msgid "Company:"
 msgstr "Razão Social:"
 
 #: includes/woo-gerencianet-oficial.php:999 includes/woo-gerencianet-oficial.php:1197
+msgid "Name/Company:"
+msgstr "Nome/Razão Social:"
+
+#: includes/woo-gerencianet-oficial.php:999 includes/woo-gerencianet-oficial.php:1197
 msgid "Name:"
 msgstr "Nome:"
 
 #: includes/woo-gerencianet-oficial.php:1000 includes/woo-gerencianet-oficial.php:1198
 msgid "CPF: "
 msgstr "CPF: "
+
+#: includes/woo-gerencianet-oficial.php:1000 includes/woo-gerencianet-oficial.php:1198
+msgid "CPF/CNPJ: "
+msgstr "CPF/CNPJ: "
 
 #: includes/woo-gerencianet-oficial.php:1001 includes/woo-gerencianet-oficial.php:1199
 msgid "Phone: "

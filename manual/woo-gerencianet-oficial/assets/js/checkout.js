@@ -1,4 +1,4 @@
-//0.5.1
+//0.5.2
 
 var errorMessage;
 var id_charge = 0;
@@ -7,23 +7,65 @@ var active = 0;
 jQuery(document).ready(function($){
     
     if(jQuery.mask) {
-        $(".cpf-mask").mask("999.999.999-99",{
-            completed:function(){ 
-                if (!verifyCPF(this.val())) {
-                    showError('CPF inválido. Digite novamente.');
-                } else {
-                    hideError();
+        $("#cpf-cnpj").keyup(function(e){
+            var tamanho = $("#cpf-cnpj").val().replace(/[^\d]+/g,'').length;
+            console.log($("#cpf-cnpj").val());
+            console.log(tamanho);
+            
+            $("#cpf-cnpj").unmask();
+ 
+            if(e.keyCode == 8)
+            {
+                if(tamanho == 11){
+                    $("#cpf-cnpj").mask("999.999.999-99?9",{autoclear:false, placeholder:""});
+                    $("#cpf-cnpj").unmask();
+                } else if(tamanho == 12){
+                    $("#cpf-cnpj").mask("99.999.999/9999-99",{autoclear:false, placeholder:""});
+                    $("#cpf-cnpj").unmask();
                 }
-            },placeholder:"___.___.___-__"});
+                else 
+                {
+                    $("#cpf-cnpj").unmask();
+                    return;
+                }
+            }
+            if(tamanho <= 11){
+                $("#cpf-cnpj").mask("999.999.999-99?9",{autoclear:false, placeholder:""});
+            } else if(tamanho > 11){
+                $("#cpf-cnpj").mask("99.999.999/9999-99",{autoclear:false, placeholder:""});
+            }      
+        });
 
-        jQuery(".cnpj-mask").mask("99.999.999/9999-99",{
-            completed:function(){ 
-                if (!verifyCNPJ(this.val())) {
-                    showError('CNPJ inválido. Digite novamente.');
-                } else {
-                    hideError();
+        $("#input-payment-card-cpf-cnpj").keyup(function(e){
+            var tamanho = $("#input-payment-card-cpf-cnpj").val().replace(/[^\d]+/g,'').length;
+            console.log($("#input-payment-card-cpf-cnpj").val());
+            console.log(tamanho);
+
+            $("#input-payment-card-cpf-cnpj").unmask();
+
+            
+            if(e.keyCode == 8)
+            {
+                console.log('backspace');
+                if(tamanho == 11){
+                    $("#input-payment-card-cpf-cnpj").mask("999.999.999-99?9",{autoclear:false, placeholder:""});
+                    $("#input-payment-card-cpf-cnpj").unmask();
+                } else if(tamanho == 12){
+                    $("#input-payment-card-cpf-cnpj").mask("99.999.999/9999-99",{autoclear:false, placeholder:""});
+                    $("#input-payment-card-cpf-cnpj").unmask();
                 }
-            },placeholder:"__.___.___/____-__"});
+                else 
+                {
+                    $("#input-payment-card-cpf-cnpj").unmask();
+                    return;
+                }
+            }
+            if(tamanho <= 11){
+                $("#input-payment-card-cpf-cnpj").mask("999.999.999-99?9",{autoclear:false, placeholder:""});
+            } else if(tamanho > 11){
+                $("#input-payment-card-cpf-cnpj").mask("99.999.999/9999-99",{autoclear:false, placeholder:""});
+            }                
+        });
 
         $(".phone-mask").focusout(function(){
             $(".phone-mask").unmask();
@@ -57,19 +99,10 @@ jQuery(document).ready(function($){
             }
         });
 
-    jQuery('.corporate-name-validade').change(function() {
+    jQuery('.corporate-name-corporate_validade').change(function() {
         var pattern = new RegExp(/^[ ]*(?:[^\\s]+[ ]+)+[^\\s]+[ ]*$/);
         if (!pattern.test(jQuery(this).val())) {
-            showError('Razão Social inválida. Digite novamente.');
-        } else {
-            hideError();
-        }
-    });
-
-    jQuery('.name-validate').change(function() {
-        var pattern = new RegExp(/^[ ]*(?:[^\\s]+[ ]+)+[^\\s]+[ ]*$/);
-        if (!pattern.test(jQuery(this).val())) {
-            showError('Nome inválido. Digite novamente.');
+            showError('Nome ou Razão Social inválida(o). Digite novamente.');
         } else {
             hideError();
         }
@@ -148,31 +181,6 @@ jQuery(document).ready(function($){
         jQuery('#price-card').show();
         jQuery('#price-no-payment-selected').hide();
         active = 2;
-    }
-
-    $('#pay_billet_with_cnpj').click(function() {
-        if ($(this).is(':checked')) {
-            $('#pay_cnpj').slideDown();
-        } else {
-            $('#pay_cnpj').slideUp();
-        }
-    });
-
-    $('#pay_card_with_cnpj').click(function() {
-        if ($(this).is(':checked')) {
-            $('#pay_cnpj_card').slideDown();
-        } else {
-            $('#pay_cnpj_card').slideUp();
-        }
-    });
-
-    if (payCnpj) {
-        $('#pay_billet_with_cnpj').prop('checked', true);
-        $('#pay_card_with_cnpj').prop('checked', true);
-        if (showCnpjFields) {
-            $('#pay_cnpj_card').slideDown();
-            $('#pay_cnpj').slideDown();
-        }
     }
 
     $('input[type=radio][name=input-payment-card-brand]').change(function() {
@@ -266,24 +274,15 @@ jQuery(document).ready(function($){
     function payBilletCharge() {
         $('.gn-loading-request').fadeIn();
 
-        var juridical;
-        if($('#pay_billet_with_cnpj').attr('checked')) {
-            juridical="1";
-        } else {
-            juridical="0";
-        }
         var data = {
             action: "woocommerce_gerencianet_pay_billet",
             security: woocommerce_gerencianet_api.security,
             charge_id: id_charge,
             order_id: jQuery('input[name="wc_order_id"]').val(),
-            name: jQuery('#first_name').val(),
-            cpf: jQuery('#cpf').val().replace(/[^\d]+/g,''),
+            name_corporate: jQuery('#name_corporate').val(),
+            cpf_cnpj: jQuery('#cpf-cnpj').val().replace(/[^\d]+/g,''),
             phone_number: jQuery('#phone_number').val().replace(/[^\d]+/g,''),
-            email: jQuery('#input-payment-billet-email').val(),
-            cnpj: jQuery('#cnpj').val().replace(/[^\d]+/g,''),
-            corporate_name: jQuery('#corporate_name').val(),
-            pay_billet_with_cnpj: juridical
+            email: jQuery('#input-payment-billet-email').val()
         };
         
         jQuery.ajax({
@@ -316,14 +315,20 @@ jQuery(document).ready(function($){
 
     function validateBilletFields() {
         errorMessage = '';
-        if (!(($("#pay_billet_with_cnpj").is(':checked') && verifyCNPJ($('#cnpj').val())) || !($("#pay_billet_with_cnpj").is(':checked')))) {
-            errorMessage = 'Digite o CNPJ da empresa.';
-        } else if (!(($("#pay_billet_with_cnpj").is(':checked') && $('#corporate_name').val()!="") || !($("#pay_billet_with_cnpj").is(':checked')))) {
-            errorMessage = 'Digite a razão social da empresa.';
-        } else if (!(verifyCPF($('#cpf').val()))) {
-            errorMessage = 'O CPF digitado é inválido.';
-        } else if ($('#first_name').val()=="") {
-            errorMessage = 'Digite o nome.';
+        if($("#cpf-cnpj").val().replace(/[^\d]+/g,'').length <= 11)
+        {
+            if (!(verifyCPF($('#cpf-cnpj').val()))) {
+                errorMessage = 'O CPF digitado é inválido.';
+            }
+        }
+        else
+        {
+            if (!(verifyCNPJ($('#cpf-cnpj').val()))) {
+                errorMessage = 'O CNPJ digitado é inválido.';
+            }
+        }
+        if ($('#name_corporate').val()=="") {
+            errorMessage = 'Digite o Nome ou a Razão Social.';
         } else if (!(verifyPhone($('#phone_number').val()))) {
             errorMessage = 'O Telefone digitado é inválido.';
         } else if (!(verifyEmail($('#input-payment-billet-email').val()))) {
@@ -341,14 +346,20 @@ jQuery(document).ready(function($){
 
     function validateCardFields() {
         errorMessage = '';
-        if (!(($("#pay_card_with_cnpj").is(':checked') && verifyCNPJ($('#cnpj_card').val())) || !($("#pay_card_with_cnpj").is(':checked')))) {
-            errorMessage = 'Digite o CNPJ da empresa.';
-        } else if (!(($("#pay_card_with_cnpj").is(':checked') && $('#corporate_name_card').val()!="") || !($("#pay_card_with_cnpj").is(':checked')))) {
-            errorMessage = 'Digite a razão social da empresa.';
-        } else if (!(verifyCPF($('#input-payment-card-cpf').val()))) {
-            errorMessage = 'O CPF digitado é inválido.';
-        } else if ($('#input-payment-card-name').val()=="") {
-            errorMessage = 'Digite o nome.';
+        if($("#input-payment-card-cpf-cnpj").val().replace(/[^\d]+/g,'').length <= 11)
+        {
+            if (!(verifyCPF($('#input-payment-card-cpf-cnpj').val()))) {
+                errorMessage = 'O CPF digitado é inválido.';
+            }
+        }
+        else
+        {
+            if (!(verifyCNPJ($('#input-payment-card-cpf-cnpj').val()))) {
+                errorMessage = 'O CNPJ digitado é inválido.';
+            }
+        }
+        if ($('#input-payment-card-name-corporate').val()=="") {
+            errorMessage = 'Digite o Nome ou a Razão Social.';
         } else if (!(verifyPhone($('#input-payment-card-phone').val()))) {
             errorMessage = 'O Telefone digitado é inválido.';
         } else if (!(verifyEmail($('#input-payment-card-email').val()))) {
@@ -421,24 +432,14 @@ jQuery(document).ready(function($){
           } else {
             var dateBirth = $('#input-payment-card-birth').val().split("/");
 
-            var juridical;
-            if($('#pay_card_with_cnpj').attr('checked')) {
-                juridical="1";
-            } else {
-                juridical="0";
-            }
-
             var data = {
                 action: "woocommerce_gerencianet_pay_card",
                 security: woocommerce_gerencianet_api.security,
                 charge_id: id_charge,
                 order_id: jQuery('input[name="wc_order_id"]').val(),
-                name: jQuery('#input-payment-card-name').val(),
-                cpf: jQuery('#input-payment-card-cpf').val().replace(/[^\d]+/g,''),
+                name_corporate: jQuery('#input-payment-card-name-corporate').val(),
+                cpf_cnpj: jQuery('#input-payment-card-cpf-cnpj').val().replace(/[^\d]+/g,''),
                 phone_number: jQuery('#input-payment-card-phone').val().replace(/[^\d]+/g,''),
-                cnpj: jQuery('#cnpj_card').val().replace(/[^\d]+/g,''),
-                corporate_name: jQuery('#corporate_name_card').val(),
-                pay_card_with_cnpj: juridical,
                 payment_token: response.data.payment_token,
                 birth: dateBirth[2] + "-" + dateBirth[1] + "-" + dateBirth[0],
                 email: $('#input-payment-card-email').val(),
@@ -451,7 +452,7 @@ jQuery(document).ready(function($){
                 state: $('#input-payment-card-state').val(),
                 installments: $('#input-payment-card-installments').val()
             };
-            
+
             jQuery.ajax({
                 type: "POST",
                 url: woocommerce_gerencianet_api.ajax_url,

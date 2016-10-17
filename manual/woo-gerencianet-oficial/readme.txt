@@ -48,6 +48,10 @@ Opcional: Instale o plugin [WooCommerce Extra Checkout Fields for Brazil](https:
 
 = Changelog =
 
+= 0.5.2 =
+* Fix: Considera impostos do WooCommerce no boleto Gerencianet.
+* Fix: Retira obrigatoriedade do campo referente a CPF nas compras de Pessoal Jurídica.
+
 = 0.5.1 =
 * Fix: Link para pagamento da cobrança.
 
@@ -118,6 +122,10 @@ Opcional: Instale o plugin [WooCommerce Extra Checkout Fields for Brazil](https:
 10. Recomendamos que antes de disponibilizar pagamentos pela Gerencianet, o lojista realize testes de cobrança com o sandbox(ambiente de testes) ativado para verificar se o procedimento de pagamento está acontecendo conforme esperado.
 
 == Changelog ==
+
+= 0.5.2 =
+* Fix: Considera impostos do WooCommerce no boleto Gerencianet.
+* Fix: Retira obrigatoriedade do campo referente a CPF nas compras de Pessoal Jurídica.
 
 = 0.5.1 =
 * Fix: Link para pagamento da cobrança.

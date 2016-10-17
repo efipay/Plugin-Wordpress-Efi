@@ -9,7 +9,7 @@ if ( ! defined( 'ABSPATH' ) ) {
 }
 
 ?>
-      <div>
+    <div>
         <div class="gn-success-payment">
             <div class="gn-row gn-box-emission">
                 <div class="pull-left gn-left-space-2">

@@ -1,3 +1,7 @@
+# v0.5.2
+* Fix: Considera impostos do WooCommerce no boleto Gerencianet.
+* Fix: Retira obrigatoriedade do campo referente a CPF nas compras de Pessoal Jurídica.
+
 # v0.5.1
 * Fix: Link para pagamento da cobrança.
 * Added: Opção da forma de aplicar desconto no boleto.

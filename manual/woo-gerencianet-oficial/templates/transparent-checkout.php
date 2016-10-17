@@ -15,22 +15,12 @@ if ( ! defined( 'ABSPATH' ) ) {
     <?php echo html_entity_decode($script);?>
     
     var home_url = "<?php echo esc_url($order_received_url); ?>";
-    
-    var payCnpj = false;
-    var showCnpjFields = true;
 
     <?php if ($card_option == 'no' && $billet_option == 'yes') { ?>
         justBillet();
     <?php } ?>
     <?php if ($card_option == 'yes' && $billet_option == 'no') { ?>
         justCard();
-    <?php } ?>
-    <?php if ($order->billing_persontype==2) {?>
-        payCnpj = true; 
-    <?php } ?>
-    
-    <?php if (isset($order->billing_cnpj) && isset($order->billing_company)) {?>
-        showCnpjFields = false; 
     <?php } ?>
 
 </script>
@@ -89,44 +79,14 @@ if ( ! defined( 'ABSPATH' ) ) {
         </div>
 
   <div class="gn-form">
-  <div id="billet-data">
- 
-    <div class="gn-row">
-      <div class="gn-col-12 gn-cnpj-row">
-      <input type="checkbox" name="pay_billet_with_cnpj" id="pay_billet_with_cnpj" value="1" />  <?php echo $gn_cnpj_option; ?>
-      </div>
-    </div>
+  <div id="billet-data">  
 
-    <div id="pay_cnpj" class="required gn-row <?php if ($gn_billing_corporate_validate && $order->billing_persontype==2 && $gn_billing_cnpj_validate || $order->billing_persontype==1) { echo 'gn-hide'; } ?>">
+    <div class="required gn-row gn-billet-field <?php if ($gn_billing_name_corporate_validate) { ?> gn-hide <?php } ?>" >
       <div class="gn-col-2 gn-label">
-        <label for="input-payment-billet-cnpj" class="gn-right-padding-1"><?php echo $gn_cnpj; ?></label>
+        <label for="input-payment-billet-name-corporate" class="gn-right-padding-1"><?php echo $gn_name_corporate; ?></label>
       </div>
       <div class="gn-col-10">
-        
-        <div>
-          <div class="gn-col-3 required">
-            <input type="text" name="cnpj" id="cnpj" class="form-control cnpj-mask" value="<?php echo $order->billing_cnpj;?>" />
-          </div>
-          <div class="gn-col-8">
-            <div class="required">
-              <div class="gn-col-4 gn-label">
-                <label class=" gn-col-12 gn-right-padding-1" for="input-payment-corporate-name"><?php echo $gn_corporate_name; ?></label>
-              </div>
-              <div class="gn-col-8">
-                <input type="text" name="corporate_name" id="corporate_name" class="form-control" value="<?php echo $order->billing_company;?>" />
-              </div>
-            </div>
-          </div>
-        </div>
-      </div>
-    </div>
-
-    <div class="required gn-row gn-billet-field <?php if ($gn_billing_name_validate) { ?> gn-hide <?php } ?>" >
-      <div class="gn-col-2 gn-label">
-        <label for="input-payment-billet-name" class="gn-right-padding-1"><?php echo $gn_name; ?></label>
-      </div>
-      <div class="gn-col-10">
-        <input type="text" name="first_name" id="first_name" value="<?php echo $order->get_formatted_billing_full_name(); ?>" class="form-control" />
+        <input type="text" name="name_corporate" id="name_corporate" value="<?php echo $gn_order_name_corporate; ?>" class="form-control" />
       </div>
     </div>
 
@@ -140,15 +100,15 @@ if ( ! defined( 'ABSPATH' ) ) {
       </div>
     </div>
 
-    <div class="required gn-row gn-billet-field <?php if ($gn_billing_cpf_validate && $gn_billing_phone_number_validate) { ?> gn-hide <?php } ?>" >
+    <div class="required gn-row gn-billet-field <?php if ($gn_billing_cpf_cnpj_validate && $gn_billing_phone_number_validate) { ?> gn-hide <?php } ?>" >
       <div class="gn-col-2 gn-label">
-        <label for="input-payment-billet-cpf" class="gn-right-padding-1"><?php echo $gn_cpf; ?></label>
+        <label for="input-payment-billet-cpf-cnpj" class="gn-right-padding-1"><?php echo $gn_cpf_cnpj; ?></label>
       </div>
       <div class="gn-col-10">
         
         <div>
           <div class="gn-col-3 required">
-            <input type="text" name="cpf" id="cpf" value="<?php echo (isset($order->billing_cpf) ? $order->billing_cpf : '' );?>" class="form-control cpf-mask" />
+            <input type="text" name="cpf-cnpj" id="cpf-cnpj" value="<?php echo $gn_order_cpf_cnpj;?>" class="form-control cpf-mask" />
           </div>
           <div class="gn-col-8">
             <div class=" required">
@@ -217,52 +177,22 @@ if ( ! defined( 'ABSPATH' ) ) {
     <div id="card-data" >
         <div class="gn-initial-section">
 
-            <div class="gn-row">
-              <div class="gn-col-12 gn-cnpj-row">
-              <input type="checkbox" name="pay_card_with_cnpj" id="pay_card_with_cnpj" value="1" />  <?php echo $gn_cnpj_option; ?>
-              </div>
-            </div>
-
-            <div id="pay_cnpj_card" class=" required gn-row <?php if ($gn_billing_corporate_validate && $order->billing_persontype==2 && $gn_billing_cnpj_validate || $order->billing_persontype==1) { echo 'gn-hide'; } ?>" >
+            <div class=" required gn-row gn-card-field <?php if ($gn_billing_name_corporate_validate) { ?> gn-hide <?php } ?>" >
               <div class="gn-col-2 gn-label">
-              <label class="gn-col-12 gn-right-padding-1" for="input-payment-card-cnpj"><?php echo $gn_cnpj; ?></label>
+                <label class="gn-col-12 gn-right-padding-1" for="input-payment-card-name-corporate"><?php echo $gn_name_corporate; ?></label>
               </div>
               <div class="gn-col-10">
-                
-                <div>
-                  <div class="gn-col-3 required">
-                    <input type="text" name="cnpj_card" id="cnpj_card" class="form-control cnpj-mask" value="<?php echo $order->billing_cnpj;?>" />
-                  </div>
-                  <div class="gn-col-9">
-                    <div class=" required gn-left-space-2">
-                      <div class="gn-col-4 gn-label">
-                        <label class="gn-col-12 gn-right-padding-1" for="input-payment-corporate-name"><?php echo $gn_corporate_name; ?></label>
-                      </div>
-                      <div class="gn-col-8">
-                        <input type="text" name="corporate_name_card" id="corporate_name_card" class="form-control" value="<?php echo $order->billing_company;?>" />
-                      </div>
-                    </div>
-                  </div>
-                </div>
+                <input type="text" name="input-payment-card-name-corporate" id="input-payment-card-name-corporate" value="<?php echo $gn_order_name_corporate;?>" class="form-control" />
               </div>
             </div>
 
-            <div class=" required gn-row gn-card-field <?php if ($gn_billing_name_validate) { ?> gn-hide <?php } ?>" >
-              <div class="gn-col-2 gn-label">
-                <label class="gn-col-12 gn-right-padding-1" for="input-payment-card-name"><?php echo $gn_name; ?></label>
-              </div>
-              <div class="gn-col-10">
-                <input type="text" name="input-payment-card-name" id="input-payment-card-name" value="<?php echo $order->get_formatted_billing_full_name();?>" class="form-control" />
-              </div>
-            </div>
-
-            <div class=" required gn-row gn-card-field <?php if ($gn_billing_cpf_validate && $gn_billing_phone_number_validate) { ?> gn-hide <?php } ?>" >
+            <div class=" required gn-row gn-card-field <?php if ($gn_billing_cpf_cnpj_validate && $gn_billing_phone_number_validate) { ?> gn-hide <?php } ?>" >
             
                 <div class="gn-col-2 gn-label">
-                    <label for="input-payment-card-cpf" class="gn-right-padding-1" ><?php echo $gn_cpf; ?></label>
+                    <label for="input-payment-card-cpf-cnpj" class="gn-right-padding-1" ><?php echo $gn_cpf_cnpj; ?></label>
                 </div>
                 <div class="gn-col-4">
-                    <input type="text" name="input-payment-card-cpf" id="input-payment-card-cpf" value="<?php echo (isset($order->billing_cpf) ? $order->billing_cpf : '' );?>" class="form-control cpf-mask gn-minimum-size-field" />
+                    <input type="text" name="input-payment-card-cpf-cnpj" id="input-payment-card-cpf-cnpj" value="<?php echo $gn_order_cpf_cnpj;?>" class="form-control cpf-mask gn-minimum-size-field" />
                 </div>
                 <div class="gn-col-6">
                   <div class="gn-col-4 gn-label">

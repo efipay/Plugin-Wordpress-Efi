@@ -9,9 +9,15 @@ if ( ! defined( 'ABSPATH' ) ) {
 }
 
 ?>
+
+
 <script type="text/javascript">
 
 <?php echo html_entity_decode($script_load);?>
+
+$gn.ready(function(checkout) {
+    getPaymentToken = checkout.getPaymentToken;
+});
 
 jQuery(document).ready(function($){
 
@@ -38,40 +44,66 @@ jQuery(document).ready(function($){
         $("#gn-card-payment-option").addClass('gn-osc-payment-option-selected');
     }
 
-    if ($('#gn_billet_full_name').val()=="")  {
-        if (typeof $('#billing_first_name').val() != "undefined")
-            $('#gn_billet_full_name').val($('#billing_first_name').val());
-        if (typeof $('#billing_last_name').val() != "undefined")
-            $('#gn_billet_full_name').val($('#gn_billet_full_name').val() + " " + $('#billing_last_name').val());
+    if ($('#gn_billet_name_corporate').val()=="")  {
+        if ($('#billing_persontype').val()=="1") {
+            if (typeof $('#billing_first_name').val() != "undefined")
+                $('#gn_billet_name_corporate').val($('#billing_first_name').val());
+            if (typeof $('#billing_last_name').val() != "undefined")
+                $('#gn_billet_name_corporate').val($('#gn_billet_name_corporate').val() + " " + $('#billing_last_name').val());
+        }
+        else{
+            if (typeof $('#billing_company').val() != "undefined")
+                $('#gn_billet_name_corporate').val($('#billing_company').val());
+        }
     }
+
     if ($('#gn_billet_email').val()=="")
         $('#gn_billet_email').val($('#billing_email').val());
     if ($('#gn_billet_phone_number').val()=="")    
         $('#gn_billet_phone_number').val($('#billing_phone').val());
-    if ($('#gn_billet_cpf').val()=="")
-        $('#gn_billet_cpf').val($('#billing_cpf').val());
-    if ($('#gn_billet_corporate_name').val()=="")
-        $('#gn_billet_corporate_name').val($('#billing_company').val());
-    if ($('#gn_billet_cnpj').val()=="")
-        $('#gn_billet_cnpj').val($('#billing_cnpj').val());
 
-    if ($('#gn_card_full_name').val()=="") {
-        if (typeof $('#billing_first_name').val() != "undefined")
-            $('#gn_card_full_name').val($('#billing_first_name').val());
-        if (typeof $('#billing_last_name').val() != "undefined")
-            $('#gn_card_full_name').val($('#gn_card_full_name').val() + " " + $('#billing_last_name').val());
+    if ($('#gn_billet_cpf_cnpj').val()=="")
+    {
+        if ($('#billing_persontype').val()=="1") {
+            if (typeof $('#billing_cpf').val() != "undefined")
+                $('#gn_billet_cpf_cnpj').val($('#billing_cpf').val());
+        }
+        else {
+            if (typeof $('#billing_cnpj').val() != "undefined")
+                $('#gn_billet_cpf_cnpj').val($('#billing_cnpj').val());
+        }
+    }
+
+    if ($('#gn_card_name_corporate').val()=="") {
+        if ($('#billing_persontype').val()=="1") {
+            if (typeof $('#billing_first_name').val() != "undefined")
+                $('#gn_card_name_corporate').val($('#billing_first_name').val());
+            if (typeof $('#billing_last_name').val() != "undefined")
+                $('#gn_card_name_corporate').val($('#gn_card_name_corporate').val() + " " + $('#billing_last_name').val());
+        }
+        else{
+            if (typeof $('#billing_company').val() != "undefined")
+                $('#gn_card_name_corporate').val($('#billing_company').val());
+        }
     }
 
     if ($('#gn_card_email').val()=="")
         $('#gn_card_email').val($('#billing_email').val());
     if ($('#gn_card_phone_number').val()=="")    
         $('#gn_card_phone_number').val($('#billing_phone').val());
-    if ($('#gn_card_cpf').val()=="")
-        $('#gn_card_cpf').val($('#billing_cpf').val());
-    if ($('#gn_card_corporate_name').val()=="")
-        $('#gn_card_corporate_name').val($('#billing_company').val());
-    if ($('#gn_card_cnpj').val()=="")
-        $('#gn_card_cnpj').val($('#billing_cnpj').val());
+
+    if ($('#gn_card_cpf_cnpj').val()=="")
+    {
+         if ($('#billing_persontype').val()=="1") {
+            if (typeof $('#billing_cpf').val() != "undefined")
+                $('#gn_card_cpf_cnpj').val($('#billing_cpf').val());
+        }
+        else {
+            if (typeof $('#billing_cnpj').val() != "undefined")
+                $('#gn_card_cpf_cnpj').val($('#billing_cnpj').val());
+        }
+    }
+
     if ($('#gn_card_birth').val()=="")
         $('#gn_card_birth').val($('#billing_birthdate').val());
     if ($('#gn_card_street').val()=="")
@@ -93,29 +125,44 @@ jQuery(document).ready(function($){
     validateCardCustomerData();
 
     $('#billing_first_name').change(function() {
-        if (typeof $('#billing_first_name').val() != "undefined") {
-            $('#gn_billet_full_name').val($('#billing_first_name').val());
-            $('#gn_card_full_name').val($('#billing_first_name').val());
+        if ($('#billing_persontype').val()=="1") {
+            if (typeof $('#billing_first_name').val() != "undefined") {
+                $('#gn_billet_name_corporate').val($('#billing_first_name').val());
+                $('#gn_card_name_corporate').val($('#billing_first_name').val());
+            }
+            if (typeof $('#billing_last_name').val() != "undefined") {
+                $('#gn_billet_name_corporate').val($('#gn_billet_name_corporate').val() + " " + $('#billing_last_name').val());
+                $('#gn_card_name_corporate').val($('#gn_card_name_corporate').val() + " " + $('#billing_last_name').val());
+            }
+            validateBilletCustomerData();
+            validateCardCustomerData();
         }
-        if (typeof $('#billing_last_name').val() != "undefined") {
-            $('#gn_billet_full_name').val($('#gn_billet_full_name').val() + " " + $('#billing_last_name').val());
-            $('#gn_card_full_name').val($('#gn_card_full_name').val() + " " + $('#billing_last_name').val());
-        }
-        validateBilletCustomerData();
-        validateCardCustomerData();
     });
 
     $('#billing_last_name').change(function() {
-        if (typeof $('#billing_first_name').val() != "undefined") {
-            $('#gn_billet_full_name').val($('#billing_first_name').val());
-            $('#gn_card_full_name').val($('#billing_first_name').val());
+        if ($('#billing_persontype').val()=="1") {
+            if (typeof $('#billing_first_name').val() != "undefined") {
+                $('#gn_billet_name_corporate').val($('#billing_first_name').val());
+                $('#gn_card_name_corporate').val($('#billing_first_name').val());
+            }
+            if (typeof $('#billing_last_name').val() != "undefined") {
+                $('#gn_billet_name_corporate').val($('#gn_billet_name_corporate').val() + " " + $('#billing_last_name').val());
+                $('#gn_card_name_corporate').val($('#gn_card_name_corporate').val() + " " + $('#billing_last_name').val());
+            }
+            validateBilletCustomerData();
+            validateCardCustomerData();
         }
-        if (typeof $('#billing_last_name').val() != "undefined") {
-            $('#gn_billet_full_name').val($('#gn_billet_full_name').val() + " " + $('#billing_last_name').val());
-            $('#gn_card_full_name').val($('#gn_card_full_name').val() + " " + $('#billing_last_name').val());
+    });
+
+    $('#billing_company').change(function() {
+        if ($('#billing_persontype').val()=="2") {
+            if (typeof $('#billing_company').val() != "undefined") {
+                $('#gn_billet_name_corporate').val($('#billing_company').val());
+                $('#gn_card_name_corporate').val($('#billing_company').val());
+            }
+            validateBilletCustomerData();
+            validateCardCustomerData();
         }
-        validateBilletCustomerData();
-        validateCardCustomerData();
     });
 
     $('#billing_email').change(function() {
@@ -133,20 +180,23 @@ jQuery(document).ready(function($){
     });
 
     $('#billing_cpf').change(function() {
-        $('#gn_billet_cpf').val($('#billing_cpf').val());
-        $('#gn_card_cpf').val($('#billing_cpf').val());
-        validateBilletCustomerData();
-        validateCardCustomerData();
-    });
+        if ($('#billing_persontype').val()=="1") {
+            $('#gn_billet_cpf_cnpj').val($('#billing_cpf').val());
+            $('#gn_card_cpf_cnpj').val($('#billing_cpf').val());
 
-    $('#billing_company').change(function() {
-        $('#gn_billet_corporate_name').val($('#billing_company').val());
-        $('#gn_card_corporate_name').val($('#billing_company').val());
+            validateBilletCustomerData();
+            validateCardCustomerData();
+        }
     });
 
     $('#billing_cnpj').change(function() {
-        $('#gn_billet_cnpj').val($('#billing_cnpj').val());
-        $('#gn_card_cnpj').val($('#billing_cnpj').val());
+        if ($('#billing_persontype').val()=="2") {
+            $('#gn_billet_cpf_cnpj').val($('#billing_cnpj').val());
+            $('#gn_card_cpf_cnpj').val($('#billing_cnpj').val());
+
+            validateBilletCustomerData();
+            validateCardCustomerData();
+        }
     });
 
     $('#billing_birthdate').change(function() {
@@ -230,7 +280,6 @@ jQuery(document).ready(function($){
         card_cvv = $("#gn_card_cvv").val();
         expiration_month = $("#gn_card_expiration_month").val();
         expiration_year = $("#gn_card_expiration_year").val();
-
         if (card_brand!="" && card_number!=""  && card_cvv!=""  && expiration_month!=""  && expiration_year!="" ) {
             var callback = function(error, response) {
                 if(error) {
@@ -241,7 +290,6 @@ jQuery(document).ready(function($){
                     return true;
                 }
             };
-
             getPaymentToken({
               brand: card_brand,
               number: card_number,
@@ -250,35 +298,16 @@ jQuery(document).ready(function($){
               expiration_year: expiration_year
             }, callback);
         }
+        return false;
     }
 
-    $('#gn_billet_cnpj').change(function() {
-        if (verifyCNPJ($('#gn_billet_cnpj').val())) {
-            $('#gn_billet_cnpj').removeClass("gn-inputs-error");
+    $('#gn_billet_name_corporate').change(function() {
+        if (validateName($('#gn_billet_name_corporate').val())) {
+            $('#gn_billet_name_corporate').removeClass("gn-inputs-error");
             hideError();
         } else {
-            $('#gn_billet_cnpj').addClass("gn-inputs-error");
-            showError("CNPJ inválido. Por favor, digite novamente.");
-        }
-    });
-
-    $('#gn_billet_corporate_name').change(function() {
-        if (validateName($('#gn_billet_corporate_name').val())) {
-            $('#gn_billet_corporate_name').removeClass("gn-inputs-error");
-            hideError();
-        } else {
-            $('#gn_billet_corporate_name').addClass("gn-inputs-error");
-            showError("Razão Social inválida. Por favor, digite novamente.");
-        }
-    });
-
-    $('#gn_billet_full_name').change(function() {
-        if (validateName($('#gn_billet_full_name').val())) {
-            $('#gn_billet_full_name').removeClass("gn-inputs-error");
-            hideError();
-        } else {
-            $('#gn_billet_full_name').addClass("gn-inputs-error");
-            showError("Nome inválido. Por favor, digite novamente.");
+            $('#gn_billet_name_corporate').addClass("gn-inputs-error");
+            showError("Nome ou Razão Social inválido. Por favor, digite novamente.");
         }
     });
 
@@ -292,13 +321,42 @@ jQuery(document).ready(function($){
         }
     });
 
-    $('#gn_billet_cpf').change(function() {
-        if (verifyCPF($('#gn_billet_cpf').val())) {
-            $('#gn_billet_cpf').removeClass("gn-inputs-error");
-            hideError();
-        } else {
-            $('#gn_billet_cpf').addClass("gn-inputs-error");
-            showError("CPF inválido. Por favor, digite novamente.");
+    $("#gn_billet_cpf_cnpj").blur(function() {
+        if ($('#gn_billet_cpf_cnpj').val().replace(/[^\d]+/g,'').length <= 11)
+        {
+            if (verifyCPF($('#gn_billet_cpf_cnpj').val())) {
+                $('#gn_billet_cpf_cnpj').removeClass("gn-inputs-error");
+                hideError();
+                if (typeof $('#billing_cpf').val() != "undefined")
+                {
+                    $('#billing_persontype option').removeAttr('selected').filter('[value=1]').attr('selected', true);  
+                    $('#billing_cpf').val($('#gn_billet_cpf_cnpj').val());
+                    $('#billing_cnpj_field').hide();
+                    $('#billing_company_field').hide();
+                    $('#billing_cpf_field').show();
+                }
+            } else {
+                $('#gn_billet_cpf_cnpj').addClass("gn-inputs-error");
+                showError("CPF inválido. Por favor, digite novamente.");
+            }
+        }
+        else 
+        {
+            if (verifyCNPJ($('#gn_billet_cpf_cnpj').val())) {
+                $('#gn_billet_cpf_cnpj').removeClass("gn-inputs-error");
+                hideError();
+                if (typeof $('#billing_cnpj').val() != "undefined")
+                {
+                    $('#billing_persontype option').removeAttr('selected').filter('[value=2]').attr('selected', true);  
+                    $('#billing_cnpj').val($('#gn_billet_cpf_cnpj').val());
+                    $('#billing_cpf_field').hide();
+                    $('#billing_cnpj_field').show();
+                    $('#billing_company_field').show();
+                }
+            } else {
+                $('#gn_billet_cpf_cnpj').addClass("gn-inputs-error");
+                showError("CNPJ inválido. Por favor, digite novamente.");
+            }
         }
     });
 
@@ -312,33 +370,52 @@ jQuery(document).ready(function($){
         }
     });
 
-    $('#gn_card_cnpj').change(function() {
-        if (verifyCNPJ($('#gn_card_cnpj').val())) {
-            $('#gn_card_cnpj').removeClass("gn-inputs-error");
-            hideError();
-        } else {
-            $('#gn_card_cnpj').addClass("gn-inputs-error");
-            showError("CNPJ inválido. Por favor, digite novamente.");
+    $('#gn_card_cpf_cnpj').blur(function() {
+        if ($('#gn_card_cpf_cnpj').val().replace(/[^\d]+/g,'').length <= 11)
+        {
+            if (verifyCPF($('#gn_card_cpf_cnpj').val())) {
+                $('#gn_card_cpf_cnpj').removeClass("gn-inputs-error");
+                hideError();
+                if (typeof $('#billing_cpf').val() != "undefined")
+                {
+                    $('#billing_persontype option').removeAttr('selected').filter('[value=1]').attr('selected', true);  
+                    $('#billing_cpf').val($('#gn_card_cpf_cnpj').val());
+                    $('#billing_cnpj_field').hide();
+                    $('#billing_company_field').hide();
+                    $('#billing_cpf_field').show();
+                }
+            } else {
+                $('#gn_card_cpf_cnpj').addClass("gn-inputs-error");
+                showError("CPF inválido. Por favor, digite novamente.");
+            }
+        }
+        else
+        {
+            if (verifyCNPJ($('#gn_card_cpf_cnpj').val())) {
+                $('#gn_card_cpf_cnpj').removeClass("gn-inputs-error");
+                hideError();
+                if (typeof $('#billing_cnpj').val() != "undefined")
+                {
+                    $('#billing_persontype option').removeAttr('selected').filter('[value=2]').attr('selected', true);  
+                    $('#billing_cnpj').val($('#gn_card_cpf_cnpj').val());
+                    $('#billing_cpf_field').hide();
+                    $('#billing_cnpj_field').show();
+                    $('#billing_company_field').show();
+                }
+            } else {
+                $('#gn_card_cpf_cnpj').addClass("gn-inputs-error");
+                showError("CNPJ inválido. Por favor, digite novamente.");
+            }
         }
     });
 
-     $('#gn_card_corporate_name').change(function() {
-        if (validateName($('#gn_card_corporate_name').val())) {
-            $('#gn_card_corporate_name').removeClass("gn-inputs-error");
+     $('#gn_card_name_corporate').change(function() {
+        if (validateName($('#gn_card_name_corporate').val())) {
+            $('#gn_card_name_corporate').removeClass("gn-inputs-error");
             hideError();
         } else {
-            $('#gn_card_corporate_name').addClass("gn-inputs-error");
-            showError("Razão Social inválida. Por favor, digite novamente.");
-        }
-    });
-
-    $('#gn_card_full_name').change(function() {
-        if (validateName($('#gn_card_full_name').val())) {
-            $('#gn_card_full_name').removeClass("gn-inputs-error");
-            hideError();
-        } else {
-            $('#gn_card_full_name').addClass("gn-inputs-error");
-            showError("Nome inválido. Por favor, digite novamente.");
+            $('#gn_card_name_corporate').addClass("gn-inputs-error");
+            showError("Nome ou Razão Social inválida(o). Por favor, digite novamente.");
         }
     });
 
@@ -349,16 +426,6 @@ jQuery(document).ready(function($){
         } else {
             $('#gn_card_email').addClass("gn-inputs-error");
             showError("Email inválido. Por favor, digite novamente.");
-        }
-    });
-
-    $('#gn_card_cpf').change(function() {
-        if (verifyCPF($('#gn_card_cpf').val())) {
-            $('#gn_card_cpf').removeClass("gn-inputs-error");
-            hideError();
-        } else {
-            $('#gn_card_cpf').addClass("gn-inputs-error");
-            showError("CPF inválido. Por favor, digite novamente.");
         }
     });
 
@@ -456,27 +523,11 @@ jQuery(document).ready(function($){
     function billetValidateFields() {
         errorMessage = "";
 
-        if ($("#pay_billet_with_cnpj").is(':checked')) {
-            if (verifyCNPJ($('#gn_billet_cnpj').val())) {
-                $('#gn_billet_cnpj').removeClass("gn-inputs-error");
-            } else {
-                $('#gn_billet_cnpj').addClass("gn-inputs-error");
-                errorMessage = "CNPJ inválido. Por favor, digite novamente.";
-            }
-
-            if (validateName($('#gn_billet_corporate_name').val())) {
-                $('#gn_billet_corporate_name').removeClass("gn-inputs-error");
-            } else {
-                $('#gn_billet_corporate_name').addClass("gn-inputs-error");
-                errorMessage = "Razão Social inválida. Por favor, digite novamente.";
-            }
-        }
-
-        if (validateName($('#gn_billet_full_name').val())) {
-            $('#gn_billet_full_name').removeClass("gn-inputs-error");
+        if (validateName($('#gn_billet_name_corporate').val())) {
+            $('#gn_billet_name_corporate').removeClass("gn-inputs-error");
         } else {
-            $('#gn_billet_full_name').addClass("gn-inputs-error");
-            errorMessage = "Nome inválido. Por favor, digite novamente.";
+            $('#gn_billet_name_corporate').addClass("gn-inputs-error");
+            errorMessage = "Nome ou Razão Social inválido(a). Por favor, digite novamente.";
         }
 
         if (validateEmail($('#gn_billet_email').val())) {
@@ -486,11 +537,24 @@ jQuery(document).ready(function($){
             errorMessage = "Email inválido. Por favor, digite novamente.";
         }
 
-        if (verifyCPF($('#gn_billet_cpf').val())) {
-            $('#gn_billet_cpf').removeClass("gn-inputs-error");
-        } else {
-            $('#gn_billet_cpf').addClass("gn-inputs-error");
-            errorMessage = "CPF inválido. Por favor, digite novamente.";
+        if ($('#gn_billet_cpf_cnpj').val().replace(/[^\d]+/g,'').length <= 11) {
+            if (verifyCPF($('#gn_billet_cpf_cnpj').val())) {
+                $('#gn_billet_cpf_cnpj').removeClass("gn-inputs-error");
+                errorMessage = "";
+            } else {
+                $('#gn_billet_cpf_cnpj').addClass("gn-inputs-error");
+                errorMessage = "CPF inválido. Por favor, digite novamente.";
+            }
+        }
+        else 
+        {
+            if (verifyCNPJ($('#gn_billet_cpf_cnpj').val())) {
+                $('#gn_billet_cpf_cnpj').removeClass("gn-inputs-error");
+                errorMessage = "";
+            } else {
+                $('#gn_billet_cpf_cnpj').addClass("gn-inputs-error");
+                errorMessage = "CNPJ inválido. Por favor, digite novamente.";
+            }
         }
 
         if (validatePhone($('#gn_billet_phone_number').val())) {
@@ -512,27 +576,11 @@ jQuery(document).ready(function($){
     function cardValidateFields() {
         errorMessage = "";
 
-        if ($("#pay_card_with_cnpj").is(':checked')) {
-            if (verifyCNPJ($('#gn_card_cnpj').val())) {
-                $('#gn_card_cnpj').removeClass("gn-inputs-error");
-            } else {
-                $('#gn_card_cnpj').addClass("gn-inputs-error");
-                errorMessage = "CNPJ inválido. Por favor, digite novamente.";
-            }
-
-            if (validateName($('#gn_card_corporate_name').val())) {
-                $('#gn_card_corporate_name').removeClass("gn-inputs-error");
-            } else {
-                $('#gn_card_corporate_name').addClass("gn-inputs-error");
-                errorMessage = "Razão Social inválida. Por favor, digite novamente.";
-            }
-        }
-
-        if (validateName($('#gn_card_full_name').val())) {
-            $('#gn_card_full_name').removeClass("gn-inputs-error");
+        if (validateName($('#gn_card_name_corporate').val())) {
+            $('#gn_card_name_corporate').removeClass("gn-inputs-error");
         } else {
-            $('#gn_card_full_name').addClass("gn-inputs-error");
-            errorMessage = "Nome inválido. Por favor, digite novamente.";
+            $('#gn_card_name_corporate').addClass("gn-inputs-error");
+            errorMessage = "Nome ou Razão Social inválido(a). Por favor, digite novamente.";
         }
 
         if (validateEmail($('#gn_card_email').val())) {
@@ -542,11 +590,24 @@ jQuery(document).ready(function($){
             errorMessage = "Email inválido. Por favor, digite novamente.";
         }
 
-        if (verifyCPF($('#gn_card_cpf').val())) {
-            $('#gn_card_cpf').removeClass("gn-inputs-error");
-        } else {
-            $('#gn_card_cpf').addClass("gn-inputs-error");
-            errorMessage = "CPF inválido. Por favor, digite novamente.";
+        if ($('#gn_card_cpf_cnpj').val().replace(/[^\d]+/g,'').length <= 11) {
+            if (verifyCPF($('#gn_card_cpf_cnpj').val())) {
+                $('#gn_card_cpf_cnpj').removeClass("gn-inputs-error");
+                errorMessage = "";
+            } else {
+                $('#gn_card_cpf_cnpj').addClass("gn-inputs-error");
+                errorMessage = "CPF inválido. Por favor, digite novamente.";
+            }
+        }
+        else 
+        {
+            if (verifyCNPJ($('#gn_card_cpf_cnpj').val())) {
+                $('#gn_card_cpf_cnpj').removeClass("gn-inputs-error");
+                errorMessage = "";
+            } else {
+                $('#gn_card_cpf_cnpj').addClass("gn-inputs-error");
+                errorMessage = "CNPJ inválido. Por favor, digite novamente.";
+            }
         }
 
         if (validatePhone($('#gn_card_phone_number').val())) {
@@ -616,121 +677,161 @@ jQuery(document).ready(function($){
     }
 
     function validateBilletCustomerData() {
-        if (validateName($('#gn_billet_full_name').val())) {
-            $('#gn_name_row').hide();
+        if (validateName($('#gn_billet_name_corporate').val())) {
+            $('#gn_name_corporate_row').hide();
+            hideError();
         } else {
-            $('#gn_name_row').show();
+            $('#gn_name_corporate_row').show();
         }
 
         if (validateEmail($('#gn_billet_email').val())) {
             $('#gn_email_row').hide();
+            hideError();
         } else {
             $('#gn_email_row').show();
         }
 
-        if (verifyCPF($('#gn_billet_cpf').val()) && validatePhone($('#gn_billet_phone_number').val())) {
-            $('#gn_cpf_phone_row').hide();
+        if ((verifyCPF($('#gn_billet_cpf_cnpj').val()) || verifyCNPJ($('#gn_billet_cpf_cnpj').val())) && validatePhone($('#gn_billet_phone_number').val())) {
+            $('#gn_cpf_cnpj_phone_row').hide();
+            hideError();
         } else {
-            $('#gn_cpf_phone_row').show();
+            $('#gn_cpf_cnpj_phone_row').show();
         }
     }
 
     function validateCardCustomerData() {
-        if (validateName($('#gn_card_full_name').val())) {
-            $('#gn_card_name_row').hide();
+        if (validateName($('#gn_card_name_corporate').val())) {
+            $('#gn_card_name_corporate_row').hide();
+            hideError();
         } else {
-            $('#gn_card_name_row').show();
+            $('#gn_card_name_corporate_row').show();
         }
 
         if (validateEmail($('#gn_card_email').val())) {
             $('#gn_card_email_row').hide();
+            hideError();
         } else {
             $('#gn_card_email_row').show();
         }
 
-        if (verifyCPF($('#gn_card_cpf').val()) && validatePhone($('#gn_card_phone_number').val())) {
-            $('#gn_card_cpf_phone_row').hide();
+        if ((verifyCPF($('#gn_card_cpf_cnpj').val()) || verifyCNPJ($('#gn_card_cpf_cnpj').val())) && validatePhone($('#gn_card_phone_number').val())) {
+            $('#gn_card_cpf_cnpj_phone_row').hide();
+            hideError();
         } else {
-            $('#gn_card_cpf_phone_row').show();
+            $('#gn_card_cpf_cnpj_phone_row').show();
         }
 
         if (validateBirth($('#gn_card_birth').val())) {
             $('#gn_card_birth_row').hide();
+            hideError();
         } else {
             $('#gn_card_birth_row').show();
         }
 
         if (validateStreet($('#gn_card_street').val()) && validateStreetNumber($('#gn_card_street_number').val())) {
             $('#gn_card_street_number_row').hide();
+            hideError();
         } else {
             $('#gn_card_street_number_row').show();
         }
 
         if (validateNeighborhood($('#gn_card_neighborhood').val()) ) {
             $('#gn_card_neighborhood_row').hide();
+            hideError();
         } else {
             $('#gn_card_neighborhood_row').show();
         }
 
         if (validateCity($('#gn_card_city').val()) && validateZipcode($('#gn_card_zipcode').val())) {
             $('#gn_card_city_zipcode_row').hide();
+            hideError();
         } else {
             $('#gn_card_city_zipcode_row').show();
         }
 
         if (validateState($('#gn_card_state').val())) {
             $('#gn_card_state_row').hide();
+            hideError();
         } else {
             $('#gn_card_state_row').show();
         }
 
         if (validateStreet($('#gn_card_street').val()) && validateStreetNumber($('#gn_card_street_number').val()) && validateNeighborhood($('#gn_card_neighborhood').val()) && validateCity($('#gn_card_city').val()) && validateZipcode($('#gn_card_zipcode').val()) && validateState($('#gn_card_state').val())) {
             $('#billing-adress').hide();
+            hideError();
         } else {
             $('#billing-adress').show();
         }
 
     }
 
-    if ($('#billing_persontype').val()=="2") {
-        $('#pay_cnpj').show();
-        $('#pay_cnpj_card').show();
-        $('#pay_billet_with_cnpj').prop( "checked", true );
-        $('#pay_card_with_cnpj').prop( "checked", true );
+    if ($('#billing_persontype').val()=="1") {
+        if (typeof $('#billing_first_name').val() != "undefined")
+        {
+            $('#gn_billet_name_corporate').val($('#billing_first_name').val());
+            $('#gn_card_name_corporate').val($('#billing_first_name').val());
+        }
+        if (typeof $('#billing_last_name').val() != "undefined")
+        {
+            $('#gn_billet_name_corporate').val($('#gn_billet_name_corporate').val() + " " + $('#billing_last_name').val());
+            $('#gn_card_name_corporate').val($('#gn_card_name_corporate').val() + " " + $('#billing_last_name').val());
+        }
+        if (typeof $('#billing_cpf').val() != "undefined")
+        {
+            $('#gn_billet_cpf_cnpj').val($('#billing_cpf').val());
+            $('#gn_card_cpf_cnpj').val($('#billing_cpf').val());
+        }
+
+        validateBilletCustomerData();
+        validateCardCustomerData();
     } else {
-        $('#pay_cnpj').hide();
-        $('#pay_cnpj_card').hide();
-        $('#pay_billet_with_cnpj').prop( "checked", false );
-        $('#pay_card_with_cnpj').prop( "checked", false );
+        if (typeof $('#billing_company').val() != "undefined")
+        {
+            $('#gn_billet_name_corporate').val($('#billing_company').val());
+            $('#gn_card_name_corporate').val($('#billing_company').val());
+        }
+        if (typeof $('#billing_cnpj').val() != "undefined")
+        {
+            $('#gn_billet_cpf_cnpj').val($('#billing_cnpj').val());
+            $('#gn_card_cpf_cnpj').val($('#billing_cnpj').val());
+        }
+
+        validateBilletCustomerData();
+        validateCardCustomerData();
     }
 
     $('#billing_persontype').on('change', function() {
-        if (this.value==2) {
-            $('#pay_cnpj').show();
-            $('#pay_cnpj_card').show();
-            $('#pay_billet_with_cnpj').prop( "checked", true );
-            $('#pay_card_with_cnpj').prop( "checked", true );
+        if (this.value==1) {
+            if (typeof $('#billing_first_name').val() != "undefined")
+            {
+                $('#gn_billet_name_corporate').val($('#billing_first_name').val());
+                $('#gn_card_name_corporate').val($('#billing_first_name').val());
+            }
+            if (typeof $('#billing_last_name').val() != "undefined")
+            {
+                $('#gn_billet_name_corporate').val($('#gn_billet_name_corporate').val() + " " + $('#billing_last_name').val());
+                $('#gn_card_name_corporate').val($('#gn_card_name_corporate').val() + " " + $('#billing_last_name').val());
+            }
+            if (typeof $('#billing_cpf').val() != "undefined")
+            {
+                $('#gn_billet_cpf_cnpj').val($('#billing_cpf').val());
+                $('#gn_card_cpf_cnpj').val($('#billing_cpf').val());
+            }
+            validateBilletCustomerData();
+            validateCardCustomerData();
         } else {
-            $('#pay_cnpj').hide();
-            $('#pay_cnpj_card').hide();
-            $('#pay_billet_with_cnpj').prop( "checked", false );
-            $('#pay_card_with_cnpj').prop( "checked", false );
-        }
-    });
-
-    $('#pay_billet_with_cnpj').click(function() {
-        if ($(this).is(':checked')) {
-            $('#pay_cnpj').slideDown();
-        } else {
-            $('#pay_cnpj').slideUp();
-        }
-    });
-
-    $('#pay_card_with_cnpj').click(function() {
-        if ($(this).is(':checked')) {
-            $('#pay_cnpj_card').slideDown();
-        } else {
-            $('#pay_cnpj_card').slideUp();
+            if (typeof $('#billing_company').val() != "undefined")
+            {
+                $('#gn_billet_name_corporate').val($('#billing_company').val());
+                $('#gn_card_name_corporate').val($('#billing_company').val());
+            }
+            if (typeof $('#billing_cnpj').val() != "undefined")
+            {
+                $('#gn_billet_cpf_cnpj').val($('#billing_cnpj').val());
+                $('#gn_card_cpf_cnpj').val($('#billing_cnpj').val());
+            }
+            validateBilletCustomerData();
+            validateCardCustomerData();
         }
     });
 
@@ -762,24 +863,62 @@ jQuery(document).ready(function($){
         fixScreenSize();
     });
 
+           
     if(jQuery.mask) {
-        $(".cpf-mask").mask("999.999.999-99",{
-            completed:function(){ 
-                if (!verifyCPF(this.val())) {
-                    showError('CPF inválido. Digite novamente.');
-                } else {
-                    hideError();
+        $("#gn_billet_cpf_cnpj").keyup(function(e){
+            var tamanho = $("#gn_billet_cpf_cnpj").val().replace(/[^\d]+/g,'').length;
+            
+            $("#gn_billet_cpf_cnpj").unmask();
+ 
+            if(e.keyCode == 8)
+            {
+                if(tamanho == 11){
+                    $("#gn_billet_cpf_cnpj").mask("999.999.999-99?9",{autoclear:false, placeholder:""});
+                    $("#gn_billet_cpf_cnpj").unmask();
+                } else if(tamanho == 12){
+                    $("#gn_billet_cpf_cnpj").mask("99.999.999/9999-99",{autoclear:false, placeholder:""});
+                    $("#gn_billet_cpf_cnpj").unmask();
                 }
-            },placeholder:"___.___.___-__"});
+                else 
+                {
+                    $("#gn_billet_cpf_cnpj").unmask();
+                    return;
+                }
+            }
+            if(tamanho <= 11){
+                $("#gn_billet_cpf_cnpj").mask("999.999.999-99?9",{autoclear:false, placeholder:""});
+            } else if(tamanho > 11){
+                $("#gn_billet_cpf_cnpj").mask("99.999.999/9999-99",{autoclear:false, placeholder:""});
+            }      
+        });
 
-        $(".cnpj-mask").mask("99.999.999/9999-99",{
-            completed:function(){ 
-                if (!verifyCNPJ(this.val())) {
-                    showError('CNPJ inválido. Digite novamente.');
-                } else {
-                    hideError();
+        $("#gn_card_cpf_cnpj").keyup(function(e){
+            var tamanho = $("#gn_card_cpf_cnpj").val().replace(/[^\d]+/g,'').length;
+
+            $("#gn_card_cpf_cnpj").unmask();
+
+            
+            if(e.keyCode == 8)
+            {
+                if(tamanho == 11){
+                    $("#gn_card_cpf_cnpj").mask("999.999.999-99?9",{autoclear:false, placeholder:""});
+                    $("#gn_card_cpf_cnpj").unmask();
+                } else if(tamanho == 12){
+                    $("#gn_card_cpf_cnpj").mask("99.999.999/9999-99",{autoclear:false, placeholder:""});
+                    $("#gn_card_cpf_cnpj").unmask();
                 }
-            },placeholder:"__.___.___/____-__"});
+                else 
+                {
+                    $("#gn_card_cpf_cnpj").unmask();
+                    return;
+                }
+            }
+            if(tamanho <= 11){
+                $("#gn_card_cpf_cnpj").mask("999.999.999-99?9",{autoclear:false, placeholder:""});
+            } else if(tamanho > 11){
+                $("#gn_card_cpf_cnpj").mask("99.999.999/9999-99",{autoclear:false, placeholder:""});
+            }                
+        });
 
         $(".phone-mask").focusout(function(){
             $(".phone-mask").unmask();
@@ -1157,44 +1296,12 @@ jQuery(document).ready(function($){
           </div>
           <div class="gn-form">
             <div id="billet-data">
-                <div style="background-color: #F3F3F3; border: 1px solid #F3F3F3; margin-top: 10px; margin-bottom: 10px;">
-              <div class="gn-osc-row">
-                <div class="gn-col-12 gn-cnpj-row">
-                <input type="checkbox" name="pay_billet_with_cnpj" id="pay_billet_with_cnpj" value="1" />  <?php echo $gn_cnpj_option; ?>
+              <div id="gn_name_corporate_row" class="required gn-osc-row gn-billet-field" >
+                <div class="gn-col-3 gn-label">
+                  <label for="gn_billet_name_corporate" class="gn-col-11 gn-right-padding-1"><?php echo $gn_name_corporate; ?></label>
                 </div>
-              </div>
-
-              <div id="pay_cnpj" class="required gn-osc-row">
-                <div class="gn-col-2 gn-label">
-                  <label for="gn_billet_cnpj" class="gn-right-padding-1"><?php echo $gn_cnpj; ?></label>
-                </div>
-                <div class="gn-col-10">
-                  
-                  <div>
-                    <div class="gn-col-3 required">
-                      <input type="text" name="gn_billet_cnpj" id="gn_billet_cnpj" class="form-control cnpj-mask" value="" />
-                    </div>
-                    <div class="gn-col-8">
-                      <div class="required">
-                        <div class="gn-col-4 gn-label">
-                          <label class=" gn-col-12 gn-right-padding-1" for="gn_billet_corporate_name"><?php echo $gn_corporate_name; ?></label>
-                        </div>
-                        <div class="gn-col-8">
-                          <input type="text" name="gn_billet_corporate_name" id="gn_billet_corporate_name" class="form-control" value="" />
-                        </div>
-                      </div>
-                    </div>
-                  </div>
-                </div>
-              </div>
-              </div>
-
-              <div id="gn_name_row" class="required gn-osc-row gn-billet-field" >
-                <div class="gn-col-2 gn-label">
-                  <label for="gn_billet_full_name" class="gn-right-padding-1"><?php echo $gn_name; ?></label>
-                </div>
-                <div class="gn-col-10">
-                  <input type="text" name="gn_billet_full_name" id="gn_billet_full_name" value="" class="form-control" />
+                <div class="gn-col-8">
+                  <input type="text" name="gn_billet_name_corporate" id="gn_billet_name_corporate" value="" class="form-control" />
                 </div>
               </div>
 
@@ -1208,15 +1315,15 @@ jQuery(document).ready(function($){
                 </div>
               </div>
 
-              <div id="gn_cpf_phone_row" class="required gn-osc-row gn-billet-field" >
+              <div id="gn_cpf_cnpj_phone_row" class="required gn-osc-row gn-billet-field" >
                 <div class="gn-col-2 gn-label">
-                  <label for="gn_billet_cpf" class="gn-right-padding-1"><?php echo $gn_cpf; ?></label>
+                  <label for="gn_billet_cpf_cnpj" class="gn-right-padding-1"><?php echo $gn_cpf_cnpj; ?></label>
                 </div>
                 <div class="gn-col-10">
                   
                   <div>
                     <div class="gn-col-3 required">
-                      <input type="text" name="gn_billet_cpf" id="gn_billet_cpf" value="" class="form-control cpf-mask" />
+                      <input type="text" name="gn_billet_cpf_cnpj" id="gn_billet_cpf_cnpj" value="" class="form-control cpf-mask" />
                     </div>
                     <div class="gn-col-8">
                       <div class=" required">
@@ -1269,54 +1376,22 @@ jQuery(document).ready(function($){
 
                 <div class="gn-form">
                 <div id="card-data" >
-                    <div style="background-color: #F3F3F3; border: 1px solid #F3F3F3; margin-top: 10px; margin-bottom: 10px;">
-                    <div class="gn-osc-row">
-                      <div class="gn-col-12 gn-cnpj-row">
-                        <input type="checkbox" name="pay_card_with_cnpj" id="pay_card_with_cnpj" value="1" />  <?php echo $gn_cnpj_option; ?>
+                    <div id="gn_card_name_corporate_row" class="required gn-osc-row gn-card-field" >
+                      <div class="gn-col-3 gn-label">
+                        <label class="gn-col-11 gn-right-padding-1" for="gn_card_name_corporate"><?php echo $gn_name_corporate; ?></label>
+                      </div>
+                      <div class="gn-col-8">
+                        <input type="text" name="gn_card_name_corporate" id="gn_card_name_corporate" value="" class="form-control" />
                       </div>
                     </div>
 
-                    <div id="pay_cnpj_card" class=" required gn-osc-row" >
-                      <div class="gn-col-2 gn-label">
-                      <label class="gn-right-padding-1" for="gn_card_cnpj"><?php echo $gn_cnpj; ?></label>
-                      </div>
-                      <div class="gn-col-10">
-                        
-                        <div>
-                          <div class="gn-col-3 required">
-                            <input type="text" name="gn_card_cnpj" id="gn_card_cnpj" class="form-control cnpj-mask" value="" />
-                          </div>
-                          <div class="gn-col-8">
-                            <div class=" required gn-left-space-2">
-                              <div class="gn-col-4 gn-label">
-                                <label class="gn-col-12 gn-right-padding-1" for="gn_card_corporate_name"><?php echo $gn_corporate_name; ?></label>
-                              </div>
-                              <div class="gn-col-8">
-                                <input type="text" name="gn_card_corporate_name" id="gn_card_corporate_name" class="form-control" value="" />
-                              </div>
-                            </div>
-                          </div>
-                        </div>
-                      </div>
-                    </div>
-                    </div>
-
-                    <div id="gn_card_name_row" class="required gn-osc-row gn-card-field" >
-                      <div class="gn-col-2 gn-label">
-                        <label class="gn-col-12 gn-right-padding-1" for="gn_card_full_name"><?php echo $gn_name; ?></label>
-                      </div>
-                      <div class="gn-col-10">
-                        <input type="text" name="gn_card_full_name" id="gn_card_full_name" value="" class="form-control" />
-                      </div>
-                    </div>
-
-                    <div id="gn_card_cpf_phone_row" class="required gn-osc-row gn-card-field" >
+                    <div id="gn_card_cpf_cnpj_phone_row" class="required gn-osc-row gn-card-field" >
                     
                         <div class="gn-col-2 gn-label">
-                            <label for="gn_card_cpf" class="gn-right-padding-1" ><?php echo $gn_cpf; ?></label>
+                            <label for="gn_card_cpf_cnpj" class="gn-right-padding-1" ><?php echo $gn_cpf_cnpj; ?></label>
                         </div>
                         <div class="gn-col-4">
-                            <input type="text" name="gn_card_cpf" id="gn_card_cpf" value="" class="form-control cpf-mask gn-minimum-size-field" />
+                            <input type="text" name="gn_card_cpf_cnpj" id="gn_card_cpf_cnpj" value="" class="form-control cpf-mask gn-minimum-size-field" />
                         </div>
                         <div class="gn-col-6">
                           <div class="gn-col-4 gn-label">

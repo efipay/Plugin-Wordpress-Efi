@@ -480,7 +480,8 @@ class WC_Gerencianet_Oficial_Gateway extends WC_Payment_Gateway {
 		if ($post_order_id=="") {
 			$value = WC()->cart->get_cart_total();
 			$shipping = WC()->cart->get_cart_shipping_total();
-			$total =  ((int)preg_replace("/[^0-9]/", "", html_entity_decode($value)) + (int)preg_replace("/[^0-9]/", "", html_entity_decode($shipping)));
+			$tax = WC()->cart->get_cart_tax();
+			$total =  ((int)preg_replace("/[^0-9]/", "", html_entity_decode($value)) + (int)preg_replace("/[^0-9]/", "", html_entity_decode($shipping)) + (int)preg_replace("/[^0-9]/", "", html_entity_decode($tax)));
 		} else {
 			$meta_discount_value_array = get_post_meta( intval($post_order_id), 'billet_discount_value');
 			if (isset($meta_discount_value_array[0])) {
@@ -551,6 +552,17 @@ class WC_Gerencianet_Oficial_Gateway extends WC_Payment_Gateway {
 			);
 		}
 
+		$total_taxes = $order->get_total_tax();
+		if($total_taxes > 0)
+		{
+			array_push($items, array (
+					"name" => "Impostos Gerais",
+					"value" => (int) $this->gn_price_format($total_taxes),
+					"amount" => 1
+				)
+			);
+		}
+
 		if ($this->gn_price_format($order->get_total_shipping())>0) {
 			$shipping = array (
 			    array (
@@ -613,13 +625,9 @@ class WC_Gerencianet_Oficial_Gateway extends WC_Payment_Gateway {
 		    	}
 		    }
 
-		    $post_pay_billet_with_cnpj = $arrayDadosPost['pay_billet_with_cnpj'];
-
 		    $post_order_id = $order_id;
-		    $post_corporate_name = $arrayDadosPost['gn_billet_corporate_name'];
-		    $post_cnpj = preg_replace('/[^0-9]/', '',$arrayDadosPost['gn_billet_cnpj']);
-		    $post_name = $arrayDadosPost['gn_billet_full_name'];
-		    $post_cpf = preg_replace('/[^0-9]/', '',$arrayDadosPost['gn_billet_cpf']);
+		    $post_name_corporate = $arrayDadosPost['gn_billet_name_corporate'];
+		    $post_cpf_cnpj = preg_replace('/[^0-9]/', '',$arrayDadosPost['gn_billet_cpf_cnpj']);
 		    $post_email = sanitize_email($arrayDadosPost['gn_billet_email']);
 		    $post_phone_number = preg_replace('/[^0-9]/', '',$arrayDadosPost['gn_billet_phone_number']);
 		    $post_charge_id = $charge_id;
@@ -640,36 +648,30 @@ class WC_Gerencianet_Oficial_Gateway extends WC_Payment_Gateway {
 		    	}
 		    }
 
-		    $post_pay_billet_with_cnpj = $arrayDadosPost['pay_billet_with_cnpj'];
-
 		    $post_order_id = $arrayDadosPost['order_id'];
-		    $post_corporate_name = $arrayDadosPost['corporate_name'];
-		    $post_cnpj = $arrayDadosPost['cnpj'];
-		    $post_name = $arrayDadosPost['name'];
-		    $post_cpf = $arrayDadosPost['cpf'];
+		    $post_name_corporate = $arrayDadosPost['name_corporate'];
+		    $post_cpf_cnpj = $arrayDadosPost['cpf_cnpj'];
 		    $post_email = sanitize_email($arrayDadosPost['email']);
 		    $post_phone_number = $arrayDadosPost['phone_number'];
 		    $post_charge_id = $arrayDadosPost['charge_id'];
 
 		}
 
-	    if ($post_pay_billet_with_cnpj=="1") {
+	    if (strlen($post_cpf_cnpj) > 11) {
 			$juridical_data = array (
-			  'corporate_name' => $post_corporate_name,
-			  'cnpj' => $post_cnpj
+			  'corporate_name' => $post_name_corporate,
+			  'cnpj' => $post_cpf_cnpj
 			);
 
 			$customer = array (
-			    'name' => $post_name,
-			    'cpf' => $post_cpf,
 			    'phone_number' => $post_phone_number,
 			    'email' => $post_email,
 				'juridical_person' => $juridical_data
 			);
 		} else {
 			$customer = array (
-			    'name' => $post_name,
-			    'cpf' => $post_cpf,
+			    'name' => $post_name_corporate,
+			    'cpf' => $post_cpf_cnpj,
 			    'phone_number' => $post_phone_number,
 			    'email' => $post_email
 			);
@@ -677,10 +679,16 @@ class WC_Gerencianet_Oficial_Gateway extends WC_Payment_Gateway {
 
 		$order = wc_get_order( $post_order_id );
 
-		if ($this->gn_price_format($order->get_total_shipping())>0) {
+		if($this->gn_price_format($order->get_total_shipping())>0){
 			$totalShipping = (int) $this->gn_price_format($order->get_total_shipping());
-		} else {
+		} else{
 			$totalShipping=0;
+		}
+
+		if($this->gn_price_format($order->get_total_tax())>0){
+			$totalTax = (int) $this->gn_price_format($order->get_total_tax());
+		} else{
+			$totalTax = 0;
 		}
 
 		$meta_discount_value_array = get_post_meta( intval($post_order_id), 'billet_discount_value');
@@ -689,7 +697,7 @@ class WC_Gerencianet_Oficial_Gateway extends WC_Payment_Gateway {
 			$discountBillet = $this->discountBillet;
 			$discountTotalValue = (int)($this->gn_price_format($order->get_total_discount()));
 			if ($this->billet_discount_shipping=="products") {
-				$discountBilletTotal = (int) floor(($this->gn_price_format($order->get_total())-$totalShipping)*(((float)$discountBillet/100)));
+				$discountBilletTotal = (int) floor(($this->gn_price_format($order->get_total())- $totalShipping - $totalTax)*(((float)$discountBillet/100)));
 			} else {
 				$discountBilletTotal = (int) floor(($this->gn_price_format($order->get_total()))*(((float)$discountBillet/100)));
 			}
@@ -697,8 +705,8 @@ class WC_Gerencianet_Oficial_Gateway extends WC_Payment_Gateway {
 		} else {
 			$discountBillet = $this->discountBillet;
 			if ($this->billet_discount_shipping=="products") {
-				$discountTotalValue = (int)($this->gn_price_format($order->get_total_discount()) + floor(($this->gn_price_format($order->get_total())-$totalShipping)*(((float)$discountBillet/100))));
-				$discountBilletTotal = (int) floor(($this->gn_price_format($order->get_total())-$totalShipping)*(((float)$discountBillet/100)));
+				$discountTotalValue = (int)($this->gn_price_format($order->get_total_discount()) + floor(($this->gn_price_format($order->get_total()) - $totalShipping - $totalTax)*(((float)$discountBillet/100))));
+				$discountBilletTotal = (int) floor(($this->gn_price_format($order->get_total()) - $totalShipping - $totalTax)*(((float)$discountBillet/100)));
 			} else {
 				$discountTotalValue = (int)($this->gn_price_format($order->get_total_discount()) + floor(($this->gn_price_format($order->get_total()))*(((float)$discountBillet/100))));
 				$discountBilletTotal = (int) floor(($this->gn_price_format($order->get_total()))*(((float)$discountBillet/100)));
@@ -741,7 +749,7 @@ class WC_Gerencianet_Oficial_Gateway extends WC_Payment_Gateway {
 					$wpdb->insert($wpdb->prefix . "woocommerce_order_itemmeta", array('order_item_id' => $lastid, 'meta_key' => '_tax_class', 'meta_value' => '0'  ) );
 
 					if ($this->billet_discount_shipping=="products") {
-						$wpdb->insert($wpdb->prefix . "woocommerce_order_itemmeta", array('order_item_id' => $lastid, 'meta_key' => '_line_total', 'meta_value' => '-'.number_format(intval(floor(($this->gn_price_format($order->get_total())-$totalShipping)*(((float)$discountBillet/100))))/100, 2, '.', '')  ) );
+						$wpdb->insert($wpdb->prefix . "woocommerce_order_itemmeta", array('order_item_id' => $lastid, 'meta_key' => '_line_total', 'meta_value' => '-'.number_format(intval(floor(($this->gn_price_format($order->get_total()) - $totalShipping - $totalTax)*(((float)$discountBillet/100))))/100, 2, '.', '')  ) );
 					} else {
 						$wpdb->insert($wpdb->prefix . "woocommerce_order_itemmeta", array('order_item_id' => $lastid, 'meta_key' => '_line_total', 'meta_value' => '-'.number_format(intval(floor(($this->gn_price_format($order->get_total()))*(((float)$discountBillet/100))))/100, 2, '.', '')  ) );
 					}
@@ -797,29 +805,12 @@ class WC_Gerencianet_Oficial_Gateway extends WC_Payment_Gateway {
 		    }
 
 			$post_order_id = $order_id;
-			
-			$post_pay_card_with_cnpj = $arrayDadosPost['pay_card_with_cnpj'];
-
-			if (isset($arrayDadosPost['gn_card_corporate_name'])) {
-				if ($arrayDadosPost['gn_card_corporate_name']!="") {
-			    	$post_corporate_name = $arrayDadosPost['gn_card_corporate_name'];
-			    } else {
-			    	$post_corporate_name="";
-			    }
-			}
-			if (isset($arrayDadosPost['gn_card_cnpj'])) {
-				if ($arrayDadosPost['gn_card_cnpj']!="") {
-			    	$post_cnpj = preg_replace('/[^0-9]/', '',$arrayDadosPost['gn_card_cnpj']);
-			    } else {
-			    	$post_cnpj="";
-			    }
-			}
 
 			$birth = explode("/", $arrayDadosPost['gn_card_birth']);
 			$birth = $birth[2]."-".$birth[1]."-".$birth[0];
 		    
-		    $post_name = $arrayDadosPost['gn_card_full_name'];
-		    $post_cpf = preg_replace('/[^0-9]/', '',$arrayDadosPost['gn_card_cpf']);
+		    $post_name_corporate = $arrayDadosPost['gn_card_name_corporate'];
+		    $post_cpf_cnpj = preg_replace('/[^0-9]/', '',$arrayDadosPost['gn_card_cpf_cnpj']);
 		    $post_phone_number = preg_replace('/[^0-9]/', '',$arrayDadosPost['gn_card_phone_number']);
 		    $post_email = sanitize_email($arrayDadosPost['gn_card_email']);
 		    $post_birth = $birth;
@@ -851,27 +842,9 @@ class WC_Gerencianet_Oficial_Gateway extends WC_Payment_Gateway {
 		    }
 
 			$post_order_id = $arrayDadosPost['order_id'];
-
-			
-		    $post_pay_card_with_cnpj = $arrayDadosPost['pay_card_with_cnpj'];
-		  
-			if (isset($arrayDadosPost['corporate_name'])) {
-				if ($arrayDadosPost['corporate_name']!="") {
-			    	$post_corporate_name = $arrayDadosPost['corporate_name'];
-			    } else {
-			    	$post_corporate_name="";
-			    }
-			}
-			if (isset($arrayDadosPost['cnpj'])) {
-				if ($arrayDadosPost['cnpj']!="") {
-			    	$post_cnpj = $arrayDadosPost['cnpj'];
-			    } else {
-			    	$post_cnpj="";
-			    }
-			}
 		    
-		    $post_name = $arrayDadosPost['name'];
-		    $post_cpf = $arrayDadosPost['cpf'];
+		    $post_name_corporate = $arrayDadosPost['name_corporate'];
+		    $post_cpf_cnpj = $arrayDadosPost['cpf_cnpj'];
 		    $post_phone_number = $arrayDadosPost['phone_number'];
 		    $post_email = sanitize_email($arrayDadosPost['email']);
 		    $post_birth = $arrayDadosPost['birth'];
@@ -887,15 +860,13 @@ class WC_Gerencianet_Oficial_Gateway extends WC_Payment_Gateway {
 		    $post_charge_id = $arrayDadosPost['charge_id'];
 		}
 
-	    if ($post_pay_card_with_cnpj=="1") {
+	    if (strlen($post_cpf_cnpj) > 11) {
 			$juridical_data = array (
-			  'corporate_name' => $post_corporate_name,
-			  'cnpj' => $post_cnpj
+			  'corporate_name' => $post_name_corporate,
+			  'cnpj' => $post_cpf_cnpj
 			);
 
 			$customer = array (
-			    'name' => $post_name,
-			    'cpf' => $post_cpf,
 			    'phone_number' => $post_phone_number,
 				'juridical_person' => $juridical_data,
 			    'email' => $post_email,
@@ -903,8 +874,8 @@ class WC_Gerencianet_Oficial_Gateway extends WC_Payment_Gateway {
 			);
 		} else {
 			$customer = array (
-			    'name' => $post_name,
-			    'cpf' => $post_cpf,
+			    'name' => $post_name_corporate,
+			    'cpf' => $post_cpf_cnpj,
 			    'phone_number' => $post_phone_number,
 			    'email' => $post_email,
 			    'birth' => $post_birth
@@ -1000,6 +971,12 @@ class WC_Gerencianet_Oficial_Gateway extends WC_Payment_Gateway {
 			$totalShipping=0;
 		}
 
+		if ($this->gn_price_format($order->get_total_tax())>0) {
+			$totalTax = (int) $this->gn_price_format($order->get_total_tax());
+		} else {
+			$totalTax=0;
+		}
+
 		$discount = $this->discountBillet;
 		$meta_discount_value_array = get_post_meta( intval($order_id), 'billet_discount_value');
 
@@ -1018,8 +995,9 @@ class WC_Gerencianet_Oficial_Gateway extends WC_Payment_Gateway {
 		$max_installments = $this->gnIntegration->max_installments($this->gn_price_format($order->get_total())+$meta_discount_value);
 
 
+		//alterei
 		if ($this->billet_discount_shipping=="products") {
-			$order_with_billet_discount = $this->gnIntegration->formatCurrencyBRL(ceil(($this->gn_price_format($order->get_total())-$totalShipping)*(1-((float)$discount/100))+$totalShipping));
+			$order_with_billet_discount = $this->gnIntegration->formatCurrencyBRL(ceil(($this->gn_price_format($order->get_total()) - $totalShipping - $totalTax)*(1-((float)$discount/100))+$totalShipping) + $totalTax);
 		} else {
 			$order_with_billet_discount = $this->gnIntegration->formatCurrencyBRL(ceil(($this->gn_price_format($order->get_total()))*(1-((float)$discount/100))));
 		}
@@ -1029,19 +1007,18 @@ class WC_Gerencianet_Oficial_Gateway extends WC_Payment_Gateway {
 
 		$order_total_card = $this->gn_price_format($order->get_total())+$meta_discount_value;
 
+		//alterei
 		if ($this->billet_discount_shipping=="products") {
-			$order_total_billet = ceil(($this->gn_price_format($order->get_total())-$totalShipping)*(1-((float)$discount/100))+$meta_discount_value);
+			$order_total_billet = ceil(($this->gn_price_format($order->get_total()) - $totalShipping - $totalTax)*(1-((float)$discount/100))+$meta_discount_value);
 		} else {
 			$order_total_billet = ceil(($this->gn_price_format($order->get_total()))*(1-((float)$discount/100))+$meta_discount_value);
 		}
 
 
 		$gn_card_payment_comments = __("Opting to pay by credit card, the payment is processed and the confirmation will take place within 48 hours.", WCGerencianetOficial::getTextDomain() );
-		$gn_cnpj = __("CNPJ", WCGerencianetOficial::getTextDomain() );
 		$gn_billet_payment_method_comments = __("Opting to pay by Banking Billet, the confirmation will be performed on the next business day after payment.", WCGerencianetOficial::getTextDomain() );
-		$gn_corporate_name = __("Company:", WCGerencianetOficial::getTextDomain() );
-		$gn_name = __("Name:", WCGerencianetOficial::getTextDomain() );
-		$gn_cpf = __("CPF: ", WCGerencianetOficial::getTextDomain() );
+		$gn_name_corporate = __("Name/Company:", WCGerencianetOficial::getTextDomain() );
+		$gn_cpf_cnpj = __("CPF/CNPJ: ", WCGerencianetOficial::getTextDomain() );
 		$gn_phone = __("Phone: ", WCGerencianetOficial::getTextDomain() );
 		$gn_birth = __("Birth Date: ", WCGerencianetOficial::getTextDomain() );
 		$gn_email = __("E-mail: ", WCGerencianetOficial::getTextDomain() );
@@ -1058,7 +1035,6 @@ class WC_Gerencianet_Oficial_Gateway extends WC_Payment_Gateway {
 		$gn_card_cvv = __("Security Code: ", WCGerencianetOficial::getTextDomain() );
 		$gn_card_installments_options = __("Installments: ", WCGerencianetOficial::getTextDomain() );
 		$gn_card_brand = __("Select the card brand", WCGerencianetOficial::getTextDomain() );
-		$gn_cnpj_option = __("Pay as juridical person", WCGerencianetOficial::getTextDomain() );
 
 		$gn_mininum_gn_charge_price = __("You can not pay this order with Gerencianet because the total value is less than R$5,00.", WCGerencianetOficial::getTextDomain() );
 		$gn_pay_billet_option = __("Pay with Billet Banking", WCGerencianetOficial::getTextDomain() );
@@ -1074,10 +1050,8 @@ class WC_Gerencianet_Oficial_Gateway extends WC_Payment_Gateway {
 		$gn_warning_sandbox_message = __("Sandbox mode is active. The payments will not be valid.", WCGerencianetOficial::getTextDomain() );
 
 
-		$gn_billing_cpf_validate = false;
-		$gn_billing_name_validate = false;
-		$gn_billing_cnpj_validate = false;
-		$gn_billing_corporate_validate = false;
+		$gn_billing_cpf_cnpj_validate = false;
+		$gn_billing_name_corporate_validate = false;
 		$gn_billing_phone_number_validate = false;
 		$gn_billing_email_validate = false;
 		$gn_billing_birthdate_validate = false;
@@ -1091,21 +1065,38 @@ class WC_Gerencianet_Oficial_Gateway extends WC_Payment_Gateway {
 
 		$validate = new GerencianetValidation();
 
-		if (isset($order->billing_cpf)) {
-			if ($validate->_cpf($order->billing_cpf)) {
-				$gn_billing_cpf_validate = true;
+		$gn_order_cpf_cnpj = '';
+		$gn_order_name_corporate = '';
+
+		if(isset($order->billing_persontype) && $order->billing_persontype == "1")
+		{
+			if (isset($order->billing_cpf)) {
+				if ($validate->_cpf($order->billing_cpf)) {
+					$gn_billing_cpf_cnpj_validate = true;
+					$gn_order_cpf_cnpj = $order->billing_cpf;
+				}
+			}
+
+			if ($validate->_name($order->get_formatted_billing_full_name())) {
+				$gn_billing_name_corporate_validate = true;
+				$gn_order_name_corporate = $order->get_formatted_billing_full_name();
 			}
 		}
 	
-		if (isset($order->billing_cnpj)) {
-			if ($validate->_cnpj($order->billing_cnpj)) {
-				$gn_billing_cnpj_validate = true;
+		else
+		{
+			if (isset($order->billing_cnpj)) {
+				if ($validate->_cnpj($order->billing_cnpj)) {
+					$gn_billing_cpf_cnpj_validate = true;
+					$gn_order_cpf_cnpj = $order->billing_cnpj;
+				} 
+			}	
+
+			if ($validate->_corporate($order->billing_company)) {
+				$gn_billing_name_corporate_validate = true;
+				$gn_order_name_corporate = $order->billing_company;
 			} 
 		}
-
-		if ($validate->_name($order->get_formatted_billing_full_name())) {
-			$gn_billing_name_validate = true;
-		} 
 
 		if (isset($order->billing_email)) {
 			if ($validate->_email($order->billing_email)) {
@@ -1119,12 +1110,6 @@ class WC_Gerencianet_Oficial_Gateway extends WC_Payment_Gateway {
 			} 
 		}
 
-		if (isset($order->billing_company)) {
-			if ($validate->_corporate($order->billing_company)) {
-				$gn_billing_corporate_validate = true;
-			} 
-		}
-		
 		if (isset($order->billing_birthdate)) {
 			if ($validate->_birthdate($order->billing_birthdate)) {
 				$gn_billing_birthdate_validate = true;
@@ -1217,29 +1202,48 @@ class WC_Gerencianet_Oficial_Gateway extends WC_Payment_Gateway {
 			} else {
 				$order = null;
 			}
-			if ($order) {
+			if ($order) 
+			{
 				$meta_discount_value_array = get_post_meta( intval($order_id), 'billet_discount_value');
+				/* **************************** Verify if billet discount exists ********************************* */
+
 				if (isset($meta_discount_value_array[0])) {
 					$meta_discount_value = $meta_discount_value_array[0];
 				} else {
 					$meta_discount_value = 0;
 				}
+
+				/* ***************************** Verify if exists shipping **************************************** */
+
 				if ($this->gn_price_format($order->get_total_shipping())>0) {
 					$totalShipping = (int) $this->gn_price_format($order->get_total_shipping());
 				} else {
-					$totalShipping=0;
+					$totalShipping = 0;
 				}
-				$order_total_value_without_shipping = $this->gn_price_format($order->get_total())-$totalShipping;
+
+				/* ***************************** Verify if exists tax ******************************************** */
+
+				if ($this->gn_price_format($order->get_total_tax()) > 0){
+					$totalTax = (int) $this->gn_price_format($order->get_total_tax());
+				} else {
+					$totalTax = 0;
+				}
+
+				/* *********************************************************************************************** */
+
+				$order_total_value_without_shipping_and_tax = $this->gn_price_format($order->get_total()) - $totalShipping - $totalTax;
+				$order_total_tax_value = $totalTax;
 				$order_total_shipping_value = $totalShipping;
 			} else {
 				$meta_discount_value = 0;
-				$order_total_value_without_shipping = WC()->cart->get_cart_total();
+				$order_total_tax_value = WC()->cart->get_cart_tax();
+				$order_total_value_without_shipping_and_tax = WC()->cart->get_cart_total();
 				$order_total_shipping_value = WC()->cart->get_cart_shipping_total();
 			}
 
-			$order_total =  ((int)preg_replace("/[^0-9]/", "", html_entity_decode($order_total_value_without_shipping)))/100 + ((int)preg_replace("/[^0-9]/", "", html_entity_decode($order_total_shipping_value)))/100;
+			$order_total =  ((int)preg_replace("/[^0-9]/", "", html_entity_decode($order_total_value_without_shipping_and_tax)))/100 + ((int)preg_replace("/[^0-9]/", "", html_entity_decode($order_total_shipping_value)))/100 + ((int)preg_replace("/[^0-9]/", "", html_entity_decode($order_total_tax_value)))/100;
 
-			$order_total_without_shipping =  ((int)preg_replace("/[^0-9]/", "", html_entity_decode($order_total_value_without_shipping)))/100;
+			$order_total_without_shipping =  ((int)preg_replace("/[^0-9]/", "", html_entity_decode($order_total_value_without_shipping_and_tax)))/100;
 
 			if ($meta_discount_value>0) {
 				$discount = 0;
@@ -1250,12 +1254,12 @@ class WC_Gerencianet_Oficial_Gateway extends WC_Payment_Gateway {
 			$discountBilletFormatted = str_replace(".",",",$discount);
 
 			if ($this->billet_discount_shipping=="products") {
-				$total_order_pay_by_billet = ceil($this->gn_price_format($order_total_without_shipping)*(1-((float)$discount/100)) + ((int)preg_replace("/[^0-9]/", "", html_entity_decode($order_total_shipping_value))));
+				$total_order_pay_by_billet = ceil($this->gn_price_format($order_total_without_shipping)*(1-((float)$discount/100)) + ((int)preg_replace("/[^0-9]/", "", html_entity_decode($order_total_shipping_value))) + ((int)preg_replace("/[^0-9]/", "", html_entity_decode($order_total_tax_value))));
 			} else {
 				$total_order_pay_by_billet = ceil($this->gn_price_format($order_total)*(1-((float)$discount/100)));
 			}
 
-			$total_order_pay_by_card = $this->gn_price_format($order_total)+$meta_discount_value;
+			$total_order_pay_by_card = $this->gn_price_format($order_total) + $meta_discount_value;
 			$discount_value = $total_order_pay_by_card - $total_order_pay_by_billet;
 
 			wc_get_template( 'transparent-osc.php', array(
@@ -1274,11 +1278,9 @@ class WC_Gerencianet_Oficial_Gateway extends WC_Payment_Gateway {
 				'order_total_billet' => $total_order_pay_by_billet,
 				'sandbox'        => $this->sandbox,
 				'gn_card_payment_comments' => __("Opting to pay by credit card, the payment is processed and the confirmation will take place within 48 hours.", WCGerencianetOficial::getTextDomain() ),
-				'gn_cnpj' => __("CNPJ", WCGerencianetOficial::getTextDomain() ),
 				'gn_billet_payment_method_comments' =>  __("Opting to pay by Banking Billet, the confirmation will be performed on the next business day after payment.", WCGerencianetOficial::getTextDomain() ),
-				'gn_corporate_name' =>  __("Company:", WCGerencianetOficial::getTextDomain() ),
-				'gn_name' =>  __("Name:", WCGerencianetOficial::getTextDomain() ),
-				'gn_cpf' =>  __("CPF: ", WCGerencianetOficial::getTextDomain() ),
+				'gn_name_corporate' =>  __("Name/Company:", WCGerencianetOficial::getTextDomain() ),
+				'gn_cpf_cnpj' =>  __("CPF/CNPJ: ", WCGerencianetOficial::getTextDomain() ),
 				'gn_phone' =>  __("Phone: ", WCGerencianetOficial::getTextDomain() ),
 				'gn_birth' =>  __("Birth Date: ", WCGerencianetOficial::getTextDomain() ),
 				'gn_email' =>  __("E-mail: ", WCGerencianetOficial::getTextDomain() ),
@@ -1295,7 +1297,6 @@ class WC_Gerencianet_Oficial_Gateway extends WC_Payment_Gateway {
 				'gn_card_cvv' =>  __("Security Code: ", WCGerencianetOficial::getTextDomain() ),
 				'gn_card_installments_options' =>  __("Installments: ", WCGerencianetOficial::getTextDomain() ),
 				'gn_card_brand' =>  __("Select the card brand", WCGerencianetOficial::getTextDomain() ),
-				'gn_cnpj_option' =>  __("Pay as juridical person", WCGerencianetOficial::getTextDomain() ),
 
 				'gn_mininum_gn_charge_price' =>  __("You can not pay this order with Gerencianet because the total value is less than R$5,00.", WCGerencianetOficial::getTextDomain() ),
 				'gn_pay_billet_option' =>  __("Pay with Billet Banking", WCGerencianetOficial::getTextDomain() ),
@@ -1331,6 +1332,15 @@ class WC_Gerencianet_Oficial_Gateway extends WC_Payment_Gateway {
 		$charge_id = json_encode($_POST);
 
 		if ($this->checkout_type=="OSC") {
+
+			if (($_POST['gn_card_payment_token']=="" || $_POST['gn_card_installments']=="0") && $_POST['paymentMethodRadio']=="card") {
+				wc_add_notice( 'Não foi possível validar os dados do cartão. Por favor, digite os dados novamente.' , 'error' );
+
+				return array(
+					'result'   => 'fail',
+					'redirect' => '',
+				);
+			}
 
 			$create_charge = $this->gerencianet_create_charge('OSC',$order_id);
 
@@ -1393,7 +1403,7 @@ class WC_Gerencianet_Oficial_Gateway extends WC_Payment_Gateway {
 		} else {
 			return array(
 				'result'   => 'success',
-				'redirect' => $order->get_checkout_payment_url( true )
+				'redirect' => $order->get_checkout_payment_url(true)
 			);
 		}
 		
