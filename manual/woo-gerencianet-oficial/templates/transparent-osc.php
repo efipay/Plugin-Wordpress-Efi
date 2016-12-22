@@ -363,6 +363,7 @@ jQuery(document).ready(function($){
                 if (verifyCPF($('#gn_billet_cpf_cnpj').val())) {
                     $('#gn_billet_cpf_cnpj').removeClass("gn-inputs-error");
                     hideError();
+                    $('#gn_billet_name_corporate').val($('#billing_first_name').val() + ' ' + $('#billing_last_name').val()); //novo
                     if (typeof $('#billing_cpf').val() != "undefined")
                     {
                         $('#billing_persontype option').removeAttr('selected').filter('[value=1]').attr('selected', true);  
@@ -389,6 +390,7 @@ jQuery(document).ready(function($){
                 if (verifyCNPJ($('#gn_billet_cpf_cnpj').val())) {
                     $('#gn_billet_cpf_cnpj').removeClass("gn-inputs-error");
                     hideError();
+                    $('#gn_billet_name_corporate').val($('$billing_company').val()); //novo
                     if (typeof $('#billing_cnpj').val() != "undefined")
                     {
                         $('#billing_persontype option').removeAttr('selected').filter('[value=2]').attr('selected', true);  
@@ -428,6 +430,7 @@ jQuery(document).ready(function($){
                 if (verifyCPF($('#gn_card_cpf_cnpj').val())) {
                     $('#gn_card_cpf_cnpj').removeClass("gn-inputs-error");
                     hideError();
+                    $('#gn_card_name_corporate').val($('#billing_first_name').val() + ' ' + $('#billing_last_name').val()); //novo
                     if (typeof $('#billing_cpf').val() != "undefined")
                     {
                         $('#billing_persontype option').removeAttr('selected').filter('[value=1]').attr('selected', true);  
@@ -454,6 +457,7 @@ jQuery(document).ready(function($){
                 if (verifyCNPJ($('#gn_card_cpf_cnpj').val())) {
                     $('#gn_card_cpf_cnpj').removeClass("gn-inputs-error");
                     hideError();
+                    $('#gn_card_name_corporate').val($('$billing_company').val()); //novo
                     if (typeof $('#billing_cnpj').val() != "undefined")
                     {
                         $('#billing_persontype option').removeAttr('selected').filter('[value=2]').attr('selected', true);  
