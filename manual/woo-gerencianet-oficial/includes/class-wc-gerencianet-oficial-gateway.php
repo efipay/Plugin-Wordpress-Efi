@@ -1018,7 +1018,11 @@ class WC_Gerencianet_Oficial_Gateway extends WC_Payment_Gateway {
 		$gn_card_payment_comments = __("Opting to pay by credit card, the payment is processed and the confirmation will take place within 48 hours.", WCGerencianetOficial::getTextDomain() );
 		$gn_billet_payment_method_comments = __("Opting to pay by Banking Billet, the confirmation will be performed on the next business day after payment.", WCGerencianetOficial::getTextDomain() );
 		$gn_name_corporate = __("Name/Company:", WCGerencianetOficial::getTextDomain() );
+		$gn_name = __("Name:", WCGerencianetOficial::getTextDomain() ); //novo
+		$gn_corporate = __("Company:", WCGerencianetOficial::getTextDomain() ); //novo
 		$gn_cpf_cnpj = __("CPF/CNPJ: ", WCGerencianetOficial::getTextDomain() );
+		$gn_cpf = __("CPF: ", WCGerencianetOficial::getTextDomain() ); //novo
+		$gn_cnpj = __("CNPJ: ", WCGerencianetOficial::getTextDomain() ); //novo
 		$gn_phone = __("Phone: ", WCGerencianetOficial::getTextDomain() );
 		$gn_birth = __("Birth Date: ", WCGerencianetOficial::getTextDomain() );
 		$gn_email = __("E-mail: ", WCGerencianetOficial::getTextDomain() );
@@ -1280,7 +1284,11 @@ class WC_Gerencianet_Oficial_Gateway extends WC_Payment_Gateway {
 				'gn_card_payment_comments' => __("Opting to pay by credit card, the payment is processed and the confirmation will take place within 48 hours.", WCGerencianetOficial::getTextDomain() ),
 				'gn_billet_payment_method_comments' =>  __("Opting to pay by Banking Billet, the confirmation will be performed on the next business day after payment.", WCGerencianetOficial::getTextDomain() ),
 				'gn_name_corporate' =>  __("Name/Company:", WCGerencianetOficial::getTextDomain() ),
+				'gn_name' =>  __("Name:", WCGerencianetOficial::getTextDomain() ), //novo
+				'gn_corporate' =>  __("Company:", WCGerencianetOficial::getTextDomain() ), //novo
 				'gn_cpf_cnpj' =>  __("CPF/CNPJ: ", WCGerencianetOficial::getTextDomain() ),
+				'gn_cpf' =>  __("CPF: ", WCGerencianetOficial::getTextDomain() ), //novo
+				'gn_cnpj' =>  __("CNPJ: ", WCGerencianetOficial::getTextDomain() ), //novo
 				'gn_phone' =>  __("Phone: ", WCGerencianetOficial::getTextDomain() ),
 				'gn_birth' =>  __("Birth Date: ", WCGerencianetOficial::getTextDomain() ),
 				'gn_email' =>  __("E-mail: ", WCGerencianetOficial::getTextDomain() ),

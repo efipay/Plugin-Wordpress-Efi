@@ -5,7 +5,7 @@
 
 // Exit if accessed directly
 if ( ! defined( 'ABSPATH' ) ) {
-	exit;
+  exit;
 }
 
 ?>
@@ -72,8 +72,8 @@ if ( ! defined( 'ABSPATH' ) ) {
     <div id="collapse-payment-billet"  class="panel-collapse gn-hide" style="border-top: 1px solid #CCC;" >
     <div class="panel-body">
 
-    	<form class="form-horizontal">
-    	<input name="wc_order_id"	type="hidden" value="<?php echo $order->id;?>"/>
+      <form class="form-horizontal">
+      <input name="wc_order_id" type="hidden" value="<?php echo $order->id;?>"/>
         <div class="gn-row ">
             <p class="gn-left-space-2"><strong><?php echo $gn_billet_payment_method_comments; ?></strong></p>
         </div>
@@ -168,12 +168,12 @@ if ( ! defined( 'ABSPATH' ) ) {
     <div class="panel-body">
 
 <form class="form-horizontal" id="payment-card-form">
-<input name="wc_order_id"	type="hidden" value="<?php echo $order->id;?>"/>
+<input name="wc_order_id" type="hidden" value="<?php echo $order->id;?>"/>
     <div class="gn-row">
-	   <p class="gn-left-space-2"><strong><?php echo $gn_card_payment_comments; ?></strong></p>
+     <p class="gn-left-space-2"><strong><?php echo $gn_card_payment_comments; ?></strong></p>
     </div>
 
-	<div class="gn-form">
+  <div class="gn-form">
     <div id="card-data" >
         <div class="gn-initial-section">
 
@@ -480,7 +480,7 @@ if ( ! defined( 'ABSPATH' ) ) {
 
 <div class="checkout-footer">
     <div class="pull-left">
-    	<p>
+      <p>
             <a class="button cancel" href="<?php echo esc_url( $order->get_cancel_order_url() ) ?>"><?php _e( 'Cancel order &amp; restore cart', WCGerencianetOficial::getTextDomain() ) ?></a>
         </p>
     </div>

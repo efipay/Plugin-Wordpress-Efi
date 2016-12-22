@@ -9,8 +9,6 @@ if ( ! defined( 'ABSPATH' ) ) {
 }
 
 ?>
-
-
 <script type="text/javascript">
 
 <?php echo html_entity_decode($script_load);?>
@@ -44,8 +42,39 @@ jQuery(document).ready(function($){
         $("#gn-card-payment-option").addClass('gn-osc-payment-option-selected');
     }
 
+    /** Define se a compra pode ser feita apenas com CPF, apenas com CNPJ ou com ambos **/
+    /***********************************************************************************/
+
+    var allowedPersonType = 0;
+    /* 0 - Both
+    /* 1 - Only CPF
+    /* 2 - Only CNPJ
+    */
+
+    if(typeof $('#billing_persontype').val() == "undefined")
+    {
+        if( typeof $('#billing_cpf').val() != "undefined")
+        {
+            allowedPersonType = 1;
+            $("#gn_billet_cpf_cnpj").mask("999.999.999-99",{autoclear:false, placeholder:""});
+            $("#gn_card_cpf_cnpj").mask("999.999.999-99",{autoclear:false, placeholder:""});
+            $('.document-label').text("<?php echo $gn_cpf; ?>");
+            $('.name-corporate-label').text("<?php echo $gn_name; ?>");
+        }
+        else if( typeof $('#billing_company').val() != "undefined" && 
+                 typeof $('#billing_cnpj').val() != "undefined"){
+            allowedPersonType = 2;
+            $("#gn_billet_cpf_cnpj").mask("99.999.999/9999-99",{autoclear:false, placeholder:""});
+            $("#gn_card_cpf_cnpj").mask("99.999.999/9999-99",{autoclear:false, placeholder:""});
+            $('.document-label').text("<?php echo $gn_cnpj; ?>");
+            $('.name-corporate-label').text("<?php echo $gn_corporate; ?>");
+        }
+    }
+
+    /****************************************************************************************/
+                                                                                                                                               
     if ($('#gn_billet_name_corporate').val()=="")  {
-        if ($('#billing_persontype').val()=="1") {
+        if ($('#billing_persontype').val()=="1" || allowedPersonType == 1) {
             if (typeof $('#billing_first_name').val() != "undefined")
                 $('#gn_billet_name_corporate').val($('#billing_first_name').val());
             if (typeof $('#billing_last_name').val() != "undefined")
@@ -64,7 +93,7 @@ jQuery(document).ready(function($){
 
     if ($('#gn_billet_cpf_cnpj').val()=="")
     {
-        if ($('#billing_persontype').val()=="1") {
+        if ($('#billing_persontype').val()=="1" || allowedPersonType == 1) {
             if (typeof $('#billing_cpf').val() != "undefined")
                 $('#gn_billet_cpf_cnpj').val($('#billing_cpf').val());
         }
@@ -75,7 +104,7 @@ jQuery(document).ready(function($){
     }
 
     if ($('#gn_card_name_corporate').val()=="") {
-        if ($('#billing_persontype').val()=="1") {
+        if ($('#billing_persontype').val()=="1" || allowedPersonType == 1) {
             if (typeof $('#billing_first_name').val() != "undefined")
                 $('#gn_card_name_corporate').val($('#billing_first_name').val());
             if (typeof $('#billing_last_name').val() != "undefined")
@@ -94,7 +123,7 @@ jQuery(document).ready(function($){
 
     if ($('#gn_card_cpf_cnpj').val()=="")
     {
-         if ($('#billing_persontype').val()=="1") {
+         if ($('#billing_persontype').val()=="1" || allowedPersonType == 1) {
             if (typeof $('#billing_cpf').val() != "undefined")
                 $('#gn_card_cpf_cnpj').val($('#billing_cpf').val());
         }
@@ -121,11 +150,11 @@ jQuery(document).ready(function($){
     if ($('#gn_card_state').val()=="")
         $('#gn_card_state').val($('#billing_state').val());
 
-    validateBilletCustomerData();
-    validateCardCustomerData();
+    validateBilletCustomerData(allowedPersonType);
+    validateCardCustomerData(allowedPersonType);
 
     $('#billing_first_name').change(function() {
-        if ($('#billing_persontype').val()=="1") {
+        if ($('#billing_persontype').val()=="1" || allowedPersonType == 1) {
             if (typeof $('#billing_first_name').val() != "undefined") {
                 $('#gn_billet_name_corporate').val($('#billing_first_name').val());
                 $('#gn_card_name_corporate').val($('#billing_first_name').val());
@@ -134,13 +163,13 @@ jQuery(document).ready(function($){
                 $('#gn_billet_name_corporate').val($('#gn_billet_name_corporate').val() + " " + $('#billing_last_name').val());
                 $('#gn_card_name_corporate').val($('#gn_card_name_corporate').val() + " " + $('#billing_last_name').val());
             }
-            validateBilletCustomerData();
-            validateCardCustomerData();
+            validateBilletCustomerData(allowedPersonType);
+            validateCardCustomerData(allowedPersonType);
         }
     });
 
     $('#billing_last_name').change(function() {
-        if ($('#billing_persontype').val()=="1") {
+        if ($('#billing_persontype').val()=="1" || allowedPersonType == 1) {
             if (typeof $('#billing_first_name').val() != "undefined") {
                 $('#gn_billet_name_corporate').val($('#billing_first_name').val());
                 $('#gn_card_name_corporate').val($('#billing_first_name').val());
@@ -149,94 +178,94 @@ jQuery(document).ready(function($){
                 $('#gn_billet_name_corporate').val($('#gn_billet_name_corporate').val() + " " + $('#billing_last_name').val());
                 $('#gn_card_name_corporate').val($('#gn_card_name_corporate').val() + " " + $('#billing_last_name').val());
             }
-            validateBilletCustomerData();
-            validateCardCustomerData();
+            validateBilletCustomerData(allowedPersonType);
+            validateCardCustomerData(allowedPersonType);
         }
     });
 
     $('#billing_company').change(function() {
-        if ($('#billing_persontype').val()=="2") {
+        if ($('#billing_persontype').val()=="2" || allowedPersonType == 2) {
             if (typeof $('#billing_company').val() != "undefined") {
                 $('#gn_billet_name_corporate').val($('#billing_company').val());
                 $('#gn_card_name_corporate').val($('#billing_company').val());
             }
-            validateBilletCustomerData();
-            validateCardCustomerData();
+            validateBilletCustomerData(allowedPersonType);
+            validateCardCustomerData(allowedPersonType);
         }
     });
 
     $('#billing_email').change(function() {
         $('#gn_billet_email').val($('#billing_email').val());
         $('#gn_card_email').val($('#billing_email').val());
-        validateBilletCustomerData();
-        validateCardCustomerData();
+        validateBilletCustomerData(allowedPersonType);
+        validateCardCustomerData(allowedPersonType);
     });
 
     $('#billing_phone').change(function() {
         $('#gn_billet_phone_number').val($('#billing_phone').val());
         $('#gn_card_phone_number').val($('#billing_phone').val());
-        validateBilletCustomerData();
-        validateCardCustomerData();
+        validateBilletCustomerData(allowedPersonType);
+        validateCardCustomerData(allowedPersonType);
     });
 
     $('#billing_cpf').change(function() {
-        if ($('#billing_persontype').val()=="1") {
+        if ($('#billing_persontype').val()=="1" || allowedPersonType == 1) {
             $('#gn_billet_cpf_cnpj').val($('#billing_cpf').val());
             $('#gn_card_cpf_cnpj').val($('#billing_cpf').val());
 
-            validateBilletCustomerData();
-            validateCardCustomerData();
+            validateBilletCustomerData(allowedPersonType);
+            validateCardCustomerData(allowedPersonType);
         }
     });
 
     $('#billing_cnpj').change(function() {
-        if ($('#billing_persontype').val()=="2") {
+        if ($('#billing_persontype').val()=="2" || allowedPersonType == 2) {
             $('#gn_billet_cpf_cnpj').val($('#billing_cnpj').val());
             $('#gn_card_cpf_cnpj').val($('#billing_cnpj').val());
 
-            validateBilletCustomerData();
-            validateCardCustomerData();
+            validateBilletCustomerData(allowedPersonType);
+            validateCardCustomerData(allowedPersonType);
         }
     });
 
     $('#billing_birthdate').change(function() {
         $('#gn_card_birth').val($('#billing_birthdate').val());
-        validateCardCustomerData();
+        validateCardCustomerData(allowedPersonType);
     });
 
     $('#billing_address_1').change(function() {
         $('#gn_card_street').val($('#billing_address_1').val());
-        validateCardCustomerData();
+        validateCardCustomerData(allowedPersonType);
     });
 
     $('#billing_number').change(function() {
         $('#gn_card_street_number').val($('#billing_number').val());
-        validateCardCustomerData();
+        validateCardCustomerData(allowedPersonType);
     });
 
     $('#billing_neighborhood').change(function() {
         $('#gn_card_neighborhood').val($('#billing_neighborhood').val());
-        validateCardCustomerData();
+        validateCardCustomerData(allowedPersonType);
     });
 
     $('#billing_address_2').change(function() {
         $('#gn_card_complement').val($('#billing_address_2').val());
-        validateCardCustomerData();
+        validateCardCustomerData(allowedPersonType);
     });
 
     $('#billing_postcode').change(function() {
         $('#gn_card_zipcode').val($('#billing_postcode').val());
-        validateCardCustomerData();
+        validateCardCustomerData(allowedPersonType);
     });
 
     $('#billing_city').change(function() {
         $('#gn_card_city').val($('#billing_city').val());
-        validateCardCustomerData();
+        validateCardCustomerData(allowedPersonType);
     });
 
     $('#billing_state').change(function() {
         $('#gn_card_state').val($('#billing_state').val());
-        validateCardCustomerData();
+        validateCardCustomerData(allowedPersonType);
     });
 
     $('#gn_card_number_card,#gn_card_cvv,#gn_card_expiration_month,#gn_card_expiration_year,input[name=gn_card_brand]').change(function() {
@@ -246,7 +275,7 @@ jQuery(document).ready(function($){
     $('form[name="checkout"] input[type="submit"]').click(function(event){
 
         if ($('input[type=radio][name=paymentMethodRadio]:checked').val()=="billet") {
-            if (!billetValidateFields()) {
+            if (!billetValidateFields(allowedPersonType)) {
                 if (typeof $('#payment_method_gerencianet_oficial').val() != "undefined") {
                     if ($("#payment_method_gerencianet_oficial:checked").val() == "gerencianet_oficial") {
                         event.preventDefault();
@@ -254,7 +283,7 @@ jQuery(document).ready(function($){
                 }
             }
         } else {
-            if (!cardValidateFields()) {
+            if (!cardValidateFields(allowedPersonType)) {
                 if (typeof $('#payment_method_gerencianet_oficial').val() != "undefined") {
                     if ($("#payment_method_gerencianet_oficial:checked").val() == "gerencianet_oficial") {
                         event.preventDefault();
@@ -307,7 +336,12 @@ jQuery(document).ready(function($){
             hideError();
         } else {
             $('#gn_billet_name_corporate').addClass("gn-inputs-error");
-            showError("Nome ou Razão Social inválido. Por favor, digite novamente.");
+            if(allowedPersonType == 1)
+                showError("Nome inválido. Por favor, digite novamente.");
+            else if(allowedPersonType == 2)
+                showError("Razão Social inválida. Por favor, digite novamente.");
+            else
+                showError("Nome ou Razão Social inválido. Por favor, digite novamente.");
         }
     });
 
@@ -324,39 +358,55 @@ jQuery(document).ready(function($){
     $("#gn_billet_cpf_cnpj").blur(function() {
         if ($('#gn_billet_cpf_cnpj').val().replace(/[^\d]+/g,'').length <= 11)
         {
-            if (verifyCPF($('#gn_billet_cpf_cnpj').val())) {
-                $('#gn_billet_cpf_cnpj').removeClass("gn-inputs-error");
-                hideError();
-                if (typeof $('#billing_cpf').val() != "undefined")
-                {
-                    $('#billing_persontype option').removeAttr('selected').filter('[value=1]').attr('selected', true);  
-                    $('#billing_cpf').val($('#gn_billet_cpf_cnpj').val());
-                    $('#billing_cnpj_field').hide();
-                    $('#billing_company_field').hide();
-                    $('#billing_cpf_field').show();
+            if(allowedPersonType != 2)
+            {
+                if (verifyCPF($('#gn_billet_cpf_cnpj').val())) {
+                    $('#gn_billet_cpf_cnpj').removeClass("gn-inputs-error");
+                    hideError();
+                    if (typeof $('#billing_cpf').val() != "undefined")
+                    {
+                        $('#billing_persontype option').removeAttr('selected').filter('[value=1]').attr('selected', true);  
+                        $('#billing_cpf').val($('#gn_billet_cpf_cnpj').val());
+                        $('#billing_cnpj_field').hide();
+                        $('#billing_company_field').hide();
+                        $('#billing_cpf_field').show();
+                    }
+                } else {
+                    $('#gn_billet_cpf_cnpj').addClass("gn-inputs-error");
+                    showError("CPF inválido. Por favor, digite novamente.");
                 }
-            } else {
-                $('#gn_billet_cpf_cnpj').addClass("gn-inputs-error");
-                showError("CPF inválido. Por favor, digite novamente.");
             }
+            else
+            {
+                $('#gn_billet_cpf_cnpj').addClass("gn-inputs-error");
+                showError("CNPJ inválido. Por favor, digite novamente.");
+            } 
         }
         else 
         {
-            if (verifyCNPJ($('#gn_billet_cpf_cnpj').val())) {
-                $('#gn_billet_cpf_cnpj').removeClass("gn-inputs-error");
-                hideError();
-                if (typeof $('#billing_cnpj').val() != "undefined")
-                {
-                    $('#billing_persontype option').removeAttr('selected').filter('[value=2]').attr('selected', true);  
-                    $('#billing_cnpj').val($('#gn_billet_cpf_cnpj').val());
-                    $('#billing_cpf_field').hide();
-                    $('#billing_cnpj_field').show();
-                    $('#billing_company_field').show();
+            if(allowedPersonType != 1)
+            {
+                if (verifyCNPJ($('#gn_billet_cpf_cnpj').val())) {
+                    $('#gn_billet_cpf_cnpj').removeClass("gn-inputs-error");
+                    hideError();
+                    if (typeof $('#billing_cnpj').val() != "undefined")
+                    {
+                        $('#billing_persontype option').removeAttr('selected').filter('[value=2]').attr('selected', true);  
+                        $('#billing_cnpj').val($('#gn_billet_cpf_cnpj').val());
+                        $('#billing_cpf_field').hide();
+                        $('#billing_cnpj_field').show();
+                        $('#billing_company_field').show();
+                    }
+                } else {
+                    $('#gn_billet_cpf_cnpj').addClass("gn-inputs-error");
+                    showError("CNPJ inválido. Por favor, digite novamente.");
                 }
-            } else {
-                $('#gn_billet_cpf_cnpj').addClass("gn-inputs-error");
-                showError("CNPJ inválido. Por favor, digite novamente.");
             }
+            else
+            {
+                $('#gn_billet_cpf_cnpj').addClass("gn-inputs-error");
+                showError("CPF inválido. Por favor, digite novamente.");
+            } 
         }
     });
 
@@ -373,39 +423,55 @@ jQuery(document).ready(function($){
     $('#gn_card_cpf_cnpj').blur(function() {
         if ($('#gn_card_cpf_cnpj').val().replace(/[^\d]+/g,'').length <= 11)
         {
-            if (verifyCPF($('#gn_card_cpf_cnpj').val())) {
-                $('#gn_card_cpf_cnpj').removeClass("gn-inputs-error");
-                hideError();
-                if (typeof $('#billing_cpf').val() != "undefined")
-                {
-                    $('#billing_persontype option').removeAttr('selected').filter('[value=1]').attr('selected', true);  
-                    $('#billing_cpf').val($('#gn_card_cpf_cnpj').val());
-                    $('#billing_cnpj_field').hide();
-                    $('#billing_company_field').hide();
-                    $('#billing_cpf_field').show();
+            if(allowedPersonType != 2)
+            { 
+                if (verifyCPF($('#gn_card_cpf_cnpj').val())) {
+                    $('#gn_card_cpf_cnpj').removeClass("gn-inputs-error");
+                    hideError();
+                    if (typeof $('#billing_cpf').val() != "undefined")
+                    {
+                        $('#billing_persontype option').removeAttr('selected').filter('[value=1]').attr('selected', true);  
+                        $('#billing_cpf').val($('#gn_card_cpf_cnpj').val());
+                        $('#billing_cnpj_field').hide();
+                        $('#billing_company_field').hide();
+                        $('#billing_cpf_field').show();
+                    }
+                } else {
+                    $('#gn_card_cpf_cnpj').addClass("gn-inputs-error");
+                    showError("CPF inválido. Por favor, digite novamente.");
                 }
-            } else {
-                $('#gn_card_cpf_cnpj').addClass("gn-inputs-error");
-                showError("CPF inválido. Por favor, digite novamente.");
             }
+            else
+            {
+                $('#gn_card_cpf_cnpj').addClass("gn-inputs-error");
+                showError("CNPJ inválido. Por favor, digite novamente.");
+            } 
         }
         else
         {
-            if (verifyCNPJ($('#gn_card_cpf_cnpj').val())) {
-                $('#gn_card_cpf_cnpj').removeClass("gn-inputs-error");
-                hideError();
-                if (typeof $('#billing_cnpj').val() != "undefined")
-                {
-                    $('#billing_persontype option').removeAttr('selected').filter('[value=2]').attr('selected', true);  
-                    $('#billing_cnpj').val($('#gn_card_cpf_cnpj').val());
-                    $('#billing_cpf_field').hide();
-                    $('#billing_cnpj_field').show();
-                    $('#billing_company_field').show();
+            if(allowedPersonType != 1)
+            {
+                if (verifyCNPJ($('#gn_card_cpf_cnpj').val())) {
+                    $('#gn_card_cpf_cnpj').removeClass("gn-inputs-error");
+                    hideError();
+                    if (typeof $('#billing_cnpj').val() != "undefined")
+                    {
+                        $('#billing_persontype option').removeAttr('selected').filter('[value=2]').attr('selected', true);  
+                        $('#billing_cnpj').val($('#gn_card_cpf_cnpj').val());
+                        $('#billing_cpf_field').hide();
+                        $('#billing_cnpj_field').show();
+                        $('#billing_company_field').show();
+                    }
+                } else {
+                    $('#gn_card_cpf_cnpj').addClass("gn-inputs-error");
+                    showError("CNPJ inválido. Por favor, digite novamente.");
                 }
-            } else {
-                $('#gn_card_cpf_cnpj').addClass("gn-inputs-error");
-                showError("CNPJ inválido. Por favor, digite novamente.");
             }
+            else
+            {
+                $('#gn_card_cpf_cnpj').addClass("gn-inputs-error");
+                showError("CPF inválido. Por favor, digite novamente.");
+            } 
         }
     });
 
@@ -415,7 +481,12 @@ jQuery(document).ready(function($){
             hideError();
         } else {
             $('#gn_card_name_corporate').addClass("gn-inputs-error");
-            showError("Nome ou Razão Social inválida(o). Por favor, digite novamente.");
+            if(allowedPersonType == 1)
+                showError("Nome inválido. Por favor, digite novamente.");
+            else if(allowedPersonType == 2)
+                showError("Razão Social inválida. Por favor, digite novamente.");
+            else
+                showError("Nome ou Razão Social inválido. Por favor, digite novamente.");
         }
     });
 
@@ -520,14 +591,19 @@ jQuery(document).ready(function($){
     });
 
 
-    function billetValidateFields() {
+    function billetValidateFields(allowedPersonType) {
         errorMessage = "";
 
         if (validateName($('#gn_billet_name_corporate').val())) {
             $('#gn_billet_name_corporate').removeClass("gn-inputs-error");
         } else {
             $('#gn_billet_name_corporate').addClass("gn-inputs-error");
-            errorMessage = "Nome ou Razão Social inválido(a). Por favor, digite novamente.";
+            if(allowedPersonType == 1)
+                errorMessage = "Nome inválido. Por favor, digite novamente.";
+            else if(allowedPersonType == 2)
+                errorMessage = "Razão Social inválida. Por favor, digite novamente.";
+            else
+                errorMessage = "Nome ou Razão Social inválido(a). Por favor, digite novamente.";
         }
 
         if (validateEmail($('#gn_billet_email').val())) {
@@ -538,23 +614,39 @@ jQuery(document).ready(function($){
         }
 
         if ($('#gn_billet_cpf_cnpj').val().replace(/[^\d]+/g,'').length <= 11) {
-            if (verifyCPF($('#gn_billet_cpf_cnpj').val())) {
-                $('#gn_billet_cpf_cnpj').removeClass("gn-inputs-error");
-                errorMessage = "";
-            } else {
-                $('#gn_billet_cpf_cnpj').addClass("gn-inputs-error");
-                errorMessage = "CPF inválido. Por favor, digite novamente.";
+            if(allowedPersonType != 2)
+            {
+                if (verifyCPF($('#gn_billet_cpf_cnpj').val())) {
+                    $('#gn_billet_cpf_cnpj').removeClass("gn-inputs-error");
+                    errorMessage = "";
+                } else {
+                    $('#gn_billet_cpf_cnpj').addClass("gn-inputs-error");
+                    errorMessage = "CPF inválido. Por favor, digite novamente.";
+                }
             }
+            else
+            {
+                $('#gn_billet_cpf_cnpj').addClass("gn-inputs-error");
+                errorMessage = "CNPJ inválido. Por favor, digite novamente.";
+            } 
         }
         else 
         {
-            if (verifyCNPJ($('#gn_billet_cpf_cnpj').val())) {
-                $('#gn_billet_cpf_cnpj').removeClass("gn-inputs-error");
-                errorMessage = "";
-            } else {
-                $('#gn_billet_cpf_cnpj').addClass("gn-inputs-error");
-                errorMessage = "CNPJ inválido. Por favor, digite novamente.";
+            if(allowedPersonType != 1)
+            {
+                if (verifyCNPJ($('#gn_billet_cpf_cnpj').val())) {
+                    $('#gn_billet_cpf_cnpj').removeClass("gn-inputs-error");
+                    errorMessage = "";
+                } else {
+                    $('#gn_billet_cpf_cnpj').addClass("gn-inputs-error");
+                    errorMessage = "CNPJ inválido. Por favor, digite novamente.";
+                }
             }
+            else
+            {
+                $('#gn_billet_cpf_cnpj').addClass("gn-inputs-error");
+                errorMessage = "CPF inválido. Por favor, digite novamente.";
+            } 
         }
 
         if (validatePhone($('#gn_billet_phone_number').val())) {
@@ -573,7 +665,7 @@ jQuery(document).ready(function($){
         }
     }
 
-    function cardValidateFields() {
+    function cardValidateFields(allowedPersonType) {
         errorMessage = "";
 
         if (validateName($('#gn_card_name_corporate').val())) {
@@ -591,23 +683,39 @@ jQuery(document).ready(function($){
         }
 
         if ($('#gn_card_cpf_cnpj').val().replace(/[^\d]+/g,'').length <= 11) {
-            if (verifyCPF($('#gn_card_cpf_cnpj').val())) {
-                $('#gn_card_cpf_cnpj').removeClass("gn-inputs-error");
-                errorMessage = "";
-            } else {
-                $('#gn_card_cpf_cnpj').addClass("gn-inputs-error");
-                errorMessage = "CPF inválido. Por favor, digite novamente.";
+            if(allowedPersonType != 2)
+            {
+                if (verifyCPF($('#gn_card_cpf_cnpj').val())) {
+                    $('#gn_card_cpf_cnpj').removeClass("gn-inputs-error");
+                    errorMessage = "";
+                } else {
+                    $('#gn_card_cpf_cnpj').addClass("gn-inputs-error");
+                    errorMessage = "CPF inválido. Por favor, digite novamente.";
+                }
             }
+            else
+            {
+                $('#gn_card_cpf_cnpj').addClass("gn-inputs-error");
+                errorMessage = "CNPJ inválido. Por favor, digite novamente.";
+            } 
         }
         else 
         {
-            if (verifyCNPJ($('#gn_card_cpf_cnpj').val())) {
-                $('#gn_card_cpf_cnpj').removeClass("gn-inputs-error");
-                errorMessage = "";
-            } else {
-                $('#gn_card_cpf_cnpj').addClass("gn-inputs-error");
-                errorMessage = "CNPJ inválido. Por favor, digite novamente.";
+            if(allowedPersonType != 1)
+            {
+                if (verifyCNPJ($('#gn_card_cpf_cnpj').val())) {
+                    $('#gn_card_cpf_cnpj').removeClass("gn-inputs-error");
+                    errorMessage = "";
+                } else {
+                    $('#gn_card_cpf_cnpj').addClass("gn-inputs-error");
+                    errorMessage = "CNPJ inválido. Por favor, digite novamente.";
+                }
             }
+            else
+            {
+                $('#gn_card_cpf_cnpj').addClass("gn-inputs-error");
+                errorMessage = "CPF inválido. Por favor, digite novamente.";
+            } 
         }
 
         if (validatePhone($('#gn_card_phone_number').val())) {
@@ -676,7 +784,8 @@ jQuery(document).ready(function($){
 
     }
 
-    function validateBilletCustomerData() {
+    function validateBilletCustomerData(allowedPersonType) 
+    {
         if (validateName($('#gn_billet_name_corporate').val())) {
             $('#gn_name_corporate_row').hide();
             hideError();
@@ -691,7 +800,9 @@ jQuery(document).ready(function($){
             $('#gn_email_row').show();
         }
 
-        if ((verifyCPF($('#gn_billet_cpf_cnpj').val()) || verifyCNPJ($('#gn_billet_cpf_cnpj').val())) && validatePhone($('#gn_billet_phone_number').val())) {
+        if ( ( ( verifyCPF( $('#gn_billet_cpf_cnpj').val() )  && allowedPersonType != 2 ) 
+              || (verifyCNPJ( $('#gn_billet_cpf_cnpj').val() ) && allowedPersonType != 1) ) 
+            && validatePhone( $('#gn_billet_phone_number').val() ) ) {
             $('#gn_cpf_cnpj_phone_row').hide();
             hideError();
         } else {
@@ -699,7 +810,7 @@ jQuery(document).ready(function($){
         }
     }
 
-    function validateCardCustomerData() {
+    function validateCardCustomerData(allowedPersonType) {
         if (validateName($('#gn_card_name_corporate').val())) {
             $('#gn_card_name_corporate_row').hide();
             hideError();
@@ -714,12 +825,16 @@ jQuery(document).ready(function($){
             $('#gn_card_email_row').show();
         }
 
-        if ((verifyCPF($('#gn_card_cpf_cnpj').val()) || verifyCNPJ($('#gn_card_cpf_cnpj').val())) && validatePhone($('#gn_card_phone_number').val())) {
+
+        if ( ( ( verifyCPF( $('#gn_card_cpf_cnpj').val() )  && allowedPersonType != 2 ) 
+              || (verifyCNPJ( $('#gn_card_cpf_cnpj').val() ) && allowedPersonType != 1) ) 
+            && validatePhone( $('#gn_card_phone_number').val() ) ) {
             $('#gn_card_cpf_cnpj_phone_row').hide();
             hideError();
         } else {
             $('#gn_card_cpf_cnpj_phone_row').show();
         }
+
 
         if (validateBirth($('#gn_card_birth').val())) {
             $('#gn_card_birth_row').hide();
@@ -765,7 +880,7 @@ jQuery(document).ready(function($){
 
     }
 
-    if ($('#billing_persontype').val()=="1") {
+    if ($('#billing_persontype').val()=="1" || allowedPersonType == 1) {
         if (typeof $('#billing_first_name').val() != "undefined")
         {
             $('#gn_billet_name_corporate').val($('#billing_first_name').val());
@@ -782,8 +897,8 @@ jQuery(document).ready(function($){
             $('#gn_card_cpf_cnpj').val($('#billing_cpf').val());
         }
 
-        validateBilletCustomerData();
-        validateCardCustomerData();
+        validateBilletCustomerData(allowedPersonType);
+        validateCardCustomerData(allowedPersonType);
     } else {
         if (typeof $('#billing_company').val() != "undefined")
         {
@@ -796,8 +911,8 @@ jQuery(document).ready(function($){
             $('#gn_card_cpf_cnpj').val($('#billing_cnpj').val());
         }
 
-        validateBilletCustomerData();
-        validateCardCustomerData();
+        validateBilletCustomerData(allowedPersonType);
+        validateCardCustomerData(allowedPersonType);
     }
 
     $('#billing_persontype').on('change', function() {
@@ -817,8 +932,8 @@ jQuery(document).ready(function($){
                 $('#gn_billet_cpf_cnpj').val($('#billing_cpf').val());
                 $('#gn_card_cpf_cnpj').val($('#billing_cpf').val());
             }
-            validateBilletCustomerData();
-            validateCardCustomerData();
+            validateBilletCustomerData(allowedPersonType);
+            validateCardCustomerData(allowedPersonType);
         } else {
             if (typeof $('#billing_company').val() != "undefined")
             {
@@ -830,8 +945,8 @@ jQuery(document).ready(function($){
                 $('#gn_billet_cpf_cnpj').val($('#billing_cnpj').val());
                 $('#gn_card_cpf_cnpj').val($('#billing_cnpj').val());
             }
-            validateBilletCustomerData();
-            validateCardCustomerData();
+            validateBilletCustomerData(allowedPersonType);
+            validateCardCustomerData(allowedPersonType);
         }
     });
 
@@ -866,57 +981,63 @@ jQuery(document).ready(function($){
            
     if(jQuery.mask) {
         $("#gn_billet_cpf_cnpj").keyup(function(e){
-            var tamanho = $("#gn_billet_cpf_cnpj").val().replace(/[^\d]+/g,'').length;
-            
-            $("#gn_billet_cpf_cnpj").unmask();
- 
-            if(e.keyCode == 8)
+            if(allowedPersonType == 0)
             {
-                if(tamanho == 11){
-                    $("#gn_billet_cpf_cnpj").mask("999.999.999-99?9",{autoclear:false, placeholder:""});
-                    $("#gn_billet_cpf_cnpj").unmask();
-                } else if(tamanho == 12){
-                    $("#gn_billet_cpf_cnpj").mask("99.999.999/9999-99",{autoclear:false, placeholder:""});
-                    $("#gn_billet_cpf_cnpj").unmask();
-                }
-                else 
+                var tamanho = $("#gn_billet_cpf_cnpj").val().replace(/[^\d]+/g,'').length;
+                
+                $("#gn_billet_cpf_cnpj").unmask();
+     
+                if(e.keyCode == 8)
                 {
-                    $("#gn_billet_cpf_cnpj").unmask();
-                    return;
+                    if(tamanho == 11){
+                        $("#gn_billet_cpf_cnpj").mask("999.999.999-99?9",{autoclear:false, placeholder:""});
+                        $("#gn_billet_cpf_cnpj").unmask();
+                    } else if(tamanho == 12){
+                        $("#gn_billet_cpf_cnpj").mask("99.999.999/9999-99",{autoclear:false, placeholder:""});
+                        $("#gn_billet_cpf_cnpj").unmask();
+                    }
+                    else 
+                    {
+                        $("#gn_billet_cpf_cnpj").unmask();
+                        return;
+                    }
                 }
-            }
-            if(tamanho <= 11){
-                $("#gn_billet_cpf_cnpj").mask("999.999.999-99?9",{autoclear:false, placeholder:""});
-            } else if(tamanho > 11){
-                $("#gn_billet_cpf_cnpj").mask("99.999.999/9999-99",{autoclear:false, placeholder:""});
+                if(tamanho <= 11){
+                    $("#gn_billet_cpf_cnpj").mask("999.999.999-99?9",{autoclear:false, placeholder:""});
+                } else if(tamanho > 11){
+                    $("#gn_billet_cpf_cnpj").mask("99.999.999/9999-99",{autoclear:false, placeholder:""});
+                }
             }      
         });
 
         $("#gn_card_cpf_cnpj").keyup(function(e){
-            var tamanho = $("#gn_card_cpf_cnpj").val().replace(/[^\d]+/g,'').length;
-
-            $("#gn_card_cpf_cnpj").unmask();
-
-            
-            if(e.keyCode == 8)
+            if(allowedPersonType == 0)
             {
-                if(tamanho == 11){
-                    $("#gn_card_cpf_cnpj").mask("999.999.999-99?9",{autoclear:false, placeholder:""});
-                    $("#gn_card_cpf_cnpj").unmask();
-                } else if(tamanho == 12){
-                    $("#gn_card_cpf_cnpj").mask("99.999.999/9999-99",{autoclear:false, placeholder:""});
-                    $("#gn_card_cpf_cnpj").unmask();
-                }
-                else 
+                var tamanho = $("#gn_card_cpf_cnpj").val().replace(/[^\d]+/g,'').length;
+
+                $("#gn_card_cpf_cnpj").unmask();
+
+                
+                if(e.keyCode == 8)
                 {
-                    $("#gn_card_cpf_cnpj").unmask();
-                    return;
+                    if(tamanho == 11){
+                        $("#gn_card_cpf_cnpj").mask("999.999.999-99?9",{autoclear:false, placeholder:""});
+                        $("#gn_card_cpf_cnpj").unmask();
+                    } else if(tamanho == 12){
+                        $("#gn_card_cpf_cnpj").mask("99.999.999/9999-99",{autoclear:false, placeholder:""});
+                        $("#gn_card_cpf_cnpj").unmask();
+                    }
+                    else 
+                    {
+                        $("#gn_card_cpf_cnpj").unmask();
+                        return;
+                    }
                 }
-            }
-            if(tamanho <= 11){
-                $("#gn_card_cpf_cnpj").mask("999.999.999-99?9",{autoclear:false, placeholder:""});
-            } else if(tamanho > 11){
-                $("#gn_card_cpf_cnpj").mask("99.999.999/9999-99",{autoclear:false, placeholder:""});
+                if(tamanho <= 11){
+                    $("#gn_card_cpf_cnpj").mask("999.999.999-99?9",{autoclear:false, placeholder:""});
+                } else if(tamanho > 11){
+                    $("#gn_card_cpf_cnpj").mask("99.999.999/9999-99",{autoclear:false, placeholder:""});
+                }
             }                
         });
 
@@ -1298,7 +1419,7 @@ jQuery(document).ready(function($){
             <div id="billet-data">
               <div id="gn_name_corporate_row" class="required gn-osc-row gn-billet-field" >
                 <div class="gn-col-3 gn-label">
-                  <label for="gn_billet_name_corporate" class="gn-col-11 gn-right-padding-1"><?php echo $gn_name_corporate; ?></label>
+                  <label for="gn_billet_name_corporate" class="name-corporate-label gn-right-padding-1"><?php echo $gn_name_corporate; ?></label>
                 </div>
                 <div class="gn-col-8">
                   <input type="text" name="gn_billet_name_corporate" id="gn_billet_name_corporate" value="" class="form-control" />
@@ -1307,35 +1428,35 @@ jQuery(document).ready(function($){
 
 
               <div id="gn_email_row" class=" required gn-osc-row gn-billet-field" >
-                <div class="gn-col-2 gn-label">
-                  <label class="gn-col-12 gn-right-padding-1" for="gn_billet_email"><?php echo $gn_email; ?></label>
+                <div class="gn-col-3 gn-label">
+                  <label class="gn-right-padding-1" for="gn_billet_email"><?php echo $gn_email; ?></label>
                 </div>
-                <div class="gn-col-10">
+                <div class="gn-col-8">
                   <input type="text" name="gn_billet_email" value="" id="gn_billet_email" class="form-control" />
                 </div>
               </div>
 
               <div id="gn_cpf_cnpj_phone_row" class="required gn-osc-row gn-billet-field" >
-                <div class="gn-col-2 gn-label">
-                  <label for="gn_billet_cpf_cnpj" class="gn-right-padding-1"><?php echo $gn_cpf_cnpj; ?></label>
-                </div>
-                <div class="gn-col-10">
+                <div class="gn-col-12">
+
+                    <div class="gn-col-3 gn-label">
+                      <label for="gn_billet_cpf_cnpj" class="document-label gn-right-padding-1"><?php echo $gn_cpf_cnpj; ?></label>
+                    </div>
                   
-                  <div>
                     <div class="gn-col-3 required">
                       <input type="text" name="gn_billet_cpf_cnpj" id="gn_billet_cpf_cnpj" value="" class="form-control cpf-mask" />
                     </div>
-                    <div class="gn-col-8">
-                      <div class=" required">
-                        <div class="gn-col-4 gn-label">
-                        <label class="gn-col-12 gn-right-padding-1" for="gn_billet_phone_number" ><?php echo $gn_phone; ?></label>
-                        </div>
-                        <div class="gn-col-4">
-                          <input type="text" name="gn_billet_phone_number" id="gn_billet_phone_number" value="" class="form-control phone-mask" />
-                        </div>
-                      </div>
+
+                    <div class=" required">
+                        <div class="gn-col-2 gn-label">
+                        <label class="gn-right-padding-1" for="gn_billet_phone_number" ><?php echo $gn_phone; ?>
+                        </label>
                     </div>
-                  </div>
+                    <div class="gn-col-3">
+                        <input type="text" name="gn_billet_phone_number" id="gn_billet_phone_number" value="" class="form-control phone-mask" />
+                        </div>
+                    </div>
+
                 </div>
               </div>
 
@@ -1378,7 +1499,7 @@ jQuery(document).ready(function($){
                 <div id="card-data" >
                     <div id="gn_card_name_corporate_row" class="required gn-osc-row gn-card-field" >
                       <div class="gn-col-3 gn-label">
-                        <label class="gn-col-11 gn-right-padding-1" for="gn_card_name_corporate"><?php echo $gn_name_corporate; ?></label>
+                        <label class="name-corporate-label gn-col-11 gn-right-padding-1" for="gn_card_name_corporate"><?php echo $gn_name_corporate; ?></label>
                       </div>
                       <div class="gn-col-8">
                         <input type="text" name="gn_card_name_corporate" id="gn_card_name_corporate" value="" class="form-control" />
@@ -1386,21 +1507,20 @@ jQuery(document).ready(function($){
                     </div>
 
                     <div id="gn_card_cpf_cnpj_phone_row" class="required gn-osc-row gn-card-field" >
-                    
-                        <div class="gn-col-2 gn-label">
-                            <label for="gn_card_cpf_cnpj" class="gn-right-padding-1" ><?php echo $gn_cpf_cnpj; ?></label>
-                        </div>
-                        <div class="gn-col-4">
-                            <input type="text" name="gn_card_cpf_cnpj" id="gn_card_cpf_cnpj" value="" class="form-control cpf-mask gn-minimum-size-field" />
-                        </div>
-                        <div class="gn-col-6">
-                          <div class="gn-col-4 gn-label">
-                              <label class="gn-left-space-2 gn-right-padding-1" for="gn_card_phone_number"><?php echo $gn_phone; ?></label>
-                          </div>
-                          <div class="gn-col-8">
-                              <input type="text" name="gn_card_phone_number" value="" id="gn_card_phone_number" class="form-control phone-mask gn-minimum-size-field" />
-                          </div>
-                          
+                        <div class="gn-col-12">
+                            <div class="gn-col-3 gn-label">
+                                <label for="gn_card_cpf_cnpj" class="document-label gn-right-padding-1" ><?php echo $gn_cpf_cnpj; ?></label>
+                            </div>
+                            <div class="gn-col-3">
+                                <input type="text" name="gn_card_cpf_cnpj" id="gn_card_cpf_cnpj" value="" class="form-control cpf-mask gn-minimum-size-field" />
+                            </div>
+
+                            <div class="gn-col-2 gn-label">
+                                <label class="gn-right-padding-1" for="gn_card_phone_number"><?php echo $gn_phone; ?></label>
+                            </div>
+                            <div class="gn-col-3">
+                                <input type="text" name="gn_card_phone_number" value="" id="gn_card_phone_number" class="form-control phone-mask gn-minimum-size-field" />
+                            </div>
                         </div>
                     </div>
 
@@ -1414,10 +1534,10 @@ jQuery(document).ready(function($){
                     </div>
 
                     <div id="gn_card_email_row" class=" required gn-card-field" >
-                      <div class="gn-col-2">
-                        <label class="gn-col-12 gn-label gn-right-padding-1" for="gn_card_email"><?php echo $gn_email; ?></label>
+                      <div class="gn-col-3">
+                        <label class="gn-col-11 gn-label gn-right-padding-1" for="gn_card_email"><?php echo $gn_email; ?></label>
                       </div>
-                      <div class="gn-col-10">
+                      <div class="gn-col-8">
                         <input type="text" name="gn_card_email" value="" id="gn_card_email" class="form-control" />
                       </div>
                     </div>
@@ -1431,20 +1551,21 @@ jQuery(document).ready(function($){
                         </div>
 
                         <div id="gn_card_street_number_row" class="required gn-osc-row gn-card-field" >
-                            <div class="gn-col-2">
-                                <label class="gn-col-12 gn-label gn-right-padding-1" for="gn_card_street"><?php echo $gn_street; ?></label>
-                            </div>
+                            <div class="gn-col-12">
+                                <div class="gn-col-3">
+                                    <label class="gn-col-11 gn-label gn-right-padding-1" for="gn_card_street"><?php echo $gn_street; ?></label>
+                                </div>
                             
-                            <div class="gn-col-10">
                                 <div class="gn-col-6 required">
                                     <input type="text" name="gn_card_street" id="gn_card_street" value="" class="form-control" />
                                 </div>
-                                <div class="gn-col-6">
+
+                                <div class="gn-col-3">
                                     <div class=" required gn-left-space-2">
                                         <div class="gn-col-5">
-                                            <label class="gn-col-12 gn-label gn-right-padding-1" for="gn_card_street_number"><?php echo $gn_street_number; ?></label>
+                                            <label class="gn-col-10 gn-label gn-right-padding-1" for="gn_card_street_number"><?php echo $gn_street_number; ?></label>
                                         </div>
-                                        <div class="gn-col-7">
+                                        <div class="gn-col-3">
                                             <input type="text" name="gn_card_street_number" id="gn_card_street_number" value="" class="form-control" />
                                         </div>
                                     </div>
@@ -1452,52 +1573,50 @@ jQuery(document).ready(function($){
                             </div>
                         </div>
                         <div id="gn_card_neighborhood_row" class="gn-osc-row gn-card-field">
-                            <div class="gn-col-2 required">
-                                <label class="gn-col-12 gn-label required gn-right-padding-1" for="gn_card_neighborhood"><?php echo $gn_neighborhood; ?></label>
-                            </div>
-                    
-                            <div class="gn-col-3">
-                                
-                                <input type="text" name="gn_card_neighborhood" id="gn_card_neighborhood" value="" class="form-control" />
-                            </div>
-                            <div class="gn-col-7">
-                                <div class=" gn-left-space-2">
-                                  <div class="gn-col-5">
-                                  <label class="gn-col-12 gn-label gn-right-padding-1" for="gn_card_complement"><?php echo $gn_address_complement; ?></label>
-                                  </div>
-                                  <div class="gn-col-7">
-                                    <input type="text" name="gn_card_complement" id="gn_card_complement" value="" class="form-control" maxlength="54" />
-                                  </div>
+                            <div class="gn-col-12">
+                                <div class="gn-col-3 required">
+                                    <label class="gn-label gn-col-11 required gn-right-padding-1" for="gn_card_neighborhood"><?php echo $gn_neighborhood; ?></label>
+                                </div>
+                                <div class="gn-col-4">
+                                    <input type="text" name="gn_card_neighborhood" id="gn_card_neighborhood" value="" class="form-control" />
+                                </div>
+                                <div class="gn-col-5">
+                                    
+                                    <div class="gn-col-5">
+                                        <label class="gn-col-11 gn-label gn-right-padding-1" for="gn_card_complement"><?php echo $gn_address_complement; ?></label>
+                                    </div>
+                                      <div class="gn-col-5">
+                                        <input type="text" name="gn_card_complement" id="gn_card_complement" value="" class="form-control" maxlength="54" />
+                                      </div>
+                                   
                                 </div>
                             </div>
                         </div>
 
-                        <div id="gn_card_city_zipcode_row" class="required billing-address-data gn-card-field gn-osc-row" >
-                            <div class="gn-col-2">
-                                <label class="gn-col-12 gn-label gn-right-padding-1" for="gn_card_zipcode"><?php echo $gn_cep; ?></label>
-                            </div>
-                            <div class="gn-col-10">
-                                <div class="gn-col-4 required">
-                                    <input type="text" name="gn_card_zipcode" id="gn_card_zipcode" value="" class="form-control" />
+                        <div id="gn_card_city_zipcode_row" class="required billing-address-data gn-card-field gn-osc-row">
+                            <div class="gn-col-12">
+                                <div class="gn-col-3">
+                                    <label class="gn-col-11 gn-label gn-right-padding-1" for="gn_card_city"><?php echo $gn_city; ?></label>
                                 </div>
-                                <div class="gn-col-8">
-                                    <div class=" required gn-left-space-2">
-                                      <div class="gn-col-4">
-                                          <label class="gn-col-12 gn-label gn-right-padding-1" for="gn_card_city"><?php echo $gn_city; ?></label>
-                                      </div>
-                                      <div class="gn-col-6">
-                                        <input type="text" name="gn_card_city" id="gn_card_city" value="" class="form-control" />
-                                      </div>
+                                <div class="gn-col-4 required">
+                                    <input type="text" name="gn_card_city" id="gn_card_city" value="" class="form-control" />
+                                </div>
+                                <div class="gn-col-5">    
+                                    <div class="gn-col-5">
+                                        <label class="gn-col-11 gn-label gn-right-padding-1" for="gn_card_zipcode"><?php echo $gn_cep; ?></label>
                                     </div>
+                                    <div class="gn-col-5">
+                                        <input type="text" name="gn_card_zipcode" id="gn_card_zipcode" value="" class="form-control" />
+                                    </div>    
                                 </div>
                             </div>
                         </div>
 
                         <div id="gn_card_state_row" class="required billing-address-data gn-card-field gn-osc-row" >
-                          <div class="gn-col-2">
-                            <label class="gn-col-12 gn-label gn-right-padding-1" for="gn_card_state"><?php echo $gn_state; ?></label>
+                          <div class="gn-col-3">
+                            <label class="gn-col-11 gn-label gn-right-padding-1" for="gn_card_state"><?php echo $gn_state; ?></label>
                           </div>
-                          <div class="gn-col-10">
+                          <div class="gn-col-4">
                             <select name="gn_card_state" id="gn_card_state" class="form-control gn-form-select">
                               <option value=""></option> 
                               <option value="AC">Acre</option> 

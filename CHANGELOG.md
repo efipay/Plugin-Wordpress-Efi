@@ -1,3 +1,7 @@
+# v0.5.3 
+* Fix: Layout quebrado da tela de checkout em um passo.
+* Fix: Preenchimento automático de campos em compras exclusivas para Pessoa Física ou compras exlusivas para Pessoa Jurídica.
+
 # v0.5.2
 * Fix: Considera impostos do WooCommerce no boleto Gerencianet.
 * Fix: Retira obrigatoriedade do campo referente a CPF nas compras de Pessoal Jurídica.

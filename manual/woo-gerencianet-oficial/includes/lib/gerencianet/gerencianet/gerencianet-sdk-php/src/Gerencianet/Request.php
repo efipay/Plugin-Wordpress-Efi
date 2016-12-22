@@ -26,7 +26,7 @@ class Request
         'base_url' => $this->config['baseUri'],
         'headers' => [
           'Content-Type' => 'application/json',
-          'api-sdk' => 'woocommerce-0.5.2',
+          'api-sdk' => 'woocommerce-0.5.3',
           'partner-token' => $partner_token
           ],
       ]);

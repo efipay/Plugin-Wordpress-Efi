@@ -1,4 +1,4 @@
-# Módulo de Integração Gerencianet para WooCommerce Oficial - Versão 0.5.2 #
+# Módulo de Integração Gerencianet para WooCommerce Oficial - Versão 0.5.3 #
 
 O módulo Gerencianet para WooCommerce permite receber pagamentos por meio do checkout transparente da nossa API.
 Compatível com as versões 2.2.x, 2.3.x, 2.4.x, 2.5.x e 2.6.x do WooCommerce.
