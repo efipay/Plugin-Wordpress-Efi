@@ -1,3 +1,7 @@
+# v0.6.0
+* Fix: Compatibildiade do módulo com Wocommerce 3.x e PHP 7.x
+* Add: Atualização da identidade visual da Gerencianet.
+
 # v0.5.3 
 * Fix: Layout quebrado da tela de checkout em um passo.
 * Fix: Preenchimento automático de campos em compras exclusivas para Pessoa Física ou compras exlusivas para Pessoa Jurídica.

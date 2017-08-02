@@ -3,7 +3,7 @@
  * Gerencianet Integration Class.
  */
 
-include_once('gerencianet/autoload.php');
+include_once( 'gerencianet/autoload.php' );
 use Gerencianet\Exception\GerencianetException;
 use Gerencianet\Gerencianet;
 
@@ -17,56 +17,57 @@ class GerencianetIntegration {
 	public $sandbox;
 	public $payee_code;
 
-	public function __construct($clientIdProduction,$clientSecretProduction,$clientIdDevelopment,$clientSecretDevelopment,$sandbox,$payeeCode) {
-		$this->client_id_production = $clientIdProduction;
-		$this->client_secret_production = $clientSecretProduction;
-		$this->client_id_development = $clientIdDevelopment;
+	public function __construct( $clientIdProduction, $clientSecretProduction, $clientIdDevelopment, $clientSecretDevelopment, $sandbox, $payeeCode ) {
+		$this->client_id_production      = $clientIdProduction;
+		$this->client_secret_production  = $clientSecretProduction;
+		$this->client_id_development     = $clientIdDevelopment;
 		$this->client_secret_development = $clientSecretDevelopment;
-		$this->sandbox = $sandbox;
-		$this->payee_code = $payeeCode;
+		$this->sandbox                   = $sandbox;
+		$this->payee_code                = $payeeCode;
 	}
 
-	public function validate_credentials($client_id,$client_secret,$mode) {
+	public function validate_credentials( $client_id, $client_secret, $mode ) {
 
-		if ($mode=="production") {
+		if ( $mode == "production" ) {
 			$sandbox = false;
 		} else {
 			$sandbox = true;
 		}
 
-		$options = array (
-		  'client_id' =>  $client_id,
-		  'client_secret' => $client_secret,
-		  'sandbox' => $sandbox
+		$options = array(
+			'client_id'     => $client_id,
+			'client_secret' => $client_secret,
+			'sandbox'       => $sandbox
 		);
 
-		$params = array('total' => 1000, 'brand' => 'visa');
+		$params = array( 'total' => 1000, 'brand' => 'visa' );
 
 		try {
-		    $api = new Gerencianet($options);
-		    $installments = $api->getInstallments($params, array());
-		    return 'true';
-		} catch (GerencianetException $e) {
-		    return 'false';
-		} catch (Exception $e) {
+			$api          = new Gerencianet( $options );
+			$installments = $api->getInstallments( $params, array() );
+
+			return 'true';
+		} catch ( GerencianetException $e ) {
+			return 'false';
+		} catch ( Exception $e ) {
 			return 'false';
 		}
 	}
 
 	public function get_gn_api_credentials() {
 
-		if ($this->sandbox == "yes") {
-			$gn_credentials_options = array (
-			  'client_id' =>  $this->client_id_development,
-			  'client_secret' => $this->client_secret_development,
-			  'sandbox' => true
+		if ( $this->sandbox == "yes" ) {
+			$gn_credentials_options = array(
+				'client_id'     => $this->client_id_development,
+				'client_secret' => $this->client_secret_development,
+				'sandbox'       => true
 			);
 
 		} else {
-			$gn_credentials_options = array (
-			  'client_id' =>  $this->client_id_production,
-			  'client_secret' => $this->client_secret_production,
-			  'sandbox' => false
+			$gn_credentials_options = array(
+				'client_id'     => $this->client_id_production,
+				'client_secret' => $this->client_secret_production,
+				'sandbox'       => false
 			);
 
 		}
@@ -76,312 +77,290 @@ class GerencianetIntegration {
 
 	public function get_gn_script() {
 
-		if ($this->sandbox == "yes") {
-			return html_entity_decode("<script type='text/javascript'>var s=document.createElement('script');s.type='text/javascript';var v=parseInt(Math.random()*1000000);s.src='https://sandbox.gerencianet.com.br/v1/cdn/".$this->payee_code."/'+v;s.async=false;s.id='".$this->payee_code."';if(!document.getElementById('".$this->payee_code."')){document.getElementsByTagName('head')[0].appendChild(s);};&#36;gn={validForm:true,processed:false,done:{},ready:function(fn){&#36;gn.done=fn;}};</script>");
+		if ( $this->sandbox == "yes" ) {
+			return html_entity_decode( "<script type='text/javascript'>var s=document.createElement('script');s.type='text/javascript';var v=parseInt(Math.random()*1000000);s.src='https://sandbox.gerencianet.com.br/v1/cdn/" . $this->payee_code . "/'+v;s.async=false;s.id='" . $this->payee_code . "';if(!document.getElementById('" . $this->payee_code . "')){document.getElementsByTagName('head')[0].appendChild(s);};&#36;gn={validForm:true,processed:false,done:{},ready:function(fn){&#36;gn.done=fn;}};</script>" );
 		} else {
-			return html_entity_decode("<script type='text/javascript'>var s=document.createElement('script');s.type='text/javascript';var v=parseInt(Math.random()*1000000);s.src='https://api.gerencianet.com.br/v1/cdn/".$this->payee_code."/'+v;s.async=false;s.id='".$this->payee_code."';if(!document.getElementById('".$this->payee_code."')){document.getElementsByTagName('head')[0].appendChild(s);};&#36;gn={validForm:true,processed:false,done:{},ready:function(fn){&#36;gn.done=fn;}};</script>");
+			return html_entity_decode( "<script type='text/javascript'>var s=document.createElement('script');s.type='text/javascript';var v=parseInt(Math.random()*1000000);s.src='https://api.gerencianet.com.br/v1/cdn/" . $this->payee_code . "/'+v;s.async=false;s.id='" . $this->payee_code . "';if(!document.getElementById('" . $this->payee_code . "')){document.getElementsByTagName('head')[0].appendChild(s);};&#36;gn={validForm:true,processed:false,done:{},ready:function(fn){&#36;gn.done=fn;}};</script>" );
 		}
 	}
 
-	public function max_installments($total) {
+	public function max_installments( $total ) {
 
 		$options = GerencianetIntegration::get_gn_api_credentials();
-		$params = array ('total' => $total, 'brand' => 'visa');
+		$params  = array( 'total' => $total, 'brand' => 'visa' );
 
 		try {
-		    $api = new Gerencianet($options);
-		    $installments = array();
-		    $installments = $api->getInstallments($params, array());
-		    $max_installments = end($installments['data']['installments'])['installment'] . "x de " . GerencianetIntegration::formatCurrencyBRL(end($installments['data']['installments'])['value']);
+			$api              = new Gerencianet( $options );
+			$installments     = array();
+			$installments     = $api->getInstallments( $params, array() );
+			$max_installments = end( $installments['data']['installments'] )['installment'] . "x de " . GerencianetIntegration::formatCurrencyBRL( end( $installments['data']['installments'] )['value'] );
 
-		    return $max_installments;
-		} catch (GerencianetException $e) {
+			return $max_installments;
+		} catch ( GerencianetException $e ) {
 			return null;
-		} catch (Exception $e) {
+		} catch ( Exception $e ) {
 			return null;
 		}
 	}
 
-	public function get_installments($total, $brand) {
+	public function get_installments( $total, $brand ) {
 
 		$options = GerencianetIntegration::get_gn_api_credentials();
 
-		$params = array('total' => $total, 'brand' => $brand);
+		$params = array( 'total' => $total, 'brand' => $brand );
 
 		try {
-		    $api = new Gerencianet($options);
-		    $installments = $api->getInstallments($params, array());
+			$api          = new Gerencianet( $options );
+			$installments = $api->getInstallments( $params, array() );
 
-		    return GerencianetIntegration::result_api($installments, true);
-		} catch (GerencianetException $e) {
-		    $errorResponse = array(
-		        "code" => $e->code,
-		        "error" => $e->error,
-		        "message" => $e->errorDescription,
-		    );
+			return GerencianetIntegration::result_api( $installments, true );
+		} catch ( GerencianetException $e ) {
+			$errorResponse = array(
+				"code"    => $e->getCode(),
+				"error"   => $e->error,
+				"message" => $e->errorDescription,
+			);
 
-		    return GerencianetIntegration::result_api($errorResponse, false);
-		} catch (Exception $e) {
-		    $errorResponse = array(
-		    	"code" => 0,
-		        "message" => $e->getMessage(),
-		    );
+			return GerencianetIntegration::result_api( $errorResponse, false );
+		} catch ( Exception $e ) {
+			$errorResponse = array(
+				"code"    => 0,
+				"message" => $e->getMessage(),
+			);
 
-		    return GerencianetIntegration::result_api($errorResponse, false);
+			return GerencianetIntegration::result_api( $errorResponse, false );
 		}
 
 	}
 
-	public function create_charge($order_id,$items,$shipping,$notification_url) {
+	public function create_charge( $order_id, $items, $shipping, $notification_url ) {
 
 		$options = GerencianetIntegration::get_gn_api_credentials();
 
-		$metadata = array (
-		    'custom_id' => strval($order_id),
-		    'notification_url' => $notification_url
+		$metadata = array(
+			'custom_id'        => strval( $order_id ),
+			'notification_url' => $notification_url
 		);
 
-		if ($shipping) {
-			$body = array (
-			    'items' => $items,
-	    		'shippings' => $shipping,
-	    		'metadata' => $metadata
+		if ( $shipping ) {
+			$body = array(
+				'items'     => $items,
+				'shippings' => $shipping,
+				'metadata'  => $metadata
 			);
 		} else {
-			$body = array (
-			    'items' => $items,
-	    		'metadata' => $metadata
+			$body = array(
+				'items'    => $items,
+				'metadata' => $metadata
 			);
 		}
 
 		try {
-		    $api = new Gerencianet($options);
-		    $charge = $api->createCharge(array(), $body);
+			$api    = new Gerencianet( $options );
+			$charge = $api->createCharge( array(), $body );
 
-		    return GerencianetIntegration::result_api($charge, true);
+			return GerencianetIntegration::result_api( $charge, true );
 
-		} catch (GerencianetException $e) {
-		    $errorResponse = array(
-		        "code" => $e->code,
-		        "error" => $e->error,
-		        "message" => $e->errorDescription,
-		    );
+		} catch ( GerencianetException $e ) {
+			$errorResponse = array(
+				"code"    => $e->getCode(),
+				"error"   => $e->error,
+				"message" => $e->errorDescription,
+			);
 
-		    return GerencianetIntegration::result_api($errorResponse, false);
-		} catch (Exception $e) {
-		    $errorResponse = array(
-		        "message" => $e->getMessage(),
-		    );
+			return GerencianetIntegration::result_api( $errorResponse, false );
+		} catch ( Exception $e ) {
+			$errorResponse = array(
+				"message" => $e->getMessage(),
+			);
 
-		    return GerencianetIntegration::result_api($errorResponse, false);
+			return GerencianetIntegration::result_api( $errorResponse, false );
 		}
 	}
 
-	public function pay_billet($charge_id,$expirationDate,$customer,$instructions, $discount=false) {
+	public function pay_billet( $charge_id, $expirationDate, $customer, $instructions, $discount = false ) {
 
 		$options = GerencianetIntegration::get_gn_api_credentials();
-		$params = array ('id' => $charge_id);
-		
-		/*if ($discount) {
-			$body = array (
-			    'payment' => array (
-			        'banking_billet' => array (
-			            'expire_at' => $expirationDate,
-			            'customer' => $customer,
-			            'discount' => $discount
-			        )
-			    )
-			);
-		} else {
-			$body = array (
-			    'payment' => array (
-			        'banking_billet' => array (
-			            'expire_at' => $expirationDate,
-			            'customer' => $customer
-			        )
-			    )
-			);
-		}*/
+		$params  = array( 'id' => $charge_id );
 
-		if ($discount) {
-			if(sizeof($instructions) == 0)
-			{
-				$banking_billet = array (
-		            'expire_at' => $expirationDate,
-		            'customer' => $customer,
-		            'discount' => $discount
-		      	);
+		if ( $discount ) {
+			if ( sizeof( $instructions ) == 0 ) {
+				$banking_billet = array(
+					'expire_at' => $expirationDate,
+					'customer'  => $customer,
+					'discount'  => $discount
+				);
 			} else {
-				$banking_billet = array (
-		            'expire_at' => $expirationDate,
-		            'customer' => $customer,
-		            'instructions' => $instructions,
-		            'discount' => $discount
-		      	);
+				$banking_billet = array(
+					'expire_at'    => $expirationDate,
+					'customer'     => $customer,
+					'instructions' => $instructions,
+					'discount'     => $discount
+				);
 			}
 
 		} else {
-			if(sizeof($instructions) == 0)
-			{
-				$banking_billet = array (
-		            'expire_at' => $expirationDate,
-		            'customer' => $customer
-		      	);
+			if ( sizeof( $instructions ) == 0 ) {
+				$banking_billet = array(
+					'expire_at' => $expirationDate,
+					'customer'  => $customer
+				);
 			} else {
-				$banking_billet = array (
-		            'expire_at' => $expirationDate,
-		            'customer' => $customer,
-		            'instructions' => $instructions
-		      	);
+				$banking_billet = array(
+					'expire_at'    => $expirationDate,
+					'customer'     => $customer,
+					'instructions' => $instructions
+				);
 			}
 		}
 
-		$body = array (
-		    'payment' => array (
-		        'banking_billet' => $banking_billet
-		    )
+		$body = array(
+			'payment' => array(
+				'banking_billet' => $banking_billet
+			)
 		);
-		
+
 		try {
-		    $api = new Gerencianet($options);
-		    $charge = $api->payCharge($params, $body);
+			$api    = new Gerencianet( $options );
+			$charge = $api->payCharge( $params, $body );
 
-		    return GerencianetIntegration::result_api($charge, true);
-		} catch (GerencianetException $e) {
-		    $errorResponse = array(
-		        "code" => $e->code,
-		        "error" => $e->error,
-		        "message" => $e->errorDescription,
-		    );
+			return GerencianetIntegration::result_api( $charge, true );
+		} catch ( GerencianetException $e ) {
+			$errorResponse = array(
+				"code"    => $e->getCode(),
+				"error"   => $e->error,
+				"message" => $e->errorDescription,
+			);
 
-		    return GerencianetIntegration::result_api($errorResponse, false);
-		} catch (Exception $e) {
-		    $errorResponse = array(
-		        "message" => $e->getMessage(),
-		    );
+			return GerencianetIntegration::result_api( $errorResponse, false );
+		} catch ( Exception $e ) {
+			$errorResponse = array(
+				"message" => $e->getMessage(),
+			);
 
-		    return GerencianetIntegration::result_api($errorResponse, false);
+			return GerencianetIntegration::result_api( $errorResponse, false );
 		}
 	}
 
-	public function pay_card($charge_id,$paymentTokenCard,$installments,$billingAddress,$customer,$discount) {
+	public function pay_card( $charge_id, $paymentTokenCard, $installments, $billingAddress, $customer, $discount ) {
 
 		$options = GerencianetIntegration::get_gn_api_credentials();
-		$params = array ('id' => $charge_id);
+		$params  = array( 'id' => $charge_id );
 
 		$paymentToken = $paymentTokenCard;
 
-		if ($discount>0) {
-			$body = array (
-			    'payment' => array (
-			        'credit_card' => array (
-			            'installments' => $installments,
-			            'billing_address' => $billingAddress,
-			            'payment_token' => $paymentToken,
-			            'customer' => $customer,
-			            'discount' => $discount
-			        )
-			    )
+		if ( $discount > 0 ) {
+			$body = array(
+				'payment' => array(
+					'credit_card' => array(
+						'installments'    => $installments,
+						'billing_address' => $billingAddress,
+						'payment_token'   => $paymentToken,
+						'customer'        => $customer,
+						'discount'        => $discount
+					)
+				)
 			);
 		} else {
-			$body = array (
-			    'payment' => array (
-			        'credit_card' => array (
-			            'installments' => $installments,
-			            'billing_address' => $billingAddress,
-			            'payment_token' => $paymentToken,
-			            'customer' => $customer
-			        )
-			    )
+			$body = array(
+				'payment' => array(
+					'credit_card' => array(
+						'installments'    => $installments,
+						'billing_address' => $billingAddress,
+						'payment_token'   => $paymentToken,
+						'customer'        => $customer
+					)
+				)
 			);
 		}
-		
+
 		try {
-		    $api = new Gerencianet($options);
-		    $charge = $api->payCharge($params, $body);
+			$api    = new Gerencianet( $options );
+			$charge = $api->payCharge( $params, $body );
 
-		    return GerencianetIntegration::result_api($charge, true);
-		} catch (GerencianetException $e) {
-		    $errorResponse = array(
-		        "code" => $e->code,
-		        "error" => $e->error,
-		        "message" => $e->errorDescription,
-		    );
+			return GerencianetIntegration::result_api( $charge, true );
+		} catch ( GerencianetException $e ) {
+			$errorResponse = array(
+				"code"    => $e->getCode(),
+				"error"   => $e->error,
+				"message" => $e->errorDescription,
+			);
 
-		    return GerencianetIntegration::result_api($errorResponse, false);
-		} catch (Exception $e) {
-		    $errorResponse = array(
-		        "message" => $e->getMessage(),
-		    );
+			return GerencianetIntegration::result_api( $errorResponse, false );
+		} catch ( Exception $e ) {
+			$errorResponse = array(
+				"message" => $e->getMessage(),
+			);
 
-		    return GerencianetIntegration::result_api($errorResponse, false);
+			return GerencianetIntegration::result_api( $errorResponse, false );
 		}
 	}
 
-	public function notificationCheck($notificationToken) {
+	public function notificationCheck( $notificationToken ) {
 
 		$options = GerencianetIntegration::get_gn_api_credentials();
 
-		$params = array (
-		  	'token' => $notificationToken
+		$params = array(
+			'token' => $notificationToken
 		);
 
 		try {
-		    $api = new Gerencianet($options);
-		    $notification = $api->getNotification($params, array());
+			$api          = new Gerencianet( $options );
+			$notification = $api->getNotification( $params, array() );
 
-	 		return GerencianetIntegration::result_api($notification, true);
-		} catch (GerencianetException $e) {
-		    $errorResponse = array(
-		        "message" => "Error retrieving notification: " . $notificationToken,
-		    );
+			return GerencianetIntegration::result_api( $notification, true );
+		} catch ( GerencianetException $e ) {
+			$errorResponse = array(
+				"message" => "Error retrieving notification: " . $notificationToken,
+			);
 
-		    return GerencianetIntegration::result_api($errorResponse, false);
-		} catch (Exception $e) {
-		    $errorResponse = array(
-		        "message" => "Error retrieving notification: " . $notificationToken,
-		    );
+			return GerencianetIntegration::result_api( $errorResponse, false );
+		} catch ( Exception $e ) {
+			$errorResponse = array(
+				"message" => "Error retrieving notification: " . $notificationToken,
+			);
 
-		    return GerencianetIntegration::result_api($errorResponse, false);
+			return GerencianetIntegration::result_api( $errorResponse, false );
 		}
 	}
 
-	public function result_api($result, $success) {
-		if ($success) {
-			return json_encode($result);
+	public function result_api( $result, $success ) {
+		if ( $success ) {
+			return json_encode( $result );
 		} else {
-			if (isset($result['message']['property'])) {
-				$property = explode("/",$result['message']['property']);
-				$propertyName = end($property);
+			if ( isset( $result['message']['property'] ) ) {
+				$property     = explode( "/", $result['message']['property'] );
+				$propertyName = end( $property );
 			} else {
-				$propertyName="";
+				$propertyName = "";
 			}
-			
-			if (isset($result['code'])) {
-				if (isset($result['message']) && $propertyName=="") {
-					$messageShow = $this->getErrorMessage(intval($result['code']), $result['message']);
+
+			if ( isset( $result['code'] ) ) {
+				if ( isset( $result['message'] ) && $propertyName == "" ) {
+					$messageShow = $this->getErrorMessage( intval( $result['code'] ), $result['message'] );
 				} else {
-					$messageShow = $this->getErrorMessage(intval($result['code']), $propertyName);
+					$messageShow = $this->getErrorMessage( intval( $result['code'] ), $propertyName );
 				}
 			} else {
-				if (isset($result['message'])) {
+				if ( isset( $result['message'] ) ) {
 					$messageShow = $result['message'];
 				} else {
-					$messageShow = $this->getErrorMessage(1, $propertyName);
+					$messageShow = $this->getErrorMessage( 1, $propertyName );
 				}
 			}
 
 			$errorResponse = array(
-				"code" => 0,
-		        "message" => $messageShow
-		    );
-			return json_encode($errorResponse);
+				"code"    => 0,
+				"message" => $messageShow
+			);
+
+			return json_encode( $errorResponse );
 		}
 	}
 
-	public function getErrorMessage($error_code, $property) {
+	public function getErrorMessage( $error_code, $property ) {
 		$messageErrorDefault = 'Ocorreu um erro ao tentar realizar a sua requisição. Entre em contato com o proprietário da loja.';
-		switch($error_code) {
+		switch ( $error_code ) {
 			case 3500000:
 				$message = 'Erro interno do servidor.';
 				break;
@@ -407,10 +386,10 @@ class GerencianetIntegration {
 				$message = 'Esta transação já possui uma forma de pagamento definida.';
 				break;
 			case 3500034:
-				if ($property=="payment_token") {
+				if ( $property == "payment_token" ) {
 					$message = 'Os dados do cartão não foram validados. Por favor, digite os dados do cartão novamente.';
 				} else {
-					$message = 'O campo ' . $this->getFieldName($property) . ' não está preenchido corretamente.';
+					$message = 'O campo ' . $this->getFieldName( $property ) . ' não está preenchido corretamente.';
 				}
 				break;
 			case 3500042:
@@ -495,11 +474,12 @@ class GerencianetIntegration {
 				$message = $messageErrorDefault;
 				break;
 		}
+
 		return $message;
 	}
-	
-	public function getFieldName($name) {
-		switch($name) {
+
+	public function getFieldName( $name ) {
+		switch ( $name ) {
 			case "neighborhood":
 				return 'Bairro';
 				break;
@@ -548,28 +528,27 @@ class GerencianetIntegration {
 		}
 	}
 
-	public function formatMoney($value, $gnFormat) {
-	    $cleanString = preg_replace('/([^0-9\.,])/i', '', $value);
-	    $onlyNumbersString = preg_replace('/([^0-9])/i', '', $value);
+	public function formatMoney( $value, $gnFormat ) {
+		$cleanString       = preg_replace( '/([^0-9\.,])/i', '', $value );
+		$onlyNumbersString = preg_replace( '/([^0-9])/i', '', $value );
 
-	    $separatorsCountToBeErased = strlen($cleanString) - strlen($onlyNumbersString) - 1;
+		$separatorsCountToBeErased = strlen( $cleanString ) - strlen( $onlyNumbersString ) - 1;
 
-	    $stringWithCommaOrDot = preg_replace('/([,\.])/', '', $cleanString, $separatorsCountToBeErased);
-	    $removedThousendSeparator = preg_replace('/(\.|,)(?=[0-9]{3,}$)/', '',  $stringWithCommaOrDot);
+		$stringWithCommaOrDot     = preg_replace( '/([,\.])/', '', $cleanString, $separatorsCountToBeErased );
+		$removedThousendSeparator = preg_replace( '/(\.|,)(?=[0-9]{3,}$)/', '', $stringWithCommaOrDot );
 
-	    if ($gnFormat) {
-	    	return (int) (((float) str_replace(',', '.', $removedThousendSeparator))*100);
-	    } else {
-	    	return ((float) str_replace(',', '.', $removedThousendSeparator));
-	    }
+		if ( $gnFormat ) {
+			return (int) ( ( (float) str_replace( ',', '.', $removedThousendSeparator ) ) * 100 );
+		} else {
+			return ( (float) str_replace( ',', '.', $removedThousendSeparator ) );
+		}
 	}
 
-	public static function formatCurrencyBRL($value) {
-		$formated = "R$".number_format(intval($value)/100, 2, ',', '.');
+	public static function formatCurrencyBRL( $value ) {
+		$formated = "R$" . number_format( intval( $value ) / 100, 2, ',', '.' );
 
 		return $formated;
 	}
-
 
 
 }

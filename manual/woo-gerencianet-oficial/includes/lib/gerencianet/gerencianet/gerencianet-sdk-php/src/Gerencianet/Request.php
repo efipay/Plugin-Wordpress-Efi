@@ -15,18 +15,20 @@ class Request
     private $auth;
     private $request;
     private $config;
+    private $certified_path;
 
     public function __construct(array $options = null)
     {
         $this->config = Config::options($options);
         $composerData = json_decode(file_get_contents(__DIR__.'/../../composer.json'), true);
         $partner_token = isset($options['partner_token'])? $options['partner_token'] : "";
+        $this->certified_path = isset($options['certified_path'])? $options['certified_path'] : null;
         $this->client = new Client([
         'debug' => $this->config['debug'],
-        'base_url' => $this->config['baseUri'],
+        'base_uri' => $this->config['baseUri'],
         'headers' => [
           'Content-Type' => 'application/json',
-          'api-sdk' => 'woocommerce-0.5.3',
+          'api-sdk' => 'woocommerce-0.6.0',
           'partner-token' => $partner_token
           ],
       ]);
@@ -34,10 +36,12 @@ class Request
 
     public function send($method, $route, $requestOptions)
     {
-
         try {
-            $this->request = $this->client->createRequest($method, $route, $requestOptions);
-            $response = $this->client->send($this->request);
+            if($this->certified_path){
+                $this->client->setDefaultOption("verify", $this->certified_path);
+            }
+
+            $response = $this->client->request($method, $route, $requestOptions);
 
             return json_decode($response->getBody(), true);
         } catch (ClientException $e) {
