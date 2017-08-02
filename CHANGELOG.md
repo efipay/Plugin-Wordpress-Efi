@@ -1,5 +1,5 @@
 # v0.6.0
-* Fix: Compatibildiade do módulo com Wocommerce 3.x e PHP 7.x
+* Fix: Compatibilidade do módulo com WooCommerce 3.x e PHP 7.x
 * Add: Atualização da identidade visual da Gerencianet.
 
 # v0.5.3 

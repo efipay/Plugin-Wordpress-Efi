@@ -49,7 +49,7 @@ Opcional: Instale o plugin [WooCommerce Extra Checkout Fields for Brazil](https:
 = Changelog =
 
 = 0.6.0 =
-* Fix: Compatibildiade do módulo com Wocommerce 3.x e PHP 7.x
+* Fix: Compatibilidade do módulo com WooCommerce 3.x e PHP 7.x
 * Add: Atualização da identidade visual da Gerencianet.
 
 = 0.5.3 =
@@ -132,7 +132,7 @@ Opcional: Instale o plugin [WooCommerce Extra Checkout Fields for Brazil](https:
 == Changelog ==
 
 = 0.6.0 =
-* Fix: Compatibildiade do módulo com Wocommerce 3.x e PHP 7.x
+* Fix: Compatibilidade do módulo com WooCommerce 3.x e PHP 7.x
 * Add: Atualização da identidade visual da Gerencianet.
 
 = 0.5.3 =
