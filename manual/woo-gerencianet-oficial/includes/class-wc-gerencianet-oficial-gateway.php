@@ -204,8 +204,8 @@ class WC_Gerencianet_Oficial_Gateway extends WC_Payment_Gateway {
 	public function scripts() {
 		wp_register_script( 'jquery-wp', '/wp-includes/js/jquery/jquery.js', false );
 		wp_enqueue_script( 'jquery-wp' );
-		wp_enqueue_script( 'wc-gerencianet-checkout', plugins_url( 'assets/js/checkout.js', plugin_dir_path( __FILE__ ) ), array( 'jquery' ), '', true );
-		wp_enqueue_script( 'jquery-mask-gn', plugins_url( 'assets/js/jquery.maskedinput.js', plugin_dir_path( __FILE__ ) ), array( 'jquery' ), '', true );
+		wp_enqueue_script( 'wc-gerencianet-checkout', plugins_url( 'assets/js/checkout.js', plugin_dir_path( __FILE__ ) ), array( 'jquery-wp' ), '', true );
+		wp_enqueue_script( 'jquery-mask-gn', plugins_url( 'assets/js/jquery.maskedinput.js', plugin_dir_path( __FILE__ ) ), array( 'jquery-wp' ), '', true );
 		wp_localize_script(
 			'wc-gerencianet-checkout',
 			'woocommerce_gerencianet_api',
