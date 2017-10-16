@@ -1,16 +1,19 @@
-//0.6.0
+//0.6.1
 
 var errorMessage;
 var id_charge = 0;
 var active = 0;
+
+var getPaymentToken;
+$gn.ready(function(checkout) {
+    getPaymentToken = checkout.getPaymentToken;
+});
 
 jQuery(document).ready(function($){
     
     if(jQuery.mask) {
         $("#cpf-cnpj").keyup(function(e){
             var tamanho = $("#cpf-cnpj").val().replace(/[^\d]+/g,'').length;
-            console.log($("#cpf-cnpj").val());
-            console.log(tamanho);
             
             $("#cpf-cnpj").unmask();
  
@@ -38,15 +41,12 @@ jQuery(document).ready(function($){
 
         $("#input-payment-card-cpf-cnpj").keyup(function(e){
             var tamanho = $("#input-payment-card-cpf-cnpj").val().replace(/[^\d]+/g,'').length;
-            console.log($("#input-payment-card-cpf-cnpj").val());
-            console.log(tamanho);
 
             $("#input-payment-card-cpf-cnpj").unmask();
 
             
             if(e.keyCode == 8)
             {
-                console.log('backspace');
                 if(tamanho == 11){
                     $("#input-payment-card-cpf-cnpj").mask("999.999.999-99?9",{autoclear:false, placeholder:""});
                     $("#input-payment-card-cpf-cnpj").unmask();
@@ -617,11 +617,4 @@ jQuery(document).ready(function($){
         $("html, body").animate({ scrollTop: $("#wc-gerencianet-messages").offset().top-80 }, "slow");
     }
 
-});
-
-
-
-var getPaymentToken;
-$gn.ready(function(checkout) {
-    getPaymentToken = checkout.getPaymentToken;
 });

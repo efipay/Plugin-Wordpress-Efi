@@ -48,6 +48,9 @@ Opcional: Instale o plugin [WooCommerce Extra Checkout Fields for Brazil](https:
 
 = Changelog =
 
+= 0.6.1 =
+* Fix: Erros ao carregar objeto jquery da Gerencianet no checkout.
+
 = 0.6.0 =
 * Fix: Compatibilidade do módulo com WooCommerce 3.x e PHP 7.x
 * Add: Atualização da identidade visual da Gerencianet.
@@ -130,6 +133,9 @@ Opcional: Instale o plugin [WooCommerce Extra Checkout Fields for Brazil](https:
 10. Recomendamos que antes de disponibilizar pagamentos pela Gerencianet, o lojista realize testes de cobrança com o sandbox(ambiente de testes) ativado para verificar se o procedimento de pagamento está acontecendo conforme esperado.
 
 == Changelog ==
+
+= 0.6.1 =
+* Fix: Erros ao carregar objeto jquery da Gerencianet no checkout.
 
 = 0.6.0 =
 * Fix: Compatibilidade do módulo com WooCommerce 3.x e PHP 7.x

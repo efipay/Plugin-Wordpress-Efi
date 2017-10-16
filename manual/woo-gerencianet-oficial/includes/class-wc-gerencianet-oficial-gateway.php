@@ -96,6 +96,12 @@ class WC_Gerencianet_Oficial_Gateway extends WC_Payment_Gateway {
 		// Actions.
 		add_action( 'woocommerce_api_WC_Gerencianet_Oficial_Gateway', array( $this, 'validate_notification' ) );
 		add_action( 'validate_notification_request', array( $this, 'successful_request' ) );
+
+		if ( $this->osc == 'no' ){
+            wp_deregister_script('jquery');
+            add_action( 'woocommerce_receipt_gerencianet_oficial', array($this, 'generate_gn_script'), 1);
+        }
+
 		add_action( 'woocommerce_receipt_gerencianet_oficial', array( $this, 'receipt_page' ) );
 		add_action( 'woocommerce_update_options_payment_gateways_' . $this->id, array(
 			$this,
@@ -196,7 +202,8 @@ class WC_Gerencianet_Oficial_Gateway extends WC_Payment_Gateway {
 	 * @return void
 	 */
 	public function scripts() {
-		wp_enqueue_script( 'jquery' );
+		wp_register_script( 'jquery-wp', '/wp-includes/js/jquery/jquery.js', false );
+		wp_enqueue_script( 'jquery-wp' );
 		wp_enqueue_script( 'wc-gerencianet-checkout', plugins_url( 'assets/js/checkout.js', plugin_dir_path( __FILE__ ) ), array( 'jquery' ), '', true );
 		wp_enqueue_script( 'jquery-mask-gn', plugins_url( 'assets/js/jquery.maskedinput.js', plugin_dir_path( __FILE__ ) ), array( 'jquery' ), '', true );
 		wp_localize_script(
@@ -989,6 +996,14 @@ class WC_Gerencianet_Oficial_Gateway extends WC_Payment_Gateway {
 	}
 
 	/**
+	 * Generate Gerencianet script to get payment token 
+	 */
+	public function generate_gn_script(){
+        $script = $this->gnIntegration->get_gn_script();
+        echo $script;
+    }
+
+	/**
 	 * Generate the form for payment
 	 *
 	 * @param int $order_id Order ID.
@@ -1222,7 +1237,7 @@ class WC_Gerencianet_Oficial_Gateway extends WC_Payment_Gateway {
 			$this->styles();
 			wp_enqueue_script( 'jquery' );
 			wp_enqueue_script( 'jquery-mask-gn', plugins_url( 'assets/js/jquery.maskedinput.js', plugin_dir_path( __FILE__ ) ), array( 'jquery' ), '', true );
-			wp_enqueue_script( 'wc-gerencianet-checkout-osc', plugins_url( 'assets/js/checkout-osc.js', plugin_dir_path( __FILE__ ) ), array( 'jquery' ), '', true );
+			//wp_enqueue_script( 'wc-gerencianet-checkout-osc', plugins_url( 'assets/js/checkout-osc.js', plugin_dir_path( __FILE__ ) ), array( 'jquery' ), '', true );
 			wp_localize_script(
 				'wc-gerencianet-checkout',
 				'woocommerce_gerencianet_api',
@@ -1305,59 +1320,60 @@ class WC_Gerencianet_Oficial_Gateway extends WC_Payment_Gateway {
 			$total_order_pay_by_card = $this->gn_price_format( $order_total ) + $meta_discount_value;
 			$discount_value          = $total_order_pay_by_card - $total_order_pay_by_billet;
 
-			wc_get_template( 'transparent-osc.php', array(
-				'order_id'                          => $order_id,
-				'ajax_url'                          => admin_url( 'admin-ajax.php' ),
-				'script_load'                       => $script,
-				'discount'                          => $discount,
-				'discount_formatted'                => $discountBilletFormatted,
-				'billet_option'                     => $this->billet_banking,
-				'card_option'                       => $this->credit_card,
-				'max_installments'                  => $this->gnIntegration->max_installments( $total_order_pay_by_card ),
-				'order_with_billet_discount'        => $this->gnIntegration->formatCurrencyBRL( $total_order_pay_by_billet ),
-				'order_billet_discount'             => $this->gnIntegration->formatCurrencyBRL( $discount_value ),
-				'order_total'                       => $this->gnIntegration->formatCurrencyBRL( $total_order_pay_by_card ),
-				'order_total_card'                  => $total_order_pay_by_card,
-				'order_total_billet'                => $total_order_pay_by_billet,
-				'sandbox'                           => $this->sandbox,
-				'gn_card_payment_comments'          => __( "Opting to pay by credit card, the payment is processed and the confirmation will take place within 48 hours.", WCGerencianetOficial::getTextDomain() ),
-				'gn_billet_payment_method_comments' => __( "Opting to pay by Banking Billet, the confirmation will be performed on the next business day after payment.", WCGerencianetOficial::getTextDomain() ),
-				'gn_name_corporate'                 => __( "Name/Company:", WCGerencianetOficial::getTextDomain() ),
-				'gn_name'                           => __( "Name:", WCGerencianetOficial::getTextDomain() ), //novo
-				'gn_corporate'                      => __( "Company:", WCGerencianetOficial::getTextDomain() ), //novo
-				'gn_cpf_cnpj'                       => __( "CPF/CNPJ: ", WCGerencianetOficial::getTextDomain() ),
-				'gn_cpf'                            => __( "CPF: ", WCGerencianetOficial::getTextDomain() ), //novo
-				'gn_cnpj'                           => __( "CNPJ: ", WCGerencianetOficial::getTextDomain() ), //novo
-				'gn_phone'                          => __( "Phone: ", WCGerencianetOficial::getTextDomain() ),
-				'gn_birth'                          => __( "Birth Date: ", WCGerencianetOficial::getTextDomain() ),
-				'gn_email'                          => __( "E-mail: ", WCGerencianetOficial::getTextDomain() ),
-				'gn_street'                         => __( "Address: ", WCGerencianetOficial::getTextDomain() ),
-				'gn_street_number'                  => __( "Number: ", WCGerencianetOficial::getTextDomain() ),
-				'gn_neighborhood'                   => __( "Neighborhood: ", WCGerencianetOficial::getTextDomain() ),
-				'gn_address_complement'             => __( "Complement: ", WCGerencianetOficial::getTextDomain() ),
-				'gn_cep'                            => __( "Zipcode: ", WCGerencianetOficial::getTextDomain() ),
-				'gn_city'                           => __( "City: ", WCGerencianetOficial::getTextDomain() ),
-				'gn_state'                          => __( "State: ", WCGerencianetOficial::getTextDomain() ),
-				'gn_card_title'                     => __( "Billing Data", WCGerencianetOficial::getTextDomain() ),
-				'gn_card_number'                    => __( "Card Number: ", WCGerencianetOficial::getTextDomain() ),
-				'gn_card_expiration'                => __( "Expiration date: ", WCGerencianetOficial::getTextDomain() ),
-				'gn_card_cvv'                       => __( "Security Code: ", WCGerencianetOficial::getTextDomain() ),
-				'gn_card_installments_options'      => __( "Installments: ", WCGerencianetOficial::getTextDomain() ),
-				'gn_card_brand'                     => __( "Select the card brand", WCGerencianetOficial::getTextDomain() ),
+			if(is_ajax())
+				wc_get_template( 'transparent-osc.php', array(
+					'order_id'                          => $order_id,
+					'ajax_url'                          => admin_url( 'admin-ajax.php' ),
+					'script_load'                       => $script,
+					'discount'                          => $discount,
+					'discount_formatted'                => $discountBilletFormatted,
+					'billet_option'                     => $this->billet_banking,
+					'card_option'                       => $this->credit_card,
+					'max_installments'                  => $this->gnIntegration->max_installments( $total_order_pay_by_card ),
+					'order_with_billet_discount'        => $this->gnIntegration->formatCurrencyBRL( $total_order_pay_by_billet ),
+					'order_billet_discount'             => $this->gnIntegration->formatCurrencyBRL( $discount_value ),
+					'order_total'                       => $this->gnIntegration->formatCurrencyBRL( $total_order_pay_by_card ),
+					'order_total_card'                  => $total_order_pay_by_card,
+					'order_total_billet'                => $total_order_pay_by_billet,
+					'sandbox'                           => $this->sandbox,
+					'gn_card_payment_comments'          => __( "Opting to pay by credit card, the payment is processed and the confirmation will take place within 48 hours.", WCGerencianetOficial::getTextDomain() ),
+					'gn_billet_payment_method_comments' => __( "Opting to pay by Banking Billet, the confirmation will be performed on the next business day after payment.", WCGerencianetOficial::getTextDomain() ),
+					'gn_name_corporate'                 => __( "Name/Company:", WCGerencianetOficial::getTextDomain() ),
+					'gn_name'                           => __( "Name:", WCGerencianetOficial::getTextDomain() ), //novo
+					'gn_corporate'                      => __( "Company:", WCGerencianetOficial::getTextDomain() ), //novo
+					'gn_cpf_cnpj'                       => __( "CPF/CNPJ: ", WCGerencianetOficial::getTextDomain() ),
+					'gn_cpf'                            => __( "CPF: ", WCGerencianetOficial::getTextDomain() ), //novo
+					'gn_cnpj'                           => __( "CNPJ: ", WCGerencianetOficial::getTextDomain() ), //novo
+					'gn_phone'                          => __( "Phone: ", WCGerencianetOficial::getTextDomain() ),
+					'gn_birth'                          => __( "Birth Date: ", WCGerencianetOficial::getTextDomain() ),
+					'gn_email'                          => __( "E-mail: ", WCGerencianetOficial::getTextDomain() ),
+					'gn_street'                         => __( "Address: ", WCGerencianetOficial::getTextDomain() ),
+					'gn_street_number'                  => __( "Number: ", WCGerencianetOficial::getTextDomain() ),
+					'gn_neighborhood'                   => __( "Neighborhood: ", WCGerencianetOficial::getTextDomain() ),
+					'gn_address_complement'             => __( "Complement: ", WCGerencianetOficial::getTextDomain() ),
+					'gn_cep'                            => __( "Zipcode: ", WCGerencianetOficial::getTextDomain() ),
+					'gn_city'                           => __( "City: ", WCGerencianetOficial::getTextDomain() ),
+					'gn_state'                          => __( "State: ", WCGerencianetOficial::getTextDomain() ),
+					'gn_card_title'                     => __( "Billing Data", WCGerencianetOficial::getTextDomain() ),
+					'gn_card_number'                    => __( "Card Number: ", WCGerencianetOficial::getTextDomain() ),
+					'gn_card_expiration'                => __( "Expiration date: ", WCGerencianetOficial::getTextDomain() ),
+					'gn_card_cvv'                       => __( "Security Code: ", WCGerencianetOficial::getTextDomain() ),
+					'gn_card_installments_options'      => __( "Installments: ", WCGerencianetOficial::getTextDomain() ),
+					'gn_card_brand'                     => __( "Select the card brand", WCGerencianetOficial::getTextDomain() ),
 
-				'gn_mininum_gn_charge_price' => __( "You can not pay this order with Gerencianet because the total value is less than R$5,00.", WCGerencianetOficial::getTextDomain() ),
-				'gn_pay_billet_option'       => __( "Pay with Billet Banking", WCGerencianetOficial::getTextDomain() ),
-				'gn_discount_billet'         => __( "Discount of ", WCGerencianetOficial::getTextDomain() ),
-				'gn_pay_card_option'         => __( "Pay with Credit Card", WCGerencianetOficial::getTextDomain() ),
-				'gn_installments_pay'        => __( "Pay in", WCGerencianetOficial::getTextDomain() ),
-				'gn_billing_address_title'   => __( "Billing Address", WCGerencianetOficial::getTextDomain() ),
-				'gn_billing_state_select'    => __( "Select the state", WCGerencianetOficial::getTextDomain() ),
-				'gn_card_cvv_tip'            => __( "Are the last three digits<br>on the back of the card.", WCGerencianetOficial::getTextDomain() ),
-				'gn_card_brand_select'       => __( "Select the Card Brand", WCGerencianetOficial::getTextDomain() ),
-				'gn_loading_payment_request' => __( "Please, wait...", WCGerencianetOficial::getTextDomain() ),
+					'gn_mininum_gn_charge_price' => __( "You can not pay this order with Gerencianet because the total value is less than R$5,00.", WCGerencianetOficial::getTextDomain() ),
+					'gn_pay_billet_option'       => __( "Pay with Billet Banking", WCGerencianetOficial::getTextDomain() ),
+					'gn_discount_billet'         => __( "Discount of ", WCGerencianetOficial::getTextDomain() ),
+					'gn_pay_card_option'         => __( "Pay with Credit Card", WCGerencianetOficial::getTextDomain() ),
+					'gn_installments_pay'        => __( "Pay in", WCGerencianetOficial::getTextDomain() ),
+					'gn_billing_address_title'   => __( "Billing Address", WCGerencianetOficial::getTextDomain() ),
+					'gn_billing_state_select'    => __( "Select the state", WCGerencianetOficial::getTextDomain() ),
+					'gn_card_cvv_tip'            => __( "Are the last three digits<br>on the back of the card.", WCGerencianetOficial::getTextDomain() ),
+					'gn_card_brand_select'       => __( "Select the Card Brand", WCGerencianetOficial::getTextDomain() ),
+					'gn_loading_payment_request' => __( "Please, wait...", WCGerencianetOficial::getTextDomain() ),
 
-				'gn_warning_sandbox_message' => __( "Sandbox mode is active. The payments will not be valid.", WCGerencianetOficial::getTextDomain() )
-			), 'woocommerce/woo-gerencianet-official/', plugin_dir_path( dirname( __FILE__ ) ) . 'templates/' );
+					'gn_warning_sandbox_message' => __( "Sandbox mode is active. The payments will not be valid.", WCGerencianetOficial::getTextDomain() )
+				), 'woocommerce/woo-gerencianet-official/', plugin_dir_path( dirname( __FILE__ ) ) . 'templates/' );
 
 		} else {
 			echo $this->description;

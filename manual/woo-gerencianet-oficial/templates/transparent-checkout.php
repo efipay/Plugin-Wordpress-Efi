@@ -12,8 +12,6 @@ if ( ! defined( 'ABSPATH' ) ) {
 
 <script type="text/javascript">
 
-	<?php echo html_entity_decode( $script );?>
-
     var home_url = "<?php echo esc_url( $order_received_url ); ?>";
 
 	<?php if ($card_option == 'no' && $billet_option == 'yes') { ?>

@@ -1,3 +1,6 @@
+# v0.6.1
+* Fix: Erros ao carregar objeto jquery da Gerencianet no checkout.
+
 # v0.6.0
 * Fix: Compatibilidade do módulo com WooCommerce 3.x e PHP 7.x
 * Add: Atualização da identidade visual da Gerencianet.
