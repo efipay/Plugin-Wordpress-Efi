@@ -943,60 +943,25 @@ if ( ! defined( 'ABSPATH' ) ) {
 
 
         if (jQuery.mask) {
-            $("#gn_billet_cpf_cnpj").keyup(function (e) {
-                if (allowedPersonType == 0) {
-                    var tamanho = $("#gn_billet_cpf_cnpj").val().replace(/[^\d]+/g, '').length;
-
-                    $("#gn_billet_cpf_cnpj").unmask();
-
-                    if (e.keyCode == 8) {
-                        if (tamanho == 11) {
-                            $("#gn_billet_cpf_cnpj").mask("999.999.999-99?9", {autoclear: false, placeholder: ""});
-                            $("#gn_billet_cpf_cnpj").unmask();
-                        } else if (tamanho == 12) {
-                            $("#gn_billet_cpf_cnpj").mask("99.999.999/9999-99", {autoclear: false, placeholder: ""});
-                            $("#gn_billet_cpf_cnpj").unmask();
-                        }
-                        else {
-                            $("#gn_billet_cpf_cnpj").unmask();
-                            return;
-                        }
-                    }
-                    if (tamanho <= 11) {
-                        $("#gn_billet_cpf_cnpj").mask("999.999.999-99?9", {autoclear: false, placeholder: ""});
-                    } else if (tamanho > 11) {
-                        $("#gn_billet_cpf_cnpj").mask("99.999.999/9999-99", {autoclear: false, placeholder: ""});
-                    }
+            
+            var optionsBillet = {
+                onKeyPress: function (cpf, ev, el, op) {
+                    var masks = ['000.000.000-000', '00.000.000/0000-00'],
+                    mask = (cpf.length > 14) ? masks[1] : masks[0];
+                    $('#gn_billet_cpf_cnpj').mask(mask, op);
                 }
-            });
+            }
+            $('#gn_billet_cpf_cnpj').mask('000.000.000-000', optionsBillet);
 
-            $("#gn_card_cpf_cnpj").keyup(function (e) {
-                if (allowedPersonType == 0) {
-                    var tamanho = $("#gn_card_cpf_cnpj").val().replace(/[^\d]+/g, '').length;
-
-                    $("#gn_card_cpf_cnpj").unmask();
-
-
-                    if (e.keyCode == 8) {
-                        if (tamanho == 11) {
-                            $("#gn_card_cpf_cnpj").mask("999.999.999-99?9", {autoclear: false, placeholder: ""});
-                            $("#gn_card_cpf_cnpj").unmask();
-                        } else if (tamanho == 12) {
-                            $("#gn_card_cpf_cnpj").mask("99.999.999/9999-99", {autoclear: false, placeholder: ""});
-                            $("#gn_card_cpf_cnpj").unmask();
-                        }
-                        else {
-                            $("#gn_card_cpf_cnpj").unmask();
-                            return;
-                        }
-                    }
-                    if (tamanho <= 11) {
-                        $("#gn_card_cpf_cnpj").mask("999.999.999-99?9", {autoclear: false, placeholder: ""});
-                    } else if (tamanho > 11) {
-                        $("#gn_card_cpf_cnpj").mask("99.999.999/9999-99", {autoclear: false, placeholder: ""});
-                    }
+            var optionsCard= {
+                onKeyPress: function (cpf, ev, el, op) {
+                    var masks = ['000.000.000-000', '00.000.000/0000-00'],
+                    mask = (cpf.length > 14) ? masks[1] : masks[0];
+                    $('#gn_card_cpf_cnpj').mask(mask, op);
                 }
-            });
+            }
+            $('#gn_card_cpf_cnpj').mask('000.000.000-000', optionsCard);
+
 
             $(".phone-mask").focusout(function () {
                 $(".phone-mask").unmask();

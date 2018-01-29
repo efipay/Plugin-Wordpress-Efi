@@ -1,3 +1,6 @@
+# v0.6.2
+* Fix: Erro na máscara de CPF/CNPJ no checkout em um passo do plugin.
+
 # v0.6.1
 * Fix: Erros ao carregar objeto jquery da Gerencianet no checkout.
 
