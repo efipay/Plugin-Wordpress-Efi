@@ -9,7 +9,7 @@ $active_plugins = get_option( 'active_plugins', array() );
 
 foreach ( $active_plugins as $key => $active_plugin ) {
 	if ( strstr( $active_plugin, '/wc-gerencianet-oficial.php' ) ) {
-		$active_plugins[ $key ] = str_replace( '/wc-gerencianet-oficial.php', '/woo-gerencianet-oficial.php', $active_plugin );
+		$active_plugins[ $key ] = str_replace( '/wc-gerencianet-oficial.php', '/woo-gerencianet-official.php', $active_plugin );
 	}
 }
 

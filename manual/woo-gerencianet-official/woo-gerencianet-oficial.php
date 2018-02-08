@@ -5,9 +5,9 @@
  * Description: Gateway de pagamento Gerencianet para WooCommerce.
  * Author: Gerencianet
  * Author URI: http://www.gerencianet.com.br
- * Version: 0.6.2
+ * Version: 0.6.3
  * License: GPLv2 or later
- * Text Domain: woo-gerencianet-oficial
+ * Text Domain: woo-gerencianet-official
  * Domain Path: /languages/
  */
 
@@ -27,7 +27,7 @@ class WCGerencianetOficial {
 	 *
 	 * @var string
 	 */
-	const VERSION = '0.6.2';
+	const VERSION = '0.6.3';
 
 	/**
 	 * Integration id.
@@ -36,7 +36,7 @@ class WCGerencianetOficial {
 	 */
 	protected static $gateway_id = 'gerencianet_oficial';
 
-	protected static $textDomain = "woo-gerencianet-oficial";
+	protected static $textDomain = "woo-gerencianet-official";
 
 	/**
 	 * Instance of this class.
@@ -168,7 +168,7 @@ class WCGerencianetOficial {
 	public function load_plugin_textdomain() {
 		$locale = apply_filters( 'plugin_locale', get_locale(), WCGerencianetOficial::getTextDomain() );
 
-		load_textdomain( WCGerencianetOficial::getTextDomain(), trailingslashit( WP_LANG_DIR ) . 'woo-gerencianet-oficial/woo-gerencianet-oficial-' . $locale . '.mo' );
+		load_textdomain( WCGerencianetOficial::getTextDomain(), trailingslashit( WP_LANG_DIR ) . 'woo-gerencianet-official/woo-gerencianet-official-' . $locale . '.mo' );
 		load_plugin_textdomain( WCGerencianetOficial::getTextDomain(), false, dirname( plugin_basename( __FILE__ ) ) . '/languages/' );
 	}
 

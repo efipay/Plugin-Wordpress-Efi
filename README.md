@@ -1,4 +1,4 @@
-# Módulo de Integração Gerencianet para WooCommerce Oficial - Versão 0.6.2 #
+# Módulo de Integração Gerencianet para WooCommerce Oficial - Versão 0.6.3 #
 
 O módulo Gerencianet para WooCommerce permite receber pagamentos por meio do checkout transparente da nossa API.
 Compatível com as versões 2.2.x, 2.3.x, 2.4.x, 2.5.x e 2.6.x do WooCommerce.
@@ -12,7 +12,7 @@ Caso você tenha alguma dúvida ou sugestão, entre em contato conosco pelo site
 ## Instalação
 
 1. Faça o download da [última versão](auto/) do plugin.
-2. Acesse o link em sua loja "Plugins" -> "Adicionar novo" -> "Fazer o upload do plugin" e envie o arquivo 'woo-gerencianet-oficial.zip' ou extraia o conteúdo do arquivo dentro do diretório de plugins da loja.
+2. Acesse o link em sua loja "Plugins" -> "Adicionar novo" -> "Fazer o upload do plugin" e envie o arquivo 'woo-gerencianet-official.zip' ou extraia o conteúdo do arquivo dentro do diretório de plugins da loja.
 3. Após a instalação, clique em "Ativar o Plugin".
 4. Configure o plugin em "WooCommerce" > "Configurações" > "Finalizar Compra" > "Gerencianet" e comece a receber pagamentos.
 

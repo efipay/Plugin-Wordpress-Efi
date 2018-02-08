@@ -1,3 +1,6 @@
+# v0.6.3
+* Add: Internacionalization and translation template.
+
 # v0.6.2
 * Fix: Erro na máscara de CPF/CNPJ no checkout em um passo do plugin.
 
