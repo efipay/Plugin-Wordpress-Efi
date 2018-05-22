@@ -48,6 +48,9 @@ Opcional: Instale o plugin [WooCommerce Extra Checkout Fields for Brazil](https:
 
 = Changelog =
 
+= 0.6.4 =
+* Fix: Layout quebrado nos campos de detalhes da cobrança.
+
 = 0.6.3 =
 * Add: Internacionalization and translation template.
 
@@ -139,6 +142,9 @@ Opcional: Instale o plugin [WooCommerce Extra Checkout Fields for Brazil](https:
 10. Recomendamos que antes de disponibilizar pagamentos pela Gerencianet, o lojista realize testes de cobrança com o sandbox(ambiente de testes) ativado para verificar se o procedimento de pagamento está acontecendo conforme esperado.
 
 == Changelog ==
+
+= 0.6.4 =
+* Fix: Layout quebrado nos campos de detalhes da cobrança.
 
 = 0.6.3 =
 * Add: Internacionalization and translation template.

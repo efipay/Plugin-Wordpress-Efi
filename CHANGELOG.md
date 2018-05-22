@@ -1,3 +1,6 @@
+# v0.6.4
+* Fix: Layout quebrado nos campos de detalhes da cobrança.
+
 # v0.6.3
 * Add: Internacionalization and translation template.
 
