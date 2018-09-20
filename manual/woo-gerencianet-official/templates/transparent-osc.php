@@ -5,13 +5,13 @@
 
 // Exit if accessed directly
 if ( ! defined( 'ABSPATH' ) ) {
-	exit;
+    exit;
 }
 
 ?>
 <script type="text/javascript">
 
-	<?php echo html_entity_decode( $script_load );?>
+    <?php echo html_entity_decode( $script_load );?>
 
     $gn.ready(function (checkout) {
         getPaymentToken = checkout.getPaymentToken;
@@ -315,6 +315,7 @@ if ( ! defined( 'ABSPATH' ) ) {
                         return true;
                     }
                 };
+
                 getPaymentToken({
                     brand: card_brand,
                     number: card_number,
@@ -1279,20 +1280,20 @@ if ( ! defined( 'ABSPATH' ) ) {
 
 
 <div id="gerencianet-container">
-	<?php if ( $sandbox == "yes" ) { ?>
+    <?php if ( $sandbox == "yes" ) { ?>
         <div class="warning-payment" id="wc-gerencianet-messages-sandbox">
             <div class="woocommerce-error"><?php echo $gn_warning_sandbox_message; ?></div>
         </div>
-	<?php } ?>
+    <?php } ?>
 
     <div class="gn-osc-warning-payment" id="wc-gerencianet-messages">
-		<?php if ( ( $card_option && $order_total_card < 500 ) && ( $billet_option && $order_total_billet < 500 ) ) { ?>
+        <?php if ( ( $card_option && $order_total_card < 500 ) && ( $billet_option && $order_total_billet < 500 ) ) { ?>
             <div class="woocommerce-error"><?php echo $gn_mininum_gn_charge_price; ?></div>
-		<?php } ?>
+        <?php } ?>
     </div>
 
     <div style="margin: 0px;">
-		<?php if ( $billet_option == "yes" ) { ?>
+        <?php if ( $billet_option == "yes" ) { ?>
             <div id="gn-billet-payment-option" class="gn-osc-payment-option gn-osc-payment-option-selected">
                 <div>
                     <div id="billet-radio-button" class="gn-osc-left">
@@ -1304,16 +1305,16 @@ if ( ! defined( 'ABSPATH' ) ) {
                     </div>
                     <div class="gn-osc-left gn-osc-payment-option-gerencianet">
                         <strong><?php echo "Boleto Bancário"; ?></strong>
-						<?php if ( $discount > 0 ) { ?>
+                        <?php if ( $discount > 0 ) { ?>
                             <span style="font-size: 14px; line-height: 15px;"><br>+<?php echo $discount_formatted; ?>% de desconto</span>
-						<?php } ?>
+                        <?php } ?>
                     </div>
                     <div class="gn-osc-left gn-osc-payment-option-sizer"></div>
                     <div class="clear"></div>
                 </div>
             </div>
-		<?php } ?>
-		<?php if ( $card_option == "yes" ) { ?>
+        <?php } ?>
+        <?php if ( $card_option == "yes" ) { ?>
             <div id="gn-card-payment-option" class="gn-osc-payment-option gn-osc-payment-option-unselected">
                 <div>
                     <div id="card-radio-button" class="gn-osc-left">
@@ -1331,11 +1332,11 @@ if ( ! defined( 'ABSPATH' ) ) {
                     <div class="clear"></div>
                 </div>
             </div>
-		<?php } ?>
+        <?php } ?>
         <div class="clear"></div>
     </div>
     <input name="wc_order_id" id="wc_order_id" type="hidden" value="<?php echo $order_id; ?>"/>
-	<?php if ( $billet_option == "yes" ) { ?>
+    <?php if ( $billet_option == "yes" ) { ?>
         <div id="collapse-payment-billet" class="gn-osc-background">
             <div class="panel-body">
                 <div class="gn-osc-row gn-osc-pay-comments">
@@ -1399,7 +1400,7 @@ if ( ! defined( 'ABSPATH' ) ) {
             </div>
 
             <div class="gn-osc-row" style="padding: 20px;">
-				<?php if ( $discount > 0 ) { ?>
+                <?php if ( $discount > 0 ) { ?>
                     <div class="gn-osc-row"
                          style="border: 1px solid #DEDEDE; border-bottom: 0px; margin: 0px; padding:5px;">
                         <div style="float: left;">
@@ -1409,7 +1410,7 @@ if ( ! defined( 'ABSPATH' ) ) {
                             <strong>-<?php echo $order_billet_discount; ?></strong>
                         </div>
                     </div>
-				<?php } ?>
+                <?php } ?>
                 <div class="gn-osc-row" style="border: 1px solid #DEDEDE; margin: 0px; padding:5px;">
                     <div style="float: left;">
                         <strong>TOTAL:</strong>
@@ -1421,8 +1422,8 @@ if ( ! defined( 'ABSPATH' ) ) {
             </div>
         </div>
 
-	<?php } ?>
-	<?php if ( $card_option == "yes" ) { ?>
+    <?php } ?>
+    <?php if ( $card_option == "yes" ) { ?>
         <div id="collapse-payment-card"
              class="panel-collapse <?php if ( $billet_option == "yes" ) { ?>gn-hide<?php } ?> gn-osc-background">
             <div class="panel-body">
@@ -1640,24 +1641,14 @@ if ( ! defined( 'ABSPATH' ) ) {
                                             <label class="gn-card-brand gn-diners" for="diners"></label>
                                         </div>
                                         <div class="pull-left gn-card-brand-content">
-                                            <input id="discover" type="radio" name="gn_card_brand" id="gn_card_brand"
-                                                   value="discover" class="gn-hide"/>
-                                            <label class="gn-card-brand gn-discover" for="discover"></label>
-                                        </div>
-                                        <div class="pull-left gn-card-brand-content">
-                                            <input id="jcb" type="radio" name="gn_card_brand" id="gn_card_brand"
-                                                   value="jcb" class="gn-hide"/>
-                                            <label class="gn-card-brand gn-jcb" for="jcb"></label>
-                                        </div>
-                                        <div class="pull-left gn-card-brand-content">
                                             <input id="elo" type="radio" name="gn_card_brand" id="gn_card_brand"
                                                    value="elo" class="gn-hide"/>
                                             <label class="gn-card-brand gn-elo" for="elo"></label>
                                         </div>
                                         <div class="pull-left gn-card-brand-content">
-                                            <input id="aura" type="radio" name="gn_card_brand" id="gn_card_brand"
-                                                   value="aura" class="gn-hide"/>
-                                            <label class="gn-card-brand gn-aura" for="aura"></label>
+                                            <input id="hipercard" type="radio" name="gn_card_brand" id="gn_card_brand"
+                                                   value="hipercard" class="gn-hide"/>
+                                            <label class="gn-card-brand gn-hipercard" for="hipercard"></label>
                                         </div>
                                         <div class="clear"></div>
                                     </div>
@@ -1667,7 +1658,7 @@ if ( ! defined( 'ABSPATH' ) ) {
                             <div class="gn-osc-row required">
                                 <div class="gn-col-6">
                                     <div>
-										<?php echo $gn_card_number; ?>
+                                        <?php echo $gn_card_number; ?>
                                     </div>
                                     <div>
                                         <div class="gn-card-number-input-row" style="margin-right: 20px;">
@@ -1680,7 +1671,7 @@ if ( ! defined( 'ABSPATH' ) ) {
 
                                 <div class="gn-col-6">
                                     <div>
-										<?php echo $gn_card_cvv; ?>
+                                        <?php echo $gn_card_cvv; ?>
                                     </div>
                                     <div>
                                         <div class="pull-left gn-cvv-row">
@@ -1692,7 +1683,7 @@ if ( ! defined( 'ABSPATH' ) ) {
                                                 <div class="pull-left gn-icon-card-input">
                                                 </div>
                                                 <div class="pull-left">
-													<?php echo $gn_card_cvv_tip; ?>
+                                                    <?php echo $gn_card_cvv_tip; ?>
                                                 </div>
                                                 <div class="clear"></div>
                                             </div>
@@ -1707,7 +1698,7 @@ if ( ! defined( 'ABSPATH' ) ) {
                             <div class="gn-osc-row">
                                 <div class="gn-col-12">
                                     <div>
-										<?php echo $gn_card_expiration; ?>
+                                        <?php echo $gn_card_expiration; ?>
                                     </div>
                                     <div class="gn-card-expiration-row">
                                         <select class="form-control gn-card-expiration-select"
@@ -1732,13 +1723,13 @@ if ( ! defined( 'ABSPATH' ) ) {
                                         <select class="form-control gn-card-expiration-select"
                                                 name="gn_card_expiration_year" id="gn_card_expiration_year">
                                             <option value=""> YYYY</option>
-											<?php
-											$actual_year = intval( date( "Y" ) );
-											$last_year   = $actual_year + 15;
-											for ( $i = $actual_year; $i <= $last_year; $i ++ ) {
-												echo '<option value="' . $i . '"> ' . $i . ' </option>';
-											}
-											?>
+                                            <?php
+                                            $actual_year = intval( date( "Y" ) );
+                                            $last_year   = $actual_year + 15;
+                                            for ( $i = $actual_year; $i <= $last_year; $i ++ ) {
+                                                echo '<option value="' . $i . '"> ' . $i . ' </option>';
+                                            }
+                                            ?>
                                         </select>
                                         <div class="clear"></div>
                                     </div>
@@ -1776,6 +1767,6 @@ if ( ! defined( 'ABSPATH' ) ) {
             </div>
 
         </div>
-	<?php } ?>
+    <?php } ?>
 
 </div>

@@ -116,43 +116,27 @@
 }
 
 .gn-visa {
-    background: url(../images/sprite-gn.png);
-    background-position: -40px 0;
+    background-image: url(../images/visa.png);
 }
 
 .gn-mastercard {
-    background-image: url(../images/sprite-gn.png);
-    background-position: 0px 0;
+    background-image: url(../images/mastercard.png);
 }
 
 .gn-amex {
-    background: url(../images/sprite-gn.png);
-    background-position: -80px 0;
+    background-image: url(../images/amex.png);
 }
 
 .gn-diners {
-    background: url(../images/sprite-gn.png);
-    background-position: -40px -40px;
-}
-
-.gn-discover {
-    background: url(../images/sprite-gn.png);
-    background-position: 0 -40px;
-}
-
-.gn-jcb {
-    background: url(../images/sprite-gn.png);
-    background-position: -160px 0;
+    background-image: url(../images/diners.png);
 }
 
 .gn-elo {
-    background: url(../images/sprite-gn.png);
-    background-position: -80px -40px;
+    background-image: url(../images/elo.png);
 }
 
-.gn-aura {
-    background: url(../images/sprite-gn.png);
-    background-position: -120px 0;
+.gn-hipercard {
+    background-image: url(../images/hipercard.png);
 }
 
 .gn-card-brand-selector input:active+.gn-card-brand {
@@ -169,11 +153,10 @@
 
 .gn-card-brand {
     cursor: pointer;
-    background-size: 200px 80px !important;
     background-repeat: no-repeat;
     display: inline-block !important;
-    width: 42px !important;
-    height: 42px;
+    width: 50px !important;
+    height: 31px;
     background-color: #FFFFFF;
     -webkit-border-radius: 5px;
     -moz-border-radius: 5px;
@@ -229,6 +212,10 @@
     background-repeat: no-repeat;
     width: 40px;
     height: 30px;
+}
+
+.gn-cvv {
+    width: 33%;
 }
 
 .gn-cvv-info {
@@ -368,6 +355,14 @@
     cursor: pointer;
 }
 
+.gn-card-data{
+    display: inline-flex;
+}
+
+.gn-card-number{
+    width: 40%;
+}
+
 .gn-card-number-icon-background {
     background-color: #CCC;
     height: 34px;
@@ -387,6 +382,12 @@
 
 .gn-input-card-number {
     margin-left: 0px;
+}
+
+.gn-card-expiration {
+    margin-left: 20px;
+    margin-right: 15px;
+    width: 30%;
 }
 
 .gn-card-expiration-row {

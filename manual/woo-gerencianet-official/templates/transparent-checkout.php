@@ -5,7 +5,7 @@
 
 // Exit if accessed directly
 if ( ! defined( 'ABSPATH' ) ) {
-	exit;
+    exit;
 }
 
 ?>
@@ -14,12 +14,12 @@ if ( ! defined( 'ABSPATH' ) ) {
 
     var home_url = "<?php echo esc_url( $order_received_url ); ?>";
 
-	<?php if ($card_option == 'no' && $billet_option == 'yes') { ?>
+    <?php if ($card_option == 'no' && $billet_option == 'yes') { ?>
     justBillet();
-	<?php } ?>
-	<?php if ($card_option == 'yes' && $billet_option == 'no') { ?>
+    <?php } ?>
+    <?php if ($card_option == 'yes' && $billet_option == 'no') { ?>
     justCard();
-	<?php } ?>
+    <?php } ?>
 
 </script>
 
@@ -31,13 +31,13 @@ if ( ! defined( 'ABSPATH' ) ) {
 <?php } ?>
 
 <div class="warning-payment" id="wc-gerencianet-messages">
-	<?php if ( ( $card_option && $order_total_card < 500 ) && ( $billet_option && $order_total_billet < 500 ) ) { ?>
+    <?php if ( ( $card_option && $order_total_card < 500 ) && ( $billet_option && $order_total_billet < 500 ) ) { ?>
         <div class="woocommerce-error"><?php echo $gn_mininum_gn_charge_price; ?></div>
-	<?php } ?>
+    <?php } ?>
 </div>
 
 <div class="panel-group" id="accordion">
-	<?php if ( $billet_option == 'yes' && $order_total_billet >= 500 ) { ?>
+    <?php if ( $billet_option == 'yes' && $order_total_billet >= 500 ) { ?>
         <div class="panel panel-default" id="billet-option" style="border: 1px solid #CCC; margin-bottom: 20px;">
             <div id="background-billet" name="background-billet" class="gn-accordion-option-background">
                 <div class="gn-row-left panel-heading panel-gerencianet ">
@@ -48,7 +48,7 @@ if ( ! defined( 'ABSPATH' ) ) {
                         <span class="gn-icon-icones-personalizados_boleto"></span>
                     </div>
                     <div class="gn-left payment-option-gerencianet">
-						<?php echo $gn_pay_billet_option; ?>
+                        <?php echo $gn_pay_billet_option; ?>
                     </div>
                     <div class="gn-left gn-payment-option-sizer"></div>
                     <div class="clear"></div>
@@ -56,7 +56,7 @@ if ( ! defined( 'ABSPATH' ) ) {
                 <div class="gn-row-right">
                     <div>
                         <div class="gn-left gn-price-payment-info">
-							<?php if ( floatval( $discount ) > 0 ) { ?>
+                            <?php if ( floatval( $discount ) > 0 ) { ?>
                                 <div style="text-align: center;">
                                     <span
                                             class="payment-old-price-gerencianet"><?php echo strip_tags( $order->get_formatted_order_total() ); ?></span><br><span
@@ -64,10 +64,10 @@ if ( ! defined( 'ABSPATH' ) ) {
                                             %</b>
                                     </span>
                                 </div>
-							<?php } ?>
+                            <?php } ?>
                         </div>
                         <div class="gn-right gn-price-payment-selected total-gerencianet">
-							<?php echo $order_with_billet_discount; ?>
+                            <?php echo $order_with_billet_discount; ?>
                         </div>
                         <div class="clear"></div>
                     </div>
@@ -148,11 +148,11 @@ if ( ! defined( 'ABSPATH' ) ) {
                 </div>
             </div>
         </div>
-	<?php } ?>
+    <?php } ?>
 
 
 
-	<?php if ( $card_option == 'yes' && $order_total_card >= 500 ) { ?>
+    <?php if ( $card_option == 'yes' && $order_total_card >= 500 ) { ?>
         <div id="card-option" style="border: 1px solid #CCC; margin-top: 0px; margin-bottom: 30px;">
             <div id="background-card" name="background-card" class="gn-accordion-option-background">
                 <div class="gn-row-left panel-heading panel-gerencianet ">
@@ -163,7 +163,7 @@ if ( ! defined( 'ABSPATH' ) ) {
                         <span class="gn-icon-credit-card2"></span>
                     </div>
                     <div class="gn-left payment-option-gerencianet">
-						<?php echo $gn_pay_card_option; ?>
+                        <?php echo $gn_pay_card_option; ?>
                     </div>
                     <div class="gn-left gn-payment-option-sizer"></div>
                     <div class="clear"></div>
@@ -177,7 +177,7 @@ if ( ! defined( 'ABSPATH' ) ) {
                             </center>
                         </div>
                         <div class="gn-right gn-price-payment-selected total-gerencianet">
-							<?php echo $order_total; ?>
+                            <?php echo $order_total; ?>
                         </div>
                         <div class="clear"></div>
                     </div>
@@ -490,35 +490,24 @@ if ( ! defined( 'ABSPATH' ) ) {
                                                     <label class="gn-card-brand gn-diners" for="diners"></label>
                                                 </div>
                                                 <div class="pull-left gn-card-brand-content">
-                                                    <input id="discover" type="radio" name="input-payment-card-brand"
-                                                           id="input-payment-card-brand" value="discover"
-                                                           class="gn-hide"/>
-                                                    <label class="gn-card-brand gn-discover" for="discover"></label>
-                                                </div>
-                                                <div class="pull-left gn-card-brand-content">
-                                                    <input id="jcb" type="radio" name="input-payment-card-brand"
-                                                           id="input-payment-card-brand" value="jcb" class="gn-hide"/>
-                                                    <label class="gn-card-brand gn-jcb" for="jcb"></label>
-                                                </div>
-                                                <div class="pull-left gn-card-brand-content">
                                                     <input id="elo" type="radio" name="input-payment-card-brand"
                                                            id="input-payment-card-brand" value="elo" class="gn-hide"/>
                                                     <label class="gn-card-brand gn-elo" for="elo"></label>
                                                 </div>
                                                 <div class="pull-left gn-card-brand-content">
-                                                    <input id="aura" type="radio" name="input-payment-card-brand"
-                                                           id="input-payment-card-brand" value="aura" class="gn-hide"/>
-                                                    <label class="gn-card-brand gn-aura" for="aura"></label>
+                                                    <input id="hipercard" type="radio" name="input-payment-card-brand" 
+                                                           id="input-payment-card-brand" value="hipercard" class="gn-hide"/>
+                                                    <label class="gn-card-brand gn-hipercard" for="hipercard"></label>
                                                 </div>
                                                 <div class="clear"></div>
                                             </div>
                                         </div>
                                     </div>
 
-                                    <div class="gn-row required">
-                                        <div class="gn-col-5">
+                                    <div class="gn-row required gn-card-data">
+                                        <div class="gn-card-number">
                                             <div>
-												<?php echo $gn_card_number; ?>
+                                                <?php echo $gn_card_number; ?>
                                             </div>
                                             <div>
                                                 <div class="gn-card-number-input-row">
@@ -529,9 +518,9 @@ if ( ! defined( 'ABSPATH' ) ) {
                                                 <div class="clear"></div>
                                             </div>
                                         </div>
-                                        <div class="gn-col-4" sytle="overflow: auto;">
+                                        <div class="gn-card-expiration" sytle="overflow: auto;">
                                             <div>
-												<?php echo $gn_card_expiration; ?>
+                                                <?php echo $gn_card_expiration; ?>
                                             </div>
                                             <div class="gn-card-expiration-row">
                                                 <select class="form-control gn-card-expiration-select"
@@ -558,20 +547,20 @@ if ( ! defined( 'ABSPATH' ) ) {
                                                         name="input-payment-card-expiration-year"
                                                         id="input-payment-card-expiration-year">
                                                     <option value=""> YYYY</option>
-													<?php
-													$actual_year = intval( date( "Y" ) );
-													$last_year   = $actual_year + 15;
-													for ( $i = $actual_year; $i <= $last_year; $i ++ ) {
-														echo '<option value="' . $i . '"> ' . $i . ' </option>';
-													}
-													?>
+                                                    <?php
+                                                    $actual_year = intval( date( "Y" ) );
+                                                    $last_year   = $actual_year + 15;
+                                                    for ( $i = $actual_year; $i <= $last_year; $i ++ ) {
+                                                        echo '<option value="' . $i . '"> ' . $i . ' </option>';
+                                                    }
+                                                    ?>
                                                 </select>
                                                 <div class="clear"></div>
                                             </div>
                                         </div>
-                                        <div class="gn-col-3">
+                                        <div class="gn-cvv">
                                             <div>
-												<?php echo $gn_card_cvv; ?>
+                                                <?php echo $gn_card_cvv; ?>
                                             </div>
                                             <div>
                                                 <div class="pull-left gn-cvv-row">
@@ -584,7 +573,7 @@ if ( ! defined( 'ABSPATH' ) ) {
                                                         <div class="pull-left gn-icon-card-input">
                                                         </div>
                                                         <div class="pull-left">
-															<?php echo $gn_card_cvv_tip; ?>
+                                                            <?php echo $gn_card_cvv_tip; ?>
                                                         </div>
                                                         <div class="clear"></div>
                                                     </div>
@@ -618,7 +607,7 @@ if ( ! defined( 'ABSPATH' ) ) {
                 </div>
             </div>
         </div>
-	<?php } ?>
+    <?php } ?>
 </div>
 
 <div class="checkout-footer">
@@ -633,14 +622,14 @@ if ( ! defined( 'ABSPATH' ) ) {
             <p>
                 <button class="button alt"
                         id="gn-pay-billet-button"><?php _e( 'Generate Banking Billet', WCGerencianetOficial::getTextDomain() );
-					echo ' &nbsp; | &nbsp; ' . $order_with_billet_discount; ?></button>
+                    echo ' &nbsp; | &nbsp; ' . $order_with_billet_discount; ?></button>
             </p>
         </div>
         <div id="price-card" name="price-card" class="gn-hide">
             <p>
                 <button class="button alt"
                         id="gn-pay-card-button"><?php _e( 'Pay with Credit Card', WCGerencianetOficial::getTextDomain() );
-					echo ' &nbsp; | &nbsp; ' . $order_total; ?></button>
+                    echo ' &nbsp; | &nbsp; ' . $order_total; ?></button>
             </p>
         </div>
         <div id="price-no-payment-selected" name="price-no-payment-selected">
@@ -654,7 +643,7 @@ if ( ! defined( 'ABSPATH' ) ) {
     <div class="pull-right gn-loading-request">
         <div class="gn-loading-request-row">
             <div class="pull-left gn-loading-request-text">
-				<?php echo $gn_loading_payment_request; ?>
+                <?php echo $gn_loading_payment_request; ?>
             </div>
             <div class="spin pull-left gn-loading-request-spin-box">
                 <div class="gn-icon-spinner6 gn-loading-request-spin-icon"></div>

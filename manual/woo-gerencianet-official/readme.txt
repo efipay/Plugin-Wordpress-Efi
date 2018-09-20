@@ -2,7 +2,7 @@
 Contributors: Gerencianet
 Tags: woocommerce, gerencianet, payment, transparent checkout, card, billet, brazil, payments brazil
 Requires at least: 4.1
-Tested up to: 4.4.2
+Tested up to: 4.8.5
 Stable tag: 4.3
 License: GPLv2 or later
 License URI: http://www.gnu.org/licenses/gpl-2.0.html
@@ -28,7 +28,7 @@ Compatível com as versões 2.2.x, 2.3.x, 2.4.x, 2.5.x e 2.6.x do WooCommerce.
 = Instalação =
 
 1. Faça o download da última versão do plugin no repositório Wordpress.org ou no [repositório no GitHub](https://github.com/gerencianet/gn-api-woocommerce)
-2. Acesse o link em sua loja "Plugins" -> "Adicionar novo" -> "Fazer o upload do plugin" e envie o arquivo 'woo-gerencianet-oficial.zip' ou extraia o conteúdo do arquivo dentro do diretório de plugins da loja.
+2. Acesse o link em sua loja "Plugins" -> "Adicionar novo" -> "Fazer o upload do plugin" e envie o arquivo 'woo-gerencianet-official.zip' ou extraia o conteúdo do arquivo dentro do diretório de plugins da loja.
 3. Ative o plugin  e configure em "WooCommerce > Configurações > Finalizar Compra > Gerencianet" e comece a receber pagamentos.
 
 Opcional: Instale o plugin [WooCommerce Extra Checkout Fields for Brazil](https://wordpress.org/plugins/woocommerce-extra-checkout-fields-for-brazil/) para evitar que o comprador tenha que inserir CPF, número do endereço e bairro no momento do pagamento.
@@ -47,6 +47,11 @@ Opcional: Instale o plugin [WooCommerce Extra Checkout Fields for Brazil](https:
 10. Recomendamos que antes de disponibilizar pagamentos pela Gerencianet, o lojista realize testes de cobrança com o sandbox(ambiente de testes) ativado para verificar se o procedimento de pagamento está acontecendo conforme esperado.
 
 = Changelog =
+
+= 0.7.0 =
+* Delete: Bandeiras jcb, aura e discover do checkout da Gerencianet.
+* Add: Bandeira hipertcard no checkout da Gerencianet.
+* Fix: Layout quebrado da tela de checkout tradicional da Gerencianet.
 
 = 0.6.4 =
 * Fix: Layout quebrado nos campos de detalhes da cobrança.
@@ -123,7 +128,7 @@ Opcional: Instale o plugin [WooCommerce Extra Checkout Fields for Brazil](https:
 == Installation ==
 
 1. Faça o download da última versão do plugin no repositório Wordpress.org ou no [repositório no GitHub](https://github.com/gerencianet/gn-api-woocommerce)
-2. Acesse o link em sua loja "Plugins" -> " "Adicionar novo" -> "Fazer o upload do plugin" e envie o arquivo 'woo-gerencianet-oficial.zip' ou extraia o conteúdo do arquivo dentro do diretório de plugins da loja.
+2. Acesse o link em sua loja "Plugins" -> " "Adicionar novo" -> "Fazer o upload do plugin" e envie o arquivo 'woo-gerencianet-official.zip' ou extraia o conteúdo do arquivo dentro do diretório de plugins da loja.
 3. Ative o plugin  e configure em "WooCommerce > Configurações > Finalizar Compra > Gerencianet" e comece a receber pagamentos.
 
 Opcional: Instale o plugin [WooCommerce Extra Checkout Fields for Brazil](https://wordpress.org/plugins/woocommerce-extra-checkout-fields-for-brazil/) para evitar que o comprador tenha que inserir CPF, número do endereço e bairro no momento do pagamento.
@@ -142,6 +147,11 @@ Opcional: Instale o plugin [WooCommerce Extra Checkout Fields for Brazil](https:
 10. Recomendamos que antes de disponibilizar pagamentos pela Gerencianet, o lojista realize testes de cobrança com o sandbox(ambiente de testes) ativado para verificar se o procedimento de pagamento está acontecendo conforme esperado.
 
 == Changelog ==
+
+= 0.7.0 =
+* Delete: Bandeiras jcb, aura e discover do checkout da Gerencianet.
+* Add: Bandeira hipertcard no checkout da Gerencianet.
+* Fix: Layout quebrado da tela de checkout tradicional da Gerencianet.
 
 = 0.6.4 =
 * Fix: Layout quebrado nos campos de detalhes da cobrança.

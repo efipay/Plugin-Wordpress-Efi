@@ -1,3 +1,8 @@
+# 0.7.0
+* Delete: Bandeiras jcb, aura e discover do checkout da Gerencianet.
+* Add: Bandeira hipertcard no checkout da Gerencianet.
+* Fix: Layout quebrado da tela de checkout tradicional da Gerencianet.
+
 # v0.6.4
 * Fix: Layout quebrado nos campos de detalhes da cobrança.
 
