@@ -98,8 +98,7 @@ class WC_Gerencianet_Oficial_Gateway extends WC_Payment_Gateway {
 		add_action( 'validate_notification_request', array( $this, 'successful_request' ) );
 
 		if ( $this->osc == 'no' ){
-            wp_deregister_script('jquery');
-            add_action( 'woocommerce_receipt_gerencianet_oficial', array($this, 'generate_gn_script'), 1);
+           	add_action( 'woocommerce_receipt_gerencianet_oficial', array($this, 'generate_gn_script'), 1);
         }
 
 		add_action( 'woocommerce_receipt_gerencianet_oficial', array( $this, 'receipt_page' ) );
@@ -202,10 +201,15 @@ class WC_Gerencianet_Oficial_Gateway extends WC_Payment_Gateway {
 	 * @return void
 	 */
 	public function scripts() {
-		wp_register_script( 'jquery-wp', '/wp-includes/js/jquery/jquery.js', false );
-		wp_enqueue_script( 'jquery-wp' );
-		wp_enqueue_script( 'wc-gerencianet-checkout', plugins_url( 'assets/js/checkout.js', plugin_dir_path( __FILE__ ) ), array( 'jquery-wp' ), '', true );
-		wp_enqueue_script( 'jquery-mask-gn', plugins_url( 'assets/js/jquery.maskedinput.js', plugin_dir_path( __FILE__ ) ), array( 'jquery-wp' ), '', true );
+		$jquery = 'jquery';
+		if ($this->osc) {
+			wp_deregister_script('jquery');
+			wp_register_script( 'jquery-wp', '/wp-includes/js/jquery/jquery.js', false );
+			wp_enqueue_script( 'jquery-wp' );
+			$jquery = 'jquery-wp';
+		}
+		wp_enqueue_script( 'wc-gerencianet-checkout', plugins_url( 'assets/js/checkout.js', plugin_dir_path( __FILE__ ) ), array( $jquery ), '', true );
+		wp_enqueue_script( 'jquery-mask', plugins_url( 'assets/js/jquery.mask.js', plugin_dir_path( __FILE__ ) ), array( $jquery ), '', true );
 		wp_localize_script(
 			'wc-gerencianet-checkout',
 			'woocommerce_gerencianet_api',
@@ -808,7 +812,7 @@ class WC_Gerencianet_Oficial_Gateway extends WC_Payment_Gateway {
 					update_post_meta( intval( $post_order_id ), '_order_total', number_format( intval( ceil( $this->gn_price_format( $order->get_total() ) - ( $discountBilletTotal ) ) ) / 100, 2, '.', '' ) );
 
 					update_post_meta( intval( $post_order_id ), '_payment_method_title', sanitize_text_field( __( 'Billet Banking - Gerencianet', WCGerencianetOficial::getTextDomain() ) ) );
-					add_post_meta( intval( $post_order_id ), 'billet', $resultCheck['data']['link'], true );
+					add_post_meta( intval( $post_order_id ), 'billet', $resultCheck['data']['pdf']['charge'], true );
 					add_post_meta( intval( $post_order_id ), 'billet_discount_value', $discountBilletTotal, true );
 				}
 				$order->update_status( 'on-hold', __( 'Waiting' ) );
@@ -1235,9 +1239,11 @@ class WC_Gerencianet_Oficial_Gateway extends WC_Payment_Gateway {
 		if ( $this->checkout_type == "OSC" ) {
 
 			$this->styles();
-			wp_enqueue_script( 'jquery' );
-			wp_enqueue_script( 'jquery-mask-gn', plugins_url( 'assets/js/jquery.maskedinput.js', plugin_dir_path( __FILE__ ) ), array( 'jquery' ), '', true );
-			//wp_enqueue_script( 'wc-gerencianet-checkout-osc', plugins_url( 'assets/js/checkout-osc.js', plugin_dir_path( __FILE__ ) ), array( 'jquery' ), '', true );
+			wp_register_script( 'jquery-wp', '/wp-includes/js/jquery/jquery.js', false );
+			wp_enqueue_script( 'jquery-wp' );
+			//wp_enqueue_script( 'jquery' );
+			wp_enqueue_script( 'jquery-mask', plugins_url( 'assets/js/jquery.mask.js', plugin_dir_path( __FILE__ ) ), array( 'jquery-wp' ), '', true );
+			wp_enqueue_script( 'wc-gerencianet-checkout-osc', plugins_url( 'assets/js/checkout-osc.js', plugin_dir_path( __FILE__ ) ), array( 'jquery-wp' ), '', true );
 			wp_localize_script(
 				'wc-gerencianet-checkout',
 				'woocommerce_gerencianet_api',

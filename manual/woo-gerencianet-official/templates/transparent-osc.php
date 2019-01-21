@@ -1,17 +1,18 @@
 <?php
+
 /**
  * Gerencianet Payment template.
  */
 
 // Exit if accessed directly
-if ( ! defined( 'ABSPATH' ) ) {
+if (!defined('ABSPATH')) {
     exit;
 }
 
 ?>
 <script type="text/javascript">
 
-    <?php echo html_entity_decode( $script_load );?>
+    <?php echo html_entity_decode($script_load); ?>
 
     $gn.ready(function (checkout) {
         getPaymentToken = checkout.getPaymentToken;
@@ -50,20 +51,19 @@ if ( ! defined( 'ABSPATH' ) ) {
          /* 1 - Only CPF
          /* 2 - Only CNPJ
          */
-
         if (typeof $('#billing_persontype').val() == "undefined") {
             if (typeof $('#billing_cpf').val() != "undefined") {
                 allowedPersonType = 1;
-                $("#gn_billet_cpf_cnpj").mask("999.999.999-99", {autoclear: false, placeholder: ""});
-                $("#gn_card_cpf_cnpj").mask("999.999.999-99", {autoclear: false, placeholder: ""});
+                $("#gn_billet_cpf_cnpj").mask("000.000.000-009");
+                $("#gn_card_cpf_cnpj").mask("000.000.000-009");
                 $('.document-label').text("<?php echo $gn_cpf; ?>");
                 $('.name-corporate-label').text("<?php echo $gn_name; ?>");
             }
             else if (typeof $('#billing_company').val() != "undefined" &&
                 typeof $('#billing_cnpj').val() != "undefined") {
                 allowedPersonType = 2;
-                $("#gn_billet_cpf_cnpj").mask("99.999.999/9999-99", {autoclear: false, placeholder: ""});
-                $("#gn_card_cpf_cnpj").mask("99.999.999/9999-99", {autoclear: false, placeholder: ""});
+                $("#gn_billet_cpf_cnpj").mask("00.000.000/0000-00");
+                $("#gn_card_cpf_cnpj").mask("00.000.000/0000-00");
                 $('.document-label').text("<?php echo $gn_cnpj; ?>");
                 $('.name-corporate-label').text("<?php echo $gn_corporate; ?>");
             }
@@ -942,39 +942,54 @@ if ( ! defined( 'ABSPATH' ) ) {
             fixScreenSize();
         });
 
-
-        if (jQuery.mask) {
+        if ($().mask) {
+      
+            $("#gn_billet_cpf_cnpj").keyup(function () {
+                $("#gn_billet_cpf_cnpj").unmask();
+                var cpf = $("#gn_billet_cpf_cnpj").val().replace(/[^\d]+/g, '');
+                if (cpf.length <= 11) {
+                    $("#gn_billet_cpf_cnpj").mask("000.000.000-009");
+                } else {
+                    $("#gn_billet_cpf_cnpj").mask("00.000.000/0000-00");
+                }
+                var elem = this;             
+                setTimeout(function(){
+                    // muda a posição do seletor
+                    elem.selectionStart = elem.selectionEnd = 10000;
+                }, 0);
+            });
             
-            var optionsBillet = {
-                onKeyPress: function (cpf, ev, el, op) {
-                    var masks = ['000.000.000-000', '00.000.000/0000-00'],
-                    mask = (cpf.length > 14) ? masks[1] : masks[0];
-                    $('#gn_billet_cpf_cnpj').mask(mask, op);
+            $("#gn_card_cpf_cnpj").keyup(function () {
+                $("#gn_card_cpf_cnpj").unmask();
+                var cpf = $("#gn_card_cpf_cnpj").val().replace(/[^\d]+/g, '');
+                if (cpf.length <= 11) {
+                    $("#gn_card_cpf_cnpj").mask("000.000.000-009");
+                } else {
+                    $("#gn_card_cpf_cnpj").mask("00.000.000/0000-00");
                 }
-            }
-            $('#gn_billet_cpf_cnpj').mask('000.000.000-000', optionsBillet);
+                var elem = this;             
+                setTimeout(function(){
+                    // muda a posição do seletor
+                    elem.selectionStart = elem.selectionEnd = 10000;
+                }, 0);
+            });
 
-            var optionsCard= {
-                onKeyPress: function (cpf, ev, el, op) {
-                    var masks = ['000.000.000-000', '00.000.000/0000-00'],
-                    mask = (cpf.length > 14) ? masks[1] : masks[0];
-                    $('#gn_card_cpf_cnpj').mask(mask, op);
-                }
-            }
-            $('#gn_card_cpf_cnpj').mask('000.000.000-000', optionsCard);
-
-
-            $(".phone-mask").focusout(function () {
+            $(".phone-mask").keyup(function () {
                 $(".phone-mask").unmask();
                 var phone = $(".phone-mask").val().replace(/[^\d]+/g, '');
                 if (phone.length > 10) {
-                    $(".phone-mask").mask("(99) 99999-999?9");
+                    $(".phone-mask").mask("(00) 00000-0009");
                 } else {
-                    $(".phone-mask").mask("(99) 9999-9999?9");
+                    $(".phone-mask").mask("(00) 0000-00009");
                 }
-            }).trigger("focusout");
+                var elem = this;             
+                setTimeout(function(){
+                    // muda a posição do seletor
+                    elem.selectionStart = elem.selectionEnd = 10000;
+                }, 0);
+            });
 
-            $('.birth-mask').mask("99/99/9999", {
+            $('.birth-mask').mask("00/00/0000", {
                 completed: function () {
                     if (!validateBirth(this.val())) {
                         showError('Data de nascimento inválida. Digite novamente.');
@@ -983,9 +998,10 @@ if ( ! defined( 'ABSPATH' ) ) {
                     }
                 }, placeholder: "__/__/____"
             });
-
-            $('#input-payment-card-number').mask('9999999999999999?999', {placeholder: ""});
-            $('#input-payment-card-cvv').mask('999?99', {placeholder: ""});
+            $('#gn_card_number_card').mask('0000 0000 0000 0000999', {placeholder: ""});
+            $('#gn_card_cvv').mask('000099', {placeholder: ""});
+            $('#input-payment-card-number').mask('0000 0000 0000 0000999', {placeholder: ""});
+            $('#input-payment-card-cvv').mask('000099', {placeholder: ""});
 
         }
 
@@ -1280,20 +1296,22 @@ if ( ! defined( 'ABSPATH' ) ) {
 
 
 <div id="gerencianet-container">
-    <?php if ( $sandbox == "yes" ) { ?>
+    <?php if ($sandbox == "yes") { ?>
         <div class="warning-payment" id="wc-gerencianet-messages-sandbox">
             <div class="woocommerce-error"><?php echo $gn_warning_sandbox_message; ?></div>
         </div>
-    <?php } ?>
+    <?php 
+} ?>
 
     <div class="gn-osc-warning-payment" id="wc-gerencianet-messages">
-        <?php if ( ( $card_option && $order_total_card < 500 ) && ( $billet_option && $order_total_billet < 500 ) ) { ?>
+        <?php if (($card_option && $order_total_card < 500) && ($billet_option && $order_total_billet < 500)) { ?>
             <div class="woocommerce-error"><?php echo $gn_mininum_gn_charge_price; ?></div>
-        <?php } ?>
+        <?php
+    } ?>
     </div>
 
     <div style="margin: 0px;">
-        <?php if ( $billet_option == "yes" ) { ?>
+        <?php if ($billet_option == "yes") { ?>
             <div id="gn-billet-payment-option" class="gn-osc-payment-option gn-osc-payment-option-selected">
                 <div>
                     <div id="billet-radio-button" class="gn-osc-left">
@@ -1305,16 +1323,18 @@ if ( ! defined( 'ABSPATH' ) ) {
                     </div>
                     <div class="gn-osc-left gn-osc-payment-option-gerencianet">
                         <strong><?php echo "Boleto Bancário"; ?></strong>
-                        <?php if ( $discount > 0 ) { ?>
+                        <?php if ($discount > 0) { ?>
                             <span style="font-size: 14px; line-height: 15px;"><br>+<?php echo $discount_formatted; ?>% de desconto</span>
-                        <?php } ?>
+                        <?php 
+                    } ?>
                     </div>
                     <div class="gn-osc-left gn-osc-payment-option-sizer"></div>
                     <div class="clear"></div>
                 </div>
             </div>
-        <?php } ?>
-        <?php if ( $card_option == "yes" ) { ?>
+        <?php 
+    } ?>
+        <?php if ($card_option == "yes") { ?>
             <div id="gn-card-payment-option" class="gn-osc-payment-option gn-osc-payment-option-unselected">
                 <div>
                     <div id="card-radio-button" class="gn-osc-left">
@@ -1332,11 +1352,12 @@ if ( ! defined( 'ABSPATH' ) ) {
                     <div class="clear"></div>
                 </div>
             </div>
-        <?php } ?>
+        <?php 
+    } ?>
         <div class="clear"></div>
     </div>
     <input name="wc_order_id" id="wc_order_id" type="hidden" value="<?php echo $order_id; ?>"/>
-    <?php if ( $billet_option == "yes" ) { ?>
+    <?php if ($billet_option == "yes") { ?>
         <div id="collapse-payment-billet" class="gn-osc-background">
             <div class="panel-body">
                 <div class="gn-osc-row gn-osc-pay-comments">
@@ -1400,7 +1421,7 @@ if ( ! defined( 'ABSPATH' ) ) {
             </div>
 
             <div class="gn-osc-row" style="padding: 20px;">
-                <?php if ( $discount > 0 ) { ?>
+                <?php if ($discount > 0) { ?>
                     <div class="gn-osc-row"
                          style="border: 1px solid #DEDEDE; border-bottom: 0px; margin: 0px; padding:5px;">
                         <div style="float: left;">
@@ -1410,7 +1431,8 @@ if ( ! defined( 'ABSPATH' ) ) {
                             <strong>-<?php echo $order_billet_discount; ?></strong>
                         </div>
                     </div>
-                <?php } ?>
+                <?php 
+            } ?>
                 <div class="gn-osc-row" style="border: 1px solid #DEDEDE; margin: 0px; padding:5px;">
                     <div style="float: left;">
                         <strong>TOTAL:</strong>
@@ -1422,10 +1444,12 @@ if ( ! defined( 'ABSPATH' ) ) {
             </div>
         </div>
 
-    <?php } ?>
-    <?php if ( $card_option == "yes" ) { ?>
+    <?php 
+} ?>
+    <?php if ($card_option == "yes") { ?>
         <div id="collapse-payment-card"
-             class="panel-collapse <?php if ( $billet_option == "yes" ) { ?>gn-hide<?php } ?> gn-osc-background">
+             class="panel-collapse <?php if ($billet_option == "yes") { ?>gn-hide<?php
+                                                                            } ?> gn-osc-background">
             <div class="panel-body">
                 <div class="gn-osc-row gn-osc-pay-comments">
                     <p class="gn-left-space-2"><strong><?php echo $gn_card_payment_comments; ?></strong></p>
@@ -1502,18 +1526,18 @@ if ( ! defined( 'ABSPATH' ) ) {
                                                for="gn_card_street"><?php echo $gn_street; ?></label>
                                     </div>
 
-                                    <div class="gn-col-6 required">
+                                    <div class="gn-col-5 required">
                                         <input type="text" name="gn_card_street" id="gn_card_street" value=""
                                                class="form-control"/>
                                     </div>
 
                                     <div class="gn-col-3">
                                         <div class=" required gn-left-space-2">
-                                            <div class="gn-col-5">
+                                            <div class="gn-col-8">
                                                 <label class="gn-col-10 gn-label gn-right-padding-1"
                                                        for="gn_card_street_number"><?php echo $gn_street_number; ?></label>
                                             </div>
-                                            <div class="gn-col-3">
+                                            <div class="gn-col-4 ">
                                                 <input type="text" name="gn_card_street_number"
                                                        id="gn_card_street_number" value="" class="form-control"/>
                                             </div>
@@ -1523,7 +1547,7 @@ if ( ! defined( 'ABSPATH' ) ) {
                             </div>
                             <div id="gn_card_neighborhood_row" class="gn-osc-row gn-card-field">
                                 <div class="gn-col-12">
-                                    <div class="gn-col-3 required">
+                                    <div class="gn-col-2 required">
                                         <label class="gn-label gn-col-11 required gn-right-padding-1"
                                                for="gn_card_neighborhood"><?php echo $gn_neighborhood; ?></label>
                                     </div>
@@ -1531,13 +1555,13 @@ if ( ! defined( 'ABSPATH' ) ) {
                                         <input type="text" name="gn_card_neighborhood" id="gn_card_neighborhood"
                                                value="" class="form-control"/>
                                     </div>
-                                    <div class="gn-col-5">
+                                    <div class="gn-col-6">
 
-                                        <div class="gn-col-5">
-                                            <label class="gn-col-11 gn-label gn-right-padding-1"
+                                        <div class="gn-col-6">
+                                            <label class="gn-col-11 gn-label gn-right-padding-2"
                                                    for="gn_card_complement"><?php echo $gn_address_complement; ?></label>
                                         </div>
-                                        <div class="gn-col-5">
+                                        <div class="gn-col-6 ">
                                             <input type="text" name="gn_card_complement" id="gn_card_complement"
                                                    value="" class="form-control" maxlength="54"/>
                                         </div>
@@ -1724,9 +1748,9 @@ if ( ! defined( 'ABSPATH' ) ) {
                                                 name="gn_card_expiration_year" id="gn_card_expiration_year">
                                             <option value=""> YYYY</option>
                                             <?php
-                                            $actual_year = intval( date( "Y" ) );
-                                            $last_year   = $actual_year + 15;
-                                            for ( $i = $actual_year; $i <= $last_year; $i ++ ) {
+                                            $actual_year = intval(date("Y"));
+                                            $last_year = $actual_year + 15;
+                                            for ($i = $actual_year; $i <= $last_year; $i++) {
                                                 echo '<option value="' . $i . '"> ' . $i . ' </option>';
                                             }
                                             ?>
@@ -1767,6 +1791,7 @@ if ( ! defined( 'ABSPATH' ) ) {
             </div>
 
         </div>
-    <?php } ?>
+    <?php 
+} ?>
 
 </div>

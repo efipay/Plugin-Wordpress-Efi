@@ -1,4 +1,3 @@
-//0.6.1
 
 var errorMessage;
 var id_charge = 0;
@@ -11,71 +10,56 @@ $gn.ready(function (checkout) {
 
 jQuery(document).ready(function ($) {
 
-    if (jQuery.mask) {
-        $("#cpf-cnpj").keyup(function (e) {
-            var tamanho = $("#cpf-cnpj").val().replace(/[^\d]+/g, '').length;
+    if ($().mask) {
 
+        $("#cpf-cnpj").keyup(function () {
             $("#cpf-cnpj").unmask();
-
-            if (e.keyCode == 8) {
-                if (tamanho == 11) {
-                    $("#cpf-cnpj").mask("999.999.999-99?9", { autoclear: false, placeholder: "" });
-                    $("#cpf-cnpj").unmask();
-                } else if (tamanho == 12) {
-                    $("#cpf-cnpj").mask("99.999.999/9999-99", { autoclear: false, placeholder: "" });
-                    $("#cpf-cnpj").unmask();
-                }
-                else {
-                    $("#cpf-cnpj").unmask();
-                    return;
-                }
+            var cpf = $("#cpf-cnpj").val().replace(/[^\d]+/g, '');
+            if (cpf.length <= 11) {
+                $("#cpf-cnpj").mask("000.000.000-009");
+            } else {
+                $("#cpf-cnpj").mask("00.000.000/0000-00");
             }
-            if (tamanho <= 11) {
-                $("#cpf-cnpj").mask("999.999.999-99?9", { autoclear: false, placeholder: "" });
-            } else if (tamanho > 11) {
-                $("#cpf-cnpj").mask("99.999.999/9999-99", { autoclear: false, placeholder: "" });
-            }
+            var elem = this;             
+            setTimeout(function(){
+                // muda a posição do seletor
+                elem.selectionStart = elem.selectionEnd = 10000;
+            }, 0);
         });
 
-        $("#input-payment-card-cpf-cnpj").keyup(function (e) {
-            var tamanho = $("#input-payment-card-cpf-cnpj").val().replace(/[^\d]+/g, '').length;
-
+        $("#input-payment-card-cpf-cnpj").keyup(function () {
             $("#input-payment-card-cpf-cnpj").unmask();
-
-
-            if (e.keyCode == 8) {
-                if (tamanho == 11) {
-                    $("#input-payment-card-cpf-cnpj").mask("999.999.999-99?9", { autoclear: false, placeholder: "" });
-                    $("#input-payment-card-cpf-cnpj").unmask();
-                } else if (tamanho == 12) {
-                    $("#input-payment-card-cpf-cnpj").mask("99.999.999/9999-99", { autoclear: false, placeholder: "" });
-                    $("#input-payment-card-cpf-cnpj").unmask();
-                }
-                else {
-                    $("#input-payment-card-cpf-cnpj").unmask();
-                    return;
-                }
+            var cpf = $("#input-payment-card-cpf-cnpj").val().replace(/[^\d]+/g, '');
+            if (cpf.length <= 11) {
+                $("#input-payment-card-cpf-cnpj").mask("000.000.000-009");
+            } else {
+                $("#input-payment-card-cpf-cnpj").mask("00.000.000/0000-00");
             }
-            if (tamanho <= 11) {
-                $("#input-payment-card-cpf-cnpj").mask("999.999.999-99?9", { autoclear: false, placeholder: "" });
-            } else if (tamanho > 11) {
-                $("#input-payment-card-cpf-cnpj").mask("99.999.999/9999-99", { autoclear: false, placeholder: "" });
-            }
+            var elem = this;             
+            setTimeout(function(){
+                // muda a posição do seletor
+                elem.selectionStart = elem.selectionEnd = 10000;
+            }, 0);
         });
 
-        $(".phone-mask").focusout(function () {
+        $(".phone-mask").keyup(function () {
             $(".phone-mask").unmask();
             var phone = $(".phone-mask").val().replace(/[^\d]+/g, '');
             if (phone.length > 10) {
-                $(".phone-mask").mask("(99) 99999-999?9");
+                $(".phone-mask").mask("(00) 00000-0009");
             } else {
-                $(".phone-mask").mask("(99) 9999-9999?9");
+                $(".phone-mask").mask("(00) 0000-00009");
             }
-        }).trigger("focusout");
+            var elem = this;             
+            setTimeout(function(){
+                // muda a posição do seletor
+                elem.selectionStart = elem.selectionEnd = 10000;
+            }, 0);
+        });
 
-        $('.birth-mask').mask("99/99/9999", {
+        $('.birth-mask').mask("00/00/0000", {
             completed: function () {
-                if (!verifyBirthDate(this.val())) {
+                if (!verifyBirthDate( $(".birth-mask").val())) {
                     showError('Data de nascimento inválida. Digite novamente.');
                 } else {
                     hideError();
@@ -83,13 +67,13 @@ jQuery(document).ready(function ($) {
             }, placeholder: "__/__/____"
         });
 
-        $('#input-payment-card-number').mask('9999999999999999?999', { placeholder: "" });
-        $('#input-payment-card-cvv').mask('999?99', { placeholder: "" });
+        $('#input-payment-card-number').mask('0000 0000 0000 0000999', { placeholder: "" });
+        $('#input-payment-card-cvv').mask('00099', { placeholder: "" });   
     }
 
     $('.phone-mask').change(function () {
         var pattern = new RegExp(/^[ ]*(?:[^\\s]+[ ]+)+[^\\s]+[ ]*$/);
-        if (!verifyPhone(this.val())) {
+        if (!verifyPhone( $(".phone-mask").val())) {
             showError('Telefone inválido. Digite novamente.');
         } else {
             hideError();

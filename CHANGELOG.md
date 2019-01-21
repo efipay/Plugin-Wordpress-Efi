@@ -1,3 +1,7 @@
+# 0.7.1
+* Fix: Erro na máscara de CPF/CNPJ no checkout em um passo do plugin.
+* Fix: Atualização no link do boleto gerado, agora o link encaminha para um PDF.
+
 # 0.7.0
 * Delete: Bandeiras jcb, aura e discover do checkout da Gerencianet.
 * Add: Bandeira hipertcard no checkout da Gerencianet.
