@@ -48,6 +48,13 @@ Opcional: Instale o plugin [WooCommerce Extra Checkout Fields for Brazil](https:
 
 = Changelog =
 
+= 0.7.2 =
+* Fix: Erro na máscara de Telefone.
+
+= 0.7.1 =
+* Fix: Erro na máscara de CPF/CNPJ no checkout em um passo do plugin.
+* Fix: Atualização no link do boleto gerado, agora o link encaminha para um PDF.
+
 = 0.7.0 =
 * Delete: Bandeiras jcb, aura e discover do checkout da Gerencianet.
 * Add: Bandeira hipertcard no checkout da Gerencianet.
@@ -147,6 +154,13 @@ Opcional: Instale o plugin [WooCommerce Extra Checkout Fields for Brazil](https:
 10. Recomendamos que antes de disponibilizar pagamentos pela Gerencianet, o lojista realize testes de cobrança com o sandbox(ambiente de testes) ativado para verificar se o procedimento de pagamento está acontecendo conforme esperado.
 
 == Changelog ==
+
+= 0.7.2 =
+* Fix: Erro na máscara de Telefone.
+
+= 0.7.1 =
+* Fix: Erro na máscara de CPF/CNPJ no checkout em um passo do plugin.
+* Fix: Atualização no link do boleto gerado, agora o link encaminha para um PDF.
 
 = 0.7.0 =
 * Delete: Bandeiras jcb, aura e discover do checkout da Gerencianet.

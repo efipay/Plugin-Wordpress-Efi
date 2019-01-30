@@ -1,3 +1,6 @@
+# 0.7.2
+* Fix: Erro na máscara de Telefone.
+
 # 0.7.1
 * Fix: Erro na máscara de CPF/CNPJ no checkout em um passo do plugin.
 * Fix: Atualização no link do boleto gerado, agora o link encaminha para um PDF.

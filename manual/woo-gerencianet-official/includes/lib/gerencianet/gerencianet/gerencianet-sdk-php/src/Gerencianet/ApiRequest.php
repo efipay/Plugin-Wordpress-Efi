@@ -30,13 +30,13 @@ class ApiRequest
         try {
             return $this->request->send($method, $route, ['json' => $body, 
             'timeout' => $requestTimeout,
-            'headers' => ['Authorization' => 'Bearer '.$this->auth->accessToken, 'api-sdk' => 'woocommerce-0.7.1', 'partner-token' => $partner_token]]);
+            'headers' => ['Authorization' => 'Bearer '.$this->auth->accessToken, 'api-sdk' => 'woocommerce-0.7.2', 'partner-token' => $partner_token]]);
         } catch (AuthorizationException $e) {
             $this->auth->authorize();
 
             return $this->request->send($method, $route, ['json' => $body,
             'timeout' => $requestTimeout,
-            'headers' => ['Authorization' => 'Bearer '.$this->auth->accessToken, 'api-sdk' => 'woocommerce-0.7.1', 'partner-token' => $partner_token]]);
+            'headers' => ['Authorization' => 'Bearer '.$this->auth->accessToken, 'api-sdk' => 'woocommerce-0.7.2', 'partner-token' => $partner_token]]);
         }
     }
 

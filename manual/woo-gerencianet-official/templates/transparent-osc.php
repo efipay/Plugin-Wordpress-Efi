@@ -200,6 +200,7 @@ if (!defined('ABSPATH')) {
         $('#billing_phone').change(function () {
             $('#gn_billet_phone_number').val($('#billing_phone').val());
             $('#gn_card_phone_number').val($('#billing_phone').val());
+            applyPhoneMask();
             validateBilletCustomerData(allowedPersonType);
             validateCardCustomerData(allowedPersonType);
         });
@@ -974,7 +975,7 @@ if (!defined('ABSPATH')) {
                 }, 0);
             });
 
-            $(".phone-mask").keyup(function () {
+            function applyPhoneMask() {
                 $(".phone-mask").unmask();
                 var phone = $(".phone-mask").val().replace(/[^\d]+/g, '');
                 if (phone.length > 10) {
@@ -987,7 +988,8 @@ if (!defined('ABSPATH')) {
                     // muda a posição do seletor
                     elem.selectionStart = elem.selectionEnd = 10000;
                 }, 0);
-            });
+            }
+            $(".phone-mask").keyup(applyPhoneMask());
 
             $('.birth-mask').mask("00/00/0000", {
                 completed: function () {
