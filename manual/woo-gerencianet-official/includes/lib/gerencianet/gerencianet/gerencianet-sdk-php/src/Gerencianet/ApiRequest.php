@@ -23,20 +23,24 @@ class ApiRequest
             $this->auth->authorize();
         }
 
-        $composerData = json_decode(file_get_contents(__DIR__.'/../../composer.json'), true);
-        $partner_token = isset($this->options['partner_token'])? $this->options['partner_token'] : "";
-        $requestTimeout = isset($this->options['timeout'])? (double)$this->options['timeout'] : 30.0;
-                
+        $composerData = json_decode(file_get_contents(__DIR__ . '/../../composer.json'), true);
+        $partner_token = isset($this->options['partner_token']) ? $this->options['partner_token'] : "";
+        $requestTimeout = isset($this->options['timeout']) ? (double)$this->options['timeout'] : 30.0;
+
         try {
-            return $this->request->send($method, $route, ['json' => $body, 
-            'timeout' => $requestTimeout,
-            'headers' => ['Authorization' => 'Bearer '.$this->auth->accessToken, 'api-sdk' => 'woocommerce-0.7.2', 'partner-token' => $partner_token]]);
+            return $this->request->send($method, $route, [
+                'json' => $body,
+                'timeout' => $requestTimeout,
+                'headers' => ['Authorization' => 'Bearer ' . $this->auth->accessToken, 'api-sdk' => 'woocommerce-0.7.3', 'partner-token' => $partner_token]
+            ]);
         } catch (AuthorizationException $e) {
             $this->auth->authorize();
 
-            return $this->request->send($method, $route, ['json' => $body,
-            'timeout' => $requestTimeout,
-            'headers' => ['Authorization' => 'Bearer '.$this->auth->accessToken, 'api-sdk' => 'woocommerce-0.7.2', 'partner-token' => $partner_token]]);
+            return $this->request->send($method, $route, [
+                'json' => $body,
+                'timeout' => $requestTimeout,
+                'headers' => ['Authorization' => 'Bearer ' . $this->auth->accessToken, 'api-sdk' => 'woocommerce-0.7.3', 'partner-token' => $partner_token]
+            ]);
         }
     }
 

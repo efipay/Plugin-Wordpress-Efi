@@ -74,17 +74,17 @@ class GerencianetValidation {
 
 	/**
 	 * Validates phone and cellphones fields
-	 * 
+	 *
 	 * @param string $data
 	 *
 	 * @return boolean
 	 */
 	public function _phone_number( $data ) {
 		$phone      = preg_replace( '/[^0-9]/', '', $data );
-	 	if(strlen($phone) > 10){
-	         $validation = preg_match( "/^[1-9]{2}9?[0-9]{9}$/", $phone );
-		}else{
-	         $validation = preg_match( "/^[1-9]{2}9?[0-9]{8}$/", $phone );
+		if(strlen($phone) > 10){
+			$validation = preg_match( "/^[1-9]{2}9?[0-9]{9}$/", $phone );
+	   }else{
+			$validation = preg_match( "/^[1-9]{2}9?[0-9]{8}$/", $phone );
 		}
 		if ( ! $validation ) {
 			return false;

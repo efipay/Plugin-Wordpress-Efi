@@ -11,14 +11,13 @@ if (!defined('ABSPATH')) {
 
 ?>
 <script type="text/javascript">
-
     <?php echo html_entity_decode($script_load); ?>
 
-    $gn.ready(function (checkout) {
+    $gn.ready(function(checkout) {
         getPaymentToken = checkout.getPaymentToken;
     });
 
-    jQuery(document).ready(function ($) {
+    jQuery(document).ready(function($) {
 
         var billetActive = "<?php echo $billet_option; ?>";
         var cardActive = "<?php echo $card_option; ?>";
@@ -58,8 +57,7 @@ if (!defined('ABSPATH')) {
                 $("#gn_card_cpf_cnpj").mask("000.000.000-009");
                 $('.document-label').text("<?php echo $gn_cpf; ?>");
                 $('.name-corporate-label').text("<?php echo $gn_name; ?>");
-            }
-            else if (typeof $('#billing_company').val() != "undefined" &&
+            } else if (typeof $('#billing_company').val() != "undefined" &&
                 typeof $('#billing_cnpj').val() != "undefined") {
                 allowedPersonType = 2;
                 $("#gn_billet_cpf_cnpj").mask("00.000.000/0000-00");
@@ -77,8 +75,7 @@ if (!defined('ABSPATH')) {
                     $('#gn_billet_name_corporate').val($('#billing_first_name').val());
                 if (typeof $('#billing_last_name').val() != "undefined")
                     $('#gn_billet_name_corporate').val($('#gn_billet_name_corporate').val() + " " + $('#billing_last_name').val());
-            }
-            else {
+            } else {
                 if (typeof $('#billing_company').val() != "undefined")
                     $('#gn_billet_name_corporate').val($('#billing_company').val());
             }
@@ -93,8 +90,7 @@ if (!defined('ABSPATH')) {
             if ($('#billing_persontype').val() == "1" || allowedPersonType == 1) {
                 if (typeof $('#billing_cpf').val() != "undefined")
                     $('#gn_billet_cpf_cnpj').val($('#billing_cpf').val());
-            }
-            else {
+            } else {
                 if (typeof $('#billing_cnpj').val() != "undefined")
                     $('#gn_billet_cpf_cnpj').val($('#billing_cnpj').val());
             }
@@ -106,8 +102,7 @@ if (!defined('ABSPATH')) {
                     $('#gn_card_name_corporate').val($('#billing_first_name').val());
                 if (typeof $('#billing_last_name').val() != "undefined")
                     $('#gn_card_name_corporate').val($('#gn_card_name_corporate').val() + " " + $('#billing_last_name').val());
-            }
-            else {
+            } else {
                 if (typeof $('#billing_company').val() != "undefined")
                     $('#gn_card_name_corporate').val($('#billing_company').val());
             }
@@ -122,8 +117,7 @@ if (!defined('ABSPATH')) {
             if ($('#billing_persontype').val() == "1" || allowedPersonType == 1) {
                 if (typeof $('#billing_cpf').val() != "undefined")
                     $('#gn_card_cpf_cnpj').val($('#billing_cpf').val());
-            }
-            else {
+            } else {
                 if (typeof $('#billing_cnpj').val() != "undefined")
                     $('#gn_card_cpf_cnpj').val($('#billing_cnpj').val());
             }
@@ -149,7 +143,7 @@ if (!defined('ABSPATH')) {
         validateBilletCustomerData(allowedPersonType);
         validateCardCustomerData(allowedPersonType);
 
-        $('#billing_first_name').change(function () {
+        $('#billing_first_name').change(function() {
             if ($('#billing_persontype').val() == "1" || allowedPersonType == 1) {
                 if (typeof $('#billing_first_name').val() != "undefined") {
                     $('#gn_billet_name_corporate').val($('#billing_first_name').val());
@@ -164,7 +158,7 @@ if (!defined('ABSPATH')) {
             }
         });
 
-        $('#billing_last_name').change(function () {
+        $('#billing_last_name').change(function() {
             if ($('#billing_persontype').val() == "1" || allowedPersonType == 1) {
                 if (typeof $('#billing_first_name').val() != "undefined") {
                     $('#gn_billet_name_corporate').val($('#billing_first_name').val());
@@ -179,7 +173,7 @@ if (!defined('ABSPATH')) {
             }
         });
 
-        $('#billing_company').change(function () {
+        $('#billing_company').change(function() {
             if ($('#billing_persontype').val() == "2" || allowedPersonType == 2) {
                 if (typeof $('#billing_company').val() != "undefined") {
                     $('#gn_billet_name_corporate').val($('#billing_company').val());
@@ -190,14 +184,14 @@ if (!defined('ABSPATH')) {
             }
         });
 
-        $('#billing_email').change(function () {
+        $('#billing_email').change(function() {
             $('#gn_billet_email').val($('#billing_email').val());
             $('#gn_card_email').val($('#billing_email').val());
             validateBilletCustomerData(allowedPersonType);
             validateCardCustomerData(allowedPersonType);
         });
 
-        $('#billing_phone').change(function () {
+        $('#billing_phone').change(function() {
             $('#gn_billet_phone_number').val($('#billing_phone').val());
             $('#gn_card_phone_number').val($('#billing_phone').val());
             applyPhoneMask();
@@ -205,7 +199,7 @@ if (!defined('ABSPATH')) {
             validateCardCustomerData(allowedPersonType);
         });
 
-        $('#billing_cpf').change(function () {
+        $('#billing_cpf').change(function() {
             if ($('#billing_persontype').val() == "1" || allowedPersonType == 1) {
                 $('#gn_billet_cpf_cnpj').val($('#billing_cpf').val());
                 $('#gn_card_cpf_cnpj').val($('#billing_cpf').val());
@@ -215,7 +209,7 @@ if (!defined('ABSPATH')) {
             }
         });
 
-        $('#billing_cnpj').change(function () {
+        $('#billing_cnpj').change(function() {
             if ($('#billing_persontype').val() == "2" || allowedPersonType == 2) {
                 $('#gn_billet_cpf_cnpj').val($('#billing_cnpj').val());
                 $('#gn_card_cpf_cnpj').val($('#billing_cnpj').val());
@@ -225,51 +219,51 @@ if (!defined('ABSPATH')) {
             }
         });
 
-        $('#billing_birthdate').change(function () {
+        $('#billing_birthdate').change(function() {
             $('#gn_card_birth').val($('#billing_birthdate').val());
             validateCardCustomerData(allowedPersonType);
         });
 
-        $('#billing_address_1').change(function () {
+        $('#billing_address_1').change(function() {
             $('#gn_card_street').val($('#billing_address_1').val());
             validateCardCustomerData(allowedPersonType);
         });
 
-        $('#billing_number').change(function () {
+        $('#billing_number').change(function() {
             $('#gn_card_street_number').val($('#billing_number').val());
             validateCardCustomerData(allowedPersonType);
         });
 
-        $('#billing_neighborhood').change(function () {
+        $('#billing_neighborhood').change(function() {
             $('#gn_card_neighborhood').val($('#billing_neighborhood').val());
             validateCardCustomerData(allowedPersonType);
         });
 
-        $('#billing_address_2').change(function () {
+        $('#billing_address_2').change(function() {
             $('#gn_card_complement').val($('#billing_address_2').val());
             validateCardCustomerData(allowedPersonType);
         });
 
-        $('#billing_postcode').change(function () {
+        $('#billing_postcode').change(function() {
             $('#gn_card_zipcode').val($('#billing_postcode').val());
             validateCardCustomerData(allowedPersonType);
         });
 
-        $('#billing_city').change(function () {
+        $('#billing_city').change(function() {
             $('#gn_card_city').val($('#billing_city').val());
             validateCardCustomerData(allowedPersonType);
         });
 
-        $('#billing_state').change(function () {
+        $('#billing_state').change(function() {
             $('#gn_card_state').val($('#billing_state').val());
             validateCardCustomerData(allowedPersonType);
         });
 
-        $('#gn_card_number_card,#gn_card_cvv,#gn_card_expiration_month,#gn_card_expiration_year,input[name=gn_card_brand]').change(function () {
+        $('#gn_card_number_card,#gn_card_cvv,#gn_card_expiration_month,#gn_card_expiration_year,input[name=gn_card_brand]').change(function() {
             generatePaymentToken();
         });
 
-        $('form[name="checkout"] input[type="submit"]').click(function (event) {
+        $('form[name="checkout"] input[type="submit"]').click(function(event) {
 
             if ($('input[type=radio][name=paymentMethodRadio]:checked').val() == "billet") {
                 if (!billetValidateFields(allowedPersonType)) {
@@ -307,7 +301,7 @@ if (!defined('ABSPATH')) {
             expiration_month = $("#gn_card_expiration_month").val();
             expiration_year = $("#gn_card_expiration_year").val();
             if (card_brand != "" && card_number != "" && card_cvv != "" && expiration_month != "" && expiration_year != "") {
-                var callback = function (error, response) {
+                var callback = function(error, response) {
                     if (error) {
                         return false;
                     } else {
@@ -328,7 +322,7 @@ if (!defined('ABSPATH')) {
             return false;
         }
 
-        $('#gn_billet_name_corporate').change(function () {
+        $('#gn_billet_name_corporate').change(function() {
             if (validateName($('#gn_billet_name_corporate').val())) {
                 $('#gn_billet_name_corporate').removeClass("gn-inputs-error");
                 hideError();
@@ -343,7 +337,7 @@ if (!defined('ABSPATH')) {
             }
         });
 
-        $('#gn_billet_email').change(function () {
+        $('#gn_billet_email').change(function() {
             if (validateEmail($('#gn_billet_email').val())) {
                 $('#gn_billet_email').removeClass("gn-inputs-error");
                 hideError();
@@ -353,7 +347,7 @@ if (!defined('ABSPATH')) {
             }
         });
 
-        $("#gn_billet_cpf_cnpj").blur(function () {
+        $("#gn_billet_cpf_cnpj").blur(function() {
             if ($('#gn_billet_cpf_cnpj').val().replace(/[^\d]+/g, '').length <= 11) {
                 if (allowedPersonType != 2) {
                     if (verifyCPF($('#gn_billet_cpf_cnpj').val())) {
@@ -371,13 +365,11 @@ if (!defined('ABSPATH')) {
                         $('#gn_billet_cpf_cnpj').addClass("gn-inputs-error");
                         showError("CPF inválido. Por favor, digite novamente.");
                     }
-                }
-                else {
+                } else {
                     $('#gn_billet_cpf_cnpj').addClass("gn-inputs-error");
                     showError("CNPJ inválido. Por favor, digite novamente.");
                 }
-            }
-            else {
+            } else {
                 if (allowedPersonType != 1) {
                     if (verifyCNPJ($('#gn_billet_cpf_cnpj').val())) {
                         $('#gn_billet_cpf_cnpj').removeClass("gn-inputs-error");
@@ -394,15 +386,14 @@ if (!defined('ABSPATH')) {
                         $('#gn_billet_cpf_cnpj').addClass("gn-inputs-error");
                         showError("CNPJ inválido. Por favor, digite novamente.");
                     }
-                }
-                else {
+                } else {
                     $('#gn_billet_cpf_cnpj').addClass("gn-inputs-error");
                     showError("CPF inválido. Por favor, digite novamente.");
                 }
             }
         });
 
-        $('#gn_billet_phone_number').change(function () {
+        $('#gn_billet_phone_number').change(function() {
             if (validatePhone($('#gn_billet_phone_number').val())) {
                 $('#gn_billet_phone_number').removeClass("gn-inputs-error");
                 hideError();
@@ -412,7 +403,7 @@ if (!defined('ABSPATH')) {
             }
         });
 
-        $('#gn_card_cpf_cnpj').blur(function () {
+        $('#gn_card_cpf_cnpj').blur(function() {
             if ($('#gn_card_cpf_cnpj').val().replace(/[^\d]+/g, '').length <= 11) {
                 if (allowedPersonType != 2) {
                     if (verifyCPF($('#gn_card_cpf_cnpj').val())) {
@@ -430,13 +421,11 @@ if (!defined('ABSPATH')) {
                         $('#gn_card_cpf_cnpj').addClass("gn-inputs-error");
                         showError("CPF inválido. Por favor, digite novamente.");
                     }
-                }
-                else {
+                } else {
                     $('#gn_card_cpf_cnpj').addClass("gn-inputs-error");
                     showError("CNPJ inválido. Por favor, digite novamente.");
                 }
-            }
-            else {
+            } else {
                 if (allowedPersonType != 1) {
                     if (verifyCNPJ($('#gn_card_cpf_cnpj').val())) {
                         $('#gn_card_cpf_cnpj').removeClass("gn-inputs-error");
@@ -453,15 +442,14 @@ if (!defined('ABSPATH')) {
                         $('#gn_card_cpf_cnpj').addClass("gn-inputs-error");
                         showError("CNPJ inválido. Por favor, digite novamente.");
                     }
-                }
-                else {
+                } else {
                     $('#gn_card_cpf_cnpj').addClass("gn-inputs-error");
                     showError("CPF inválido. Por favor, digite novamente.");
                 }
             }
         });
 
-        $('#gn_card_name_corporate').change(function () {
+        $('#gn_card_name_corporate').change(function() {
             if (validateName($('#gn_card_name_corporate').val())) {
                 $('#gn_card_name_corporate').removeClass("gn-inputs-error");
                 hideError();
@@ -476,7 +464,7 @@ if (!defined('ABSPATH')) {
             }
         });
 
-        $('#gn_card_email').change(function () {
+        $('#gn_card_email').change(function() {
             if (validateEmail($('#gn_card_email').val())) {
                 $('#gn_card_email').removeClass("gn-inputs-error");
                 hideError();
@@ -486,7 +474,7 @@ if (!defined('ABSPATH')) {
             }
         });
 
-        $('#gn_card_phone_number').change(function () {
+        $('#gn_card_phone_number').change(function() {
             if (validatePhone($('#gn_card_phone_number').val())) {
                 $('#gn_card_phone_number').removeClass("gn-inputs-error");
                 hideError();
@@ -496,7 +484,7 @@ if (!defined('ABSPATH')) {
             }
         });
 
-        $('#gn_card_birth').change(function () {
+        $('#gn_card_birth').change(function() {
             if (validateBirth($('#gn_card_birth').val())) {
                 $('#gn_card_birth').removeClass("gn-inputs-error");
                 hideError();
@@ -506,7 +494,7 @@ if (!defined('ABSPATH')) {
             }
         });
 
-        $('#gn_card_street').change(function () {
+        $('#gn_card_street').change(function() {
             if (validateStreet($('#gn_card_street').val())) {
                 $('#gn_card_street').removeClass("gn-inputs-error");
                 hideError();
@@ -516,7 +504,7 @@ if (!defined('ABSPATH')) {
             }
         });
 
-        $('#gn_card_street_number').change(function () {
+        $('#gn_card_street_number').change(function() {
             if (validateStreetNumber($('#gn_card_street_number').val())) {
                 $('#gn_card_street_number').removeClass("gn-inputs-error");
                 hideError();
@@ -526,7 +514,7 @@ if (!defined('ABSPATH')) {
             }
         });
 
-        $('#gn_card_neighborhood').change(function () {
+        $('#gn_card_neighborhood').change(function() {
             if (validateNeighborhood($('#gn_card_neighborhood').val())) {
                 $('#gn_card_neighborhood').removeClass("gn-inputs-error");
                 hideError();
@@ -536,7 +524,7 @@ if (!defined('ABSPATH')) {
             }
         });
 
-        $('#gn_card_complement').change(function () {
+        $('#gn_card_complement').change(function() {
             if (validateComplement($('#gn_card_complement').val())) {
                 $('#gn_card_complement').removeClass("gn-inputs-error");
                 hideError();
@@ -546,7 +534,7 @@ if (!defined('ABSPATH')) {
             }
         });
 
-        $('#gn_card_city').change(function () {
+        $('#gn_card_city').change(function() {
             if (validateCity($('#gn_card_city').val())) {
                 $('#gn_card_city').removeClass("gn-inputs-error");
                 hideError();
@@ -556,7 +544,7 @@ if (!defined('ABSPATH')) {
             }
         });
 
-        $('#gn_card_zipcode').change(function () {
+        $('#gn_card_zipcode').change(function() {
             if (validateZipcode($('#gn_card_zipcode').val())) {
                 $('#gn_card_zipcode').removeClass("gn-inputs-error");
                 hideError();
@@ -566,7 +554,7 @@ if (!defined('ABSPATH')) {
             }
         });
 
-        $('#gn_card_state').change(function () {
+        $('#gn_card_state').change(function() {
             if (validateState($('#gn_card_state').val())) {
                 $('#gn_card_state').removeClass("gn-inputs-error");
                 hideError();
@@ -608,13 +596,11 @@ if (!defined('ABSPATH')) {
                         $('#gn_billet_cpf_cnpj').addClass("gn-inputs-error");
                         errorMessage = "CPF inválido. Por favor, digite novamente.";
                     }
-                }
-                else {
+                } else {
                     $('#gn_billet_cpf_cnpj').addClass("gn-inputs-error");
                     errorMessage = "CNPJ inválido. Por favor, digite novamente.";
                 }
-            }
-            else {
+            } else {
                 if (allowedPersonType != 1) {
                     if (verifyCNPJ($('#gn_billet_cpf_cnpj').val())) {
                         $('#gn_billet_cpf_cnpj').removeClass("gn-inputs-error");
@@ -623,8 +609,7 @@ if (!defined('ABSPATH')) {
                         $('#gn_billet_cpf_cnpj').addClass("gn-inputs-error");
                         errorMessage = "CNPJ inválido. Por favor, digite novamente.";
                     }
-                }
-                else {
+                } else {
                     $('#gn_billet_cpf_cnpj').addClass("gn-inputs-error");
                     errorMessage = "CPF inválido. Por favor, digite novamente.";
                 }
@@ -672,13 +657,11 @@ if (!defined('ABSPATH')) {
                         $('#gn_card_cpf_cnpj').addClass("gn-inputs-error");
                         errorMessage = "CPF inválido. Por favor, digite novamente.";
                     }
-                }
-                else {
+                } else {
                     $('#gn_card_cpf_cnpj').addClass("gn-inputs-error");
                     errorMessage = "CNPJ inválido. Por favor, digite novamente.";
                 }
-            }
-            else {
+            } else {
                 if (allowedPersonType != 1) {
                     if (verifyCNPJ($('#gn_card_cpf_cnpj').val())) {
                         $('#gn_card_cpf_cnpj').removeClass("gn-inputs-error");
@@ -687,8 +670,7 @@ if (!defined('ABSPATH')) {
                         $('#gn_card_cpf_cnpj').addClass("gn-inputs-error");
                         errorMessage = "CNPJ inválido. Por favor, digite novamente.";
                     }
-                }
-                else {
+                } else {
                     $('#gn_card_cpf_cnpj').addClass("gn-inputs-error");
                     errorMessage = "CPF inválido. Por favor, digite novamente.";
                 }
@@ -775,9 +757,9 @@ if (!defined('ABSPATH')) {
                 $('#gn_email_row').show();
             }
 
-            if (( ( verifyCPF($('#gn_billet_cpf_cnpj').val()) && allowedPersonType != 2 )
-                || (verifyCNPJ($('#gn_billet_cpf_cnpj').val()) && allowedPersonType != 1) )
-                && validatePhone($('#gn_billet_phone_number').val())) {
+            if (((verifyCPF($('#gn_billet_cpf_cnpj').val()) && allowedPersonType != 2) ||
+                    (verifyCNPJ($('#gn_billet_cpf_cnpj').val()) && allowedPersonType != 1)) &&
+                validatePhone($('#gn_billet_phone_number').val())) {
                 $('#gn_cpf_cnpj_phone_row').hide();
                 hideError();
             } else {
@@ -801,9 +783,9 @@ if (!defined('ABSPATH')) {
             }
 
 
-            if (( ( verifyCPF($('#gn_card_cpf_cnpj').val()) && allowedPersonType != 2 )
-                || (verifyCNPJ($('#gn_card_cpf_cnpj').val()) && allowedPersonType != 1) )
-                && validatePhone($('#gn_card_phone_number').val())) {
+            if (((verifyCPF($('#gn_card_cpf_cnpj').val()) && allowedPersonType != 2) ||
+                    (verifyCNPJ($('#gn_card_cpf_cnpj').val()) && allowedPersonType != 1)) &&
+                validatePhone($('#gn_card_phone_number').val())) {
                 $('#gn_card_cpf_cnpj_phone_row').hide();
                 hideError();
             } else {
@@ -885,7 +867,7 @@ if (!defined('ABSPATH')) {
             validateCardCustomerData(allowedPersonType);
         }
 
-        $('#billing_persontype').on('change', function () {
+        $('#billing_persontype').on('change', function() {
             if (this.value == 1) {
                 if (typeof $('#billing_first_name').val() != "undefined") {
                     $('#gn_billet_name_corporate').val($('#billing_first_name').val());
@@ -915,11 +897,11 @@ if (!defined('ABSPATH')) {
             }
         });
 
-        $('input[type=radio][name=gn_card_brand]').change(function () {
+        $('input[type=radio][name=gn_card_brand]').change(function() {
             getInstallments(this.value);
         });
 
-        jQuery('#gn-billet-payment-option').click(function (e) {
+        jQuery('#gn-billet-payment-option').click(function(e) {
             $('#collapse-payment-card').hide();
             $('#collapse-payment-billet').show();
             $('#paymentMethodBilletRadio').prop('checked', true);
@@ -931,7 +913,7 @@ if (!defined('ABSPATH')) {
             fixScreenSize();
         });
 
-        jQuery('#gn-card-payment-option').click(function (e) {
+        jQuery('#gn-card-payment-option').click(function(e) {
             $('#collapse-payment-card').show();
             $('#collapse-payment-billet').hide();
             $('#paymentMethodBilletRadio').prop('checked', false);
@@ -944,8 +926,8 @@ if (!defined('ABSPATH')) {
         });
 
         if ($().mask) {
-      
-            $("#gn_billet_cpf_cnpj").keyup(function () {
+
+            $("#gn_billet_cpf_cnpj").keyup(function() {
                 $("#gn_billet_cpf_cnpj").unmask();
                 var cpf = $("#gn_billet_cpf_cnpj").val().replace(/[^\d]+/g, '');
                 if (cpf.length <= 11) {
@@ -953,14 +935,14 @@ if (!defined('ABSPATH')) {
                 } else {
                     $("#gn_billet_cpf_cnpj").mask("00.000.000/0000-00");
                 }
-                var elem = this;             
-                setTimeout(function(){
+                var elem = this;
+                setTimeout(function() {
                     // muda a posição do seletor
                     elem.selectionStart = elem.selectionEnd = 10000;
                 }, 0);
             });
-            
-            $("#gn_card_cpf_cnpj").keyup(function () {
+
+            $("#gn_card_cpf_cnpj").keyup(function() {
                 $("#gn_card_cpf_cnpj").unmask();
                 var cpf = $("#gn_card_cpf_cnpj").val().replace(/[^\d]+/g, '');
                 if (cpf.length <= 11) {
@@ -968,8 +950,8 @@ if (!defined('ABSPATH')) {
                 } else {
                     $("#gn_card_cpf_cnpj").mask("00.000.000/0000-00");
                 }
-                var elem = this;             
-                setTimeout(function(){
+                var elem = this;
+                setTimeout(function() {
                     // muda a posição do seletor
                     elem.selectionStart = elem.selectionEnd = 10000;
                 }, 0);
@@ -983,8 +965,8 @@ if (!defined('ABSPATH')) {
                 } else {
                     $(".phone-mask").mask("(00) 0000-00009");
                 }
-                var elem = this;             
-                setTimeout(function(){
+                var elem = this;
+                setTimeout(function() {
                     // muda a posição do seletor
                     elem.selectionStart = elem.selectionEnd = 10000;
                 }, 0);
@@ -992,18 +974,27 @@ if (!defined('ABSPATH')) {
             $(".phone-mask").keyup(applyPhoneMask());
 
             $('.birth-mask').mask("00/00/0000", {
-                completed: function () {
+                completed: function() {
                     if (!validateBirth(this.val())) {
                         showError('Data de nascimento inválida. Digite novamente.');
                     } else {
                         hideError();
                     }
-                }, placeholder: "__/__/____"
+                },
+                placeholder: "__/__/____"
             });
-            $('#gn_card_number_card').mask('0000 0000 0000 0000999', {placeholder: ""});
-            $('#gn_card_cvv').mask('000099', {placeholder: ""});
-            $('#input-payment-card-number').mask('0000 0000 0000 0000999', {placeholder: ""});
-            $('#input-payment-card-cvv').mask('000099', {placeholder: ""});
+            $('#gn_card_number_card').mask('0000 0000 0000 0000999', {
+                placeholder: ""
+            });
+            $('#gn_card_cvv').mask('000099', {
+                placeholder: ""
+            });
+            $('#input-payment-card-number').mask('0000 0000 0000 0000999', {
+                placeholder: ""
+            });
+            $('#input-payment-card-cvv').mask('000099', {
+                placeholder: ""
+            });
 
         }
 
@@ -1227,7 +1218,9 @@ if (!defined('ABSPATH')) {
         }
 
         function scrollToTop() {
-            $("html, body").animate({scrollTop: $("#wc-gerencianet-messages").offset().top - 80}, "slow");
+            $("html, body").animate({
+                scrollTop: $("#wc-gerencianet-messages").offset().top - 80
+            }, "slow");
         }
 
         function showError(message) {
@@ -1256,7 +1249,7 @@ if (!defined('ABSPATH')) {
                 type: "POST",
                 url: "<?php echo $ajax_url; ?>",
                 data: data,
-                success: function (response) {
+                success: function(response) {
                     var obj = $.parseJSON(response);
                     if (obj.code == 200) {
 
@@ -1267,13 +1260,13 @@ if (!defined('ABSPATH')) {
                         $('#gn_card_installments').html(options).show();
                     }
                 },
-                error: function () {
+                error: function() {
                     alert("error ocurred");
                 }
             });
         }
 
-        $(window).resize(function () {
+        $(window).resize(function() {
             fixScreenSize();
         });
 
@@ -1287,13 +1280,12 @@ if (!defined('ABSPATH')) {
 
         fixScreenSize();
 
-        $('#payment_method_gerencianet_oficial').on('change', function () {
+        $('#payment_method_gerencianet_oficial').on('change', function() {
             fixScreenSize();
         });
 
 
     });
-
 </script>
 
 
@@ -1302,7 +1294,7 @@ if (!defined('ABSPATH')) {
         <div class="warning-payment" id="wc-gerencianet-messages-sandbox">
             <div class="woocommerce-error"><?php echo $gn_warning_sandbox_message; ?></div>
         </div>
-    <?php 
+    <?php
 } ?>
 
     <div class="gn-osc-warning-payment" id="wc-gerencianet-messages">
@@ -1317,8 +1309,7 @@ if (!defined('ABSPATH')) {
             <div id="gn-billet-payment-option" class="gn-osc-payment-option gn-osc-payment-option-selected">
                 <div>
                     <div id="billet-radio-button" class="gn-osc-left">
-                        <input type="radio" name="paymentMethodRadio" id="paymentMethodBilletRadio" class="gn-osc-radio"
-                               value="billet" checked="true"/>
+                        <input type="radio" name="paymentMethodRadio" id="paymentMethodBilletRadio" class="gn-osc-radio" value="billet" checked="true" />
                     </div>
                     <div class="gn-osc-left gn-osc-icon-gerencianet">
                         <span class="gn-icon-icones-personalizados_boleto"></span>
@@ -1327,21 +1318,20 @@ if (!defined('ABSPATH')) {
                         <strong><?php echo "Boleto Bancário"; ?></strong>
                         <?php if ($discount > 0) { ?>
                             <span style="font-size: 14px; line-height: 15px;"><br>+<?php echo $discount_formatted; ?>% de desconto</span>
-                        <?php 
+                        <?php
                     } ?>
                     </div>
                     <div class="gn-osc-left gn-osc-payment-option-sizer"></div>
                     <div class="clear"></div>
                 </div>
             </div>
-        <?php 
+        <?php
     } ?>
         <?php if ($card_option == "yes") { ?>
             <div id="gn-card-payment-option" class="gn-osc-payment-option gn-osc-payment-option-unselected">
                 <div>
                     <div id="card-radio-button" class="gn-osc-left">
-                        <input type="radio" name="paymentMethodRadio" id="paymentMethodCardRadio" class="gn-osc-radio"
-                               value="card"/>
+                        <input type="radio" name="paymentMethodRadio" id="paymentMethodCardRadio" class="gn-osc-radio" value="card" />
                     </div>
                     <div class="gn-osc-left gn-osc-icon-gerencianet">
                         <span class="gn-icon-credit-card2"></span>
@@ -1354,11 +1344,11 @@ if (!defined('ABSPATH')) {
                     <div class="clear"></div>
                 </div>
             </div>
-        <?php 
+        <?php
     } ?>
         <div class="clear"></div>
     </div>
-    <input name="wc_order_id" id="wc_order_id" type="hidden" value="<?php echo $order_id; ?>"/>
+    <input name="wc_order_id" id="wc_order_id" type="hidden" value="<?php echo $order_id; ?>" />
     <?php if ($billet_option == "yes") { ?>
         <div id="collapse-payment-billet" class="gn-osc-background">
             <div class="panel-body">
@@ -1369,12 +1359,10 @@ if (!defined('ABSPATH')) {
                     <div id="billet-data">
                         <div id="gn_name_corporate_row" class="required gn-osc-row gn-billet-field">
                             <div class="gn-col-3 gn-label">
-                                <label for="gn_billet_name_corporate"
-                                       class="name-corporate-label gn-right-padding-1"><?php echo $gn_name_corporate; ?></label>
+                                <label for="gn_billet_name_corporate" class="name-corporate-label gn-right-padding-1"><?php echo $gn_name_corporate; ?></label>
                             </div>
                             <div class="gn-col-8">
-                                <input type="text" name="gn_billet_name_corporate" id="gn_billet_name_corporate"
-                                       value="" class="form-control"/>
+                                <input type="text" name="gn_billet_name_corporate" id="gn_billet_name_corporate" value="" class="form-control" />
                             </div>
                         </div>
 
@@ -1384,8 +1372,7 @@ if (!defined('ABSPATH')) {
                                 <label class="gn-right-padding-1" for="gn_billet_email"><?php echo $gn_email; ?></label>
                             </div>
                             <div class="gn-col-8">
-                                <input type="text" name="gn_billet_email" value="" id="gn_billet_email"
-                                       class="form-control"/>
+                                <input type="text" name="gn_billet_email" value="" id="gn_billet_email" class="form-control" />
                             </div>
                         </div>
 
@@ -1393,24 +1380,20 @@ if (!defined('ABSPATH')) {
                             <div class="gn-col-12">
 
                                 <div class="gn-col-3 gn-label">
-                                    <label for="gn_billet_cpf_cnpj"
-                                           class="document-label gn-right-padding-1"><?php echo $gn_cpf_cnpj; ?></label>
+                                    <label for="gn_billet_cpf_cnpj" class="document-label gn-right-padding-1"><?php echo $gn_cpf_cnpj; ?></label>
                                 </div>
 
                                 <div class="gn-col-3 required">
-                                    <input type="text" name="gn_billet_cpf_cnpj" id="gn_billet_cpf_cnpj" value=""
-                                           class="form-control cpf-mask"/>
+                                    <input type="text" name="gn_billet_cpf_cnpj" id="gn_billet_cpf_cnpj" value="" class="form-control cpf-mask" />
                                 </div>
 
                                 <div class=" required">
                                     <div class="gn-col-2 gn-label">
-                                        <label class="gn-right-padding-1"
-                                               for="gn_billet_phone_number"><?php echo $gn_phone; ?>
+                                        <label class="gn-right-padding-1" for="gn_billet_phone_number"><?php echo $gn_phone; ?>
                                         </label>
                                     </div>
                                     <div class="gn-col-3">
-                                        <input type="text" name="gn_billet_phone_number" id="gn_billet_phone_number"
-                                               value="" class="form-control phone-mask"/>
+                                        <input type="text" name="gn_billet_phone_number" id="gn_billet_phone_number" value="" class="form-control phone-mask" />
                                     </div>
                                 </div>
 
@@ -1424,8 +1407,7 @@ if (!defined('ABSPATH')) {
 
             <div class="gn-osc-row" style="padding: 20px;">
                 <?php if ($discount > 0) { ?>
-                    <div class="gn-osc-row"
-                         style="border: 1px solid #DEDEDE; border-bottom: 0px; margin: 0px; padding:5px;">
+                    <div class="gn-osc-row" style="border: 1px solid #DEDEDE; border-bottom: 0px; margin: 0px; padding:5px;">
                         <div style="float: left;">
                             <strong>DESCONTO DE <?php echo $discount_formatted; ?>% NO BOLETO:</strong>
                         </div>
@@ -1433,8 +1415,7 @@ if (!defined('ABSPATH')) {
                             <strong>-<?php echo $order_billet_discount; ?></strong>
                         </div>
                     </div>
-                <?php 
-            } ?>
+                <?php } ?>
                 <div class="gn-osc-row" style="border: 1px solid #DEDEDE; margin: 0px; padding:5px;">
                     <div style="float: left;">
                         <strong>TOTAL:</strong>
@@ -1446,12 +1427,9 @@ if (!defined('ABSPATH')) {
             </div>
         </div>
 
-    <?php 
-} ?>
+    <?php } ?>
     <?php if ($card_option == "yes") { ?>
-        <div id="collapse-payment-card"
-             class="panel-collapse <?php if ($billet_option == "yes") { ?>gn-hide<?php
-                                                                            } ?> gn-osc-background">
+        <div id="collapse-payment-card" class="panel-collapse <?php if ($billet_option == "yes") { ?>gn-hide<?php } ?> gn-osc-background">
             <div class="panel-body">
                 <div class="gn-osc-row gn-osc-pay-comments">
                     <p class="gn-left-space-2"><strong><?php echo $gn_card_payment_comments; ?></strong></p>
@@ -1461,33 +1439,27 @@ if (!defined('ABSPATH')) {
                     <div id="card-data">
                         <div id="gn_card_name_corporate_row" class="required gn-osc-row gn-card-field">
                             <div class="gn-col-3 gn-label">
-                                <label class="name-corporate-label gn-col-11 gn-right-padding-1"
-                                       for="gn_card_name_corporate"><?php echo $gn_name_corporate; ?></label>
+                                <label class="name-corporate-label gn-col-11 gn-right-padding-1" for="gn_card_name_corporate"><?php echo $gn_name_corporate; ?></label>
                             </div>
                             <div class="gn-col-8">
-                                <input type="text" name="gn_card_name_corporate" id="gn_card_name_corporate" value=""
-                                       class="form-control"/>
+                                <input type="text" name="gn_card_name_corporate" id="gn_card_name_corporate" value="" class="form-control" />
                             </div>
                         </div>
 
                         <div id="gn_card_cpf_cnpj_phone_row" class="required gn-osc-row gn-card-field">
                             <div class="gn-col-12">
                                 <div class="gn-col-3 gn-label">
-                                    <label for="gn_card_cpf_cnpj"
-                                           class="document-label gn-right-padding-1"><?php echo $gn_cpf_cnpj; ?></label>
+                                    <label for="gn_card_cpf_cnpj" class="document-label gn-right-padding-1"><?php echo $gn_cpf_cnpj; ?></label>
                                 </div>
                                 <div class="gn-col-3">
-                                    <input type="text" name="gn_card_cpf_cnpj" id="gn_card_cpf_cnpj" value=""
-                                           class="form-control cpf-mask gn-minimum-size-field"/>
+                                    <input type="text" name="gn_card_cpf_cnpj" id="gn_card_cpf_cnpj" value="" class="form-control cpf-mask gn-minimum-size-field" />
                                 </div>
 
                                 <div class="gn-col-2 gn-label">
-                                    <label class="gn-right-padding-1"
-                                           for="gn_card_phone_number"><?php echo $gn_phone; ?></label>
+                                    <label class="gn-right-padding-1" for="gn_card_phone_number"><?php echo $gn_phone; ?></label>
                                 </div>
                                 <div class="gn-col-3">
-                                    <input type="text" name="gn_card_phone_number" value="" id="gn_card_phone_number"
-                                           class="form-control phone-mask gn-minimum-size-field"/>
+                                    <input type="text" name="gn_card_phone_number" value="" id="gn_card_phone_number" class="form-control phone-mask gn-minimum-size-field" />
                                 </div>
                             </div>
                         </div>
@@ -1497,19 +1469,16 @@ if (!defined('ABSPATH')) {
                                 <label class="gn-right-padding-1" for="gn_card_birth"><?php echo $gn_birth; ?></label>
                             </div>
                             <div class="gn-col-3">
-                                <input type="text" name="gn_card_birth" id="gn_card_birth" value=""
-                                       class="form-control birth-mask"/>
+                                <input type="text" name="gn_card_birth" id="gn_card_birth" value="" class="form-control birth-mask" />
                             </div>
                         </div>
 
                         <div id="gn_card_email_row" class=" required gn-card-field">
                             <div class="gn-col-3">
-                                <label class="gn-col-11 gn-label gn-right-padding-1"
-                                       for="gn_card_email"><?php echo $gn_email; ?></label>
+                                <label class="gn-col-11 gn-label gn-right-padding-1" for="gn_card_email"><?php echo $gn_email; ?></label>
                             </div>
                             <div class="gn-col-8">
-                                <input type="text" name="gn_card_email" value="" id="gn_card_email"
-                                       class="form-control"/>
+                                <input type="text" name="gn_card_email" value="" id="gn_card_email" class="form-control" />
                             </div>
                         </div>
                         <div class="clear"></div>
@@ -1524,24 +1493,20 @@ if (!defined('ABSPATH')) {
                             <div id="gn_card_street_number_row" class="required gn-osc-row gn-card-field">
                                 <div class="gn-col-12">
                                     <div class="gn-col-3">
-                                        <label class="gn-col-11 gn-label gn-right-padding-1"
-                                               for="gn_card_street"><?php echo $gn_street; ?></label>
+                                        <label class="gn-col-11 gn-label gn-right-padding-1" for="gn_card_street"><?php echo $gn_street; ?></label>
                                     </div>
 
                                     <div class="gn-col-5 required">
-                                        <input type="text" name="gn_card_street" id="gn_card_street" value=""
-                                               class="form-control"/>
+                                        <input type="text" name="gn_card_street" id="gn_card_street" value="" class="form-control" />
                                     </div>
 
                                     <div class="gn-col-3">
                                         <div class=" required gn-left-space-2">
                                             <div class="gn-col-8">
-                                                <label class="gn-col-10 gn-label gn-right-padding-1"
-                                                       for="gn_card_street_number"><?php echo $gn_street_number; ?></label>
+                                                <label class="gn-col-10 gn-label gn-right-padding-1" for="gn_card_street_number"><?php echo $gn_street_number; ?></label>
                                             </div>
                                             <div class="gn-col-4 ">
-                                                <input type="text" name="gn_card_street_number"
-                                                       id="gn_card_street_number" value="" class="form-control"/>
+                                                <input type="text" name="gn_card_street_number" id="gn_card_street_number" value="" class="form-control" />
                                             </div>
                                         </div>
                                     </div>
@@ -1550,47 +1515,38 @@ if (!defined('ABSPATH')) {
                             <div id="gn_card_neighborhood_row" class="gn-osc-row gn-card-field">
                                 <div class="gn-col-12">
                                     <div class="gn-col-2 required">
-                                        <label class="gn-label gn-col-11 required gn-right-padding-1"
-                                               for="gn_card_neighborhood"><?php echo $gn_neighborhood; ?></label>
+                                        <label class="gn-label gn-col-11 required gn-right-padding-1" for="gn_card_neighborhood"><?php echo $gn_neighborhood; ?></label>
                                     </div>
                                     <div class="gn-col-4">
-                                        <input type="text" name="gn_card_neighborhood" id="gn_card_neighborhood"
-                                               value="" class="form-control"/>
+                                        <input type="text" name="gn_card_neighborhood" id="gn_card_neighborhood" value="" class="form-control" />
                                     </div>
                                     <div class="gn-col-6">
 
                                         <div class="gn-col-6">
-                                            <label class="gn-col-11 gn-label gn-right-padding-2"
-                                                   for="gn_card_complement"><?php echo $gn_address_complement; ?></label>
+                                            <label class="gn-col-11 gn-label gn-right-padding-2" for="gn_card_complement"><?php echo $gn_address_complement; ?></label>
                                         </div>
                                         <div class="gn-col-6 ">
-                                            <input type="text" name="gn_card_complement" id="gn_card_complement"
-                                                   value="" class="form-control" maxlength="54"/>
+                                            <input type="text" name="gn_card_complement" id="gn_card_complement" value="" class="form-control" maxlength="54" />
                                         </div>
 
                                     </div>
                                 </div>
                             </div>
 
-                            <div id="gn_card_city_zipcode_row"
-                                 class="required billing-address-data gn-card-field gn-osc-row">
+                            <div id="gn_card_city_zipcode_row" class="required billing-address-data gn-card-field gn-osc-row">
                                 <div class="gn-col-12">
                                     <div class="gn-col-3">
-                                        <label class="gn-col-11 gn-label gn-right-padding-1"
-                                               for="gn_card_city"><?php echo $gn_city; ?></label>
+                                        <label class="gn-col-11 gn-label gn-right-padding-1" for="gn_card_city"><?php echo $gn_city; ?></label>
                                     </div>
                                     <div class="gn-col-4 required">
-                                        <input type="text" name="gn_card_city" id="gn_card_city" value=""
-                                               class="form-control"/>
+                                        <input type="text" name="gn_card_city" id="gn_card_city" value="" class="form-control" />
                                     </div>
                                     <div class="gn-col-5">
                                         <div class="gn-col-5">
-                                            <label class="gn-col-11 gn-label gn-right-padding-1"
-                                                   for="gn_card_zipcode"><?php echo $gn_cep; ?></label>
+                                            <label class="gn-col-11 gn-label gn-right-padding-1" for="gn_card_zipcode"><?php echo $gn_cep; ?></label>
                                         </div>
                                         <div class="gn-col-5">
-                                            <input type="text" name="gn_card_zipcode" id="gn_card_zipcode" value=""
-                                                   class="form-control"/>
+                                            <input type="text" name="gn_card_zipcode" id="gn_card_zipcode" value="" class="form-control" />
                                         </div>
                                     </div>
                                 </div>
@@ -1598,8 +1554,7 @@ if (!defined('ABSPATH')) {
 
                             <div id="gn_card_state_row" class="required billing-address-data gn-card-field gn-osc-row">
                                 <div class="gn-col-3">
-                                    <label class="gn-col-11 gn-label gn-right-padding-1"
-                                           for="gn_card_state"><?php echo $gn_state; ?></label>
+                                    <label class="gn-col-11 gn-label gn-right-padding-1" for="gn_card_state"><?php echo $gn_state; ?></label>
                                 </div>
                                 <div class="gn-col-4">
                                     <select name="gn_card_state" id="gn_card_state" class="form-control gn-form-select">
@@ -1644,36 +1599,29 @@ if (!defined('ABSPATH')) {
                                 </div>
                                 <div>
                                     <div class="gn-card-brand-selector">
-                                        <input id="none" type="radio" name="gn_card_brand" id="gn_card_brand" value=""
-                                               checked class="gn-hide"/>
+                                        <input id="none" type="radio" name="gn_card_brand" id="gn_card_brand" value="" checked class="gn-hide" />
                                         <div class="pull-left gn-card-brand-content">
-                                            <input id="visa" type="radio" name="gn_card_brand" id="gn_card_brand"
-                                                   value="visa" class="gn-hide"/>
+                                            <input id="visa" type="radio" name="gn_card_brand" id="gn_card_brand" value="visa" class="gn-hide" />
                                             <label class="gn-card-brand gn-visa" for="visa"></label>
                                         </div>
                                         <div class="pull-left gn-card-brand-content">
-                                            <input id="mastercard" type="radio" name="gn_card_brand" id="gn_card_brand"
-                                                   value="mastercard" class="gn-hide"/>
+                                            <input id="mastercard" type="radio" name="gn_card_brand" id="gn_card_brand" value="mastercard" class="gn-hide" />
                                             <label class="gn-card-brand gn-mastercard" for="mastercard"></label>
                                         </div>
                                         <div class="pull-left gn-card-brand-content">
-                                            <input id="amex" type="radio" name="gn_card_brand" id="gn_card_brand"
-                                                   value="amex" class="gn-hide"/>
+                                            <input id="amex" type="radio" name="gn_card_brand" id="gn_card_brand" value="amex" class="gn-hide" />
                                             <label class="gn-card-brand gn-amex" for="amex"></label>
                                         </div>
                                         <div class="pull-left gn-card-brand-content">
-                                            <input id="diners" type="radio" name="gn_card_brand" id="gn_card_brand"
-                                                   value="diners" class="gn-hide"/>
+                                            <input id="diners" type="radio" name="gn_card_brand" id="gn_card_brand" value="diners" class="gn-hide" />
                                             <label class="gn-card-brand gn-diners" for="diners"></label>
                                         </div>
                                         <div class="pull-left gn-card-brand-content">
-                                            <input id="elo" type="radio" name="gn_card_brand" id="gn_card_brand"
-                                                   value="elo" class="gn-hide"/>
+                                            <input id="elo" type="radio" name="gn_card_brand" id="gn_card_brand" value="elo" class="gn-hide" />
                                             <label class="gn-card-brand gn-elo" for="elo"></label>
                                         </div>
                                         <div class="pull-left gn-card-brand-content">
-                                            <input id="hipercard" type="radio" name="gn_card_brand" id="gn_card_brand"
-                                                   value="hipercard" class="gn-hide"/>
+                                            <input id="hipercard" type="radio" name="gn_card_brand" id="gn_card_brand" value="hipercard" class="gn-hide" />
                                             <label class="gn-card-brand gn-hipercard" for="hipercard"></label>
                                         </div>
                                         <div class="clear"></div>
@@ -1688,8 +1636,7 @@ if (!defined('ABSPATH')) {
                                     </div>
                                     <div>
                                         <div class="gn-card-number-input-row" style="margin-right: 20px;">
-                                            <input type="text" name="gn_card_number_card" id="gn_card_number_card"
-                                                   value="" class="form-control gn-input-card-number"/>
+                                            <input type="text" name="gn_card_number_card" id="gn_card_number_card" value="" class="form-control gn-input-card-number" />
                                         </div>
                                         <div class="clear"></div>
                                     </div>
@@ -1701,8 +1648,7 @@ if (!defined('ABSPATH')) {
                                     </div>
                                     <div>
                                         <div class="pull-left gn-cvv-row">
-                                            <input type="text" name="gn_card_cvv" id="gn_card_cvv" value=""
-                                                   class="form-control gn-cvv-input"/>
+                                            <input type="text" name="gn_card_cvv" id="gn_card_cvv" value="" class="form-control gn-cvv-input" />
                                         </div>
                                         <div class="pull-left">
                                             <div class="gn-cvv-info">
@@ -1718,7 +1664,7 @@ if (!defined('ABSPATH')) {
                                     </div>
                                 </div>
                                 <div class="clear"></div>
-                                <input type="hidden" name="gn_card_payment_token" id="gn_card_payment_token" value=""/>
+                                <input type="hidden" name="gn_card_payment_token" id="gn_card_payment_token" value="" />
                             </div>
 
                             <div class="gn-osc-row">
@@ -1727,8 +1673,7 @@ if (!defined('ABSPATH')) {
                                         <?php echo $gn_card_expiration; ?>
                                     </div>
                                     <div class="gn-card-expiration-row">
-                                        <select class="form-control gn-card-expiration-select"
-                                                name="gn_card_expiration_month" id="gn_card_expiration_month">
+                                        <select class="form-control gn-card-expiration-select" name="gn_card_expiration_month" id="gn_card_expiration_month">
                                             <option value=""> MM</option>
                                             <option value="01"> 01</option>
                                             <option value="02"> 02</option>
@@ -1746,12 +1691,11 @@ if (!defined('ABSPATH')) {
                                         <div class="gn-card-expiration-divisor">
                                             /
                                         </div>
-                                        <select class="form-control gn-card-expiration-select"
-                                                name="gn_card_expiration_year" id="gn_card_expiration_year">
+                                        <select class="form-control gn-card-expiration-select" name="gn_card_expiration_year" id="gn_card_expiration_year">
                                             <option value=""> YYYY</option>
                                             <?php
                                             $actual_year = intval(date("Y"));
-                                            $last_year = $actual_year + 15;
+                                            $last_year   = $actual_year + 15;
                                             for ($i = $actual_year; $i <= $last_year; $i++) {
                                                 echo '<option value="' . $i . '"> ' . $i . ' </option>';
                                             }
@@ -1765,12 +1709,10 @@ if (!defined('ABSPATH')) {
 
                             <div class="gn-osc-row required">
                                 <div class="gn-col-12">
-                                    <label class=""
-                                           for="gn_card_installments"><?php echo $gn_card_installments_options; ?></label>
+                                    <label class="" for="gn_card_installments"><?php echo $gn_card_installments_options; ?></label>
                                 </div>
                                 <div class="gn-col-12">
-                                    <select name="gn_card_installments" id="gn_card_installments"
-                                            class="form-control gn-form-select">
+                                    <select name="gn_card_installments" id="gn_card_installments" class="form-control gn-form-select">
                                         <option value=""><?php echo $gn_card_brand_select; ?></option>
                                     </select>
                                 </div>
@@ -1793,7 +1735,6 @@ if (!defined('ABSPATH')) {
             </div>
 
         </div>
-    <?php 
-} ?>
+    <?php } ?>
 
 </div>

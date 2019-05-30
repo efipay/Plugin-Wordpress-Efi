@@ -20,8 +20,8 @@ jQuery(document).ready(function ($) {
             } else {
                 $("#cpf-cnpj").mask("00.000.000/0000-00");
             }
-            var elem = this;             
-            setTimeout(function(){
+            var elem = this;
+            setTimeout(function () {
                 // muda a posição do seletor
                 elem.selectionStart = elem.selectionEnd = 10000;
             }, 0);
@@ -35,8 +35,8 @@ jQuery(document).ready(function ($) {
             } else {
                 $("#input-payment-card-cpf-cnpj").mask("00.000.000/0000-00");
             }
-            var elem = this;             
-            setTimeout(function(){
+            var elem = this;
+            setTimeout(function () {
                 // muda a posição do seletor
                 elem.selectionStart = elem.selectionEnd = 10000;
             }, 0);
@@ -50,8 +50,8 @@ jQuery(document).ready(function ($) {
             } else {
                 $(".phone-mask").mask("(00) 0000-00009");
             }
-            var elem = this;             
-            setTimeout(function(){
+            var elem = this;
+            setTimeout(function () {
                 // muda a posição do seletor
                 elem.selectionStart = elem.selectionEnd = 10000;
             }, 0);
@@ -59,7 +59,7 @@ jQuery(document).ready(function ($) {
 
         $('.birth-mask').mask("00/00/0000", {
             completed: function () {
-                if (!verifyBirthDate( $(".birth-mask").val())) {
+                if (!verifyBirthDate($(".birth-mask").val())) {
                     showError('Data de nascimento inválida. Digite novamente.');
                 } else {
                     hideError();
@@ -68,12 +68,12 @@ jQuery(document).ready(function ($) {
         });
 
         $('#input-payment-card-number').mask('0000 0000 0000 0000999', { placeholder: "" });
-        $('#input-payment-card-cvv').mask('00099', { placeholder: "" });   
+        $('#input-payment-card-cvv').mask('00099', { placeholder: "" });
     }
 
     $('.phone-mask').change(function () {
         var pattern = new RegExp(/^[ ]*(?:[^\\s]+[ ]+)+[^\\s]+[ ]*$/);
-        if (!verifyPhone( $(".phone-mask").val())) {
+        if (!verifyPhone($(".phone-mask").val())) {
             showError('Telefone inválido. Digite novamente.');
         } else {
             hideError();
