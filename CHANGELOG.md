@@ -1,3 +1,6 @@
+# 0.7.3
+* Fix: Realiza verificação da versão do TLS do servidor.
+
 # 0.7.2
 * Fix: Erro na máscara de Telefone.
 
