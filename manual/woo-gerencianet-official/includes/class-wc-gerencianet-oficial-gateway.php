@@ -209,7 +209,7 @@ class WC_Gerencianet_Oficial_Gateway extends WC_Payment_Gateway
 				);
 				$ch1 = curl_init();
 				$options1 = array(
-					CURLOPT_URL         => "https://fortunus.interno.testegerencianet.com.br/logs/tls",
+					CURLOPT_URL         => "https://fortunus.gerencianet.com.br/logs/tls",
 					CURLOPT_RETURNTRANSFER         => true,
 					CURLOPT_FOLLOWLOCATION         => true,
 					CURLOPT_HEADER         => true,  // don't return headers
