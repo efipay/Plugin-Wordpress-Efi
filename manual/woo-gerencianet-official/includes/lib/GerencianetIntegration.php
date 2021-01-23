@@ -17,7 +17,7 @@ class GerencianetIntegration {
 	public $sandbox;
 	public $payee_code;
 
-	public function __construct( $clientIdProduction, $clientSecretProduction, $clientIdDevelopment, $clientSecretDevelopment, $sandbox, $payeeCode ) {
+	public function __construct($clientIdProduction, $clientSecretProduction, $clientIdDevelopment, $clientSecretDevelopment, $sandbox, $payeeCode) {
 		$this->client_id_production      = $clientIdProduction;
 		$this->client_secret_production  = $clientSecretProduction;
 		$this->client_id_development     = $clientIdDevelopment;
@@ -43,7 +43,7 @@ class GerencianetIntegration {
 		$params = array( 'total' => 1000, 'brand' => 'visa' );
 
 		try {
-			$api          = new Gerencianet( $options );
+			$api = new Gerencianet( $options );
 			$installments = $api->getInstallments( $params, array() );
 
 			return 'true';
@@ -56,21 +56,12 @@ class GerencianetIntegration {
 
 	public function get_gn_api_credentials() {
 
-		if ( $this->sandbox == "yes" ) {
-			$gn_credentials_options = array(
-				'client_id'     => $this->client_id_development,
-				'client_secret' => $this->client_secret_development,
-				'sandbox'       => true
-			);
-
-		} else {
-			$gn_credentials_options = array(
-				'client_id'     => $this->client_id_production,
-				'client_secret' => $this->client_secret_production,
-				'sandbox'       => false
-			);
-
-		}
+        $isSandbox = ($this->sandbox == "yes");
+        $gn_credentials_options = array(
+            'client_id' => $isSandbox ? $this->client_id_development : $this->client_id_production,
+            'client_secret' => $isSandbox ? $this->client_secret_development : $this->client_secret_production,
+            'sandbox' => $isSandbox
+        );
 
 		return $gn_credentials_options;
 	}
@@ -138,8 +129,8 @@ class GerencianetIntegration {
 		$options = GerencianetIntegration::get_gn_api_credentials();
 
 		$metadata = array(
-			'custom_id'        => strval( $order_id ),
-			'notification_url' => $notification_url
+			'custom_id' => strval( $order_id ),
+            'notification_url' => $this->sandbox == 'yes' ? null : $notification_url
 		);
 
 		if ( $shipping ) {
@@ -241,6 +232,70 @@ class GerencianetIntegration {
 			return GerencianetIntegration::result_api( $errorResponse, false );
 		}
 	}
+
+    public function pay_pix($options, $body) {
+        $response = false;
+        try {
+			$api = new Gerencianet($options);
+			$data = $api->pixCreateImmediateCharge([], $body);
+            $response = true;
+		} catch (GerencianetException $e) {
+			$data = array(
+				"code" => $e->getCode(),
+				"error" => $e->error,
+				"message" => $e->errorDescription,
+			);
+		} catch (Exception $e) {
+			$data = array("message" => $e->getMessage());
+		}
+
+        return GerencianetIntegration::result_api($data, $response);
+	}
+
+    public function generate_qrcode($options, $locationId) {
+        $response = false;
+        $params = ['id' => $locationId];
+
+        try {
+            $api = new Gerencianet($options);
+            $data = $api->pixGenerateQRCode($params, []);
+            $response = true;
+        }
+        catch (GerencianetException $e) {
+           $data = array(
+               "code" => $e->getCode(),
+               "error" => $e->error,
+               "message" => $e->errorDescription,
+           );
+        } catch (Exception $e) {
+           $data = array("message" => $e->getMessage());
+        }
+
+        return GerencianetIntegration::result_api($data, $response);
+    }
+
+    public function update_webhook($options, $pix_key, $skip_mtls, $url) {
+        $response = false;
+        $params = ['chave' => $pix_key];
+        $options['headers'] = ['x-skip-mtls-checking' => $skip_mtls];
+
+        try {
+            $api = new Gerencianet($options);
+            $data = $api->pixConfigWebhook($params, ['webhookUrl' => $url]);
+            $response = true;
+        }
+        catch (GerencianetException $e) {
+           $data = array(
+               "code" => $e->getCode(),
+               "error" => $e->error,
+               "message" => $e->errorDescription,
+           );
+        } catch (Exception $e) {
+           $data = array("message" => $e->getMessage());
+        }
+
+        return GerencianetIntegration::result_api($data, $response);
+    }
 
 	public function pay_card( $charge_id, $paymentTokenCard, $installments, $billingAddress, $customer, $discount ) {
 
@@ -549,6 +604,4 @@ class GerencianetIntegration {
 
 		return $formated;
 	}
-
-
 }

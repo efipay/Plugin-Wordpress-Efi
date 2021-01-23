@@ -5,7 +5,7 @@
  * Description: Gateway de pagamento Gerencianet para WooCommerce.
  * Author: Gerencianet
  * Author URI: http://www.gerencianet.com.br
- * Version: 0.7.3
+ * Version: 0.7.4
  * License: GPLv2 or later
  * Text Domain: woo-gerencianet-official
  * Domain Path: /languages/
@@ -28,7 +28,7 @@ if (!class_exists('WCGerencianetOficial')) :
 		 *
 		 * @var string
 		 */
-		const VERSION = '0.7.3';
+		const VERSION = '0.7.4';
 
 		/**
 		 * Integration id.
@@ -61,6 +61,7 @@ if (!class_exists('WCGerencianetOficial')) :
 						include_once 'includes/class-wc-gerencianet-oficial-gateway.php';
 						include_once 'includes/lib/GerencianetIntegration.php';
 						include_once 'includes/lib/GerencianetValidation.php';
+						include_once 'includes/lib/payments/Pix.php';
 
 						add_filter('woocommerce_payment_gateways', array($this, 'add_gateway'));
 
@@ -73,6 +74,12 @@ if (!class_exists('WCGerencianetOficial')) :
 						add_action('wp_ajax_nopriv_woocommerce_gerencianet_pay_card', array($this, 'woocommerce_gerencianet_pay_card'));
 						add_action('wp_ajax_woocommerce_gerencianet_create_charge', array($this, 'woocommerce_gerencianet_create_charge'));
 						add_action('wp_ajax_nopriv_woocommerce_gerencianet_create_charge', array($this, 'woocommerce_gerencianet_create_charge'));
+                        add_action('wp_ajax_woocommerce_gerencianet_pay_pix', array('Pix', 'woocommerce_gerencianet_pay_pix'));
+                        add_action('wp_ajax_nopriv_woocommerce_gerencianet_pay_pix', array('Pix', 'woocommerce_gerencianet_pay_pix'));
+
+                        // Webhook Pix
+                		add_action('woocommerce_api_pix_webhook', array('Pix', 'validate_webhook'));
+                		add_action('pix_webhook', array('Pix', 'successful_webhook'));
 					} else {
 						add_action('admin_notices', array($this, 'woocommerce_missing_notice'));
 					}
@@ -87,7 +94,7 @@ if (!class_exists('WCGerencianetOficial')) :
 		/**
 		 * Return an instance of this class.
 		 *
-		 * @return object 
+		 * @return object
 		 */
 		public static function get_instance()
 		{
@@ -187,7 +194,7 @@ if (!class_exists('WCGerencianetOficial')) :
 		 *
 		 * @param  array $methods WooCommerce payment methods.
 		 *
-		 * @return array 
+		 * @return array
 		 */
 		public function add_gateway($methods)
 		{

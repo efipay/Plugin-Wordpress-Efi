@@ -17,11 +17,7 @@ if ( ! defined( 'ABSPATH' ) ) {
                      alt="Gerencianet" title="Gerencianet"/>
             </div>
             <div class="pull-left gn-title-emission">
-				<?php if ( $generated_payment_type == "billet" ) {
-					echo $gn_success_payment_box_title_billet;
-				} else {
-					echo $gn_success_payment_box_title_card;
-				} ?>
+				<?php echo $showText[$generated_payment_type]['title']; ?>
             </div>
             <div class="clear"></div>
         </div>
@@ -35,17 +31,22 @@ if ( ! defined( 'ABSPATH' ) ) {
                 </div>
 
                 <div class="gn-col-10 gn-success-payment-billet-comments">
-					<?php if ( $generated_payment_type == "billet" ) {
-						echo $gn_success_payment_box_comments_billet;
-					} else {
-						echo $gn_success_payment_box_comments_card_part1 . " " . $email . " " . $gn_success_payment_box_comments_card_part2;
-					} ?>
-                    <p>
-						<?php echo $gn_success_payment_charge_number; ?> <b><?php echo $charge_id; ?></b>
-                    </p>
+					<?php echo $showText[$generated_payment_type]['content']; ?>
+
+                    <?php if ($charge_id != '') { ?>
+                        <p>
+    						<?php echo $gn_success_payment_charge_number; ?> <b><?php echo $charge_id; ?></b>
+                        </p>
+                    <?php } ?>
                 </div>
 
             </div>
+
+            <?php if (isset($qrcode)) { ?>
+                <div class="gn-qrcode">
+                    <img src="<?php echo $qrcode; ?>" />
+                </div>
+            <?php } ?>
 
 			<?php if ( $generated_payment_type == "billet" && $billet_url != "" ) { ?>
                 <div class="gn-align-center gn-success-payment-button">
