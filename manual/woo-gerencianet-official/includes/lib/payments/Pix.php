@@ -73,7 +73,7 @@ class Pix {
                 'nome' => $full_name
             ],
             'valor' => [ 'original' => $totalOrder ],
-            'chave' => ($gateway->sandbox == 'yes') ? $gateway->pix_key_dev : $gateway->pix_key_prod,
+            'chave' => $gateway->pix_key,
             'solicitacaoPagador' => 'Pagamento #' . $post_order_id
         ];
 
@@ -185,7 +185,7 @@ class Pix {
         }
         else {
             $credential = Pix::get_gn_api_credentials($gateway->gnIntegration->get_gn_api_credentials());
-            $pix_key = ($gateway->sandbox == 'yes') ? $gateway->pix_key_dev : $gateway->pix_key_prod;
+            $pix_key = $gateway->pix_key;
             $skip_mtls = ($gateway->pix_mtls == 'yes') ? 'false' : 'true'; // Precisa ser string
 
             $gnApi = GerencianetIntegration::update_webhook($credential, $pix_key, $skip_mtls, $url);

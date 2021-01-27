@@ -31,8 +31,7 @@ class WC_Gerencianet_Oficial_Gateway extends WC_Payment_Gateway
 		$this->billet_banking = $this->get_option('billet_banking');
 		$this->credit_card    = $this->get_option('credit_card');
 		$this->pix            = $this->get_option('pix');
-		$this->pix_key_prod   = $this->get_option('pix_key_prod');
-        $this->pix_key_dev    = $this->get_option('pix_key_dev');
+		$this->pix_key        = $this->get_option('pix_key');
 
 		// OSC option
 		$this->osc = $this->get_option('osc_option', 'no');
@@ -466,7 +465,7 @@ class WC_Gerencianet_Oficial_Gateway extends WC_Payment_Gateway
 			'api_section'               => array(
 				'title'       => __('Gerencianet Credentials', WCGerencianetOficial::getTextDomain()),
 				'type'        => 'title',
-				'description' => __("Where will you find your credentials: <a id='showKeysProductionTutorial' class='gn-admin-cursor-pointer'>Client ID/Secret Production</a>, <a id='showKeysDevelopmentTutorial' class='gn-admin-cursor-pointer'>Client ID/Secret Development</a> and <a id='showPayeeCodeTutorial' class='gn-admin-cursor-pointer'>Payee Code</a>", WCGerencianetOficial::getTextDomain()),
+				'description' => __("Here you will find your credentials: <a id='showKeysProductionTutorial' class='gn-admin-cursor-pointer'>Client ID/Secret Production</a>, <a id='showKeysDevelopmentTutorial' class='gn-admin-cursor-pointer'>Client ID/Secret Development</a> and <a id='showPayeeCodeTutorial' class='gn-admin-cursor-pointer'>Payee Code</a>", WCGerencianetOficial::getTextDomain()),
 			),
 			'client_id_production'      => array(
 				'title'       => __('Client Id Production', WCGerencianetOficial::getTextDomain()),
@@ -542,18 +541,10 @@ class WC_Gerencianet_Oficial_Gateway extends WC_Payment_Gateway
 				'type'        => 'title',
 				'description' => '',
 			),
-			'pix_key_prod' => array(
-                'title' => __('Pix Key Production', WCGerencianetOficial::getTextDomain()),
+			'pix_key' => array(
+                'title' => __('Pix Key', WCGerencianetOficial::getTextDomain()),
                 'type' => 'text',
-                'description' => __('Insert your Pix Key Production', WCGerencianetOficial::getTextDomain()),
-                'desc_tip' => true,
-                'placeholder' => '',
-                'default' => ''
-            ),
-            'pix_key_dev' => array(
-                'title' => __('Pix Key Development', WCGerencianetOficial::getTextDomain()),
-                'type' => 'text',
-                'description' => __('Insert your Pix Key Development', WCGerencianetOficial::getTextDomain()),
+                'description' => __('Insert your Pix Key', WCGerencianetOficial::getTextDomain()),
                 'desc_tip' => true,
                 'placeholder' => '',
                 'default' => ''

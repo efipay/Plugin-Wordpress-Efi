@@ -603,7 +603,7 @@ if (!defined('ABSPATH')) {
         <div id="price-pix" name="price-pix" class="gn-hide">
             <p>
                 <button class="button alt" id="gn-pay-pix-button"><?php _e('Generate QR-Code', WCGerencianetOficial::getTextDomain());
-                                                                    echo ' &nbsp; | &nbsp; ' . $order_total; ?></button>
+                                                                    echo ' &nbsp; | &nbsp; ' . $totalValuePix; ?></button>
             </p>
         </div>
         <div id="price-no-payment-selected" name="price-no-payment-selected">

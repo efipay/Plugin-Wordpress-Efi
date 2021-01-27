@@ -166,7 +166,7 @@ msgid ""
 "bankline. Stay tuned to the expiration date of the banking billet."
 msgstr ""
 "O boleto bancário foi gerado com sucesso. Faça o pagamento em bancos, lotéricas, agências dos "
-"correios ou caixa eletrônico. Fique atendo a data de vencimento do boleto."
+"correios ou caixa eletrônico. Fique atento(a) a data de vencimento do boleto."
 
 #: includes/class-wc-gerencianet-oficial-gateway.php:1602
 msgid ""
@@ -417,7 +417,7 @@ msgstr "Habilita atualização automática dos pedidos"
 
 #: includes/class-wc-gerencianet-oficial-gateway.php:516
 msgid "Auto order status update"
-msgstr "Atualização automática do status dos pedidos"
+msgstr "Atualização automática dos status dos pedidos"
 
 #: includes/class-wc-gerencianet-oficial-gateway.php:511
 msgid "Callback"
@@ -560,13 +560,13 @@ msgid ""
 "payments in sandbox mode to verify if it is compatible with your store."
 msgstr ""
 "Esta opção permite que o pagamento seja feito diretamente na página do checkout. Antes de usar em "
-"ambiente de produção, por favor, faça alguns teste de pagamento em ambiente de teste (Sandbox) para "
+"ambiente de Produção, por favor, faça alguns testes de pagamento em ambiente de Desenvolvimento (Sandbox) para "
 "verificar se é compatível com a sua loja."
 
 #: includes/class-wc-gerencianet-oficial-gateway.php:415
 #: includes/class-wc-gerencianet-oficial-gateway.php:420
 msgid "One Step Checkout"
-msgstr "Checkou em um passo"
+msgstr "Checkout em um Passo"
 
 #: includes/class-wc-gerencianet-oficial-gateway.php:410
 msgid "Please enter your account payee code; this is needed in order to take payment."
@@ -575,7 +575,7 @@ msgstr ""
 
 #: includes/class-wc-gerencianet-oficial-gateway.php:408
 msgid "Payee Code"
-msgstr "Código identificado da conta"
+msgstr "Código Identificador da Conta"
 
 #: includes/class-wc-gerencianet-oficial-gateway.php:403
 msgid "Please enter your Client Secret Development; this is needed to test payment."
@@ -585,7 +585,7 @@ msgstr ""
 
 #: includes/class-wc-gerencianet-oficial-gateway.php:401
 msgid "Client Secret Development"
-msgstr "Cliente_Secrete Desenvolvimento"
+msgstr "Client_Secret Desenvolvimento"
 
 #: includes/class-wc-gerencianet-oficial-gateway.php:396
 msgid "Please enter your Client Id Development; this is needed to test payment."
@@ -595,7 +595,7 @@ msgstr ""
 
 #: includes/class-wc-gerencianet-oficial-gateway.php:394
 msgid "Client ID Development"
-msgstr "Cliente_Id Desenvolvimento"
+msgstr "Client_ID Desenvolvimento"
 
 #: includes/class-wc-gerencianet-oficial-gateway.php:389
 msgid "Please enter your Client Secret Production; this is needed in order to take payment."
@@ -604,7 +604,7 @@ msgstr ""
 
 #: includes/class-wc-gerencianet-oficial-gateway.php:387
 msgid "Client Secret Production"
-msgstr "Cliente_Secret Produção"
+msgstr "Client_Secret Produção"
 
 #: includes/class-wc-gerencianet-oficial-gateway.php:382
 msgid "Please enter your Client Id Production; this is needed in order to take payment."
@@ -612,16 +612,16 @@ msgstr "Por favor, forneça o Cliente_Id de produção da sua conta; será neces
 
 #: includes/class-wc-gerencianet-oficial-gateway.php:380
 msgid "Client Id Production"
-msgstr "Client Id Produção"
+msgstr "Client_ID Produção"
 
 #: includes/class-wc-gerencianet-oficial-gateway.php:377
 msgid ""
-"Where will you find your credentials: <a id='showKeysProductionTutorial' class='gn-admin-cursor-"
+"Here you will find your credentials: <a id='showKeysProductionTutorial' class='gn-admin-cursor-"
 "pointer'>Client ID/Secret Production</a>, <a id='showKeysDevelopmentTutorial' class='gn-admin-cursor-"
 "pointer'>Client ID/Secret Development</a> and <a id='showPayeeCodeTutorial' class='gn-admin-cursor-"
 "pointer'>Payee Code</a>"
 msgstr ""
-"Onde você encontrára suas credenciais: <a id='showKeysProductionTutorial' class='gn-admin-cursor-"
+"Aqui você encontrará suas credenciais: <a id='showKeysProductionTutorial' class='gn-admin-cursor-"
 "pointer'>Client ID/Secret Produção</a>, <a id='showKeysDevelopmentTutorial' class='gn-admin-cursor-"
 "pointer'>Client ID/Secret Desenvolvimento</a> e <a id='showPayeeCodeTutorial' class='gn-admin-cursor-"
 "pointer'>Identificado da conta</a>"
@@ -669,19 +669,19 @@ msgstr "Habilita a Gerencianet Pagamentos"
 
 #: includes/class-wc-gerencianet-oficial-gateway.php:349
 msgid "Enable/Disable"
-msgstr "Habilita/Desabilita"
+msgstr "Habilitar/Desabilitar"
 
 #: includes/class-wc-gerencianet-oficial-gateway.php:318
 msgid ""
 "This module is the official module of Gerencianet Payment Gateway. If you have any doubths or "
 "suggestions, contact us at <a href=\"http://www.gerencianet.com.br\">www.gerencianet.com.br</a>"
 msgstr ""
-"Este módulo é o módulo oficial da Gerencianet Pagamento. Se tiver algum dúvida ou sugestão, entre em "
-"contato em <a href=\"http://www.gerencianet.com.br\">www.gerencianet.com.br</a>"
+"Este é o módulo oficial da Gerencianet Pagamentos. Se tiver alguma dúvida ou sugestão, entre em "
+"contato conosco em <a href=\"http://www.gerencianet.com.br\">www.gerencianet.com.br</a>"
 
 #: includes/class-wc-gerencianet-oficial-gateway.php:317
 msgid "Gerencianet Payments - Official Module"
-msgstr "Gerencianet Pagamento - Módulo Oficial"
+msgstr "Gerencianet Pagamentos - Módulo Oficial"
 
 #: includes/class-wc-gerencianet-oficial-gateway.php:42
 msgid "Billet or Credit Card"
@@ -704,20 +704,12 @@ msgid "Gerencianet"
 msgstr "Gerencianet"
 
 #: includes/woo-gerencianet-official.php:559
-msgid "Pix Key Production"
-msgstr "Chave Pix Produção"
+msgid "Pix Key"
+msgstr "Chave Pix"
 
 #: includes/woo-gerencianet-official.php:561
-msgid "Insert your Pix Key Production"
-msgstr "Insira a sua chave Pix de Produção"
-
-#: includes/woo-gerencianet-official.php:567
-msgid "Pix Key Development"
-msgstr "Chave Pix Desenvolvimento"
-
-#: includes/woo-gerencianet-official.php:569
-msgid "Insert your Pix Key Development"
-msgstr "Insira sua Chave Pix de Desenvolvimento"
+msgid "Insert your Pix Key"
+msgstr "Insira a sua chave Pix"
 
 #: includes/woo-gerencianet-official.php:592
 msgid "Number of Hours"
