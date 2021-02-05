@@ -8,7 +8,7 @@
  * Version: 0.7.4
  * License: GPLv2 or later
  * Text Domain: woo-gerencianet-official
- * Domain Path: /languages/
+ * Domain Path: /languages
  */
 
 if (!defined('ABSPATH')) {
@@ -183,10 +183,8 @@ if (!class_exists('WCGerencianetOficial')) :
 		 */
 		public function load_plugin_textdomain()
 		{
-			$locale = apply_filters('plugin_locale', get_locale(), WCGerencianetOficial::getTextDomain());
-
-			load_textdomain(WCGerencianetOficial::getTextDomain(), trailingslashit(WP_LANG_DIR) . 'woo-gerencianet-official/woo-gerencianet-official-' . $locale . '.mo');
-			load_plugin_textdomain(WCGerencianetOficial::getTextDomain(), false, dirname(plugin_basename(__FILE__)) . '/languages/');
+			load_textdomain(WCGerencianetOficial::getTextDomain(), WP_LANG_DIR . '/woo-gerencianet-official/woo-gerencianet-official-pt_BR.mo');
+			load_plugin_textdomain(WCGerencianetOficial::getTextDomain(), false, dirname(plugin_basename(__FILE__)) . '/languages');
 		}
 
 		/**
@@ -222,7 +220,7 @@ if (!class_exists('WCGerencianetOficial')) :
 		 */
 		public function woocommerce_missing_notice()
 		{
-			echo '<div class="error"><p>' . sprintf(__('Gerencianet Gateway depends on the last version of %s to work!', WCGerencianetOficial::getTextDomain()), '<a href="http://wordpress.org/extend/plugins/woocommerce/">WooCommerce</a>') . '</p></div>';
+			echo '<div class="error"><p>' . sprintf(__('Gerencianet Gateway depends on the last version of %s to work', WCGerencianetOficial::getTextDomain()), '<a href="http://wordpress.org/extend/plugins/woocommerce/">WooCommerce</a>') . '</p></div>';
 		}
 
 		/**

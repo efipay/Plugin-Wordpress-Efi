@@ -42,7 +42,7 @@ msgid ""
 msgstr ""
 
 #: woo-gerencianet-official.php:218
-msgid "Gerencianet Gateway depends on the last version of %s to work!"
+msgid "Gerencianet Gateway depends on the last version of %s to work"
 msgstr ""
 
 #: templates/transparent-checkout.php:550

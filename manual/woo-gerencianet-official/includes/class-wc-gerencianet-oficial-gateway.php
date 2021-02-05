@@ -18,9 +18,9 @@ class WC_Gerencianet_Oficial_Gateway extends WC_Payment_Gateway
 	 */
 	public function __construct()
 	{
-		$this->id           = 'gerencianet_oficial';
-		$this->icon         = apply_filters('woocommerce_gerencianet_oficial_icon', plugins_url('assets/images/gn-payment.png', plugin_dir_path(__FILE__)));
-		$this->has_fields   = false;
+		$this->id = 'gerencianet_oficial';
+        $this->icon = apply_filters('woocommerce_gerencianet_oficial_icon', plugins_url('assets/images/gn-payment.png', plugin_dir_path(__FILE__)));
+		$this->has_fields = false;
 		$this->method_title = __('Gerencianet', WCGerencianetOficial::getTextDomain());
 
 		// Load the settings.
@@ -583,7 +583,7 @@ class WC_Gerencianet_Oficial_Gateway extends WC_Payment_Gateway
 			'pix_number_hours' => array(
                 'title' => __('Number of Hours', WCGerencianetOficial::getTextDomain()),
                 'type' => 'text',
-                'description' => __('Hours to expire the pix after printed.', WCGerencianetOficial::getTextDomain()),
+                'description' => __('Hours to expire the pix after printed', WCGerencianetOficial::getTextDomain()),
                 'desc_tip' => true,
                 'placeholder' => '1',
                 'default' => '1'
@@ -1354,7 +1354,7 @@ class WC_Gerencianet_Oficial_Gateway extends WC_Payment_Gateway
 		$gn_billing_address_title   = __("Billing Address", WCGerencianetOficial::getTextDomain());
 		$gn_billing_state_select    = __("Select the state", WCGerencianetOficial::getTextDomain());
 		$gn_card_cvv_tip            = __("Are the last three digits<br>on the back of the card.", WCGerencianetOficial::getTextDomain());
-		$gn_card_brand_select       = __("Select the Card Brand", WCGerencianetOficial::getTextDomain());
+		$gn_card_brand_select       = __("Select the card brand", WCGerencianetOficial::getTextDomain());
 		$gn_loading_payment_request = __("Please, wait...", WCGerencianetOficial::getTextDomain());
 
 		$gn_warning_sandbox_message = __("Sandbox mode is active. The payments will not be valid.", WCGerencianetOficial::getTextDomain());
@@ -1636,7 +1636,7 @@ class WC_Gerencianet_Oficial_Gateway extends WC_Payment_Gateway
 					'gn_billing_address_title'   => __("Billing Address", WCGerencianetOficial::getTextDomain()),
 					'gn_billing_state_select'    => __("Select the state", WCGerencianetOficial::getTextDomain()),
 					'gn_card_cvv_tip'            => __("Are the last three digits<br>on the back of the card.", WCGerencianetOficial::getTextDomain()),
-					'gn_card_brand_select'       => __("Select the Card Brand", WCGerencianetOficial::getTextDomain()),
+					'gn_card_brand_select'       => __("Select the card brand", WCGerencianetOficial::getTextDomain()),
 					'gn_loading_payment_request' => __("Please, wait...", WCGerencianetOficial::getTextDomain()),
 
 					'gn_warning_sandbox_message' => __("Sandbox mode is active. The payments will not be valid.", WCGerencianetOficial::getTextDomain())

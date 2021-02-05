@@ -72,7 +72,7 @@ class Pix {
                 $docType => $document,
                 'nome' => $full_name
             ],
-            'valor' => [ 'original' => $totalOrder ],
+            'valor' => [ 'original' => sprintf('%0.2f', $totalOrder) ],
             'chave' => $gateway->pix_key,
             'solicitacaoPagador' => 'Pagamento #' . $post_order_id
         ];
@@ -85,6 +85,9 @@ class Pix {
             $gnApiQrCode = GerencianetIntegration::generate_qrcode($credential, $resultCheck['loc']['id']);
             $resultQrCode = json_decode($gnApiQrCode, true);
             $resultCheck['charge_id'] = $post_order_id;
+
+            // Atualiza webhook para garantir que o dominio está atualizado
+            Pix::updateWebhook($gateway);
 
             if(isset($resultQrCode['imagemQrcode'])) {
                 $resultCheck['imagemQrcode'] = $resultQrCode['imagemQrcode'];
