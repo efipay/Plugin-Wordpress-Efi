@@ -1345,7 +1345,7 @@ class WC_Gerencianet_Oficial_Gateway extends WC_Payment_Gateway
 		$gn_card_installments_options      = __("Installments: ", WCGerencianetOficial::getTextDomain());
 		$gn_card_brand                     = __("Select the card brand", WCGerencianetOficial::getTextDomain());
 
-		$gn_mininum_gn_charge_price = __("You can not pay this order with Gerencianet because the total value is less than R$5,00.", WCGerencianetOficial::getTextDomain());
+		$gn_mininum_gn_charge_price = __("To pay billet bank or credit card the order must have more than R$5,00. But you can pay with PIX", WCGerencianetOficial::getTextDomain());
 		$gn_pay_billet_option       = __("Pay with Billet Banking", WCGerencianetOficial::getTextDomain());
 		$gn_discount_billet         = __("Discount of ", WCGerencianetOficial::getTextDomain());
 		$gn_pay_card_option         = __("Pay with Credit Card", WCGerencianetOficial::getTextDomain());
@@ -1628,7 +1628,7 @@ class WC_Gerencianet_Oficial_Gateway extends WC_Payment_Gateway
 					'gn_card_installments_options'      => __("Installments: ", WCGerencianetOficial::getTextDomain()),
 					'gn_card_brand'                     => __("Select the card brand", WCGerencianetOficial::getTextDomain()),
 
-					'gn_mininum_gn_charge_price' => __("You can not pay this order with Gerencianet because the total value is less than R$5,00.", WCGerencianetOficial::getTextDomain()),
+					'gn_mininum_gn_charge_price' => __("To pay billet bank or credit card the order must have more than R$5,00. But you can pay with PIX", WCGerencianetOficial::getTextDomain()),
 					'gn_pay_billet_option'       => __("Pay with Billet Banking", WCGerencianetOficial::getTextDomain()),
 					'gn_discount_billet'         => __("Discount of ", WCGerencianetOficial::getTextDomain()),
 					'gn_pay_card_option'         => __("Pay with Credit Card", WCGerencianetOficial::getTextDomain()),

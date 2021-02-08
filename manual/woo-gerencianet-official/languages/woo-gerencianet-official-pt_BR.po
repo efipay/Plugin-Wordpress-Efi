@@ -202,10 +202,8 @@ msgid "Pay with Billet Banking"
 msgstr "Pague com Boleto Bancário"
 
 #: includes/class-wc-gerencianet-oficial-gateway.php:1189 includes/class-wc-gerencianet-oficial-gateway.php:1452
-msgid "You can not pay this order with Gerencianet because the total value is less than R$5,00."
-msgstr ""
-"Você não pode pagar este pedido com a Gerencianet como boleto ou cartão de crédito porque o valor total é "
-"menor do que R$5,00."
+msgid "To pay billet bank or credit card the order must have more than R$5,00. But you can pay with PIX"
+msgstr "Para pagar com boleto ou cartão de crédito o pedido precisa ter mais de R$5,00. Mas você pode pagar com PIX"
 
 #: includes/class-wc-gerencianet-oficial-gateway.php:1187 includes/class-wc-gerencianet-oficial-gateway.php:1450
 msgid "Select the card brand"

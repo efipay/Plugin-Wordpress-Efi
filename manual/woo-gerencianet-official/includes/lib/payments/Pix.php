@@ -167,7 +167,7 @@ class Pix {
         // HOOK
         else if (isset($data->pix) && Pix::checkWebhookTXID($data->pix)) {
 			header('HTTP/1.0 200 OK');
-			do_action('pix_webhook', stripslashes_deep($data));
+			do_action('pix_webhook', $data);
 		} else {
             error_log(' :: Gerencianet :: PIX_CALLBACK : ERROR');
 			wp_die(__('Request Failure', WCGerencianetOficial::getTextDomain()));
@@ -233,13 +233,13 @@ class Pix {
 	public static function successful_webhook($posted) {
 
         // Percorre lista de notificações
-        foreach($posted as &$order_notify) {
+        foreach($posted->pix as &$order_notify) {
             $args = array(
                 'limit' => -1,
                 'orderby' => 'date',
                 'order' => 'DESC',
                 'meta_key' => 'txid',
-                'meta_compare' => 'IN',
+                'meta_compare' => '=',
                 'meta_value' => $order_notify->txid
             );
 
