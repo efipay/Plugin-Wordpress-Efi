@@ -137,12 +137,10 @@ msgstr "Número da transação:"
 #: includes/class-wc-gerencianet-oficial-gateway.php:1605
 msgid ""
 "</b>, informed in your registration. If you do not receive the product or service purchased, you have <b>14 "
-"days from the payment confirmation</b> date to open a dispute.<br>Get informed in <a href=\"http://www."
-"gerencianet.com.br/contestacao\" target=\"_blank\">www.gerencianet.com.br/contestacao</a>."
+"days from the payment confirmation</b> date to open a dispute."
 msgstr ""
 "</b>, informado em seu registro. Se você não receber o produto ou o serviço da compra, você tem <b> até 14 "
-"dias a partir da confirmação de pagamento</b> para abrir uma disputa.<br> Mais informações em <a href=\"http://"
-"www.gerencianet.com.br/contestacao\" target=\"_blank\">www.gerencianet.com.br/contestacao</a>."
+"dias a partir da confirmação de pagamento</b> para abrir uma disputa."
 
 #: includes/class-wc-gerencianet-oficial-gateway.php:1604
 msgid "The charge on your card is being processed. Soon as it is confirmed, we will send an e-mail to <b>"

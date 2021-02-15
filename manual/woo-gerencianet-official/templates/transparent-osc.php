@@ -1311,8 +1311,8 @@ if (!defined('ABSPATH')) {
     <?php
     } ?>
 
-    <div class="gn-osc-warning-payment" id="wc-gerencianet-messages">
-        <?php if (($card_option && $order_total_card < 500) && ($billet_option && $order_total_billet < 500)) { ?>
+    <div class="warning-payment" id="wc-gerencianet-messages">
+        <?php if (($card_option && $order_total_card < 500) || ($billet_option && $order_total_billet < 500)) { ?>
             <div class="woocommerce-error"><?php echo $gn_mininum_gn_charge_price; ?></div>
         <?php
     	} ?>

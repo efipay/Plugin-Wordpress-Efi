@@ -78,7 +78,7 @@ if (!class_exists('WCGerencianetOficial')) :
                         add_action('wp_ajax_nopriv_woocommerce_gerencianet_pay_pix', array('Pix', 'woocommerce_gerencianet_pay_pix'));
 
                         // Webhook Pix
-                		add_action('woocommerce_api_pix_webhook', array('Pix', 'validate_webhook'));
+                		add_action('woocommerce_api_pix', array('Pix', 'validate_webhook'));
                 		add_action('pix_webhook', array('Pix', 'successful_webhook'));
 					} else {
 						add_action('admin_notices', array($this, 'woocommerce_missing_notice'));
