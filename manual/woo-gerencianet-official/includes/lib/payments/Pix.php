@@ -183,7 +183,7 @@ class Pix {
         $url = WC()->api_request_url('pix');
 
         // Remove /pix/ porque será adicionado pela gerencianet na chamada do webhook
-        $url = str_replace('/pix/', '', $str);
+        $url = str_replace('/pix/', '', $url);
 
         // Se for localhost não faz update do weebhook
         if(strpos($url, 'localhost') !== false || strpos($url, '127.0.0.1') !== false) {
