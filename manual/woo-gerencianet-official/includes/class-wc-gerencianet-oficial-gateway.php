@@ -1713,7 +1713,7 @@ class WC_Gerencianet_Oficial_Gateway extends WC_Payment_Gateway
         $order = wc_get_order($order_id);
 		$functionCall = 'gerencianet_pay_'.$method_payment;
 
-        if($cpf_cnpj == null) {
+        if($cpf_cnpj == null && $method_payment == 'pix') {
             wc_add_notice("O campo 'CPF/CNPJ' é obrigatório ", 'error');
             return array(
                 'result'   => 'fail',

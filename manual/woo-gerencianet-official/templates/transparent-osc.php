@@ -1319,7 +1319,7 @@ if (!defined('ABSPATH')) {
     </div>
 
     <div style="margin: 0px;">
-        <?php if ($billet_option == "yes") { ?>
+        <?php if ($billet_option == "yes" && $order_total_billet >= 500) { ?>
             <div id="gn-billet-payment-option" class="gn-osc-payment-option gn-osc-payment-option-selected">
                 <div>
                     <div id="billet-radio-button" class="gn-osc-left">
@@ -1341,7 +1341,7 @@ if (!defined('ABSPATH')) {
             </div>
         <?php
     	} ?>
-        <?php if ($card_option == "yes") { ?>
+        <?php if ($card_option == "yes" && $order_total_card >= 500){ ?>
             <div id="gn-card-payment-option" class="gn-osc-payment-option gn-osc-payment-option-unselected">
                 <div>
                     <div id="card-radio-button" class="gn-osc-left">
@@ -1388,7 +1388,7 @@ if (!defined('ABSPATH')) {
 
 
     <input name="wc_order_id" id="wc_order_id" type="hidden" value="<?php echo $order_id; ?>" />
-    <?php if ($billet_option == "yes") { ?>
+    <?php if ($billet_option == "yes" && $order_total_billet >= 500){ ?>
         <div id="collapse-payment-billet" class="gn-osc-background">
             <div class="panel-body">
                 <div class="gn-osc-row gn-osc-pay-comments">
@@ -1468,7 +1468,7 @@ if (!defined('ABSPATH')) {
 
     <?php } ?>
 
-    <?php if ($card_option == "yes") { ?>
+    <?php if ($card_option == "yes" && $order_total_card >= 500) { ?>
         <div id="collapse-payment-card" class="panel-collapse <?php if ($billet_option == "yes") { ?>gn-hide<?php } ?> gn-osc-background">
             <div class="panel-body">
                 <div class="gn-osc-row gn-osc-pay-comments">
