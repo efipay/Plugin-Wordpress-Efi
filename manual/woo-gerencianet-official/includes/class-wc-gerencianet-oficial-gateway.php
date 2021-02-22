@@ -1,5 +1,7 @@
 <?php
 
+require_once 'lib/payments/Pix.php';
+
 /**
  * WC gerencianet oficial Gateway Class.
  *
@@ -16,10 +18,9 @@ class WC_Gerencianet_Oficial_Gateway extends WC_Payment_Gateway
 	 */
 	public function __construct()
 	{
-
-		$this->id           = 'gerencianet_oficial';
-		$this->icon         = apply_filters('woocommerce_gerencianet_oficial_icon', plugins_url('assets/images/gn-payment.png', plugin_dir_path(__FILE__)));
-		$this->has_fields   = false;
+		$this->id = 'gerencianet_oficial';
+        $this->icon = apply_filters('woocommerce_gerencianet_oficial_icon', plugins_url('assets/images/gn-payment.png', plugin_dir_path(__FILE__)));
+		$this->has_fields = false;
 		$this->method_title = __('Gerencianet', WCGerencianetOficial::getTextDomain());
 
 		// Load the settings.
@@ -29,20 +30,33 @@ class WC_Gerencianet_Oficial_Gateway extends WC_Payment_Gateway
 		// Payment methods.
 		$this->billet_banking = $this->get_option('billet_banking');
 		$this->credit_card    = $this->get_option('credit_card');
+		$this->pix            = $this->get_option('pix');
+		$this->pix_key        = $this->get_option('pix_key');
 
 		// OSC option
 		$this->osc = $this->get_option('osc_option', 'no');
 
 		// Display payment options.
-		if ($this->credit_card == 'no') {
-			$this->title = __("Billet", WCGerencianetOficial::getTextDomain());
-		} else if ($this->billet_banking == 'no') {
-			$this->title = __("Credit Card", WCGerencianetOficial::getTextDomain());
-		} else if ($this->billet_banking == 'yes' && $this->credit_card == 'yes') {
-			$this->title = __("Billet or Credit Card", WCGerencianetOficial::getTextDomain());
-		} else {
-			$this->title = __("Gerencianet", WCGerencianetOficial::getTextDomain());
+		$format_title = '';
+		if($this->billet_banking == 'yes')
+		{
+			$format_title = 'Billet';
 		}
+
+		if($this->credit_card == 'yes')
+		{
+			$format_title = $this->billet_banking == 'yes' ?
+							$format_title. " or Credit Card" :
+							$format_title. "Credit Card";
+		}
+		if($this->pix == 'yes')
+		{
+			$format_title = $this->billet_banking == 'yes' || $this->credit_card == 'yes' ?
+							$format_title. " or Pix" :
+							$format_title. "Pix";
+		}
+
+		$this->title = __($format_title, WCGerencianetOficial::getTextDomain());
 
 		if ($this->osc == 'no') {
 			$this->checkout_type = "checkout_page";
@@ -69,6 +83,14 @@ class WC_Gerencianet_Oficial_Gateway extends WC_Payment_Gateway
 		$this->instructions_line_2      = substr($this->get_option('billet_instructions_line_2', ''), 0, 90);
 		$this->instructions_line_3      = substr($this->get_option('billet_instructions_line_3', ''), 0, 90);
 		$this->instructions_line_4      = substr($this->get_option('billet_instructions_line_4', ''), 0, 90);
+
+		//Pix options.
+		$this->discountPix = floatval(preg_replace('/[^0-9.]/', '', str_replace(",", ".", $this->get_option('pix_discount', '0'))));
+		$this->pix_discount_shipping = $this->get_option('pix_discount_shipping', 'total');
+		$this->pix_cert_name = $this->get_option('pix_cert_name');
+		$this->pix_cert_file = $this->get_option('pix_cert_file');
+		$this->expiration_pix = $this->get_option('pix_number_hours', '168'); // Valor default 1 semana
+        $this->pix_mtls = $this->get_option('pix_mtls', 'yes');
 
 		$this->client_id_production      = $this->get_option('client_id_production');
 		$this->client_secret_production  = $this->get_option('client_secret_production');
@@ -106,15 +128,85 @@ class WC_Gerencianet_Oficial_Gateway extends WC_Payment_Gateway
 		}
 
 		add_action('woocommerce_receipt_gerencianet_oficial', array($this, 'receipt_page'));
-		add_action('woocommerce_update_options_payment_gateways_' . $this->id, array(
-			$this,
-			'process_admin_options'
-		));
+		add_action('woocommerce_update_options_payment_gateways_' . $this->id, array($this, 'process_admin_options'));
 		add_action('woocommerce_thankyou_gerencianet_oficial', array($this, 'thankyou_page'));
+
+		add_action('woocommerce_update_options_payment_gateways_' . $this->id, array($this, 'on_update_options'));
 
 		// Display admin notices.
 		$this->admin_notices();
 	}
+
+    public function on_update_options() {
+        $this->save_pix_cert_db();
+        $this->save_pix_cert_dir();
+        Pix::updateWebhook($this);
+    }
+
+	public function save_pix_cert_db() {
+        $file_id = 'woocommerce_gerencianet_oficial_pix_file';
+        $file_name = $_FILES[$file_id]['name'];
+		if($file_name)
+		{
+            //get the file extension
+            $fileExt = explode('.', $file_name);
+            $fileActualExt = strtolower(end($fileExt));
+
+            if($fileActualExt != 'pem'){
+                echo '<div class="error"><p><strong> Tipo de arquivo inválido! </strong></div>';
+                return;
+            }
+
+			//read the contents of the file
+            $file_read = file_get_contents($_FILES['woocommerce_gerencianet_oficial_pix_file']['tmp_name']);
+
+			$save_pix = array(
+				'pix_cert_name' => $file_name,
+				'pix_cert_file' => $file_read
+            );
+            //table name in mysql
+            $option_name = 'woocommerce_gerencianet_oficial_settings';
+
+            //merge with the data saved in bd
+            $data = get_option($option_name);
+            $save_data = array_merge($data, $save_pix);
+
+            update_option( $option_name, $save_data, true);
+        }
+    }
+
+    //save file from the temp directory
+    private function save_pix_cert_dir(){
+		$pix_cert_file = $this->get_option('pix_cert_file');
+
+		//wordpress function to pick up the temp directory
+		$temp_dir = get_temp_dir();
+
+		$dir_gerencianet = $temp_dir.'gerencianet/';
+
+		if(!is_dir($dir_gerencianet)){
+			mkdir($dir_gerencianet,0777,TRUE);
+		}
+
+		//get all the files from the temp directory
+		$files_saved   = glob($dir_gerencianet.'*');
+
+		//deleting saved file in the temp directory
+		if(!empty($files_saved)) {
+			foreach($files_saved as $file){ // iterate files
+				if(is_file($file)){
+				 unlink($file); // delete file
+				}
+			}
+		}
+
+		$file = fopen(Pix::getCertPath(), 'w+');
+		if($file) {
+			fwrite($file, $pix_cert_file);
+			fclose($file);
+		}
+	}
+
 
 	/**
 	 * Backwards compatibility with version prior to 2.1.
@@ -127,7 +219,6 @@ class WC_Gerencianet_Oficial_Gateway extends WC_Payment_Gateway
 			return WC();
 		} else {
 			global $woocommerce;
-
 			return $woocommerce;
 		}
 	}
@@ -318,22 +409,22 @@ class WC_Gerencianet_Oficial_Gateway extends WC_Payment_Gateway
 		echo '<p>' . __('This module is the official module of Gerencianet Payment Gateway. If you have any doubths or suggestions, contact us at <a href="http://www.gerencianet.com.br">www.gerencianet.com.br</a>', WCGerencianetOficial::getTextDomain()) . '</p>';
 
 		// Generate the HTML For the settings form.
-		echo '<table class="form-table">';
-		$this->generate_settings_html();
-		echo '</table>';
+        echo '<table class="form-table">';
+        $this->generate_settings_html();
+        echo '</table>';
 
 		echo '<script>var plugin_images_url = "' . plugins_url('assets/images/', plugin_dir_path(__FILE__)) . '";
 		var ajax_url = "' . admin_url('admin-ajax.php') . '";</script>
-			<div id="tutorialGnBox" class="gn-admin-tutorial-box">
-				<div class="gn-admin-tutorial-row">
-				    <div class="gn-admin-tutorial-line">
-				      <div class="pull-right gn-admin-tutorial-close">
-				        Fechar <b>X</b>
-				      </div>
-				    </div>
-				    <img id="imgTutorial" />
-				 </div>
-			</div>';
+            <div id="tutorialGnBox" class="gn-admin-tutorial-box">
+                <div class="gn-admin-tutorial-row">
+                    <div class="gn-admin-tutorial-line">
+                        <div class="pull-right gn-admin-tutorial-close">
+                        Fechar <b>X</b>
+                        </div>
+                    </div>
+                    <img id="imgTutorial" />
+                </div>
+            </div>';
 	}
 
 	/**
@@ -345,106 +436,171 @@ class WC_Gerencianet_Oficial_Gateway extends WC_Payment_Gateway
 	{
 
 		$this->form_fields = array(
-			'enabled'                    => array(
+			'enabled'                   => array(
 				'title'   => __('Enable/Disable', WCGerencianetOficial::getTextDomain()),
 				'type'    => 'checkbox',
 				'label'   => __('Enable Gerencianet Payments', WCGerencianetOficial::getTextDomain()),
 				'default' => 'yes'
 			),
-			'title'                      => array(
+			'title'                     => array(
 				'title'       => __('Title', WCGerencianetOficial::getTextDomain()),
 				'type'        => 'text',
 				'description' => __('This controls the title which the user sees during checkout.', WCGerencianetOficial::getTextDomain()),
 				'desc_tip'    => true,
 				'default'     => __('Gerencianet', WCGerencianetOficial::getTextDomain())
 			),
-			'description'                => array(
+			'description'               => array(
 				'title'       => __('Description', WCGerencianetOficial::getTextDomain()),
 				'type'        => 'textarea',
 				'description' => __('This controls the description which the user sees during checkout.', WCGerencianetOficial::getTextDomain()),
 				'default'     => __('Pay via gerencianet', WCGerencianetOficial::getTextDomain())
 			),
-			'invoice_prefix'             => array(
+			'invoice_prefix'            => array(
 				'title'       => __('Invoice Prefix', WCGerencianetOficial::getTextDomain()),
 				'type'        => 'text',
 				'description' => __('Please enter a prefix for your invoice numbers. If you use your gerencianet account for multiple stores ensure this prefix is unqiue as gerencianet will not allow orders with the same invoice number.', WCGerencianetOficial::getTextDomain()),
 				'desc_tip'    => true,
 				'default'     => 'WC-'
 			),
-			'api_section'                => array(
+			'api_section'               => array(
 				'title'       => __('Gerencianet Credentials', WCGerencianetOficial::getTextDomain()),
 				'type'        => 'title',
-				'description' => __("Where will you find your credentials: <a id='showKeysProductionTutorial' class='gn-admin-cursor-pointer'>Client ID/Secret Production</a>, <a id='showKeysDevelopmentTutorial' class='gn-admin-cursor-pointer'>Client ID/Secret Development</a> and <a id='showPayeeCodeTutorial' class='gn-admin-cursor-pointer'>Payee Code</a>", WCGerencianetOficial::getTextDomain()),
+				'description' => __("Here you will find your credentials: <a id='showKeysProductionTutorial' class='gn-admin-cursor-pointer'>Client ID/Secret Production</a>, <a id='showKeysDevelopmentTutorial' class='gn-admin-cursor-pointer'>Client ID/Secret Development</a> and <a id='showPayeeCodeTutorial' class='gn-admin-cursor-pointer'>Payee Code</a>", WCGerencianetOficial::getTextDomain()),
 			),
-			'client_id_production'       => array(
+			'client_id_production'      => array(
 				'title'       => __('Client Id Production', WCGerencianetOficial::getTextDomain()),
 				'type'        => 'text',
 				'description' => __('Please enter your Client Id Production; this is needed in order to take payment.', WCGerencianetOficial::getTextDomain()),
 				'desc_tip'    => true,
 				'default'     => ''
 			),
-			'client_secret_production'   => array(
+			'client_secret_production'  => array(
 				'title'       => __('Client Secret Production', WCGerencianetOficial::getTextDomain()),
 				'type'        => 'text',
 				'description' => __('Please enter your Client Secret Production; this is needed in order to take payment.', WCGerencianetOficial::getTextDomain()),
 				'desc_tip'    => true,
 				'default'     => ''
 			),
-			'client_id_development'      => array(
+			'client_id_development'     => array(
 				'title'       => __('Client ID Development', WCGerencianetOficial::getTextDomain()),
 				'type'        => 'text',
 				'description' => __('Please enter your Client Id Development; this is needed to test payment.', WCGerencianetOficial::getTextDomain()),
 				'desc_tip'    => true,
 				'default'     => ''
 			),
-			'client_secret_development'  => array(
+			'client_secret_development' => array(
 				'title'       => __('Client Secret Development', WCGerencianetOficial::getTextDomain()),
 				'type'        => 'text',
 				'description' => __('Please enter your Client Secret Development; this is needed to test payment.', WCGerencianetOficial::getTextDomain()),
 				'desc_tip'    => true,
 				'default'     => ''
 			),
-			'payee_code'                 => array(
+			'payee_code'                => array(
 				'title'       => __('Payee Code', WCGerencianetOficial::getTextDomain()),
 				'type'        => 'text',
 				'description' => __('Please enter your account payee code; this is needed in order to take payment.', WCGerencianetOficial::getTextDomain()),
 				'desc_tip'    => true,
 				'default'     => ''
 			),
-			'osc_section'                => array(
+			'osc_section'               => array(
 				'title'       => __('One Step Checkout', WCGerencianetOficial::getTextDomain()),
 				'type'        => 'title',
 				'description' => __('This option allow the payment direct on checkout page. Before use on production, please do some test payments in sandbox mode to verify if it is compatible with your store.', WCGerencianetOficial::getTextDomain()),
 			),
-			'osc_option'                 => array(
+			'osc_option'                => array(
 				'title'   => __('One Step Checkout', WCGerencianetOficial::getTextDomain()),
 				'type'    => 'checkbox',
 				'label'   => __('Enable One Step Checkout', WCGerencianetOficial::getTextDomain()),
 				'default' => 'no'
 			),
-			'payment_section'            => array(
+			'payment_section' 			=> array(
 				'title'       => __('Payment Settings', WCGerencianetOficial::getTextDomain()),
 				'type'        => 'title',
 				'description' => __('These options need to be available to you in your gerencianet account.', WCGerencianetOficial::getTextDomain()),
 			),
-			'billet_banking'             => array(
+			'billet_banking'          	=> array(
 				'title'   => __('Billet Banking', WCGerencianetOficial::getTextDomain()),
 				'type'    => 'checkbox',
 				'label'   => __('Enable Billet Banking', WCGerencianetOficial::getTextDomain()),
 				'default' => 'yes'
 			),
-			'credit_card'                => array(
+			'credit_card'             	=> array(
 				'title'   => __('Credit Card', WCGerencianetOficial::getTextDomain()),
 				'type'    => 'checkbox',
 				'label'   => __('Enable Credit Card', WCGerencianetOficial::getTextDomain()),
 				'default' => 'yes'
 			),
-			'billet_section'             => array(
+			'pix' => array(
+				'title'   => __('Pix', WCGerencianetOficial::getTextDomain()),
+				'type'    => 'checkbox',
+				'label'   => __('Enable Pix', WCGerencianetOficial::getTextDomain()),
+				'default' => 'yes'
+			),
+			'pix_section' => array(
+				'title'       => __('Pix Settings', WCGerencianetOficial::getTextDomain()),
+				'type'        => 'title',
+				'description' => '',
+			),
+			'pix_key' => array(
+                'title' => __('Pix Key', WCGerencianetOficial::getTextDomain()),
+                'type' => 'text',
+                'description' => __('Insert your Pix Key', WCGerencianetOficial::getTextDomain()),
+                'desc_tip' => true,
+                'placeholder' => '',
+                'default' => ''
+            ),
+			'pix_file'                	=> array(
+				'title'       => __('Pix Certificate', WCGerencianetOficial::getTextDomain()),
+				'type'        => 'file',
+				'description' => __('Please enter your certificate', WCGerencianetOficial::getTextDomain()),
+				'desc_tip'    => true,
+            ),
+            'pix_cert_name'           	=> array(
+				'title'       => __('Pix Certificate save', WCGerencianetOficial::getTextDomain()),
+				'type'        => 'text',
+				'description' => __('Certificate save', WCGerencianetOficial::getTextDomain()),
+                'desc_tip'    => true,
+                'default'     => 'Nenhum arquivo salvo',
+			),
+			'pix_discount'            	=> array(
+				'title'       => __('Pix discount', WCGerencianetOficial::getTextDomain()),
+				'type'        => 'text',
+				'description' => __('Discount for payment with Pix', WCGerencianetOficial::getTextDomain()),
+				'desc_tip'    => true,
+				'placeholder' => '0%',
+				'default'     => '0%'
+			),
+			'pix_discount_shipping'   	 => array(
+				'title'       => __('Apply discount mode', WCGerencianetOficial::getTextDomain()),
+				'type'        => 'select',
+				'description' => __('Choose mode of discount.', WCGerencianetOficial::getTextDomain()),
+				'default'     => 'total',
+				'options'     => array(
+					'total'    => __('Apply discount on total value with Shipping', WCGerencianetOficial::getTextDomain()),
+					'products' => __('Apply discount just on products price', WCGerencianetOficial::getTextDomain()),
+				)
+			),
+			'pix_number_hours' => array(
+                'title' => __('Number of Hours', WCGerencianetOficial::getTextDomain()),
+                'type' => 'text',
+                'description' => __('Hours to expire the pix after printed', WCGerencianetOficial::getTextDomain()),
+                'desc_tip' => true,
+                'placeholder' => '1',
+                'default' => '1'
+            ),
+            'pix_mtls' => array(
+				'title' => __('Validate mTLS', WCGerencianetOficial::getTextDomain()),
+				'type' => 'checkbox',
+                'description' => __('Understand the risks of not configuring mTLS by accessing the link https://gnetbr.com/rke4baDVyd', WCGerencianetOficial::getTextDomain()),
+                'desc_tip' => true,
+				'default' => 'yes'
+			),
+			'billet_section'     		 => array(
 				'title'       => __('Billet Settings', WCGerencianetOficial::getTextDomain()),
 				'type'        => 'title',
 				'description' => '',
 			),
-			'billet_discount'            => array(
+			'billet_discount'    		 => array(
 				'title'       => __('Billet discount', WCGerencianetOficial::getTextDomain()),
 				'type'        => 'text',
 				'description' => __('Discount for payment with billet.', WCGerencianetOficial::getTextDomain()),
@@ -711,24 +867,25 @@ class WC_Gerencianet_Oficial_Gateway extends WC_Payment_Gateway
 
 		$expirationDate = date("Y-m-d", mktime(0, 0, 0, date("m"), date("d") + intval($billetExpireDays), date("Y")));
 
+        if (count($_POST) < 1) {
+            $errorResponse = array(
+                "message" => __("An error occurred during your request. Please, try again.", WCGerencianetOficial::getTextDomain())
+            );
+
+            return json_encode($errorResponse);
+        }
+
+        $arrayDadosPost = array();
+        foreach ($_POST as $key => $value) {
+            if ($key != "email") {
+                $arrayDadosPost[$key] = sanitize_text_field($value);
+            } else {
+                $arrayDadosPost[$key] = $value;
+            }
+        }
+
+
 		if ($checkout_type == "OSC") {
-			if (count($_POST) < 1) {
-				$errorResponse = array(
-					"message" => __("An error occurred during your request. Please, try again.", WCGerencianetOficial::getTextDomain())
-				);
-
-				return json_encode($errorResponse);
-			}
-
-			$arrayDadosPost = array();
-			foreach ($_POST as $key => $value) {
-				if ($key != "email") {
-					$arrayDadosPost[$key] = sanitize_text_field($value);
-				} else {
-					$arrayDadosPost[$key] = $value;
-				}
-			}
-
 			$post_order_id       = $order_id;
 			$post_name_corporate = $arrayDadosPost['gn_billet_name_corporate'];
 			$post_cpf_cnpj       = preg_replace('/[^0-9]/', '', $arrayDadosPost['gn_billet_cpf_cnpj']);
@@ -736,22 +893,6 @@ class WC_Gerencianet_Oficial_Gateway extends WC_Payment_Gateway
 			$post_phone_number   = preg_replace('/[^0-9]/', '', $arrayDadosPost['gn_billet_phone_number']);
 			$post_charge_id      = $charge_id;
 		} else {
-			if (count($_POST) < 1) {
-				$errorResponse = array(
-					"message" => __("An error occurred during your request. Please, try again.", WCGerencianetOficial::getTextDomain())
-				);
-
-				return json_encode($errorResponse);
-			}
-
-			$arrayDadosPost = array();
-			foreach ($_POST as $key => $value) {
-				if ($key != "email") {
-					$arrayDadosPost[$key] = sanitize_text_field($value);
-				} else {
-					$arrayDadosPost[$key] = $value;
-				}
-			}
 
 			$post_order_id       = $arrayDadosPost['order_id'];
 			$post_name_corporate = $arrayDadosPost['name_corporate'];
@@ -920,24 +1061,24 @@ class WC_Gerencianet_Oficial_Gateway extends WC_Payment_Gateway
 	public function gerencianet_pay_card($checkout_type, $order_id, $charge_id)
 	{
 
+        if (count($_POST) < 1) {
+            $errorResponse = array(
+                "message" => __("An error occurred during your request. Please, try again.", WCGerencianetOficial::getTextDomain())
+            );
+
+            return json_encode($errorResponse);
+        }
+
+        $arrayDadosPost = array();
+        foreach ($_POST as $key => $value) {
+            if ($key != "email") {
+                $arrayDadosPost[$key] = sanitize_text_field($value);
+            } else {
+                $arrayDadosPost[$key] = $value;
+            }
+        }
+
 		if ($checkout_type == "OSC") {
-			if (count($_POST) < 1) {
-				$errorResponse = array(
-					"message" => __("An error occurred during your request. Please, try again.", WCGerencianetOficial::getTextDomain())
-				);
-
-				return json_encode($errorResponse);
-			}
-
-			$arrayDadosPost = array();
-			foreach ($_POST as $key => $value) {
-				if ($key != "email") {
-					$arrayDadosPost[$key] = sanitize_text_field($value);
-				} else {
-					$arrayDadosPost[$key] = $value;
-				}
-			}
-
 			$post_order_id = $order_id;
 
 			$birth = explode("/", $arrayDadosPost['gn_card_birth']);
@@ -959,22 +1100,6 @@ class WC_Gerencianet_Oficial_Gateway extends WC_Payment_Gateway
 			$post_installments   = $arrayDadosPost['gn_card_installments'];
 			$post_charge_id      = $charge_id;
 		} else {
-			if (count($_POST) < 1) {
-				$errorResponse = array(
-					"message" => __("An error occurred during your request. Please, try again.", WCGerencianetOficial::getTextDomain())
-				);
-
-				return json_encode($errorResponse);
-			}
-
-			$arrayDadosPost = array();
-			foreach ($_POST as $key => $value) {
-				if ($key != "email") {
-					$arrayDadosPost[$key] = sanitize_text_field($value);
-				} else {
-					$arrayDadosPost[$key] = $value;
-				}
-			}
 
 			$post_order_id = $arrayDadosPost['order_id'];
 
@@ -1080,8 +1205,38 @@ class WC_Gerencianet_Oficial_Gateway extends WC_Payment_Gateway
 		return $gnApiResult;
 	}
 
+    /**
+     * Calculate pix discount
+     *
+     * @param void
+     *
+     * @return float
+     */
+    public function calculatePixDiscount() {
+        $WC = $this->woocommerce_instance();
+
+        $total_value   = $WC->cart->get_cart_contents_total();
+        $totalShipping = $WC->cart->get_shipping_total();
+        $totalTax      = $WC->cart->get_cart_contents_tax();
+        $discountPix   = $this->discountPix;
+
+        if(isset($total_value, $totalShipping, $totalTax, $discountPix) ) {
+            if ($this->pix_discount_shipping == 'products') {
+                $discountPixTotal = (float)($total_value) * (((float)$discountPix / 100) );
+            } else {
+                $total_value = (float)($total_value + $totalShipping + $totalTax);
+                $discountPixTotal = $total_value * (((float)$discountPix / 100));
+            }
+            $total_value = (float)($total_value  - $discountPixTotal);
+        } else {
+            return $this->returnError('An error occurred during your request. Please, try again.');
+        }
+
+        return round($total_value, 2);
+    }
+
 	/**
-	 * Generate Gerencianet script to get payment token 
+	 * Generate Gerencianet script to get payment token
 	 */
 	public function generate_gn_script()
 	{
@@ -1098,6 +1253,9 @@ class WC_Gerencianet_Oficial_Gateway extends WC_Payment_Gateway
 	 */
 	protected function generate_payment_page_options($order_id)
 	{
+		//save certificate in dir path
+		$this->save_pix_cert_dir();
+
 		$this->styles();
 		$this->scripts();
 
@@ -1135,6 +1293,7 @@ class WC_Gerencianet_Oficial_Gateway extends WC_Payment_Gateway
 
 		$billet_option = $this->billet_banking;
 		$card_option   = $this->credit_card;
+        $pix_option    = $this->pix;
 
 		$order_received_url = $order->get_checkout_order_received_url();
 
@@ -1186,19 +1345,25 @@ class WC_Gerencianet_Oficial_Gateway extends WC_Payment_Gateway
 		$gn_card_installments_options      = __("Installments: ", WCGerencianetOficial::getTextDomain());
 		$gn_card_brand                     = __("Select the card brand", WCGerencianetOficial::getTextDomain());
 
-		$gn_mininum_gn_charge_price = __("You can not pay this order with Gerencianet because the total value is less than R$5,00.", WCGerencianetOficial::getTextDomain());
+		$gn_mininum_gn_charge_price = __("To pay billet bank or credit card the order must have more than R$5,00. But you can pay with PIX", WCGerencianetOficial::getTextDomain());
 		$gn_pay_billet_option       = __("Pay with Billet Banking", WCGerencianetOficial::getTextDomain());
 		$gn_discount_billet         = __("Discount of ", WCGerencianetOficial::getTextDomain());
 		$gn_pay_card_option         = __("Pay with Credit Card", WCGerencianetOficial::getTextDomain());
+		$gn_pay_pix_option          = __("Pay with Pix", WCGerencianetOficial::getTextDomain());
 		$gn_installments_pay        = __("Pay in", WCGerencianetOficial::getTextDomain());
 		$gn_billing_address_title   = __("Billing Address", WCGerencianetOficial::getTextDomain());
 		$gn_billing_state_select    = __("Select the state", WCGerencianetOficial::getTextDomain());
 		$gn_card_cvv_tip            = __("Are the last three digits<br>on the back of the card.", WCGerencianetOficial::getTextDomain());
-		$gn_card_brand_select       = __("Select the Card Brand", WCGerencianetOficial::getTextDomain());
+		$gn_card_brand_select       = __("Select the card brand", WCGerencianetOficial::getTextDomain());
 		$gn_loading_payment_request = __("Please, wait...", WCGerencianetOficial::getTextDomain());
 
 		$gn_warning_sandbox_message = __("Sandbox mode is active. The payments will not be valid.", WCGerencianetOficial::getTextDomain());
 
+        // Pix options
+        $gn_discount_pix = __("Discount of ", WCGerencianetOficial::getTextDomain());
+        $total_value_pix =  $this->calculatePixDiscount();
+        $discountPix =  $this->discountPix;
+        $totalValuePix =  $this->gnIntegration->formatCurrencyBRL($this->gn_price_format($total_value_pix));
 
 		$gn_billing_cpf_cnpj_validate       = false;
 		$gn_billing_name_corporate_validate = false;
@@ -1408,7 +1573,15 @@ class WC_Gerencianet_Oficial_Gateway extends WC_Payment_Gateway
 			$total_order_pay_by_card = $this->gn_price_format($order_total) + $meta_discount_value;
 			$discount_value          = $total_order_pay_by_card - $total_order_pay_by_billet;
 
-			if (is_ajax())
+            //Pix values
+            $total_value_pix = $this->calculatePixDiscount();
+            $discountPix   =  $this->discountPix;
+            $discountPixFormatted = str_replace(".", ",", $discountPix);
+            $totalValuePix =  $this->gnIntegration->formatCurrencyBRL($this->gn_price_format($total_value_pix));
+            $discountValuePix = (float)WC()->cart->get_cart_contents_total() - $total_value_pix;
+            $discountValuePix = $this->gnIntegration->formatCurrencyBRL($this->gn_price_format($discountValuePix));
+
+			if (is_ajax()) {
 				wc_get_template('transparent-osc.php', array(
 					'order_id'                          => $order_id,
 					'ajax_url'                          => admin_url('admin-ajax.php'),
@@ -1417,6 +1590,12 @@ class WC_Gerencianet_Oficial_Gateway extends WC_Payment_Gateway
 					'discount_formatted'                => $discountBilletFormatted,
 					'billet_option'                     => $this->billet_banking,
 					'card_option'                       => $this->credit_card,
+                    'pix_option'                        => $this->pix,
+                    'discountPix'                       => $discountPix,
+                    'pix_mtls'                          => $this->pix_mtls,
+                    'discount_pix_formatted'            => $discountPixFormatted,
+                    'discount_pix_value'                => $discountValuePix,
+                    'order_with_pix_discount'           => $totalValuePix,
 					'max_installments'                  => $this->gnIntegration->max_installments($total_order_pay_by_card),
 					'order_with_billet_discount'        => $this->gnIntegration->formatCurrencyBRL($total_order_pay_by_billet),
 					'order_billet_discount'             => $this->gnIntegration->formatCurrencyBRL($discount_value),
@@ -1449,7 +1628,7 @@ class WC_Gerencianet_Oficial_Gateway extends WC_Payment_Gateway
 					'gn_card_installments_options'      => __("Installments: ", WCGerencianetOficial::getTextDomain()),
 					'gn_card_brand'                     => __("Select the card brand", WCGerencianetOficial::getTextDomain()),
 
-					'gn_mininum_gn_charge_price' => __("You can not pay this order with Gerencianet because the total value is less than R$5,00.", WCGerencianetOficial::getTextDomain()),
+					'gn_mininum_gn_charge_price' => __("To pay billet bank or credit card the order must have more than R$5,00. But you can pay with PIX", WCGerencianetOficial::getTextDomain()),
 					'gn_pay_billet_option'       => __("Pay with Billet Banking", WCGerencianetOficial::getTextDomain()),
 					'gn_discount_billet'         => __("Discount of ", WCGerencianetOficial::getTextDomain()),
 					'gn_pay_card_option'         => __("Pay with Credit Card", WCGerencianetOficial::getTextDomain()),
@@ -1457,11 +1636,12 @@ class WC_Gerencianet_Oficial_Gateway extends WC_Payment_Gateway
 					'gn_billing_address_title'   => __("Billing Address", WCGerencianetOficial::getTextDomain()),
 					'gn_billing_state_select'    => __("Select the state", WCGerencianetOficial::getTextDomain()),
 					'gn_card_cvv_tip'            => __("Are the last three digits<br>on the back of the card.", WCGerencianetOficial::getTextDomain()),
-					'gn_card_brand_select'       => __("Select the Card Brand", WCGerencianetOficial::getTextDomain()),
+					'gn_card_brand_select'       => __("Select the card brand", WCGerencianetOficial::getTextDomain()),
 					'gn_loading_payment_request' => __("Please, wait...", WCGerencianetOficial::getTextDomain()),
 
 					'gn_warning_sandbox_message' => __("Sandbox mode is active. The payments will not be valid.", WCGerencianetOficial::getTextDomain())
 				), 'woocommerce/woo-gerencianet-official/', plugin_dir_path(dirname(__FILE__)) . 'templates/');
+            }
 		} else {
 			echo $this->description;
 		}
@@ -1479,7 +1659,6 @@ class WC_Gerencianet_Oficial_Gateway extends WC_Payment_Gateway
 	{
 
 		$order = wc_get_order($order_id);
-
 		$charge_id = json_encode($_POST);
 
 		if ($this->checkout_type == "OSC") {
@@ -1493,61 +1672,33 @@ class WC_Gerencianet_Oficial_Gateway extends WC_Payment_Gateway
 				);
 			}
 
-			$create_charge = $this->gerencianet_create_charge('OSC', $order_id);
+			if($_POST['paymentMethodRadio'] === 'pix') {
+                return $this->process_payment_method($_POST['paymentMethodRadio'], $order_id, null, $_POST['gn_pix_cpf_cnpj']);
+			}
+			else {
+				$create_charge = $this->gerencianet_create_charge('OSC', $order_id);
+				$resultCheck = array();
+				$resultCheck = json_decode($create_charge, true);
 
-			$resultCheck = array();
-			$resultCheck = json_decode($create_charge, true);
-
-			if (isset($resultCheck["code"])) {
-				if ($resultCheck["code"] == 200) {
-					if ($_POST['paymentMethodRadio'] == "billet") {
-						$pay_charge     = $this->gerencianet_pay_billet('OSC', $order_id, (int)$resultCheck["data"]["charge_id"]);
-						$resultCheckPay = array();
-						$resultCheckPay = json_decode($pay_charge, true);
-						if (isset($resultCheckPay["code"])) {
-							if ($resultCheckPay["code"] == 200) {
-								return array(
-									'result'   => 'success',
-									'redirect' => $order->get_checkout_order_received_url() . '&method=billet&charge_id=' . (int)$resultCheck["data"]["charge_id"] . '&'
-								);
-							}
-						}
+				if (isset($resultCheck["code"])) {
+	                if ($resultCheck['code'] == 200) {
+						return $this->process_payment_method($_POST['paymentMethodRadio'], $order_id, (int)$resultCheck['data']['charge_id']);
 					} else {
-						$pay_charge     = $this->gerencianet_pay_card('OSC', $order_id, (int)$resultCheck["data"]["charge_id"]);
-						$resultCheckPay = array();
-						$resultCheckPay = json_decode($pay_charge, true);
-						if (isset($resultCheckPay["code"])) {
-							if ($resultCheckPay["code"] == 200) {
-								return array(
-									'result'   => 'success',
-									'redirect' => $order->get_checkout_order_received_url() . '&method=card&charge_id=' . (int)$resultCheck["data"]["charge_id"] . '&'
-								);
-							}
-						}
+						wc_add_notice('Ocorreu um erro ao tentar realizar o pagamento. Tente novamente.', 'error');
+
+						return array(
+							'result'   => 'fail',
+							'redirect' => '',
+						);
 					}
-
-
-					wc_add_notice($resultCheckPay['message'], 'error');
-
-					return array(
-						'result'   => 'fail',
-						'redirect' => '',
-					);
 				} else {
-					wc_add_notice('Ocorreu um erro ao tentar realizar o pagamento. Tente novamente.', 'error');
+					wc_add_notice($resultCheck['message'], 'error');
 
 					return array(
 						'result'   => 'fail',
 						'redirect' => '',
 					);
 				}
-			} else {
-				wc_add_notice($resultCheck['message'], 'error');
-
-				return array(
-					'result'   => 'fail',
-					'redirect' => '',
-				);
 			}
 		} else {
 			return array(
@@ -1555,6 +1706,51 @@ class WC_Gerencianet_Oficial_Gateway extends WC_Payment_Gateway
 				'redirect' => $order->get_checkout_payment_url(true)
 			);
 		}
+	}
+
+	private function process_payment_method($method_payment, $order_id, $charge_id, $cpf_cnpj = null) {
+
+        $order = wc_get_order($order_id);
+		$functionCall = 'gerencianet_pay_'.$method_payment;
+
+        if($cpf_cnpj == null && $method_payment == 'pix') {
+            wc_add_notice("O campo 'CPF/CNPJ' é obrigatório ", 'error');
+            return array(
+                'result'   => 'fail',
+                'redirect' => '',
+            );
+        }
+
+		$pay_charge = ($method_payment !== 'pix')
+            ? $this->{$functionCall}('OSC', $order_id, $charge_id)
+            : Pix::gerencianet_pay_pix('OSC', $order_id, $charge_id, $cpf_cnpj);
+
+		$resultCheckPay = array();
+		$resultCheckPay = json_decode($pay_charge, true);
+
+        // card or billet
+		if (isset($resultCheckPay['code'])) {
+			if ($resultCheckPay['code'] == 200) {
+				return array(
+					'result'   => 'success',
+					'redirect' => $order->get_checkout_order_received_url() . '&method='.$method_payment.'&charge_id=' . $charge_id . '&'
+				);
+			}
+		}
+        // pix
+        if (isset($resultCheckPay['txid'])) {
+            return array(
+                'result'   => 'success',
+                'redirect' => $order->get_checkout_order_received_url() . '&method='.$method_payment
+            );
+        }
+
+		wc_add_notice($resultCheckPay['message'], 'error');
+
+		return array(
+			'result'   => 'fail',
+			'redirect' => '',
+		);
 	}
 
 	/**
@@ -1588,23 +1784,36 @@ class WC_Gerencianet_Oficial_Gateway extends WC_Payment_Gateway
 	protected function generate_gn_thankyou_page($order_id)
 	{
 		$this->styles();
-
 		$order = wc_get_order($order_id);
-
 		$email = $order->billing_email;
 
 		$billet_url = get_post_meta($order_id, 'billet', true);
+        $qrcode = get_post_meta($order_id, 'pix_qr', true);
 
 		$generated_payment_type = sanitize_text_field($_GET['method']);
-		$charge_id              = sanitize_text_field($_GET['charge_id']);
+		$charge_id = sanitize_text_field($_GET['charge_id']);
 
-		$gn_success_payment_box_title_billet        = __("Billet emitted by Gerencianet", WCGerencianetOficial::getTextDomain());
-		$gn_success_payment_box_title_card          = __("Your order was successful and your payment is being processed. Wait until you receive confirmation of payment by email.", WCGerencianetOficial::getTextDomain());
-		$gn_success_payment_box_comments_billet     = __('The Banking Billet was successfully generated. Make payment in bank, lottery, post office or bankline. Stay tuned to the expiration date of the banking billet.', WCGerencianetOficial::getTextDomain());
-		$gn_success_payment_box_comments_card_part1 = __("The charge on your card is being processed. Soon as it is confirmed, we will send an e-mail to <b>", WCGerencianetOficial::getTextDomain());
-		$gn_success_payment_box_comments_card_part2 = __('</b>, informed in your registration. If you do not receive the product or service purchased, you have <b>14 days from the payment confirmation</b> date to open a dispute.<br>Get informed in <a href="http://www.gerencianet.com.br/contestacao" target="_blank">www.gerencianet.com.br/contestacao</a>.', WCGerencianetOficial::getTextDomain());
-		$gn_success_payment_charge_number           = __("Charge number:", WCGerencianetOficial::getTextDomain());
-		$gn_success_payment_open_billet             = __("Show Billet", WCGerencianetOficial::getTextDomain());
+        $showText = array(
+            'pix' => [
+                'title' => __('Payment for PIX', WCGerencianetOficial::getTextDomain()),
+                'content' => __('Scan the code below and make the payment for Pix', WCGerencianetOficial::getTextDomain())
+            ],
+            'billet' => [
+                'title' => __('Billet emitted by Gerencianet', WCGerencianetOficial::getTextDomain()),
+                'content' => __('The Banking Billet was successfully generated. Make payment in bank, lottery, post office or bankline. Stay tuned to the expiration date of the banking billet.', WCGerencianetOficial::getTextDomain())
+            ],
+            'cart' => [
+                'title' => __('Your order was successful and your payment is being processed. Wait until you receive confirmation of payment by email.', WCGerencianetOficial::getTextDomain()),
+                'content' => join(' ', [
+                    __('The charge on your card is being processed. Soon as it is confirmed, we will send an e-mail to <b>', WCGerencianetOficial::getTextDomain()),
+                    $email,
+                    __('</b>, informed in your registration. If you do not receive the product or service purchased, you have <b>14 days from the payment confirmation</b> date to open a dispute.<br>Get informed in <a href="http://www.gerencianet.com.br/contestacao" target="_blank">www.gerencianet.com.br/contestacao</a>.', WCGerencianetOficial::getTextDomain())
+                ])
+            ]
+        );
+
+        $gn_success_payment_charge_number = __("Charge number:", WCGerencianetOficial::getTextDomain());
+		$gn_success_payment_open_billet = __("Show Billet", WCGerencianetOficial::getTextDomain());
 
 		ob_start();
 		include plugin_dir_path(dirname(__FILE__)) . 'templates/order-received.php';

@@ -1,0 +1,36 @@
+version: '3.1'
+
+services:
+
+  wordpress:
+    image: wordpress
+    restart: always
+    ports:
+      - 8080:80
+    environment:
+      WORDPRESS_DB_HOST: db
+      WORDPRESS_DB_USER: wp_user
+      WORDPRESS_DB_PASSWORD: wp123
+      WORDPRESS_DB_NAME: wp
+    volumes:
+      - wordpress:/var/www/html
+      - ../manual/woo-gerencianet-official:/var/www/html/wp-content/plugins/woo-gerencianet-official
+      - ./woocommerce:/var/www/html/wp-content/plugins/woocommerce
+      - ./wp-ngrok:/var/www/html/wp-content/plugins/wp-ngrok
+      - ../manual/woo-gerencianet-official/languages/woo-gerencianet-official-pt_BR.mo:/var/www/html/wp-content/languages/plugins/woo-gerencianet-official-pt_BR.mo
+      - ../tests:/var/www/html/tests
+
+  db:
+    image: mysql:5.7
+    restart: always
+    environment:
+      MYSQL_DATABASE: wp
+      MYSQL_USER: wp_user
+      MYSQL_PASSWORD: wp123
+      MYSQL_RANDOM_ROOT_PASSWORD: '1'
+    volumes:
+      - db:/var/lib/mysql
+
+volumes:
+  wordpress:
+  db:

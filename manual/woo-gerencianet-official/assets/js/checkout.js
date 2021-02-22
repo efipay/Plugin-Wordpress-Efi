@@ -1,7 +1,9 @@
 
 var errorMessage;
 var id_charge = 0;
-var active = 0;
+var classBackground;
+var containsPrice;
+var containsCollapse;
 
 var getPaymentToken;
 $gn.ready(function (checkout) {
@@ -11,36 +13,21 @@ $gn.ready(function (checkout) {
 jQuery(document).ready(function ($) {
 
     if ($().mask) {
+        function initOptions() {
+            classBackground    = $('.gn-accordion-option-background');
+            containsPrice      = $('[id*="price"]');
+            containsCollapse   = $('[id*="collapse-payment"]');
 
-        $("#cpf-cnpj").keyup(function () {
-            $("#cpf-cnpj").unmask();
-            var cpf = $("#cpf-cnpj").val().replace(/[^\d]+/g, '');
-            if (cpf.length <= 11) {
-                $("#cpf-cnpj").mask("000.000.000-009");
-            } else {
-                $("#cpf-cnpj").mask("00.000.000/0000-00");
+            if(classBackground.length === 1) {
+                onCardClick(classBackground[0].id);
             }
-            var elem = this;
-            setTimeout(function () {
-                // muda a posição do seletor
-                elem.selectionStart = elem.selectionEnd = 10000;
-            }, 0);
-        });
+        }
 
-        $("#input-payment-card-cpf-cnpj").keyup(function () {
-            $("#input-payment-card-cpf-cnpj").unmask();
-            var cpf = $("#input-payment-card-cpf-cnpj").val().replace(/[^\d]+/g, '');
-            if (cpf.length <= 11) {
-                $("#input-payment-card-cpf-cnpj").mask("000.000.000-009");
-            } else {
-                $("#input-payment-card-cpf-cnpj").mask("00.000.000/0000-00");
-            }
-            var elem = this;
-            setTimeout(function () {
-                // muda a posição do seletor
-                elem.selectionStart = elem.selectionEnd = 10000;
-            }, 0);
-        });
+        initOptions();
+
+        $("#cpf-cnpj").keyup((event) => documentMask(event));
+        $("#pix-cpf-cnpj").keyup((event) => documentMask(event));
+        $("#input-payment-card-cpf-cnpj").keyup((event) => documentMask(event));
 
         $(".phone-mask").keyup(function () {
             $(".phone-mask").unmask();
@@ -71,6 +58,18 @@ jQuery(document).ready(function ($) {
         $('#input-payment-card-cvv').mask('00099', { placeholder: "" });
     }
 
+    function documentMask(event) {
+        const data = $(event.currentTarget).val();
+
+        $(event.currentTarget).unmask();
+        if (data.length <= 14) {
+            $(event.currentTarget).mask("000.000.000-009");
+        } else {
+            $(event.currentTarget).mask("00.000.000/0000-00");
+        }
+        event.currentTarget.setSelectionRange(data.length, data.length);
+    }
+
     $('.phone-mask').change(function () {
         var pattern = new RegExp(/^[ ]*(?:[^\\s]+[ ]+)+[^\\s]+[ ]*$/);
         if (!verifyPhone($(".phone-mask").val())) {
@@ -89,79 +88,50 @@ jQuery(document).ready(function ($) {
         }
     });
 
-    jQuery('#background-card').click(function (e) {
-        if (active != 2) {
-            $('#collapse-payment-card').slideDown();
-            $('#collapse-payment-billet').slideUp();
-            $('#paymentMethodCardRadio').prop('checked', true);
-            $('#paymentMethodBilletRadio').prop('checked', false);
-            $("#background-card").css("background-color", "#f5f5f5");
-            $("#background-billet").css("background-color", "#ffffff");
-            $('#price-billet').hide();
-            $('#price-card').show();
-            $('#price-no-payment-selected').hide();
-            active = 2;
+    jQuery('#background-card').click((event) => onCardClick(event.currentTarget.id));
+    jQuery('#background-billet').click((event) => onCardClick(event.currentTarget.id));
+    jQuery('#background-pix').click((event) => {onCardClick(event.currentTarget.id)});
+
+    function onCardClick(id) {
+
+        const idPayment = id.split('-')[1];//["background", "id-Payment"]
+        const idPrice = `price-${idPayment}`;
+        const idCollapse = `collapse-payment-${idPayment}`;
+
+        $.each(classBackground, (index, div) => {
+            const isChecket = $(div).find('input[type=radio]').prop('checked');
+            if(id === div.id && !isChecket) {
+                $(div).css('background-color', '#f5f5f5');
+                $(div).find('input[type=radio]').prop('checked', true);
+            } else {
+                $(div).css('background-color', '#ffffff');
+                $(div).find('input[type=radio]').prop('checked', false);
+            }
+        });
+
+        $.each(containsPrice, (index, div) => {
+            const isVisible = $(div).is(':visible');
+            if(div.id === idPrice && !isVisible) {
+                $(div).show();
+            } else {
+                $(div).hide();
+            }
+        });
+
+        $.each(containsCollapse, (index, div) => {
+            const isVisible = $(div).is(':visible');
+            if(div.id === idCollapse && !isVisible) {
+                $(div).slideDown();
+            } else {
+                $(div).slideUp();
+            }
+        });
+
+        if($(`#${idPrice}`).is(':visible')) {
+            $(containsPrice[containsPrice.length-1]).hide();
         } else {
-            $('#collapse-payment-card').slideUp();
-            $('#paymentMethodCardRadio').prop('checked', false);
-            $('#paymentMethodBilletRadio').prop('checked', false);
-            $("#background-card").css("background-color", "#ffffff");
-            $("#background-billet").css("background-color", "#ffffff");
-            $('#price-card').hide();
-            $('#price-no-payment-selected').show();
-            active = 0;
+            $(containsPrice[containsPrice.length-1]).show();
         }
-    });
-
-    jQuery('#background-billet').click(function (e) {
-        if (active != 1) {
-            jQuery('#collapse-payment-billet').slideDown();
-            jQuery('#collapse-payment-card').slideUp();
-            jQuery('#paymentMethodCardRadio').prop('checked', false);
-            jQuery('#paymentMethodBilletRadio').prop('checked', true);
-            jQuery("#background-card").css("background-color", "#ffffff");
-            jQuery("#background-billet").css("background-color", "#f5f5f5");
-            jQuery('#price-billet').show();
-            jQuery('#price-card').hide();
-            jQuery('#price-no-payment-selected').hide();
-            active = 1;
-        } else {
-            jQuery('#collapse-payment-billet').slideUp();
-            jQuery('#paymentMethodCardRadio').prop('checked', false);
-            jQuery('#paymentMethodBilletRadio').prop('checked', false);
-            jQuery("#background-card").css("background-color", "#ffffff");
-            jQuery("#background-billet").css("background-color", "#ffffff");
-            jQuery('#price-billet').hide();
-            jQuery('#price-no-payment-selected').show();
-            active = 0;
-        }
-    });
-
-
-    function justBillet() {
-        jQuery('#collapse-payment-billet').slideDown();
-        jQuery('#collapse-payment-card').slideUp();
-        jQuery('#paymentMethodCardRadio').prop('checked', false);
-        jQuery('#paymentMethodBilletRadio').prop('checked', true);
-        jQuery("#background-card").css("background-color", "#ffffff");
-        jQuery("#background-billet").css("background-color", "#f5f5f5");
-        jQuery('#price-billet').show();
-        jQuery('#price-card').hide();
-        jQuery('#price-no-payment-selected').hide();
-        active = 1;
-    }
-
-    function justCard() {
-        jQuery('#collapse-payment-card').slideDown();
-        jQuery('#collapse-payment-billet').slideUp();
-        jQuery('#paymentMethodCardRadio').prop('checked', true);
-        jQuery('#paymentMethodBilletRadio').prop('checked', false);
-        jQuery("#background-card").css("background-color", "#f5f5f5");
-        jQuery("#background-billet").css("background-color", "#ffffff");
-        jQuery('#price-billet').hide();
-        jQuery('#price-card').show();
-        jQuery('#price-no-payment-selected').hide();
-        active = 2;
     }
 
     $('input[type=radio][name=input-payment-card-brand]').change(function () {
@@ -209,15 +179,84 @@ jQuery(document).ready(function ($) {
 
     });
 
-    function createCharge(paymentType) {
-        $('.gn-loading-request').fadeIn();
+    $('#gn-pay-pix-button').click((e) => {
+        e.preventDefault();
+        e.stopPropagation();
 
-        var order_id = jQuery('input[name="wc_order_id"]').val(),
+        $('#gn-pay-pix-button').prop('disabled', true);
+        if (document.getElementById('paymentMethodPixRadio').checked) {
+            if (validatePixFields()) {
+                if (id_charge != 0) {
+                    payPixCharge();
+                } else {
+                    createCharge('pix');
+                }
+            }
+        } else {
+            showError('Selecione um método de pagamento.');
+            $('#gn-pay-pix-button').prop('disabled', false);
+        }
+
+    });
+
+    function createCharge(paymentType) {
+
+        if (paymentType == 'pix') {
+            payPixCharge();
+        }
+        else {
+            $('.gn-loading-request').fadeIn();
+
+            var order_id = jQuery('input[name="wc_order_id"]').val(),
             data = {
                 action: "woocommerce_gerencianet_create_charge",
                 security: woocommerce_gerencianet_api.security,
                 order_id: order_id
             };
+
+            jQuery.ajax({
+                type: "POST",
+                url: woocommerce_gerencianet_api.ajax_url,
+                data: data,
+                success: (response) => {
+                    const obj = $.parseJSON(response);
+                    if (obj.code == 200) {
+                        id_charge = obj.data.charge_id;
+                        if (paymentType == 'billet') {
+                            payBilletCharge();
+                        } else if (paymentType == 'card') {
+                            payCardCharge();
+                        }
+                    } else {
+                        $('#gn-pay-billet-button').prop("disabled", false);
+                        $('#gn-pay-card-button').prop("disabled", false);
+                        $('#gn-pay-pix-button').prop("disabled", false);
+                        $('.gn-loading-request').fadeOut();
+                        if (!$('.warning-payment').is(":visible")) {
+                            $('.warning-payment').slideDown();
+                            scrollToTop();
+                        }
+                        $('.warning-payment').html('<i class="fa fa-exclamation-circle"></i> Ocorreu um erro ao tentar gerar a cobrança: <b>' + obj.message + '</b><button type="button" class="close" data-dismiss="alert">&times;</button>');
+                    }
+
+                },
+                error: function () {
+                    alert("error ocurred");
+                }
+            });
+        }
+    }
+
+    function payPixCharge() {
+        $('.gn-loading-request').fadeIn();
+
+        var data = {
+            action: 'woocommerce_gerencianet_pay_pix',
+            security: woocommerce_gerencianet_api.security,
+            charge_id: id_charge,
+            order_id: jQuery('input[name="wc_order_id"]').val(),
+            cpf_cnpj: jQuery('#pix-cpf-cnpj').val().replace(/[^\d]+/g, '')
+        };
 
         jQuery.ajax({
             type: "POST",
@@ -225,32 +264,47 @@ jQuery(document).ready(function ($) {
             data: data,
             success: function (response) {
                 var obj = $.parseJSON(response);
-                if (obj.code == 200) {
-                    id_charge = obj.data.charge_id;
-                    if (paymentType == 'billet') {
-                        payBilletCharge();
-                    } else {
-                        payCardCharge();
-                    }
-                } else {
-                    $('#gn-pay-billet-button').prop("disabled", false);
-                    $('#gn-pay-card-button').prop("disabled", false);
-                    $('.gn-loading-request').fadeOut();
-                    if (!$('.warning-payment').is(":visible")) {
-                        $('.warning-payment').slideDown();
-                        scrollToTop();
-                    }
-                    $('.warning-payment').html('<i class="fa fa-exclamation-circle"></i> Ocorreu um erro ao tentar gerar a cobrança: <b>' + obj.message + '</b><button type="button" class="close" data-dismiss="alert">&times;</button>');
-                }
 
+                if(!!obj.txid) {
+                    var redirect = $('<form action="' + home_url + '&method=pix&charge_id=' + obj.charge_id + '" method="post">' +
+                        '<input type="text" name="charge" value="' + obj.charge_id + '" />' +
+                        '</form>');
+                    $('body').append(redirect);
+                    redirect.submit();
+                } else {
+                    $('#gn-pay-pix-button').prop('disabled', false);
+                    $('.gn-pix-field').show();
+                    $('.gn-loading-request').fadeOut();
+                    showError(obj.message);
+                }
             },
             error: function () {
                 alert("error ocurred");
             }
         });
-
     }
 
+    function validatePixFields() {
+        errorMessage = '';
+        if ($("#pix-cpf-cnpj").val().replace(/[^\d]+/g, '').length <= 11) {
+            if (!(verifyCPF($('#pix-cpf-cnpj').val()))) {
+                errorMessage = 'O CPF digitado é inválido.';
+            }
+        }
+        else {
+            if (!(verifyCNPJ($('#pix-cpf-cnpj').val()))) {
+                errorMessage = 'O CNPJ digitado é inválido.';
+            }
+        }
+
+        if (errorMessage != '') {
+            showError(errorMessage);
+            $('#gn-pay-pix-button').prop("disabled", false);
+            return false;
+        } else {
+            return true;
+        }
+    }
 
     function payBilletCharge() {
         $('.gn-loading-request').fadeIn();

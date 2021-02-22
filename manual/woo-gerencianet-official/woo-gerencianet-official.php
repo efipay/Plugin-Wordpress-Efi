@@ -5,10 +5,10 @@
  * Description: Gateway de pagamento Gerencianet para WooCommerce.
  * Author: Gerencianet
  * Author URI: http://www.gerencianet.com.br
- * Version: 0.7.3
+ * Version: 0.7.4
  * License: GPLv2 or later
  * Text Domain: woo-gerencianet-official
- * Domain Path: /languages/
+ * Domain Path: /languages
  */
 
 if (!defined('ABSPATH')) {
@@ -28,7 +28,7 @@ if (!class_exists('WCGerencianetOficial')) :
 		 *
 		 * @var string
 		 */
-		const VERSION = '0.7.3';
+		const VERSION = '0.7.4';
 
 		/**
 		 * Integration id.
@@ -61,6 +61,7 @@ if (!class_exists('WCGerencianetOficial')) :
 						include_once 'includes/class-wc-gerencianet-oficial-gateway.php';
 						include_once 'includes/lib/GerencianetIntegration.php';
 						include_once 'includes/lib/GerencianetValidation.php';
+						include_once 'includes/lib/payments/Pix.php';
 
 						add_filter('woocommerce_payment_gateways', array($this, 'add_gateway'));
 
@@ -73,6 +74,12 @@ if (!class_exists('WCGerencianetOficial')) :
 						add_action('wp_ajax_nopriv_woocommerce_gerencianet_pay_card', array($this, 'woocommerce_gerencianet_pay_card'));
 						add_action('wp_ajax_woocommerce_gerencianet_create_charge', array($this, 'woocommerce_gerencianet_create_charge'));
 						add_action('wp_ajax_nopriv_woocommerce_gerencianet_create_charge', array($this, 'woocommerce_gerencianet_create_charge'));
+                        add_action('wp_ajax_woocommerce_gerencianet_pay_pix', array('Pix', 'woocommerce_gerencianet_pay_pix'));
+                        add_action('wp_ajax_nopriv_woocommerce_gerencianet_pay_pix', array('Pix', 'woocommerce_gerencianet_pay_pix'));
+
+                        // Webhook Pix
+                		add_action('woocommerce_api_pix', array('Pix', 'validate_webhook'));
+                		add_action('pix_webhook', array('Pix', 'successful_webhook'));
 					} else {
 						add_action('admin_notices', array($this, 'woocommerce_missing_notice'));
 					}
@@ -87,7 +94,7 @@ if (!class_exists('WCGerencianetOficial')) :
 		/**
 		 * Return an instance of this class.
 		 *
-		 * @return object 
+		 * @return object
 		 */
 		public static function get_instance()
 		{
@@ -176,10 +183,8 @@ if (!class_exists('WCGerencianetOficial')) :
 		 */
 		public function load_plugin_textdomain()
 		{
-			$locale = apply_filters('plugin_locale', get_locale(), WCGerencianetOficial::getTextDomain());
-
-			load_textdomain(WCGerencianetOficial::getTextDomain(), trailingslashit(WP_LANG_DIR) . 'woo-gerencianet-official/woo-gerencianet-official-' . $locale . '.mo');
-			load_plugin_textdomain(WCGerencianetOficial::getTextDomain(), false, dirname(plugin_basename(__FILE__)) . '/languages/');
+			load_textdomain(WCGerencianetOficial::getTextDomain(), WP_LANG_DIR . '/woo-gerencianet-official/woo-gerencianet-official-pt_BR.mo');
+			load_plugin_textdomain(WCGerencianetOficial::getTextDomain(), false, dirname(plugin_basename(__FILE__)) . '/languages');
 		}
 
 		/**
@@ -187,7 +192,7 @@ if (!class_exists('WCGerencianetOficial')) :
 		 *
 		 * @param  array $methods WooCommerce payment methods.
 		 *
-		 * @return array 
+		 * @return array
 		 */
 		public function add_gateway($methods)
 		{
@@ -215,7 +220,7 @@ if (!class_exists('WCGerencianetOficial')) :
 		 */
 		public function woocommerce_missing_notice()
 		{
-			echo '<div class="error"><p>' . sprintf(__('Gerencianet Gateway depends on the last version of %s to work!', WCGerencianetOficial::getTextDomain()), '<a href="http://wordpress.org/extend/plugins/woocommerce/">WooCommerce</a>') . '</p></div>';
+			echo '<div class="error"><p>' . sprintf(__('Gerencianet Gateway depends on the last version of %s to work', WCGerencianetOficial::getTextDomain()), '<a href="http://wordpress.org/extend/plugins/woocommerce/">WooCommerce</a>') . '</p></div>';
 		}
 
 		/**

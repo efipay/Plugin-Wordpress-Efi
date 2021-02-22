@@ -10,6 +10,7 @@ if (!defined('ABSPATH')) {
 }
 
 ?>
+
 <script type="text/javascript">
     <?php echo html_entity_decode($script_load); ?>
 
@@ -19,28 +20,53 @@ if (!defined('ABSPATH')) {
 
     jQuery(document).ready(function($) {
 
-        var billetActive = "<?php echo $billet_option; ?>";
-        var cardActive = "<?php echo $card_option; ?>";
+        var billetActive = '<?php echo $billet_option; ?>';
+		var cardActive 	 = '<?php echo $card_option; ?>';
+		var pixActive    = '<?php echo $pix_option; ?>';
 
-        if (billetActive == "yes") {
+        if (billetActive == 'yes') {
             $('#collapse-payment-card').hide();
             $('#collapse-payment-billet').show();
+            $('#collapse-payment-pix').hide();
+
             $('#paymentMethodBilletRadio').prop('checked', true);
             $('#paymentMethodCardRadio').prop('checked', false);
-            $("#gn-billet-payment-option").removeClass('gn-osc-payment-option-unselected');
-            $("#gn-billet-payment-option").addClass('gn-osc-payment-option-selected');
-            $("#gn-card-payment-option").removeClass('gn-osc-payment-option-selected');
-            $("#gn-card-payment-option").addClass('gn-osc-payment-option-unselected');
-        } else if (billetActive == "no" && cardActive == "yes") {
+            $('#paymentMethodPixRadio').prop('checked', false);
+
+            $('#gn-billet-payment-option').removeClass('gn-osc-payment-option-unselected');
+            $('#gn-billet-payment-option').addClass('gn-osc-payment-option-selected');
+            $('#gn-card-payment-option').removeClass('gn-osc-payment-option-selected');
+            $('#gn-card-payment-option').addClass('gn-osc-payment-option-unselected');
+        } else if (cardActive == 'yes') {
             $('#collapse-payment-card').show();
             $('#collapse-payment-billet').hide();
+            $('#collapse-payment-pix').hide();
+
             $('#paymentMethodBilletRadio').prop('checked', false);
             $('#paymentMethodCardRadio').prop('checked', true);
-            $("#gn-billet-payment-option").removeClass('gn-osc-payment-option-selected');
-            $("#gn-billet-payment-option").addClass('gn-osc-payment-option-unselected');
-            $("#gn-card-payment-option").removeClass('gn-osc-payment-option-unselected');
-            $("#gn-card-payment-option").addClass('gn-osc-payment-option-selected');
-        }
+            $('#paymentMethodPixRadio').prop('checked', false);
+
+            $('#gn-billet-payment-option').removeClass('gn-osc-payment-option-selected');
+            $('#gn-billet-payment-option').addClass('gn-osc-payment-option-unselected');
+            $('#gn-card-payment-option').removeClass('gn-osc-payment-option-unselected');
+            $('#gn-card-payment-option').addClass('gn-osc-payment-option-selected');
+        } else if (pixActive == 'yes') {
+			$('#collapse-payment-card').hide();
+			$('#collapse-payment-billet').hide();
+			$('#collapse-payment-pix').show();
+
+            $('#paymentMethodBilletRadio').prop('checked', false);
+			$('#paymentMethodCardRadio').prop('checked', false);
+			$('#paymentMethodPixRadio').prop('checked', true);
+
+            $('#gn-billet-payment-option').removeClass('gn-osc-payment-option-selected');
+			$('#gn-billet-payment-option').addClass('gn-osc-payment-option-unselected');
+            $('#gn-card-payment-option').removeClass('gn-osc-payment-option-selected');
+			$('#gn-card-payment-option').addClass('gn-osc-payment-option-unselected');
+
+			$('#gn-pix-payment-option').removeClass('gn-osc-payment-option-unselected');
+			$('#gn-pix-payment-option').addClass('gn-osc-payment-option-selected');
+		}
 
         /** Define se a compra pode ser feita apenas com CPF, apenas com CNPJ ou com ambos **/
         /***********************************************************************************/
@@ -50,20 +76,20 @@ if (!defined('ABSPATH')) {
          /* 1 - Only CPF
          /* 2 - Only CNPJ
          */
-        if (typeof $('#billing_persontype').val() == "undefined") {
-            if (typeof $('#billing_cpf').val() != "undefined") {
+        if (typeof $('#billing_persontype').val() == 'undefined') {
+            if (typeof $('#billing_cpf').val() != 'undefined') {
                 allowedPersonType = 1;
-                $("#gn_billet_cpf_cnpj").mask("000.000.000-009");
-                $("#gn_card_cpf_cnpj").mask("000.000.000-009");
-                $('.document-label').text("<?php echo $gn_cpf; ?>");
-                $('.name-corporate-label').text("<?php echo $gn_name; ?>");
-            } else if (typeof $('#billing_company').val() != "undefined" &&
-                typeof $('#billing_cnpj').val() != "undefined") {
+                $('#gn_billet_cpf_cnpj').mask('000.000.000-009');
+                $('#gn_card_cpf_cnpj').mask('000.000.000-009');
+                $('.document-label').text('<?php echo $gn_cpf; ?>');
+                $('.name-corporate-label').text('<?php echo $gn_name; ?>');
+            } else if (typeof $('#billing_company').val() != 'undefined' &&
+                typeof $('#billing_cnpj').val() != 'undefined') {
                 allowedPersonType = 2;
-                $("#gn_billet_cpf_cnpj").mask("00.000.000/0000-00");
-                $("#gn_card_cpf_cnpj").mask("00.000.000/0000-00");
-                $('.document-label').text("<?php echo $gn_cnpj; ?>");
-                $('.name-corporate-label').text("<?php echo $gn_corporate; ?>");
+                $('#gn_billet_cpf_cnpj').mask('00.000.000/0000-00');
+                $('#gn_card_cpf_cnpj').mask('00.000.000/0000-00');
+                $('.document-label').text('<?php echo $gn_cnpj; ?>');
+                $('.name-corporate-label').text('<?php echo $gn_corporate; ?>');
             }
         }
 
@@ -901,61 +927,37 @@ if (!defined('ABSPATH')) {
             getInstallments(this.value);
         });
 
-        jQuery('#gn-billet-payment-option').click(function(e) {
-            $('#collapse-payment-card').hide();
-            $('#collapse-payment-billet').show();
-            $('#paymentMethodBilletRadio').prop('checked', true);
-            $('#paymentMethodCardRadio').prop('checked', false);
-            $("#gn-billet-payment-option").removeClass('gn-osc-payment-option-unselected');
-            $("#gn-billet-payment-option").addClass('gn-osc-payment-option-selected');
-            $("#gn-card-payment-option").removeClass('gn-osc-payment-option-selected');
-            $("#gn-card-payment-option").addClass('gn-osc-payment-option-unselected');
-            fixScreenSize();
-        });
+        $('#gn-billet-payment-option').click(() => selectPaymentMethod('Billet'));
+        $('#gn-card-payment-option').click(() => selectPaymentMethod('Card'));
+		$('#gn-pix-payment-option').click(() => selectPaymentMethod('Pix'));
 
-        jQuery('#gn-card-payment-option').click(function(e) {
-            $('#collapse-payment-card').show();
-            $('#collapse-payment-billet').hide();
-            $('#paymentMethodBilletRadio').prop('checked', false);
-            $('#paymentMethodCardRadio').prop('checked', true);
-            $("#gn-billet-payment-option").removeClass('gn-osc-payment-option-selected');
-            $("#gn-billet-payment-option").addClass('gn-osc-payment-option-unselected');
-            $("#gn-card-payment-option").removeClass('gn-osc-payment-option-unselected');
-            $("#gn-card-payment-option").addClass('gn-osc-payment-option-selected');
-            fixScreenSize();
-        });
+        function selectPaymentMethod(method) {
+            const lMethod = method.toLowerCase();
+            const types = ['Billet', 'Card', 'Pix'];
+
+            types.forEach((type) => {
+                if(method === type) {
+                    $('#collapse-payment-' + lMethod).show();
+                    $('#paymentMethod' + method + 'Radio').prop('checked', true);
+                    $('#gn-' + lMethod + '-payment-option').removeClass('gn-osc-payment-option-unselected');
+        			$('#gn-' + lMethod + '-payment-option').addClass('gn-osc-payment-option-selected');
+                }
+                else {
+                    $('#collapse-payment-' + type.toLowerCase()).hide();
+                    $('#paymentMethod' + type + 'Radio').prop('checked', false);
+                    $('#gn-' + type.toLowerCase() + '-payment-option').removeClass('gn-osc-payment-option-selected');
+        			$('#gn-' + type.toLowerCase() + '-payment-option').addClass('gn-osc-payment-option-unselected');
+                }
+
+                fixScreenSize();
+            });
+        }
 
         if ($().mask) {
 
-            $("#gn_billet_cpf_cnpj").keyup(function() {
-                $("#gn_billet_cpf_cnpj").unmask();
-                var cpf = $("#gn_billet_cpf_cnpj").val().replace(/[^\d]+/g, '');
-                if (cpf.length <= 11) {
-                    $("#gn_billet_cpf_cnpj").mask("000.000.000-009");
-                } else {
-                    $("#gn_billet_cpf_cnpj").mask("00.000.000/0000-00");
-                }
-                var elem = this;
-                setTimeout(function() {
-                    // muda a posição do seletor
-                    elem.selectionStart = elem.selectionEnd = 10000;
-                }, 0);
-            });
-
-            $("#gn_card_cpf_cnpj").keyup(function() {
-                $("#gn_card_cpf_cnpj").unmask();
-                var cpf = $("#gn_card_cpf_cnpj").val().replace(/[^\d]+/g, '');
-                if (cpf.length <= 11) {
-                    $("#gn_card_cpf_cnpj").mask("000.000.000-009");
-                } else {
-                    $("#gn_card_cpf_cnpj").mask("00.000.000/0000-00");
-                }
-                var elem = this;
-                setTimeout(function() {
-                    // muda a posição do seletor
-                    elem.selectionStart = elem.selectionEnd = 10000;
-                }, 0);
-            });
+            $("#gn_billet_cpf_cnpj").keyup(event => docMask(event));
+            $("#gn_card_cpf_cnpj").keyup(event => docMask(event));
+            $("#gn_pix_cpf_cnpj").keyup(event => docMask(event));
 
             function applyPhoneMask() {
                 $(".phone-mask").unmask();
@@ -996,6 +998,18 @@ if (!defined('ABSPATH')) {
                 placeholder: ""
             });
 
+        }
+
+        function docMask(event) {
+            const data = $(event.currentTarget).val();
+
+            $(event.currentTarget).unmask();
+            if (data.length <= 14) {
+                $(event.currentTarget).mask("000.000.000-009");
+            } else {
+                $(event.currentTarget).mask("00.000.000/0000-00");
+            }
+            event.currentTarget.setSelectionRange(data.length, data.length);
         }
 
         function validateName(data) {
@@ -1295,17 +1309,17 @@ if (!defined('ABSPATH')) {
             <div class="woocommerce-error"><?php echo $gn_warning_sandbox_message; ?></div>
         </div>
     <?php
-} ?>
+    } ?>
 
-    <div class="gn-osc-warning-payment" id="wc-gerencianet-messages">
-        <?php if (($card_option && $order_total_card < 500) && ($billet_option && $order_total_billet < 500)) { ?>
+    <div class="warning-payment" id="wc-gerencianet-messages">
+        <?php if (($card_option && $order_total_card < 500) || ($billet_option && $order_total_billet < 500)) { ?>
             <div class="woocommerce-error"><?php echo $gn_mininum_gn_charge_price; ?></div>
         <?php
-    } ?>
+    	} ?>
     </div>
 
     <div style="margin: 0px;">
-        <?php if ($billet_option == "yes") { ?>
+        <?php if ($billet_option == "yes" && $order_total_billet >= 500) { ?>
             <div id="gn-billet-payment-option" class="gn-osc-payment-option gn-osc-payment-option-selected">
                 <div>
                     <div id="billet-radio-button" class="gn-osc-left">
@@ -1326,8 +1340,8 @@ if (!defined('ABSPATH')) {
                 </div>
             </div>
         <?php
-    } ?>
-        <?php if ($card_option == "yes") { ?>
+    	} ?>
+        <?php if ($card_option == "yes" && $order_total_card >= 500){ ?>
             <div id="gn-card-payment-option" class="gn-osc-payment-option gn-osc-payment-option-unselected">
                 <div>
                     <div id="card-radio-button" class="gn-osc-left">
@@ -1345,11 +1359,36 @@ if (!defined('ABSPATH')) {
                 </div>
             </div>
         <?php
-    } ?>
+    	} ?>
+		<?php if($pix_option == "yes") {?>
+			<div id="gn-pix-payment-option" class="gn-osc-payment-option gn-osc-payment-option-unselected">
+                <div>
+                    <div id="pix-radio-button" class="gn-osc-left">
+                        <input type="radio" name="paymentMethodRadio" id="paymentMethodPixRadio" class="gn-osc-radio" value="pix" />
+                    </div>
+                    <div class="gn-osc-left gn-osc-icon-gerencianet">
+                        <div class="gn-pix"></div>
+                    </div>
+                    <div class="gn-osc-left gn-osc-payment-option-gerencianet">
+                        <strong><?php echo "Pagamento por Pix"; ?></strong>
+                        <?php if ($discountPix > 0) { ?>
+                            <span style="font-size: 14px; line-height: 15px;"><br>+<?php echo $discount_pix_formatted; ?>% de desconto</span>
+                        <?php
+                    } ?>
+                    </div>
+                    <div class="gn-osc-left gn-osc-payment-option-sizer"></div>
+                    <div class="clear"></div>
+                </div>
+            </div>
+
+		<?php } ?>
+
         <div class="clear"></div>
     </div>
+
+
     <input name="wc_order_id" id="wc_order_id" type="hidden" value="<?php echo $order_id; ?>" />
-    <?php if ($billet_option == "yes") { ?>
+    <?php if ($billet_option == "yes" && $order_total_billet >= 500){ ?>
         <div id="collapse-payment-billet" class="gn-osc-background">
             <div class="panel-body">
                 <div class="gn-osc-row gn-osc-pay-comments">
@@ -1428,7 +1467,8 @@ if (!defined('ABSPATH')) {
         </div>
 
     <?php } ?>
-    <?php if ($card_option == "yes") { ?>
+
+    <?php if ($card_option == "yes" && $order_total_card >= 500) { ?>
         <div id="collapse-payment-card" class="panel-collapse <?php if ($billet_option == "yes") { ?>gn-hide<?php } ?> gn-osc-background">
             <div class="panel-body">
                 <div class="gn-osc-row gn-osc-pay-comments">
@@ -1737,4 +1777,53 @@ if (!defined('ABSPATH')) {
         </div>
     <?php } ?>
 
+	<?php if ($pix_option == "yes") { ?>
+        <div id="collapse-payment-pix"  class="panel-collapse <?php if ($billet_option == "yes" || $card_option == "yes") { ?>gn-hide<?php } ?> gn-osc-background">
+            <div class="panel-body">
+                <div class="gn-osc-row gn-osc-pay-comments">
+                <p class="gn-left-space-2"><strong>Transferência por Pix</strong></p>
+                </div>
+                <div class="gn-form">
+                    <div id="pix-data">
+                        <div id="gn_cpf_cnpj_row" class="required gn-osc-row gn-pix-field">
+                            <div class="gn-col-12">
+                                <div class="gn-col-3 gn-label">
+                                    <label for="gn_pix_cpf_cnpj" class="document-label gn-right-padding-1"><?php echo $gn_cpf_cnpj; ?></label>
+                                </div>
+
+                                <div class="gn-col-3 required">
+                                    <input type="text" name="gn_pix_cpf_cnpj" id="gn_pix_cpf_cnpj" value="" class="form-control cpf-mask" />
+                                </div>
+
+                            </div>
+                        </div>
+
+                    </div>
+                </div>
+            </div>
+
+            <div class="gn-osc-row" style="padding: 20px;">
+                <?php if ($discount > 0) { ?>
+                    <div class="gn-osc-row" style="border: 1px solid #DEDEDE; border-bottom: 0px; margin: 0px; padding:5px;">
+                        <div style="float: left;">
+                            <strong>DESCONTO DE <?php echo $discount_pix_formatted; ?>% NO PIX:</strong>
+                        </div>
+                        <br>
+                        <div style="float: right;">
+                            <strong>-<?php echo $discount_pix_value; ?></strong>
+                        </div>
+                    </div>
+                <?php } ?>
+                <div class="gn-osc-row" style="border: 1px solid #DEDEDE; margin: 0px; padding:5px;">
+                    <div style="float: left;">
+                        <strong>TOTAL:</strong>
+                    </div>
+                    <div style="float: right;">
+                        <strong><?php echo $order_with_pix_discount; ?></strong>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+    <?php } ?>
 </div>

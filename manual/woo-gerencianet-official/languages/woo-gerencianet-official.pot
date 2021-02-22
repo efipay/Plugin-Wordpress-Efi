@@ -1,648 +1,647 @@
+# Translation of Plugins - Woo Gerencianet Oficial - Development (trunk) in Portuguese (Brazil)
+# This file is distributed under the same license as the Plugins - Woo Gerencianet Oficial - Development (trunk) package.
 msgid ""
 msgstr ""
-"Project-Id-Version: class-wc-gerencianet-oficial-gateway.php conversion\n"
-"Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: Tue Jul 26 2016 13:44:53 GMT-0300 (Hora oficial do Brasil)"
-"\n"
-"PO-Revision-Date: Tue Jul 26 2016 13:44:53 GMT-0300 (Hora oficial do Brasil)"
-"\n"
-"Last-Translator: \n"
-"Language-Team: Unknown\n"
-"Language: zxx\n"
-"Plural-Forms: nplurals=2; plural=n!=1\n"
+"PO-Revision-Date: 2021-01-26 13:03-0400\n"
 "MIME-Version: 1.0\n"
 "Content-Type: text/plain; charset=UTF-8\n"
 "Content-Transfer-Encoding: 8bit\n"
-"X-Loco-Source-Locale: pt_BR\n"
-"X-Loco-Parser: loco_parse_php\n"
-"X-Generator: Loco - https://localise.biz/"
-
-#: includes/woo-gerencianet-official.php:21 includes/woo-gerencianet-official.php:42 includes/woo-gerencianet-official.php:266
-msgid "Gerencianet"
-msgstr "Gerencianet"
-
-#: includes/woo-gerencianet-official.php:36
-msgid "Billet"
-msgstr ""
-
-#: includes/woo-gerencianet-official.php:38 includes/woo-gerencianet-official.php:344
-msgid "Credit Card"
-msgstr ""
-
-#: includes/woo-gerencianet-official.php:40
-msgid "Billet or Credit Card"
-msgstr ""
-
-#: includes/woo-gerencianet-official.php:224
-msgid "Gerencianet Payments - Official Module"
-msgstr ""
-
-#: includes/woo-gerencianet-official.php:225
-msgid ""
-"This module is the official module of Gerencianet Payment Gateway. If you "
-"have any doubths or suggestions, contact us at <a href=\"http://www."
-"gerencianet.com.br\">www.gerencianet.com.br</a>"
-msgstr ""
-""
-""
-""
-
-#: includes/woo-gerencianet-official.php:256
-msgid "Enable/Disable"
-msgstr ""
-
-#: includes/woo-gerencianet-official.php:258
-msgid "Enable Gerencianet Payments"
-msgstr ""
-
-#: includes/woo-gerencianet-official.php:262
-msgid "Title"
-msgstr ""
-
-#: includes/woo-gerencianet-official.php:264
-msgid "This controls the title which the user sees during checkout."
-msgstr ""
-
-#: includes/woo-gerencianet-official.php:269
-msgid "Description"
-msgstr ""
-
-#: includes/woo-gerencianet-official.php:271
-msgid "This controls the description which the user sees during checkout."
-msgstr ""
-
-#: includes/woo-gerencianet-official.php:272
-msgid "Pay via gerencianet"
-msgstr ""
-
-#: includes/woo-gerencianet-official.php:275
-msgid "Invoice Prefix"
-msgstr ""
-
-#: includes/woo-gerencianet-official.php:277
-msgid ""
-"Please enter a prefix for your invoice numbers. If you use your gerencianet "
-"account for multiple stores ensure this prefix is unqiue as gerencianet will "
-"not allow orders with the same invoice number."
-msgstr ""
-""
-""
-""
-
-#: includes/woo-gerencianet-official.php:282
-msgid "Gerencianet Credentials"
-msgstr ""
-
-#: includes/woo-gerencianet-official.php:284
-msgid ""
-"Where will you find your credentials: <a id='showKeysProductionTutorial' "
-"class='gn-admin-cursor-pointer'>Client ID/Secret Production</a>, <a "
-"id='showKeysDevelopmentTutorial' class='gn-admin-cursor-pointer'>Client "
-"ID/Secret Development</a> and <a id='showPayeeCodeTutorial' class='gn-admin-"
-"cursor-pointer'>Payee Code</a>"
-msgstr ""
-""
-""
-""
-""
-""
-
-#: includes/woo-gerencianet-official.php:287
-msgid "Client Id Production"
-msgstr ""
-
-#: includes/woo-gerencianet-official.php:289
-msgid ""
-"Please enter your Client Id Production; this is needed in order to take "
-"payment."
-msgstr ""
-""
-""
-
-#: includes/woo-gerencianet-official.php:294
-msgid "Client Secret Production"
-msgstr ""
-
-#: includes/woo-gerencianet-official.php:296
-msgid ""
-"Please enter your Client Secret Production; this is needed in order to take "
-"payment."
-msgstr ""
-""
-
-#: includes/woo-gerencianet-official.php:301
-msgid "Client ID Development"
-msgstr ""
-
-#: includes/woo-gerencianet-official.php:303
-msgid ""
-"Please enter your Client Id Development; this is needed to test payment."
-msgstr ""
-""
-""
-
-#: includes/woo-gerencianet-official.php:308
-msgid "Client Secret Development"
-msgstr ""
-
-#: includes/woo-gerencianet-official.php:310
-msgid ""
-"Please enter your Client Secret Development; this is needed to test payment."
-msgstr ""
-""
-""
-
-#: includes/woo-gerencianet-official.php:315
-msgid "Payee Code"
-msgstr ""
-
-#: includes/woo-gerencianet-official.php:317
-msgid ""
-"Please enter your account payee code; this is needed in order to take "
-"payment."
-msgstr ""
-""
-""
-
-#: includes/woo-gerencianet-official.php:322 includes/woo-gerencianet-official.php:327
-msgid "One Step Checkout"
-msgstr ""
-
-#: includes/woo-gerencianet-official.php:324
-msgid ""
-"This option allow the payment direct on checkout page. Before use on "
-"production, please do some test payments in sandbox mode to verify if it is "
-"compatible with your store."
-msgstr ""
-""
-""
-""
-
-#: includes/woo-gerencianet-official.php:329
-msgid "Enable One Step Checkout"
-msgstr ""
-
-#: includes/woo-gerencianet-official.php:333
-msgid "Payment Settings"
-msgstr ""
-
-#: includes/woo-gerencianet-official.php:335
-msgid "These options need to be available to you in your gerencianet account."
-msgstr ""
-
-#: includes/woo-gerencianet-official.php:338
-msgid "Billet Banking"
-msgstr ""
-
-#: includes/woo-gerencianet-official.php:340
-msgid "Enable Billet Banking"
-msgstr ""
-
-#: includes/woo-gerencianet-official.php:346
-msgid "Enable Credit Card"
-msgstr ""
-
-#: includes/woo-gerencianet-official.php:350
-msgid "Billet Settings"
-msgstr ""
-
-#: includes/woo-gerencianet-official.php:355
-msgid "Billet discount"
-msgstr ""
-
-#: includes/woo-gerencianet-official.php:357
-msgid "Discount for payment with billet."
-msgstr ""
-
-#: includes/woo-gerencianet-official.php:363
-msgid "Apply discount mode"
-msgstr ""
-
-#: includes/woo-gerencianet-official.php:365
-msgid "Choose mode of discount."
-msgstr ""
-
-#: includes/woo-gerencianet-official.php:368
-msgid "Apply discount on total value with Shipping"
-msgstr ""
-
-#: includes/woo-gerencianet-official.php:369
-msgid "Apply discount just on products price"
-msgstr ""
-
-#: includes/woo-gerencianet-official.php:373
-msgid "Number of Days"
-msgstr ""
-
-#: includes/woo-gerencianet-official.php:375
-msgid "Days to expire the billet after printed."
-msgstr ""
-
-#: includes/woo-gerencianet-official.php:381
-msgid "Billet Instructions (not required)"
-msgstr "
-
-#: includes/woo-gerencianet-official.php:386
-msgid "Instructions line 1"
-msgstr ""
-
-#: includes/woo-gerencianet-official.php:388 includes/woo-gerencianet-official.php:396 includes/woo-gerencianet-official.php:404 includes/woo-gerencianet-official.php:412
-msgid "Text of billet instructions. Maximum of 90 characters per line."
-msgstr ""
-
-#: includes/woo-gerencianet-official.php:394
-msgid "Instructions line 2"
-msgstr ""
-
-#: includes/woo-gerencianet-official.php:402
-msgid "Instructions line 3"
-msgstr ""
-
-#: includes/woo-gerencianet-official.php:410
-msgid "Instructions line 4"
-msgstr ""
-
-#: includes/woo-gerencianet-official.php:418
-msgid "Callback"
-msgstr ""
-
-#: includes/woo-gerencianet-official.php:423
-msgid "Auto order status update"
-msgstr ""
-
-#: includes/woo-gerencianet-official.php:425
-msgid "Enable order auto update"
-msgstr ""
-
-#: includes/woo-gerencianet-official.php:429
-msgid "Tests"
-msgstr ""
-
-#: includes/woo-gerencianet-official.php:434
-msgid "Sandbox"
-msgstr ""
-
-#: includes/woo-gerencianet-official.php:436
-msgid "Enable gerencianet sandbox"
-msgstr ""
-
-#: includes/woo-gerencianet-official.php:440
-msgid "Debug"
-msgstr ""
-
-#: includes/woo-gerencianet-official.php:442
-msgid "Enable debug for Gerencianet"
-msgstr ""
-
-#: includes/woo-gerencianet-official.php:521 includes/woo-gerencianet-official.php:595 includes/woo-gerencianet-official.php:622 includes/woo-gerencianet-official.php:774 includes/woo-gerencianet-official.php:828
-msgid "An error occurred during your request. Please, try again."
-msgstr ""
-
-#: includes/woo-gerencianet-official.php:728 includes/woo-gerencianet-official.php:1021 includes/woo-gerencianet-official.php:1219
-msgid "Discount of "
-msgstr ""
-
-#: includes/woo-gerencianet-official.php:728
-#, php-format
-msgid "% Billet"
-msgstr ""
-
-#: includes/woo-gerencianet-official.php:744
-msgid "Billet Banking - Gerencianet"
-msgstr ""
-
-#: includes/woo-gerencianet-official.php:747 includes/woo-gerencianet-official.php:937
-msgid "Waiting"
-msgstr ""
-
-#: includes/woo-gerencianet-official.php:936
-msgid "Credit Card - Gerencianet"
-msgstr ""
-
-#: includes/woo-gerencianet-official.php:995 includes/woo-gerencianet-official.php:1193
-msgid ""
-"Opting to pay by credit card, the payment is processed and the confirmation "
-"will take place within 48 hours."
-msgstr ""
-""
-""
-
-#: includes/woo-gerencianet-official.php:996 includes/woo-gerencianet-official.php:1194
-msgid "CNPJ"
-msgstr ""
-
-#: includes/woo-gerencianet-official.php:997 includes/woo-gerencianet-official.php:1195
-msgid ""
-"Opting to pay by Banking Billet, the confirmation will be performed on the "
-"next business day after payment."
-msgstr ""
-""
-""
-
-#: includes/woo-gerencianet-official.php:998 includes/woo-gerencianet-official.php:1196
-msgid "Company:"
-msgstr ""
-
-#: includes/woo-gerencianet-official.php:999 includes/woo-gerencianet-official.php:1197
-msgid "Name/Company:"
-msgstr ""
-
-#: includes/woo-gerencianet-official.php:999 includes/woo-gerencianet-official.php:1197
-msgid "Name:"
-msgstr ""
-
-#: includes/woo-gerencianet-official.php:1000 includes/woo-gerencianet-official.php:1198
-msgid "CPF: "
-msgstr ""
-
-#: includes/woo-gerencianet-official.php:1000 includes/woo-gerencianet-official.php:1198
-msgid "CPF/CNPJ: "
-msgstr ""
-
-#: includes/woo-gerencianet-official.php:1001 includes/woo-gerencianet-official.php:1199
-msgid "Phone: "
-msgstr ""
-
-#: includes/woo-gerencianet-official.php:1002 includes/woo-gerencianet-official.php:1200
-msgid "Birth Date: "
-msgstr ""
-
-#: includes/woo-gerencianet-official.php:1003 includes/woo-gerencianet-official.php:1201
-msgid "E-mail: "
-msgstr ""
-
-#: includes/woo-gerencianet-official.php:1004 includes/woo-gerencianet-official.php:1202
-msgid "Address: "
-msgstr ""
-
-#: includes/woo-gerencianet-official.php:1005 includes/woo-gerencianet-official.php:1203
-msgid "Number: "
-msgstr ""
-
-#: includes/woo-gerencianet-official.php:1006 includes/woo-gerencianet-official.php:1204
-msgid "Neighborhood: "
-msgstr ""
-
-#: includes/woo-gerencianet-official.php:1007 includes/woo-gerencianet-official.php:1205
-msgid "Complement: "
-msgstr ""
-
-#: includes/woo-gerencianet-official.php:1008 includes/woo-gerencianet-official.php:1206
-msgid "Zipcode: "
-msgstr ""
-
-#: includes/woo-gerencianet-official.php:1009 includes/woo-gerencianet-official.php:1207
-msgid "City: "
-msgstr ""
-
-#: includes/woo-gerencianet-official.php:1010 includes/woo-gerencianet-official.php:1208
-msgid "State: "
-msgstr ""
-
-#: includes/woo-gerencianet-official.php:1011 includes/woo-gerencianet-official.php:1209
-msgid "Billing Data"
-msgstr ""
-
-#: includes/woo-gerencianet-official.php:1012 includes/woo-gerencianet-official.php:1210
-msgid "Card Number: "
-msgstr ""
-
-#: includes/woo-gerencianet-official.php:1013 includes/woo-gerencianet-official.php:1211
-msgid "Expiration date: "
-msgstr ""
-
-#: includes/woo-gerencianet-official.php:1014 includes/woo-gerencianet-official.php:1212
-msgid "Security Code: "
-msgstr ""
-
-#: includes/woo-gerencianet-official.php:1015 includes/woo-gerencianet-official.php:1213
-msgid "Installments: "
-msgstr ""
-
-#: includes/woo-gerencianet-official.php:1016 includes/woo-gerencianet-official.php:1214
-msgid "Select the card brand"
-msgstr ""
-
-#: includes/woo-gerencianet-official.php:1017 includes/woo-gerencianet-official.php:1215
-msgid "Pay as juridical person"
-msgstr ""
-
-#: includes/woo-gerencianet-official.php:1019 includes/woo-gerencianet-official.php:1217
-msgid ""
-"You can not pay this order with Gerencianet because the total value is less "
-"than R$5,00."
-msgstr ""
-""
-""
-
-#: includes/woo-gerencianet-official.php:1020 includes/woo-gerencianet-official.php:1218
-msgid "Pay with Billet Banking"
-msgstr ""
-
-#: includes/woo-gerencianet-official.php:1022 includes/woo-gerencianet-official.php:1220
-msgid "Pay with Credit Card"
-msgstr ""
-
-#: includes/woo-gerencianet-official.php:1023 includes/woo-gerencianet-official.php:1221
-msgid "Pay in"
-msgstr ""
-
-#: includes/woo-gerencianet-official.php:1024 includes/woo-gerencianet-official.php:1222
-msgid "Billing Address"
-msgstr ""
-
-#: includes/woo-gerencianet-official.php:1025 includes/woo-gerencianet-official.php:1223
-msgid "Select the state"
-msgstr ""
-
-#: includes/woo-gerencianet-official.php:1026 includes/woo-gerencianet-official.php:1224
-msgid "Are the last three digits<br>on the back of the card."
-msgstr ""
-
-#: includes/woo-gerencianet-official.php:1027 includes/woo-gerencianet-official.php:1225
-msgid "Select the Card Brand"
-msgstr ""
-
-#: includes/woo-gerencianet-official.php:1028 includes/woo-gerencianet-official.php:1226
-msgid "Please, wait..."
-msgstr ""
-
-#: includes/woo-gerencianet-official.php:1030 includes/woo-gerencianet-official.php:1228
-msgid "Sandbox mode is active. The payments will not be valid."
-msgstr ""
-""
-""
-
-#: includes/woo-gerencianet-official.php:1360
-msgid "Billet emitted by Gerencianet"
-msgstr ""
-
-#: includes/woo-gerencianet-official.php:1361
-msgid ""
-"Your order was successful and your payment is being processed. Wait until "
-"you receive confirmation of payment by email."
-msgstr ""
-""
-""
-
-#: includes/woo-gerencianet-official.php:1362
-msgid ""
-"The Banking Billet was successfully generated. Make payment in bank, lottery,"
-" post office or bankline. Stay tuned to the expiration date of the banking "
-"billet."
-msgstr ""
-""
-""
-""
-
-#: includes/woo-gerencianet-official.php:1363
-msgid ""
-"The charge on your card is being processed. Soon as it is confirmed, we will "
-"send an e-mail to <b>"
-msgstr ""
-""
-""
-
-#: includes/woo-gerencianet-official.php:1364
-msgid ""
-"</b>, informed in your registration. If you do not receive the product or "
-"service purchased, you have <b>14 days from the payment confirmation</b> "
-"date to open a dispute.<br>Get informed in <a href=\"http://www.gerencianet."
-"com.br/contestacao\" target=\"_blank\">www.gerencianet.com.br/contestacao</a>"
-"."
-msgstr ""
-""
-""
-""
-""
-
-#: includes/woo-gerencianet-official.php:1365
-msgid "Charge number:"
-msgstr ""
-
-#: includes/woo-gerencianet-official.php:1366 includes/woo-gerencianet-official.php:1523
-msgid "Show Billet"
-msgstr ""
-
-#: includes/woo-gerencianet-official.php:1387
-msgid "Request Failure"
-msgstr ""
-
-#: includes/woo-gerencianet-official.php:1421
-msgid "Paid "
-msgstr ""
-
-#: includes/woo-gerencianet-official.php:1425
-msgid "Unpaid  "
-msgstr ""
-
-#: includes/woo-gerencianet-official.php:1428
-msgid "Refunded "
-msgstr ""
-
-#: includes/woo-gerencianet-official.php:1431
-msgid "Contested "
-msgstr ""
-
-#: includes/woo-gerencianet-official.php:1434
-msgid "Canceled "
-msgstr ""
-
-#: includes/woo-gerencianet-official.php:1468 includes/woo-gerencianet-official.php:1478 includes/woo-gerencianet-official.php:1487 includes/woo-gerencianet-official.php:1497 includes/woo-gerencianet-official.php:1506
-msgid "Gerencianet Disabled"
-msgstr ""
-
-#: includes/woo-gerencianet-official.php:1468
-#, php-format
-msgid "Sandbox mode is active. The payments will not be valid. %s"
-msgstr ""
-""
-""
-
-#: includes/woo-gerencianet-official.php:1468 includes/woo-gerencianet-official.php:1478 includes/woo-gerencianet-official.php:1487 includes/woo-gerencianet-official.php:1497
-msgid "Click here to configure"
-msgstr ""
-
-#: includes/woo-gerencianet-official.php:1478
-#, php-format
-msgid "You should inform your Gerencianet Account Payee Code. %s"
-msgstr ""
-
-#: includes/woo-gerencianet-official.php:1487
-#, php-format
-msgid ""
-""
-msgstr ""
-
-#: includes/woo-gerencianet-official.php:1497
-#, php-format
-msgid "You should inform your Gerencianet Application Credentials. %s"
-msgstr ""
-
-#: includes/woo-gerencianet-official.php:1506
-#, php-format
-msgid ""
-"Currency <code>%s</code> is not supported by Gerencianet. Works only with "
-"<code>BRL</code> (Brazilian Real)."
-msgstr ""
-""
-""
-
-#: includes/woo-gerencianet-official.php:1540
-msgid "Click here to see the Billet"
-msgstr ""
-
-#. Name of the plugin
-msgid "Woo Gerencianet Oficial"
-msgstr ""
-
-#. URI of the plugin
-msgid "https://wordpress.org/plugins/woo-gerencianet-official"
+"Plural-Forms: nplurals=2; plural=(n > 1);\n"
+"X-Generator: Poedit 2.3\n"
+"Language: pt_BR\n"
+"Project-Id-Version: Plugins - Woo Gerencianet Oficial - Development (trunk)\n"
+"POT-Creation-Date: \n"
+"Last-Translator: \n"
+"Language-Team: \n"
+
+#. Author URI of the plugin
+msgid "http://www.gerencianet.com.br"
 msgstr ""
 
 #. Description of the plugin
 msgid "Gateway de pagamento Gerencianet para WooCommerce."
 msgstr ""
 
-#. Author of the plugin
-msgid "Gerencianet"
-msgstr "Gerencianet"
-
-#. Author URI of the plugin
-msgid "http://www.gerencianet.com.br"
+#. Plugin URI of the plugin
+msgid "https://wordpress.org/plugins/woo-gerencianet-official/"
 msgstr ""
 
-#: includes/woo-gerencianet-official.php:205
-#, php-format
-msgid "Gerencianet Gateway depends on the last version of %s to work!"
+#. Plugin Name of the plugin
+msgid "Woo Gerencianet Oficial"
 msgstr ""
 
-#: includes/woo-gerencianet-official.php:214
-#, php-format
-msgid "The minimum PHP version compatible with Gerencianet Payment plugin is 5.4.0. Please, update your PHP version."
+#: woo-gerencianet-official.php:238
+msgid ""
+"The minimum WooCommerce version compatible with Gerencianet Payment plugin is 2.2.0. Please, update your "
+"WooCommerce version."
 msgstr ""
 
-#: includes/woo-gerencianet-official.php:223
-#, php-format
-msgid "The minimum WooCommerce version compatible with Gerencianet Payment plugin is 2.2.0. Please, update your WooCommerce version."
+#: woo-gerencianet-official.php:228
+msgid ""
+"The minimum PHP version compatible with Gerencianet Payment plugin is 5.4.0. Please, update your PHP version."
 msgstr ""
 
-#: templates/transparent-checkout.php:38
-msgid "This payment will be processed by Gerencianet Payments."
+#: woo-gerencianet-official.php:218
+msgid "Gerencianet Gateway depends on the last version of %s to work"
 msgstr ""
 
-#: templates/transparent-checkout.php:529
-msgid "Cancel order &amp; restore cart"
+#: templates/transparent-checkout.php:550
+msgid "Select a payment option"
 msgstr ""
 
-#: templates/transparent-checkout.php:554
+#: templates/transparent-checkout.php:538
 msgid "Generate Banking Billet"
 msgstr ""
 
-#: templates/transparent-checkout.php:565
+#: templates/transparent-checkout.php:532
+msgid "Cancel order &amp; restore cart"
+msgstr ""
+
+#: templates/transparent-checkout.php:24
+msgid "This payment will be processed by Gerencianet Payments."
+msgstr ""
+
+#: includes/class-wc-gerencianet-oficial-gateway.php:1803
+msgid "Click here to see the Billet"
+msgstr ""
+
+#: includes/class-wc-gerencianet-oficial-gateway.php:1768
+msgid ""
+"Currency <code>%s</code> is not supported by Gerencianet. Works only with <code>BRL</code> (Brazilian Real)."
+msgstr ""
+
+#: includes/class-wc-gerencianet-oficial-gateway.php:1758
+msgid "You should inform your Gerencianet Application Credentials. %s"
+msgstr ""
+
+#: includes/class-wc-gerencianet-oficial-gateway.php:1747
+msgid "You should activate at least one payment option to activate the module. %s"
+msgstr ""
+
+#: includes/class-wc-gerencianet-oficial-gateway.php:1737
+msgid "You should inform your Gerencianet Account Payee Code. %s"
+msgstr ""
+
+#: includes/class-wc-gerencianet-oficial-gateway.php:1711 includes/class-wc-gerencianet-oficial-gateway.php:1737
+#: includes/class-wc-gerencianet-oficial-gateway.php:1747 includes/class-wc-gerencianet-oficial-gateway.php:1758
+msgid "Click here to configure"
+msgstr ""
+
+#: includes/class-wc-gerencianet-oficial-gateway.php:1711
+msgid "Sandbox mode is active. The payments will not be valid. %s"
+msgstr ""
+
+#: includes/class-wc-gerencianet-oficial-gateway.php:1711 includes/class-wc-gerencianet-oficial-gateway.php:1737
+#: includes/class-wc-gerencianet-oficial-gateway.php:1747 includes/class-wc-gerencianet-oficial-gateway.php:1758
+#: includes/class-wc-gerencianet-oficial-gateway.php:1768
+msgid "Gerencianet Disabled"
+msgstr ""
+
+#: includes/class-wc-gerencianet-oficial-gateway.php:1677
+msgid "Canceled "
+msgstr ""
+
+#: includes/class-wc-gerencianet-oficial-gateway.php:1674
+msgid "Contested "
+msgstr ""
+
+#: includes/class-wc-gerencianet-oficial-gateway.php:1671
+msgid "Refunded "
+msgstr ""
+
+#: includes/class-wc-gerencianet-oficial-gateway.php:1668
+msgid "Unpaid  "
+msgstr ""
+
+#: includes/class-wc-gerencianet-oficial-gateway.php:1664
+msgid "Paid "
+msgstr ""
+
+#: includes/class-wc-gerencianet-oficial-gateway.php:1629
+msgid "Request Failure"
+msgstr ""
+
+#: includes/class-wc-gerencianet-oficial-gateway.php:1607 includes/class-wc-gerencianet-oficial-gateway.php:1785
+msgid "Show Billet"
+msgstr ""
+
+#: includes/class-wc-gerencianet-oficial-gateway.php:1606
+msgid "Charge number:"
+msgstr ""
+
+#: includes/class-wc-gerencianet-oficial-gateway.php:1605
+msgid ""
+"</b>, informed in your registration. If you do not receive the product or service purchased, you have <b>14 "
+"days from the payment confirmation</b> date to open a dispute.<br>Get informed in <a href=\"http://www."
+"gerencianet.com.br/contestacao\" target=\"_blank\">www.gerencianet.com.br/contestacao</a>."
+msgstr ""
+
+#: includes/class-wc-gerencianet-oficial-gateway.php:1604
+msgid "The charge on your card is being processed. Soon as it is confirmed, we will send an e-mail to <b>"
+msgstr ""
+
+#: includes/class-wc-gerencianet-oficial-gateway.php:1603
+msgid ""
+"The Banking Billet was successfully generated. Make payment in bank, lottery, post office or bankline. Stay "
+"tuned to the expiration date of the banking billet."
+msgstr ""
+
+#: includes/class-wc-gerencianet-oficial-gateway.php:1602
+msgid ""
+"Your order was successful and your payment is being processed. Wait until you receive confirmation of payment "
+"by email."
+msgstr ""
+
+#: includes/class-wc-gerencianet-oficial-gateway.php:1601
+msgid "Billet emitted by Gerencianet"
+msgstr ""
+
+#: includes/class-wc-gerencianet-oficial-gateway.php:1200 includes/class-wc-gerencianet-oficial-gateway.php:1463
+msgid "Sandbox mode is active. The payments will not be valid."
+msgstr ""
+
+#: includes/class-wc-gerencianet-oficial-gateway.php:1198 includes/class-wc-gerencianet-oficial-gateway.php:1461
+msgid "Please, wait..."
+msgstr ""
+
+#: includes/class-wc-gerencianet-oficial-gateway.php:1197 includes/class-wc-gerencianet-oficial-gateway.php:1460
+msgid "Select the Card Brand"
+msgstr ""
+
+#: includes/class-wc-gerencianet-oficial-gateway.php:1196 includes/class-wc-gerencianet-oficial-gateway.php:1459
+msgid "Are the last three digits<br>on the back of the card."
+msgstr ""
+
+#: includes/class-wc-gerencianet-oficial-gateway.php:1195 includes/class-wc-gerencianet-oficial-gateway.php:1458
+msgid "Select the state"
+msgstr ""
+
+#: includes/class-wc-gerencianet-oficial-gateway.php:1194 includes/class-wc-gerencianet-oficial-gateway.php:1457
+msgid "Billing Address"
+msgstr ""
+
+#: includes/class-wc-gerencianet-oficial-gateway.php:1193 includes/class-wc-gerencianet-oficial-gateway.php:1456
+msgid "Pay in"
+msgstr ""
+
+#: templates/transparent-checkout.php:544 includes/class-wc-gerencianet-oficial-gateway.php:1192
+#: includes/class-wc-gerencianet-oficial-gateway.php:1455
 msgid "Pay with Credit Card"
 msgstr ""
 
-#: templates/transparent-checkout.php:570
-msgid "Select a payment option"
+#: includes/class-wc-gerencianet-oficial-gateway.php:1190 includes/class-wc-gerencianet-oficial-gateway.php:1453
+msgid "Pay with Billet Banking"
+msgstr ""
+
+#: includes/class-wc-gerencianet-oficial-gateway.php:1189 includes/class-wc-gerencianet-oficial-gateway.php:1452
+msgid "You can not pay this order with Gerencianet because the total value is less than R$5,00."
+msgstr ""
+
+#: includes/class-wc-gerencianet-oficial-gateway.php:1187 includes/class-wc-gerencianet-oficial-gateway.php:1450
+msgid "Select the card brand"
+msgstr ""
+
+#: includes/class-wc-gerencianet-oficial-gateway.php:1186 includes/class-wc-gerencianet-oficial-gateway.php:1449
+msgid "Installments: "
+msgstr ""
+
+#: includes/class-wc-gerencianet-oficial-gateway.php:1185 includes/class-wc-gerencianet-oficial-gateway.php:1448
+msgid "Security Code: "
+msgstr ""
+
+#: includes/class-wc-gerencianet-oficial-gateway.php:1184 includes/class-wc-gerencianet-oficial-gateway.php:1447
+msgid "Expiration date: "
+msgstr ""
+
+#: includes/class-wc-gerencianet-oficial-gateway.php:1183 includes/class-wc-gerencianet-oficial-gateway.php:1446
+msgid "Card Number: "
+msgstr ""
+
+#: includes/class-wc-gerencianet-oficial-gateway.php:1182 includes/class-wc-gerencianet-oficial-gateway.php:1445
+msgid "Billing Data"
+msgstr ""
+
+#: includes/class-wc-gerencianet-oficial-gateway.php:1181 includes/class-wc-gerencianet-oficial-gateway.php:1444
+msgid "State: "
+msgstr ""
+
+#: includes/class-wc-gerencianet-oficial-gateway.php:1180 includes/class-wc-gerencianet-oficial-gateway.php:1443
+msgid "City: "
+msgstr ""
+
+#: includes/class-wc-gerencianet-oficial-gateway.php:1179 includes/class-wc-gerencianet-oficial-gateway.php:1442
+msgid "Zipcode: "
+msgstr ""
+
+#: includes/class-wc-gerencianet-oficial-gateway.php:1178 includes/class-wc-gerencianet-oficial-gateway.php:1441
+msgid "Complement: "
+msgstr ""
+
+#: includes/class-wc-gerencianet-oficial-gateway.php:1177 includes/class-wc-gerencianet-oficial-gateway.php:1440
+msgid "Neighborhood: "
+msgstr ""
+
+#: includes/class-wc-gerencianet-oficial-gateway.php:1176 includes/class-wc-gerencianet-oficial-gateway.php:1439
+msgid "Number: "
+msgstr ""
+
+#: includes/class-wc-gerencianet-oficial-gateway.php:1175 includes/class-wc-gerencianet-oficial-gateway.php:1438
+msgid "Address: "
+msgstr ""
+
+#: includes/class-wc-gerencianet-oficial-gateway.php:1174 includes/class-wc-gerencianet-oficial-gateway.php:1437
+msgid "E-mail: "
+msgstr ""
+
+#: includes/class-wc-gerencianet-oficial-gateway.php:1173 includes/class-wc-gerencianet-oficial-gateway.php:1436
+msgid "Birth Date: "
+msgstr ""
+
+#: includes/class-wc-gerencianet-oficial-gateway.php:1172 includes/class-wc-gerencianet-oficial-gateway.php:1435
+msgid "Phone: "
+msgstr ""
+
+#: includes/class-wc-gerencianet-oficial-gateway.php:1171 includes/class-wc-gerencianet-oficial-gateway.php:1434
+msgid "CNPJ: "
+msgstr ""
+
+#: includes/class-wc-gerencianet-oficial-gateway.php:1170 includes/class-wc-gerencianet-oficial-gateway.php:1433
+msgid "CPF: "
+msgstr ""
+
+#: includes/class-wc-gerencianet-oficial-gateway.php:1169 includes/class-wc-gerencianet-oficial-gateway.php:1432
+msgid "CPF/CNPJ: "
+msgstr ""
+
+#: includes/class-wc-gerencianet-oficial-gateway.php:1168 includes/class-wc-gerencianet-oficial-gateway.php:1431
+msgid "Company:"
+msgstr ""
+
+#: includes/class-wc-gerencianet-oficial-gateway.php:1167 includes/class-wc-gerencianet-oficial-gateway.php:1430
+msgid "Name:"
+msgstr ""
+
+#: includes/class-wc-gerencianet-oficial-gateway.php:1166 includes/class-wc-gerencianet-oficial-gateway.php:1429
+msgid "Name/Company:"
+msgstr ""
+
+#: includes/class-wc-gerencianet-oficial-gateway.php:1165 includes/class-wc-gerencianet-oficial-gateway.php:1428
+msgid ""
+"Opting to pay by Banking Billet, the confirmation will be performed on the next business day after payment."
+msgstr ""
+
+#: includes/class-wc-gerencianet-oficial-gateway.php:1164 includes/class-wc-gerencianet-oficial-gateway.php:1427
+msgid ""
+"Opting to pay by credit card, the payment is processed and the confirmation will take place within 48 hours."
+msgstr ""
+
+#: includes/class-wc-gerencianet-oficial-gateway.php:1053
+msgid "Credit Card - Gerencianet"
+msgstr ""
+
+#: includes/class-wc-gerencianet-oficial-gateway.php:898 includes/class-wc-gerencianet-oficial-gateway.php:1066
+msgid "Waiting"
+msgstr ""
+
+#: includes/class-wc-gerencianet-oficial-gateway.php:894
+msgid "Billet Banking - Gerencianet"
+msgstr ""
+
+#: includes/class-wc-gerencianet-oficial-gateway.php:856
+msgid "% Billet"
+msgstr ""
+
+#: includes/class-wc-gerencianet-oficial-gateway.php:856 includes/class-wc-gerencianet-oficial-gateway.php:1191
+#: includes/class-wc-gerencianet-oficial-gateway.php:1454
+msgid "Discount of "
+msgstr ""
+
+#: includes/class-wc-gerencianet-oficial-gateway.php:628 includes/class-wc-gerencianet-oficial-gateway.php:717
+#: includes/class-wc-gerencianet-oficial-gateway.php:741 includes/class-wc-gerencianet-oficial-gateway.php:926
+#: includes/class-wc-gerencianet-oficial-gateway.php:964
+msgid "An error occurred during your request. Please, try again."
+msgstr ""
+
+#: includes/class-wc-gerencianet-oficial-gateway.php:535
+msgid "Enable debug for Gerencianet"
+msgstr ""
+
+#: includes/class-wc-gerencianet-oficial-gateway.php:533
+msgid "Debug"
+msgstr ""
+
+#: includes/class-wc-gerencianet-oficial-gateway.php:529
+msgid "Enable gerencianet sandbox"
+msgstr ""
+
+#: includes/class-wc-gerencianet-oficial-gateway.php:527
+msgid "Sandbox"
+msgstr ""
+
+#: includes/class-wc-gerencianet-oficial-gateway.php:522
+msgid "Tests"
+msgstr ""
+
+#: includes/class-wc-gerencianet-oficial-gateway.php:518
+msgid "Enable order auto update"
+msgstr ""
+
+#: includes/class-wc-gerencianet-oficial-gateway.php:516
+msgid "Auto order status update"
+msgstr ""
+
+#: includes/class-wc-gerencianet-oficial-gateway.php:511
+msgid "Callback"
+msgstr ""
+
+#: includes/class-wc-gerencianet-oficial-gateway.php:503
+msgid "Instructions line 4"
+msgstr ""
+
+#: includes/class-wc-gerencianet-oficial-gateway.php:495
+msgid "Instructions line 3"
+msgstr ""
+
+#: includes/class-wc-gerencianet-oficial-gateway.php:487
+msgid "Instructions line 2"
+msgstr ""
+
+#: includes/class-wc-gerencianet-oficial-gateway.php:481 includes/class-wc-gerencianet-oficial-gateway.php:489
+#: includes/class-wc-gerencianet-oficial-gateway.php:497 includes/class-wc-gerencianet-oficial-gateway.php:505
+msgid "Text of billet instructions. Maximum of 90 characters per line."
+msgstr ""
+
+#: includes/class-wc-gerencianet-oficial-gateway.php:479
+msgid "Instructions line 1"
+msgstr ""
+
+#: includes/class-wc-gerencianet-oficial-gateway.php:474
+msgid "Billet Instructions (not required)"
+msgstr ""
+
+#: includes/class-wc-gerencianet-oficial-gateway.php:468
+msgid "Days to expire the billet after printed."
+msgstr ""
+
+#: includes/class-wc-gerencianet-oficial-gateway.php:466
+msgid "Number of Days"
+msgstr ""
+
+#: includes/class-wc-gerencianet-oficial-gateway.php:462
+msgid "Apply discount just on products price"
+msgstr ""
+
+#: includes/class-wc-gerencianet-oficial-gateway.php:461
+msgid "Apply discount on total value with Shipping"
+msgstr ""
+
+#: includes/class-wc-gerencianet-oficial-gateway.php:458
+msgid "Choose mode of discount."
+msgstr ""
+
+#: includes/class-wc-gerencianet-oficial-gateway.php:456
+msgid "Apply discount mode"
+msgstr ""
+
+#: includes/class-wc-gerencianet-oficial-gateway.php:450
+msgid "Discount for payment with billet."
+msgstr ""
+
+#: includes/class-wc-gerencianet-oficial-gateway.php:448
+msgid "Billet discount"
+msgstr ""
+
+#: includes/class-wc-gerencianet-oficial-gateway.php:443
+msgid "Billet Settings"
+msgstr ""
+
+#: includes/class-wc-gerencianet-oficial-gateway.php:439
+msgid "Enable Credit Card"
+msgstr ""
+
+#: includes/class-wc-gerencianet-oficial-gateway.php:433
+msgid "Enable Billet Banking"
+msgstr ""
+
+#: includes/woo-gerencianet-official.php:520
+msgid "Enable Pix"
+msgstr ""
+
+#: includes/woo-gerencianet-official.php:541
+msgid "Pix Settings"
+msgstr ""
+
+#: includes/woo-gerencianet-official.php:546
+msgid "Pix Certificate"
+msgstr ""
+
+#: includes/woo-gerencianet-official.php:552
+msgid "Pix Certificate save"
+msgstr ""
+
+#: includes/woo-gerencianet-official.php:559
+msgid "Pix discount"
+msgstr ""
+
+#: includes/woo-gerencianet-official.php:551
+msgid "Certificate save"
+msgstr ""
+
+#: templates/transparent-checkout.php:612
+msgid "Generate QR-Code"
+msgstr ""
+
+#: includes/woo-gerencianet-official.php:545
+msgid "Please enter your certificate"
+msgstr ""
+
+#: includes/woo-gerencianet-official.php:558
+msgid "Discount for payment with Pix"
+msgstr ""
+
+#: includes/woo-gerencianet-official.php:57
+msgid "Billet or Credit Card or Pix"
+msgstr ""
+
+#: includes/woo-gerencianet-official.php:57
+msgid "Billet or Pix"
+msgstr ""
+
+#: includes/class-wc-gerencianet-oficial-gateway.php:431
+msgid "Billet Banking"
+msgstr ""
+
+#: includes/class-wc-gerencianet-oficial-gateway.php:428
+msgid "These options need to be available to you in your gerencianet account."
+msgstr ""
+
+#: includes/class-wc-gerencianet-oficial-gateway.php:426
+msgid "Payment Settings"
+msgstr ""
+
+#: includes/class-wc-gerencianet-oficial-gateway.php:422
+msgid "Enable One Step Checkout"
+msgstr ""
+
+#: includes/class-wc-gerencianet-oficial-gateway.php:417
+msgid ""
+"This option allow the payment direct on checkout page. Before use on production, please do some test payments "
+"in sandbox mode to verify if it is compatible with your store."
+msgstr ""
+
+#: includes/class-wc-gerencianet-oficial-gateway.php:415 includes/class-wc-gerencianet-oficial-gateway.php:420
+msgid "One Step Checkout"
+msgstr ""
+
+#: includes/class-wc-gerencianet-oficial-gateway.php:410
+msgid "Please enter your account payee code; this is needed in order to take payment."
+msgstr ""
+
+#: includes/class-wc-gerencianet-oficial-gateway.php:408
+msgid "Payee Code"
+msgstr ""
+
+#: includes/class-wc-gerencianet-oficial-gateway.php:403
+msgid "Please enter your Client Secret Development; this is needed to test payment."
+msgstr ""
+
+#: includes/class-wc-gerencianet-oficial-gateway.php:401
+msgid "Client Secret Development"
+msgstr ""
+
+#: includes/class-wc-gerencianet-oficial-gateway.php:396
+msgid "Please enter your Client Id Development; this is needed to test payment."
+msgstr ""
+
+#: includes/class-wc-gerencianet-oficial-gateway.php:394
+msgid "Client ID Development"
+msgstr ""
+
+#: includes/class-wc-gerencianet-oficial-gateway.php:389
+msgid "Please enter your Client Secret Production; this is needed in order to take payment."
+msgstr ""
+
+#: includes/class-wc-gerencianet-oficial-gateway.php:387
+msgid "Client Secret Production"
+msgstr ""
+
+#: includes/class-wc-gerencianet-oficial-gateway.php:382
+msgid "Please enter your Client Id Production; this is needed in order to take payment."
+msgstr ""
+
+#: includes/class-wc-gerencianet-oficial-gateway.php:380
+msgid "Client Id Production"
+msgstr ""
+
+#: includes/class-wc-gerencianet-oficial-gateway.php:377
+msgid ""
+"Here you will find your credentials: <a id='showKeysProductionTutorial' class='gn-admin-cursor-pointer'>Client "
+"ID/Secret Production</a>, <a id='showKeysDevelopmentTutorial' class='gn-admin-cursor-pointer'>Client ID/Secret "
+"Development</a> and <a id='showPayeeCodeTutorial' class='gn-admin-cursor-pointer'>Payee Code</a>"
+msgstr ""
+
+#: includes/class-wc-gerencianet-oficial-gateway.php:375
+msgid "Gerencianet Credentials"
+msgstr ""
+
+#: includes/class-wc-gerencianet-oficial-gateway.php:370
+msgid ""
+"Please enter a prefix for your invoice numbers. If you use your gerencianet account for multiple stores ensure "
+"this prefix is unqiue as gerencianet will not allow orders with the same invoice number."
+msgstr ""
+
+#: includes/class-wc-gerencianet-oficial-gateway.php:368
+msgid "Invoice Prefix"
+msgstr ""
+
+#: includes/class-wc-gerencianet-oficial-gateway.php:365
+msgid "Pay via gerencianet"
+msgstr ""
+
+#: includes/class-wc-gerencianet-oficial-gateway.php:364
+msgid "This controls the description which the user sees during checkout."
+msgstr ""
+
+#: includes/class-wc-gerencianet-oficial-gateway.php:362
+msgid "Description"
+msgstr ""
+
+#: includes/class-wc-gerencianet-oficial-gateway.php:357
+msgid "This controls the title which the user sees during checkout."
+msgstr ""
+
+#: includes/class-wc-gerencianet-oficial-gateway.php:355
+msgid "Title"
+msgstr ""
+
+#: includes/class-wc-gerencianet-oficial-gateway.php:351
+msgid "Enable Gerencianet Payments"
+msgstr ""
+
+#: includes/class-wc-gerencianet-oficial-gateway.php:349
+msgid "Enable/Disable"
+msgstr ""
+
+#: includes/class-wc-gerencianet-oficial-gateway.php:318
+msgid ""
+"This module is the official module of Gerencianet Payment Gateway. If you have any doubths or suggestions, "
+"contact us at <a href=\"http://www.gerencianet.com.br\">www.gerencianet.com.br</a>"
+msgstr ""
+
+#: includes/class-wc-gerencianet-oficial-gateway.php:317
+msgid "Gerencianet Payments - Official Module"
+msgstr ""
+
+#: includes/class-wc-gerencianet-oficial-gateway.php:42
+msgid "Billet or Credit Card"
+msgstr ""
+
+#: includes/class-wc-gerencianet-oficial-gateway.php:40 includes/class-wc-gerencianet-oficial-gateway.php:437
+msgid "Credit Card"
+msgstr ""
+
+#: includes/class-wc-gerencianet-oficial-gateway.php:38
+msgid "Billet"
+msgstr ""
+
+#. Author of the plugin
+#: includes/class-wc-gerencianet-oficial-gateway.php:23 includes/class-wc-gerencianet-oficial-gateway.php:44
+#: includes/class-wc-gerencianet-oficial-gateway.php:359
+msgid "Gerencianet"
+msgstr ""
+
+#: includes/woo-gerencianet-official.php:559
+msgid "Pix Key"
+msgstr ""
+
+#: includes/woo-gerencianet-official.php:561
+msgid "Insert your Pix Key"
+msgstr ""
+
+#: includes/woo-gerencianet-official.php:592
+msgid "Number of Hours"
+msgstr ""
+
+#: includes/woo-gerencianet-official.php:594
+msgid "Hours to expire the pix after printed."
+msgstr ""
+
+#: includes/woo-gerencianet-official.php:57
+msgid "Credit Card or Pix"
+msgstr ""
+
+#: includes/class-wc-gerencianet-oficial-gateway.php:1792
+msgid "Payment for PIX"
+msgstr ""
+
+#: includes/class-wc-gerencianet-oficial-gateway.php:1793
+msgid "Scan the code below and make the payment for Pix"
+msgstr ""
+
+#: includes/class-wc-gerencianet-oficial-gateway.php:602
+msgid "Validate mTLS"
+msgstr ""
+
+#: includes/class-wc-gerencianet-oficial-gateway.php:604
+msgid "Understand the risks of not configuring mTLS by accessing the link https://gnetbr.com/rke4baDVyd"
 msgstr ""

@@ -12,13 +12,6 @@ if (!defined('ABSPATH')) {
 
 <script type="text/javascript">
     var home_url = "<?php echo esc_url($order_received_url); ?>";
-
-    <?php if ($card_option == 'no' && $billet_option == 'yes') { ?>
-        justBillet();
-    <?php } ?>
-    <?php if ($card_option == 'yes' && $billet_option == 'no') { ?>
-        justCard();
-    <?php } ?>
 </script>
 
 <p><?php echo apply_filters('woocommerce_gerencianet_transparent_checkout_message', __('This payment will be processed by Gerencianet Payments.', WCGerencianetOficial::getTextDomain())); ?></p>
@@ -29,7 +22,7 @@ if (!defined('ABSPATH')) {
 <?php } ?>
 
 <div class="warning-payment" id="wc-gerencianet-messages">
-    <?php if (($card_option && $order_total_card < 500) && ($billet_option && $order_total_billet < 500)) { ?>
+    <?php if (($card_option && $order_total_card < 500) || ($billet_option && $order_total_billet < 500)) { ?>
         <div class="woocommerce-error"><?php echo $gn_mininum_gn_charge_price; ?></div>
     <?php } ?>
 </div>
@@ -69,6 +62,7 @@ if (!defined('ABSPATH')) {
                     </div>
                 </div>
             </div>
+
             <div id="collapse-payment-billet" class="panel-collapse gn-hide" style="border-top: 1px solid #CCC;">
                 <div class="panel-body">
 
@@ -524,6 +518,67 @@ if (!defined('ABSPATH')) {
             </div>
         </div>
     <?php } ?>
+
+    <?php if ($pix_option == 'yes') {?>
+        <div id="pix-option" style="border: 1px solid #CCC; margin-top: 0px; margin-bottom: 30px;">
+            <div id="background-pix" name="background-pix" class="gn-accordion-option-background">
+                <div class="gn-row-left panel-heading panel-gerencianet ">
+                <div id="pix-radio-button" class="gn-left">
+                        <input type="radio" name="paymentMethodPixRadio" id="paymentMethodPixRadio" value="0" />
+                    </div>
+                    <!-- <div class="gn-left gn-icon-gerencianet"> -->
+                        <!-- Colocar ícone do Pix -->
+                    <!-- </div> -->
+                    <div class="gn-left payment-option-gerencianet">
+                        <?php echo $gn_pay_pix_option ?>
+                    </div>
+                    <div class="gn-left gn-payment-option-sizer"></div>
+                    <div class="clear"></div>
+                </div>
+                <div class="gn-row-right">
+                    <div>
+                        <div class="gn-left gn-price-payment-info">
+                            <?php if (floatval($discountPix) > 0) { ?>
+                                <div style="text-align: center;">
+                                    <span class="payment-old-price-gerencianet"><?php echo strip_tags($order->get_formatted_order_total()); ?></span><br><span class="payment-discount-gerencianet"><b><?php echo $gn_discount_pix; ?><?= str_replace(".", ",", $discountPix); ?>
+                                            %</b>
+                                    </span>
+                                </div>
+                            <?php } ?>
+                        </div>
+                        <div class="gn-right gn-price-payment-selected total-gerencianet">
+                            <?php echo $totalValuePix; ?>
+                        </div>
+                        <div class="clear"></div>
+                    </div>
+                </div>
+            </div>
+
+            <div id="collapse-payment-pix" class="panel-collapse gn-hide" style="border-top: 1px solid #CCC;">
+                <div class="panel-body">
+                <form class="form-horizontal">
+                        <input name="wc_order_id" type="hidden" value="<?php echo $order->id; ?>" />
+
+                        <div class="gn-form">
+                            <div id="pix-data">
+
+                                <div class="required gn-row gn-pix-field <?php if ($gn_pix_cpf_cnpj_validate) { ?> gn-hide <?php } ?>">
+                                    <div class="gn-col-2 gn-label">
+                                        <label for="input-payment-pix-cpf-cnpj" class="gn-right-padding-1"><?php echo $gn_cpf_cnpj; ?></label>
+                                    </div>
+                                    <div class="gn-col-10">
+                                        <input type="text" name="pix-cpf-cnpj" id="pix-cpf-cnpj" value="<?php echo $gn_order_cpf_cnpj; ?>" class="form-control cpf-mask" />
+                                    </div>
+                                </div>
+
+                            </div>
+                        </div>
+
+                    </form>
+                </div>
+            </div>
+        </div>
+    <?php } ?>
 </div>
 
 <div class="checkout-footer">
@@ -543,6 +598,12 @@ if (!defined('ABSPATH')) {
             <p>
                 <button class="button alt" id="gn-pay-card-button"><?php _e('Pay with Credit Card', WCGerencianetOficial::getTextDomain());
                                                                     echo ' &nbsp; | &nbsp; ' . $order_total; ?></button>
+            </p>
+        </div>
+        <div id="price-pix" name="price-pix" class="gn-hide">
+            <p>
+                <button class="button alt" id="gn-pay-pix-button"><?php _e('Generate QR-Code', WCGerencianetOficial::getTextDomain());
+                                                                    echo ' &nbsp; | &nbsp; ' . $totalValuePix; ?></button>
             </p>
         </div>
         <div id="price-no-payment-selected" name="price-no-payment-selected">

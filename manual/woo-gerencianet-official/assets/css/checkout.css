@@ -665,6 +665,11 @@
     text-decoration: underline;
 }
 
+.gn-qrcode img {
+    margin: auto;
+    display: block;
+}
+
 .gn-osc-background {
     background-color: #FFFFFF;
     margin-top: 0px;
