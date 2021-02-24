@@ -5,7 +5,7 @@
  * Description: Gateway de pagamento Gerencianet para WooCommerce.
  * Author: Gerencianet
  * Author URI: http://www.gerencianet.com.br
- * Version: 0.7.4
+ * Version: 1.0.0
  * License: GPLv2 or later
  * Text Domain: woo-gerencianet-official
  * Domain Path: /languages
@@ -28,7 +28,7 @@ if (!class_exists('WCGerencianetOficial')) :
 		 *
 		 * @var string
 		 */
-		const VERSION = '0.7.4';
+		const VERSION = '1.0.0';
 
 		/**
 		 * Integration id.
@@ -54,8 +54,8 @@ if (!class_exists('WCGerencianetOficial')) :
 			// Load plugin text domain
 			add_action('init', array($this, 'load_plugin_textdomain'));
 
-			if (version_compare(phpversion(), '5.5.0', '>=')) {
-				if (version_compare(WOOCOMMERCE_VERSION, '2.2', '>=')) {
+			if (version_compare(phpversion(), '7.0.0', '>=')) {
+				if (version_compare(WOOCOMMERCE_VERSION, '5.0', '>=')) {
 					if (class_exists('WC_Payment_Gateway')) {
 
 						include_once 'includes/class-wc-gerencianet-oficial-gateway.php';
@@ -230,7 +230,7 @@ if (!class_exists('WCGerencianetOficial')) :
 		 */
 		public function php_not_supported_by_gn_notice()
 		{
-			echo '<div class="error"><p>' . sprintf(__('The minimum PHP version compatible with Gerencianet Payment plugin is 5.4.0. Please, update your PHP version.', WCGerencianetOficial::getTextDomain())) . '</p></div>';
+			echo '<div class="error"><p>' . sprintf(__('The minimum PHP version compatible with Gerencianet Payment plugin is 7.0.0. Please, update your PHP version.', WCGerencianetOficial::getTextDomain())) . '</p></div>';
 		}
 
 		/**
@@ -240,7 +240,7 @@ if (!class_exists('WCGerencianetOficial')) :
 		 */
 		public function woocommerce_not_supported_by_gn_notice()
 		{
-			echo '<div class="error"><p>' . sprintf(__('The minimum WooCommerce version compatible with Gerencianet Payment plugin is 2.2.0. Please, update your WooCommerce version.', WCGerencianetOficial::getTextDomain())) . '</p></div>';
+			echo '<div class="error"><p>' . sprintf(__('The minimum WooCommerce version compatible with Gerencianet Payment plugin is 5.0.0. Please, update your WooCommerce version.', WCGerencianetOficial::getTextDomain())) . '</p></div>';
 		}
 	}
 
