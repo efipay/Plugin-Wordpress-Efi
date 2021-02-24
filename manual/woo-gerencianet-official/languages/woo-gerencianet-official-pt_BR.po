@@ -144,7 +144,7 @@ msgstr ""
 
 #: includes/class-wc-gerencianet-oficial-gateway.php:1604
 msgid "The charge on your card is being processed. Soon as it is confirmed, we will send an e-mail to <b>"
-msgstr "A transação do seu cartão está sendo processada. Assim que for confirmada lhe enviaremos um email <b>"
+msgstr "A transação do seu cartão está sendo processada. Assim que for confirmada lhe enviaremos um email para <b>"
 
 #: includes/class-wc-gerencianet-oficial-gateway.php:1603
 msgid ""
