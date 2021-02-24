@@ -1802,12 +1802,11 @@ class WC_Gerencianet_Oficial_Gateway extends WC_Payment_Gateway
                 'title' => __('Billet emitted by Gerencianet', WCGerencianetOficial::getTextDomain()),
                 'content' => __('The Banking Billet was successfully generated. Make payment in bank, lottery, post office or bankline. Stay tuned to the expiration date of the banking billet.', WCGerencianetOficial::getTextDomain())
             ],
-            'cart' => [
+            'card' => [
                 'title' => __('Your order was successful and your payment is being processed. Wait until you receive confirmation of payment by email.', WCGerencianetOficial::getTextDomain()),
                 'content' => join(' ', [
                     __('The charge on your card is being processed. Soon as it is confirmed, we will send an e-mail to <b>', WCGerencianetOficial::getTextDomain()),
-                    $email,
-                    __('</b>, informed in your registration. If you do not receive the product or service purchased, you have <b>14 days from the payment confirmation</b> date to open a dispute.<br>Get informed in <a href="http://www.gerencianet.com.br/contestacao" target="_blank">www.gerencianet.com.br/contestacao</a>.', WCGerencianetOficial::getTextDomain())
+                    $email     
                 ])
             ]
         );
