@@ -57,6 +57,9 @@ Caso você tenha alguma dúvida ou sugestão, entre em contato conosco pelo site
 
 = Changelog =
 
+= 1.0.1 =
+* Remoção de mensagem de contestação em pagamentos via cartão de crédito
+
 = 1.0.0 =
 * Adição da funcionalidade Pix.
 * Atualização das versões das dependências.
