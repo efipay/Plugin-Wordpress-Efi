@@ -1789,7 +1789,7 @@ class WC_Gerencianet_Oficial_Gateway extends WC_Payment_Gateway
 
 		$billet_url = get_post_meta($order_id, 'billet', true);
         $qrcode = get_post_meta($order_id, 'pix_qr', true);
-
+		$pixCopiaCola = get_post_meta($order_id, 'pix_qr_copy', true); 
 		$generated_payment_type = sanitize_text_field($_GET['method']);
 		$charge_id = sanitize_text_field($_GET['charge_id']);
 
