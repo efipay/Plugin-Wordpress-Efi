@@ -74,7 +74,7 @@ class Pix {
             ],
             'valor' => [ 'original' => sprintf('%0.2f', $totalOrder) ],
             'chave' => $gateway->pix_key,
-            'solicitacaoPagador' => 'Pagamento #' . $post_order_id
+            'solicitacaoPagador' => 'Pagamento em '.get_bloginfo().' - Pedido #' . $post_order_id 
         ];
 
         $credential = Pix::get_gn_api_credentials($gateway->gnIntegration->get_gn_api_credentials());
