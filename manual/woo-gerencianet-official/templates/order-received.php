@@ -42,21 +42,20 @@ if ( ! defined( 'ABSPATH' ) ) {
 
             </div>
 
-            <?php if (isset($qrcode)) { ?>
-                <div class="gn-qrcode">
-                    <img src="<?php echo $qrcode; ?>" />
+            <?php if ($qrcode !== "") { ?>
+            <div class="gn-qrcode" style="text-align:center;">
+                <img src="<?php echo $qrcode; ?>" />
+                <div style="font-size: 15px!important;text-align: center !important;">
+
+                    <span style="font-weight: bold !important;">
+                        <?php echo __('Or copy the Code below and paste it into the app where you are going to make the payment:', WCGerencianetOficial::getTextDomain()) ; ?>
+                    </span>
+                    <span style=" max-width: 400px!important; display: inline-block !important">
+                        <?php echo $pixCopiaCola;  ?>
+                    </span>
+
                 </div>
-                <p style="font-size: 15px!important;text-align: center !important;"> 
-
-                      <span style="font-weight: bold;"> <?php echo __('Or copy the Code below and paste it into the app where you are going to make the payment:', WCGerencianetOficial::getTextDomain()) ; ?></span> 
-
-                        <span style=" max-width: 500px!important; display: inline-block"> 
-
-                            <?php echo $pixCopiaCola;  ?> 
-
-                        </span> 
-
-                    </p> 
+            </div>
             <?php } ?>
 
 			<?php if ( $generated_payment_type == "billet" && $billet_url != "" ) { ?>
