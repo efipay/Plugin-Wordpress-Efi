@@ -14,11 +14,11 @@ jQuery(document).ready(function ($) {
 
     if ($().mask) {
         function initOptions() {
-            classBackground    = $('.gn-accordion-option-background');
-            containsPrice      = $('[id*="price"]');
-            containsCollapse   = $('[id*="collapse-payment"]');
+            classBackground = $('.gn-accordion-option-background');
+            containsPrice = $('[id*="price"]');
+            containsCollapse = $('[id*="collapse-payment"]');
 
-            if(classBackground.length === 1) {
+            if (classBackground.length === 1) {
                 onCardClick(classBackground[0].id);
             }
         }
@@ -90,7 +90,7 @@ jQuery(document).ready(function ($) {
 
     jQuery('#background-card').click((event) => onCardClick(event.currentTarget.id));
     jQuery('#background-billet').click((event) => onCardClick(event.currentTarget.id));
-    jQuery('#background-pix').click((event) => {onCardClick(event.currentTarget.id)});
+    jQuery('#background-pix').click((event) => { onCardClick(event.currentTarget.id) });
 
     function onCardClick(id) {
 
@@ -100,7 +100,7 @@ jQuery(document).ready(function ($) {
 
         $.each(classBackground, (index, div) => {
             const isChecket = $(div).find('input[type=radio]').prop('checked');
-            if(id === div.id && !isChecket) {
+            if (id === div.id && !isChecket) {
                 $(div).css('background-color', '#f5f5f5');
                 $(div).find('input[type=radio]').prop('checked', true);
             } else {
@@ -111,7 +111,7 @@ jQuery(document).ready(function ($) {
 
         $.each(containsPrice, (index, div) => {
             const isVisible = $(div).is(':visible');
-            if(div.id === idPrice && !isVisible) {
+            if (div.id === idPrice && !isVisible) {
                 $(div).show();
             } else {
                 $(div).hide();
@@ -120,17 +120,17 @@ jQuery(document).ready(function ($) {
 
         $.each(containsCollapse, (index, div) => {
             const isVisible = $(div).is(':visible');
-            if(div.id === idCollapse && !isVisible) {
+            if (div.id === idCollapse && !isVisible) {
                 $(div).slideDown();
             } else {
                 $(div).slideUp();
             }
         });
 
-        if($(`#${idPrice}`).is(':visible')) {
-            $(containsPrice[containsPrice.length-1]).hide();
+        if ($(`#${idPrice}`).is(':visible')) {
+            $(containsPrice[containsPrice.length - 1]).hide();
         } else {
-            $(containsPrice[containsPrice.length-1]).show();
+            $(containsPrice[containsPrice.length - 1]).show();
         }
     }
 
@@ -208,11 +208,11 @@ jQuery(document).ready(function ($) {
             $('.gn-loading-request').fadeIn();
 
             var order_id = jQuery('input[name="wc_order_id"]').val(),
-            data = {
-                action: "woocommerce_gerencianet_create_charge",
-                security: woocommerce_gerencianet_api.security,
-                order_id: order_id
-            };
+                data = {
+                    action: "woocommerce_gerencianet_create_charge",
+                    security: woocommerce_gerencianet_api.security,
+                    order_id: order_id
+                };
 
             jQuery.ajax({
                 type: "POST",
@@ -265,7 +265,7 @@ jQuery(document).ready(function ($) {
             success: function (response) {
                 var obj = $.parseJSON(response);
 
-                if(!!obj.txid) {
+                if (!!obj.txid) {
                     var redirect = $('<form action="' + home_url + '&method=pix&charge_id=' + obj.charge_id + '" method="post">' +
                         '<input type="text" name="charge" value="' + obj.charge_id + '" />' +
                         '</form>');
