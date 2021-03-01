@@ -28,6 +28,7 @@ if (!defined('ABSPATH')) {
 </div>
 
 <div class="panel-group" id="accordion">
+    
     <?php if ($billet_option == 'yes' && $order_total_billet >= 500) { ?>
         <div class="panel panel-default" id="billet-option" style="border: 1px solid #CCC; margin-bottom: 20px;">
             <div id="background-billet" name="background-billet" class="gn-accordion-option-background">
@@ -526,9 +527,10 @@ if (!defined('ABSPATH')) {
                 <div id="pix-radio-button" class="gn-left">
                         <input type="radio" name="paymentMethodPixRadio" id="paymentMethodPixRadio" value="0" />
                     </div>
-                    <!-- <div class="gn-left gn-icon-gerencianet"> -->
-                        <!-- Colocar ícone do Pix -->
-                    <!-- </div> -->
+                    <div class="gn-left gn-icon-gerencianet">
+                        <img style="width:26px;" src="<?php  echo plugin_dir_url( __DIR__ )."./assets/images/pix.png"; ?>"
+                        alt="Pix logo">
+                    </div>
                     <div class="gn-left payment-option-gerencianet">
                         <?php echo $gn_pay_pix_option ?>
                     </div>
