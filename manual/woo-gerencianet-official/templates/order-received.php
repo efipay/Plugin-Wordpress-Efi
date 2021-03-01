@@ -47,7 +47,7 @@ if ( ! defined( 'ABSPATH' ) ) {
                 <img src="<?php echo $qrcode; ?>" />
                 <div style="font-size: 15px!important;text-align: center !important;">
 
-                    <span style="font-weight: bold !important;">
+                    <span style="font-weight: bold !important;word-break: break-all;">
                         <?php echo __('Or copy the Code below and paste it into the app where you are going to make the payment:', WCGerencianetOficial::getTextDomain()) ; ?>
                     </span>
                     <span style=" max-width: 400px!important; display: inline-block !important">
