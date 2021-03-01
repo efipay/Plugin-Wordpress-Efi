@@ -1367,7 +1367,9 @@ if (!defined('ABSPATH')) {
                         <input type="radio" name="paymentMethodRadio" id="paymentMethodPixRadio" class="gn-osc-radio" value="pix" />
                     </div>
                     <div class="gn-osc-left gn-osc-icon-gerencianet">
-                        <div class="gn-pix"></div>
+                        <div class="gn-pix">
+                            <img style="width:26px;" src="<?php  echo plugin_dir_url( __DIR__ )."./assets/images/pix.png"; ?>" alt="Pix logo">
+                        </div>
                     </div>
                     <div class="gn-osc-left gn-osc-payment-option-gerencianet">
                         <strong><?php echo "Pagamento por Pix"; ?></strong>
