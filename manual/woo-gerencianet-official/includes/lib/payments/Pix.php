@@ -74,7 +74,7 @@ class Pix {
             ],
             'valor' => [ 'original' => sprintf('%0.2f', $totalOrder) ],
             'chave' => $gateway->pix_key,
-            'solicitacaoPagador' => 'Pagamento #' . $post_order_id
+            'solicitacaoPagador' => 'Pagamento em '.get_bloginfo().' - Pedido #' . $post_order_id 
         ];
 
         $credential = Pix::get_gn_api_credentials($gateway->gnIntegration->get_gn_api_credentials());
@@ -128,6 +128,7 @@ class Pix {
     				update_post_meta(intval($post_order_id), '_order_total', number_format(intval(ceil($gateway->gn_price_format($totalOrder))) / 100, 2, '.', ''));
     				update_post_meta(intval($post_order_id), '_payment_method_title', sanitize_text_field(__('Pix - Gerencianet', WCGerencianetOficial::getTextDomain())));
     				add_post_meta(intval($post_order_id), 'pix_qr', $resultQrCode['imagemQrcode'], true);
+                    add_post_meta(intval($post_order_id), 'pix_qr_copy', $resultQrCode['qrcode'], true); 
                     add_post_meta(intval($post_order_id), 'txid', $resultCheck['txid'], true);
     			}
     			$order->update_status('on-hold', __('Waiting'));

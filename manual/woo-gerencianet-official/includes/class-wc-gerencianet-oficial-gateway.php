@@ -241,7 +241,7 @@ class WC_Gerencianet_Oficial_Gateway extends WC_Payment_Gateway
 				add_action('admin_notices', array($this, 'sandbox_active_message'));
 			}
 
-			if ('no' == $this->billet_banking && 'no' == $this->credit_card) {
+			if ('no' == $this->billet_banking && 'no' == $this->credit_card && 'no' == $this->pix) { 
 				add_action('admin_notices', array($this, 'payment_option_missing_message'));
 			}
 
@@ -1789,7 +1789,7 @@ class WC_Gerencianet_Oficial_Gateway extends WC_Payment_Gateway
 
 		$billet_url = get_post_meta($order_id, 'billet', true);
         $qrcode = get_post_meta($order_id, 'pix_qr', true);
-
+		$pixCopiaCola = get_post_meta($order_id, 'pix_qr_copy', true); 
 		$generated_payment_type = sanitize_text_field($_GET['method']);
 		$charge_id = sanitize_text_field($_GET['charge_id']);
 
