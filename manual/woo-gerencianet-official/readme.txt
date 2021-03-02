@@ -3,7 +3,7 @@ Contributors: Gerencianet
 Tags: woocommerce, gerencianet, payment, transparent checkout, pix, billet, card, brazil, payments brazil
 Requires at least: 5.x
 Tested up to: 5.6.2
-Stable tag: 1.0.0
+Stable tag: 1.0.2
 License: GPLv2 or later
 License URI: http://www.gnu.org/licenses/gpl-2.0.html
 
@@ -56,6 +56,13 @@ Caso você tenha alguma dúvida ou sugestão, entre em contato conosco pelo site
 10. Recomendamos que antes de disponibilizar pagamentos pela Gerencianet, o lojista realize testes de cobrança com o sandbox(ambiente de testes) ativado para verificar se o procedimento de pagamento está acontecendo conforme esperado.
 
 = Changelog =
+
+= 1.0.2 =
+* Exibir linha "Copia e Cola" do Pix
+* Descrição da cobrança com nome da loja e número do pedido no PSP que ler o Qr Code.
+* Correção de alerta de pagamentos desabilitados.
+* Ícone Pix adicionado na página de checkout.
+* Melhorias na tradução.
 
 = 1.0.1 =
 * Remoção de mensagem de contestação em pagamentos via cartão de crédito
