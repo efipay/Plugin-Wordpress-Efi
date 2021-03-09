@@ -1350,6 +1350,7 @@ class WC_Gerencianet_Oficial_Gateway extends WC_Payment_Gateway
 		$gn_discount_billet         = __("Discount of ", WCGerencianetOficial::getTextDomain());
 		$gn_pay_card_option         = __("Pay with Credit Card", WCGerencianetOficial::getTextDomain());
 		$gn_pay_pix_option          = __("Pay with Pix", WCGerencianetOficial::getTextDomain());
+		$pix_copy_paste 			= __('Or copy the Code below and paste it into the app where you are going to make the payment:', WCGerencianetOficial::getTextDomain()) ;
 		$gn_installments_pay        = __("Pay in", WCGerencianetOficial::getTextDomain());
 		$gn_billing_address_title   = __("Billing Address", WCGerencianetOficial::getTextDomain());
 		$gn_billing_state_select    = __("Select the state", WCGerencianetOficial::getTextDomain());

@@ -1413,7 +1413,7 @@ jQuery(document).ready(function($) {
                     </div>
                 </div>
                 <div class="gn-osc-left gn-osc-payment-option-gerencianet">
-                    <strong><?php echo "Pagamento por Pix"; ?></strong>
+                    <strong><?php echo __("Pay with Pix", WCGerencianetOficial::getTextDomain()); ?></strong>
                     <?php if ($discountPix > 0) { ?>
                     <span style="font-size: 14px; line-height: 15px;"><br>+<?php echo $discount_pix_formatted; ?>% de
                         desconto</span>
