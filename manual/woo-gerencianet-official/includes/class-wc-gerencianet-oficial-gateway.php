@@ -143,37 +143,53 @@ class WC_Gerencianet_Oficial_Gateway extends WC_Payment_Gateway
         Pix::updateWebhook($this);
     }
 
-	public function save_pix_cert_db() {
+	public function save_pix_cert_db()
+    {
         $file_id = 'woocommerce_gerencianet_oficial_pix_file';
         $file_name = $_FILES[$file_id]['name'];
-		if($file_name)
-		{
+        if ($file_name) {
             //get the file extension
             $fileExt = explode('.', $file_name);
             $fileActualExt = strtolower(end($fileExt));
-
-            if($fileActualExt != 'pem'){
+            if ($fileActualExt != 'pem' && $fileActualExt != 'p12') {
                 echo '<div class="error"><p><strong> Tipo de arquivo inválido! </strong></div>';
                 return;
             }
-
-			//read the contents of the file
-            $file_read = file_get_contents($_FILES['woocommerce_gerencianet_oficial_pix_file']['tmp_name']);
-
-			$save_pix = array(
-				'pix_cert_name' => $file_name,
-				'pix_cert_file' => $file_read
+            if ($fileActualExt = 'p12') {
+                if (!$cert_file_p12 = file_get_contents($_FILES['woocommerce_gerencianet_oficial_pix_file']['tmp_name'])) { // Pega o conteúdo do arquivo .p12
+                    echo "Falha ao ler arquivo o .p12.";
+                    exit;
+                }
+                if (!openssl_pkcs12_read($cert_file_p12, $cert_info_pem, "")) { // Converte o conteúdo para .pem
+                    echo "Falha ao converter o arquivo .p12.";
+                    exit;
+                }
+                $file_read = "subject=/CN=271207/C=BR\n";
+                $file_read .= "issuer=/C=BR/ST=Minas Gerais/O=Gerencianet Pagamentos do Brasil Ltda/OU=Infraestrutura/CN=api-pix.gerencianet.com.br/emailAddress=infra@gerencianet.com.br\n";
+                $file_read .= $cert_info_pem['cert'];
+                $file_read .= "Key Attributes: <No Attributes>\n";
+                $file_read .= $cert_info_pem['pkey'];
+            }
+            else {
+                //read the contents of the file
+                if (!$file_read = file_get_contents($_FILES['woocommerce_gerencianet_oficial_pix_file']['tmp_name'])) { // Pega o conteúdo do arquivo .p12
+                    echo "Falha ao ler arquivo o .pem.";
+                    exit;
+                }
+            }
+            $save_pix = array(
+                'pix_cert_name' => $file_name,
+                'pix_cert_file' => $file_read
             );
             //table name in mysql
             $option_name = 'woocommerce_gerencianet_oficial_settings';
-
             //merge with the data saved in bd
             $data = get_option($option_name);
             $save_data = array_merge($data, $save_pix);
-
-            update_option( $option_name, $save_data, true);
+            update_option($option_name, $save_data, true);
         }
     }
+
 
     //save file from the temp directory
     private function save_pix_cert_dir(){
