@@ -1,3 +1,25 @@
+# 1.1.0
+* Add: Adicionado suporte ao certificado em formato .p12
+* Add: Melhoria Pix copia e cola, botão adicionado
+* Add: Identificando bandeira do cartão pelo número
+* Add: Novo arquivo de tradução gerado
+* Fix: Correção chamada de textos localizados/traduzidos
+* Fix: Correção cobrança do frete no PIX
+
+# 1.0.2
+* Add: Exibir linha "Copia e Cola" do Pix
+* Add: Descrição da cobrança com nome da loja e número do pedido no PSP que ler o Qr Code.
+* Fix: Correção de alerta de pagamentos desabilitados.
+* Add: Ícone Pix adicionado na página de checkout.
+* Fix: Melhorias na tradução.
+
+# 1.0.1
+* Fix: Remoção de mensagem de contestação em pagamentos via cartão de crédito
+
+# 1.0.0
+* Add: Adição da funcionalidade Pix.
+* Fix: Atualização das versões das dependências.
+
 # 0.7.3
 * Fix: Realiza verificação da versão do TLS do servidor.
 
