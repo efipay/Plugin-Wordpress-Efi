@@ -2,7 +2,7 @@
 # This file is distributed under the same license as the Plugins - Woo Gerencianet Oficial - Development (trunk) package.
 msgid ""
 msgstr ""
-"PO-Revision-Date: 2021-03-02 08:32-0300\n"
+"PO-Revision-Date: 2021-03-09 09:59-0300\n"
 "MIME-Version: 1.0\n"
 "Content-Type: text/plain; charset=UTF-8\n"
 "Content-Transfer-Encoding: 8bit\n"
@@ -667,10 +667,10 @@ msgstr "Validar mTLS"
 msgid "Understand the risks of not configuring mTLS by accessing the link https://gnetbr.com/rke4baDVyd"
 msgstr "Entenda os riscos de não configurar o mTLS acessando o link https://gnetbr.com/rke4baDVyd"
 
-#. Copy and Paste instructions
+#: includes/class-wc-gerencianet-oficial-gateway.php:1353
 msgid "Or copy the Code below and paste it into the app where you are going to make the payment:"
 msgstr "Ou copie o código abaixo e cole no aplicativo onde você fará o pagamento:"
 
-#: CHeckout
+#: includes/class-wc-gerencianet-oficial-gateway.php:1352
 msgid "Pay with Pix"
 msgstr "Pague com Pix"

@@ -1215,19 +1215,22 @@ class WC_Gerencianet_Oficial_Gateway extends WC_Payment_Gateway
     public function calculatePixDiscount() {
         $WC = $this->woocommerce_instance();
 
-        $total_value   = $WC->cart->get_cart_contents_total();
+        $total_cart   = $WC->cart->get_cart_contents_total();
         $totalShipping = $WC->cart->get_shipping_total();
         $totalTax      = $WC->cart->get_cart_contents_tax();
         $discountPix   = $this->discountPix;
-
-        if(isset($total_value, $totalShipping, $totalTax, $discountPix) ) {
+		$total_value = 0;
+		
+        if(isset($total_cart, $totalShipping, $totalTax, $discountPix) ) {
             if ($this->pix_discount_shipping == 'products') {
-                $discountPixTotal = (float)($total_value) * (((float)$discountPix / 100) );
+				$discountPixTotal = (float)($total_cart) * (((float)$discountPix / 100) );
+				
+				$total_value = (float)($total_cart  - $discountPixTotal + $totalShipping + $totalTax);
             } else {
-                $total_value = (float)($total_value + $totalShipping + $totalTax);
+                $total_value = (float)($total_cart + $totalShipping + $totalTax);
                 $discountPixTotal = $total_value * (((float)$discountPix / 100));
+				$total_value = (float)($total_value  - $discountPixTotal);
             }
-            $total_value = (float)($total_value  - $discountPixTotal);
         } else {
             return $this->returnError('An error occurred during your request. Please, try again.');
         }
@@ -1350,6 +1353,7 @@ class WC_Gerencianet_Oficial_Gateway extends WC_Payment_Gateway
 		$gn_discount_billet         = __("Discount of ", WCGerencianetOficial::getTextDomain());
 		$gn_pay_card_option         = __("Pay with Credit Card", WCGerencianetOficial::getTextDomain());
 		$gn_pay_pix_option          = __("Pay with Pix", WCGerencianetOficial::getTextDomain());
+		$pix_copy_paste 			= __('Or copy the Code below and paste it into the app where you are going to make the payment:', WCGerencianetOficial::getTextDomain()) ;
 		$gn_installments_pay        = __("Pay in", WCGerencianetOficial::getTextDomain());
 		$gn_billing_address_title   = __("Billing Address", WCGerencianetOficial::getTextDomain());
 		$gn_billing_state_select    = __("Select the state", WCGerencianetOficial::getTextDomain());
