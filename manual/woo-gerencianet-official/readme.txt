@@ -3,7 +3,7 @@ Contributors: Gerencianet
 Tags: woocommerce, gerencianet, payment, transparent checkout, pix, billet, card, brazil, payments brazil
 Requires at least: 5.x
 Tested up to: 5.6.2
-Stable tag: 1.0.2
+Stable tag: 1.1.0
 License: GPLv2 or later
 License URI: http://www.gnu.org/licenses/gpl-2.0.html
 
@@ -47,7 +47,7 @@ Caso você tenha alguma dúvida ou sugestão, entre em contato conosco pelo site
 4. Configure as opções de pagamento que deseja receber: Boleto, Cartão de Crédito e/ou Pix.
 5. Caso utilize a opção de Pix:
    * Insira sua Chave Pix cadastrada em sua conta Gerencianet.
-   * Insira o seu certificado (arquivo .pem).
+   * Insira o seu certificado (arquivo .p12 ou .pem).
    * Marque o campo "Validar mTLS" caso deseje utilizar a validação mTLS em seu servidor.
 6. Defina se deseja aplicar desconto para pagamentos com Boleto, o modo de aplicar esse desconto e insira o número de dias corridos para vencimento.
 7. Defina as instruções para pagamento no Boleto em quatro linhas de até 90 caracteres cada uma. Caso essas linhas não sejam definidas pelo lojista, será exibido no boleto as instruções padrões da Gerencianet.
@@ -56,6 +56,14 @@ Caso você tenha alguma dúvida ou sugestão, entre em contato conosco pelo site
 10. Recomendamos que antes de disponibilizar pagamentos pela Gerencianet, o lojista realize testes de cobrança com o sandbox(ambiente de testes) ativado para verificar se o procedimento de pagamento está acontecendo conforme esperado.
 
 = Changelog =
+
+= 1.1.0 =
+* Adicionado suporte ao certificado em formato .p12
+* Melhoria Pix copia e cola, botão adicionado
+* Identificando bandeira do cartão pelo número
+* Novo arquivo de tradução gerado
+* Correção chamada de textos localizados/traduzidos
+* Correção cobrança do frete no PIX
 
 = 1.0.2 =
 * Exibir linha "Copia e Cola" do Pix
