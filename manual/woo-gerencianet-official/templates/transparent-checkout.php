@@ -514,13 +514,6 @@ var home_url = "<?php echo esc_url($order_received_url); ?>";
                                 <p><strong><?php echo $gn_card_title; ?></strong></p>
 
                                 <div class="required gn-row">
-                                    <div>
-                                        <label class=""
-                                            for="input-payment-card-brand"><?php echo $gn_card_brand; ?></label>
-                                    </div>
-
-
-
 
                                     <div style="display: none;">
                                         <div class="gn-card-brand-selector">
