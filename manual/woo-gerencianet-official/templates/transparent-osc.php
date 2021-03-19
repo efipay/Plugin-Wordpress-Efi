@@ -1708,9 +1708,6 @@ jQuery(document).ready(function($) {
 
                     <div class="gn-section" style="background-color: #F0F0F0; padding: 5px 10px;">
                         <div class="required gn-osc-row">
-                            <div>
-                                <label class="" for="gn_card_brand"><?php echo $gn_card_brand; ?></label>
-                            </div>
                             <div style="display: none;">
                                 <div class="gn-card-brand-selector">
                                     <input id="none" type="radio" name="gn_card_brand" id="gn_card_brand" value=""
