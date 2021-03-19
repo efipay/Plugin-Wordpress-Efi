@@ -1012,16 +1012,16 @@ jQuery(document).ready(function($) {
             },
             placeholder: "__/__/____"
         });
-        $('#gn_card_number_card').mask('0000 0000 0000 0000999', {
+        $('#gn_card_number_card').mask('0000 0000 0000 0000', {
             placeholder: ""
         });
-        $('#gn_card_cvv').mask('000099', {
+        $('#gn_card_cvv').mask('0000', {
             placeholder: ""
         });
-        $('#input-payment-card-number').mask('0000 0000 0000 0000999', {
+        $('#input-payment-card-number').mask('0000 0000 0000 0000', {
             placeholder: ""
         });
-        $('#input-payment-card-cvv').mask('000099', {
+        $('#input-payment-card-cvv').mask('0000', {
             placeholder: ""
         });
 
