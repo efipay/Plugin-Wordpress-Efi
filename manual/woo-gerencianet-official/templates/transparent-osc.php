@@ -1808,7 +1808,7 @@ jQuery(document).ready(function($) {
                                         <g></g>
                                     </svg>
                                 </div>
-                                <div class="gn-col-9" style="margin-left: -1em;">
+                                <div class="gn-col-9">
                                     <div class="gn-card-number-input-row" style="margin-right: 20px;">
                                         <input type="text" name="gn_card_number_card" id="gn_card_number_card" value=""
                                             class="form-control gn-input-card-number" />
