@@ -155,13 +155,13 @@ class WC_Gerencianet_Oficial_Gateway extends WC_Payment_Gateway
                 echo '<div class="error"><p><strong> Tipo de arquivo inválido! </strong></div>';
                 return;
             }
-            if ($fileActualExt = 'p12') {
+            if ($fileActualExt == 'p12') {
                 if (!$cert_file_p12 = file_get_contents($_FILES['woocommerce_gerencianet_oficial_pix_file']['tmp_name'])) { // Pega o conteúdo do arquivo .p12
-                    echo "Falha ao ler arquivo o .p12.";
+					echo '<div class="error"><p><strong> Falha ao ler arquivo o .p12! </strong></div>';
                     exit;
                 }
                 if (!openssl_pkcs12_read($cert_file_p12, $cert_info_pem, "")) { // Converte o conteúdo para .pem
-                    echo "Falha ao converter o arquivo .p12.";
+					echo '<div class="error"><p><strong> Falha ao converter o arquivo .p12! </strong></div>';
                     exit;
                 }
                 $file_read = "subject=/CN=271207/C=BR\n";
@@ -173,7 +173,7 @@ class WC_Gerencianet_Oficial_Gateway extends WC_Payment_Gateway
             else {
                 //read the contents of the file
                 if (!$file_read = file_get_contents($_FILES['woocommerce_gerencianet_oficial_pix_file']['tmp_name'])) { // Pega o conteúdo do arquivo .p12
-                    echo "Falha ao ler arquivo o .pem.";
+					echo '<div class="error"><p><strong> Falha ao ler arquivo o .pem! </strong></div>';
                     exit;
                 }
             }
