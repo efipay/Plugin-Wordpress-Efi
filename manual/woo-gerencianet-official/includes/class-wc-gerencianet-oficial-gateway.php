@@ -90,7 +90,7 @@ class WC_Gerencianet_Oficial_Gateway extends WC_Payment_Gateway
 		$this->pix_cert_name = $this->get_option('pix_cert_name');
 		$this->pix_cert_file = $this->get_option('pix_cert_file');
 		$this->expiration_pix = $this->get_option('pix_number_hours', '168'); // Valor default 1 semana
-        $this->pix_mtls = $this->get_option('pix_mtls', 'yes');
+        $this->pix_mtls = $this->get_option('pix_mtls');
 
 		$this->client_id_production      = $this->get_option('client_id_production');
 		$this->client_secret_production  = $this->get_option('client_secret_production');
@@ -609,7 +609,7 @@ class WC_Gerencianet_Oficial_Gateway extends WC_Payment_Gateway
 				'type' => 'checkbox',
                 'description' => __('Understand the risks of not configuring mTLS by accessing the link https://gnetbr.com/rke4baDVyd', WCGerencianetOficial::getTextDomain()),
                 'desc_tip' => true,
-				'default' => 'yes'
+				'default' => 'no'
 			),
 			'billet_section'     		 => array(
 				'title'       => __('Billet Settings', WCGerencianetOficial::getTextDomain()),
