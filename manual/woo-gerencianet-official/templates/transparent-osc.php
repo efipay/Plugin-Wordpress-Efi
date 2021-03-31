@@ -1903,7 +1903,7 @@ jQuery(document).ready(function($) {
                             <div class="gn-col-12">
                                 <select name="gn_card_installments" id="gn_card_installments"
                                     class="form-control gn-form-select">
-                                    <option value=""><?php echo $gn_card_brand_select; ?></option>
+                                    <option value=""><?php echo __("Enter your credit card details", WCGerencianetOficial::getTextDomain()); ?></option>
                                 </select>
                             </div>
                             <div class="clear"></div>

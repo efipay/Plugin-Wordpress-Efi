@@ -1362,7 +1362,7 @@ class WC_Gerencianet_Oficial_Gateway extends WC_Payment_Gateway
 		$gn_card_expiration                = __("Expiration date: ", WCGerencianetOficial::getTextDomain());
 		$gn_card_cvv                       = __("Security Code: ", WCGerencianetOficial::getTextDomain());
 		$gn_card_installments_options      = __("Installments: ", WCGerencianetOficial::getTextDomain());
-		$gn_card_brand                     = __("Select the card brand", WCGerencianetOficial::getTextDomain());
+		$gn_card_brand                     = __("Enter your credit card details", WCGerencianetOficial::getTextDomain());
 
 		$gn_mininum_gn_charge_price = __("To pay billet bank or credit card the order must have more than R$5,00. But you can pay with PIX", WCGerencianetOficial::getTextDomain());
 		$gn_pay_billet_option       = __("Pay with Billet Banking", WCGerencianetOficial::getTextDomain());
@@ -1374,7 +1374,7 @@ class WC_Gerencianet_Oficial_Gateway extends WC_Payment_Gateway
 		$gn_billing_address_title   = __("Billing Address", WCGerencianetOficial::getTextDomain());
 		$gn_billing_state_select    = __("Select the state", WCGerencianetOficial::getTextDomain());
 		$gn_card_cvv_tip            = __("Are the last three digits<br>on the back of the card.", WCGerencianetOficial::getTextDomain());
-		$gn_card_brand_select       = __("Select the card brand", WCGerencianetOficial::getTextDomain());
+		$gn_card_brand_select       = __("Enter your credit card details", WCGerencianetOficial::getTextDomain());
 		$gn_loading_payment_request = __("Please, wait...", WCGerencianetOficial::getTextDomain());
 
 		$gn_warning_sandbox_message = __("Sandbox mode is active. The payments will not be valid.", WCGerencianetOficial::getTextDomain());

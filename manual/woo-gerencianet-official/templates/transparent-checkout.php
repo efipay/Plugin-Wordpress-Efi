@@ -707,7 +707,7 @@ var home_url = "<?php echo esc_url($order_received_url); ?>";
                                     <div class="gn-col-12">
                                         <select name="input-payment-card-installments"
                                             id="input-payment-card-installments" class="form-control gn-form-select">
-                                            <option value=""><?php echo $gn_card_brand_select; ?></option>
+                                            <option value=""><?php echo __("Enter your credit card details", WCGerencianetOficial::getTextDomain()); ?></option>
                                         </select>
                                     </div>
                                     <div class="clear"></div>
