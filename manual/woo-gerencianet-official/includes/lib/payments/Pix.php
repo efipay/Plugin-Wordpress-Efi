@@ -30,7 +30,7 @@ class Pix {
      *
      * @return array
      */
-    private static function get_gn_api_credentials($credential) {
+    public static function get_gn_api_credentials($credential) {
         $credential['pix_cert'] = Pix::getCertPath();
         return $credential;
     }
@@ -252,6 +252,7 @@ class Pix {
 
             // Atualiza status
             foreach($orders as &$order) {
+                add_post_meta(intval($order->id), 'endToEndId', $order_notify->endToEndId, true);
                 $order->update_status('processing', __('Paid'));
                 $order->payment_complete();
             }
