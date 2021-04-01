@@ -251,6 +251,17 @@ jQuery(document).ready(function($) {
         }
     });
 
+    $('#billing_cnpj').change(function() {
+        $('#gn_pix_cpf_cnpj').val($('#billing_cnpj').val());
+        validateCardCustomerData(allowedPersonType);
+    });
+    
+    $('#billing_cpf').change(function() {
+        $('#gn_pix_cpf_cnpj').val($('#billing_cpf').val());
+        validateCardCustomerData(allowedPersonType);
+    });
+    
+    
     $('#billing_birthdate').change(function() {
         $('#gn_card_birth').val($('#billing_birthdate').val());
         validateCardCustomerData(allowedPersonType);
