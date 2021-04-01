@@ -1,7 +1,8 @@
 <?php
 
 require_once 'lib/payments/Pix.php';
-
+use Gerencianet\Exception\GerencianetException;
+use Gerencianet\Gerencianet;
 /**
  * WC gerencianet oficial Gateway Class.
  *
@@ -22,6 +23,7 @@ class WC_Gerencianet_Oficial_Gateway extends WC_Payment_Gateway
         $this->icon = apply_filters('woocommerce_gerencianet_oficial_icon', plugins_url('assets/images/gn-payment.png', plugin_dir_path(__FILE__)));
 		$this->has_fields = false;
 		$this->method_title = __('Gerencianet', WCGerencianetOficial::getTextDomain());
+		$this->supports = array( 'products', 'refunds' );
 
 		// Load the settings.
 		$this->init_form_fields();
@@ -136,6 +138,79 @@ class WC_Gerencianet_Oficial_Gateway extends WC_Payment_Gateway
 		// Display admin notices.
 		$this->admin_notices();
 	}
+
+//REEMBOLSO
+		public function process_refund( $order_id, $amount = null, $reason = ''  ) {
+			$order = new WC_Order( $order_id );
+
+			if ( ! $order ) {
+				// echo '<div class="error"><p>' . __('Order not found.', WCGerencianetOficial::getTextDomain()) . '</p></div>';
+				error_log("GERENCIANET: Pedido não encontrado");
+				return false;
+			}
+
+			$e2eid = get_post_meta($order->id, 'endToEndId', true);
+			$apiID = get_post_meta($order->id, 'charge_id', true);
+			
+			if(isset($e2eid) && $e2eid != ""){
+
+				if ( ! is_null( $amount ) ) {
+					// $symb = array(",", ".");
+					$value = str_replace(",", ".", $amount);
+				}
+
+				error_log( "GERENCIANET: Beginning refund for PIX order {$e2eid} for the amount of {$value}" );
+				$gnGateway = new WC_Gerencianet_Oficial_Gateway();
+				$params = [
+					'e2eId' => $e2eid,
+					'id'    => $gnGateway->generateRandomId()
+				];
+
+				$body = [
+					'valor' => $value
+				];
+				$options = Pix::get_gn_api_credentials($gnGateway->gnIntegration->get_gn_api_credentials());
+				try {
+					$api = Gerencianet::getInstance($options);
+					$pix = $api->pixDevolution($params, $body);
+					error_log(json_encode($pix, JSON_PRETTY_PRINT));
+					error_log("GERENCIANET: Devolução concluída com sucesso!");
+					return true;
+				} catch (GerencianetException $e) {
+					error_log($e->code);
+					error_log($e->error);
+					error_log($e->errorDescription);
+					error_log("GERENCIANET: Falha ao realizar a devolução.");
+					return false;
+					throw new Error($e->error);
+				} catch (Exception $e) {
+					throw new Error($e->getMessage());
+					return false;
+				}
+			}else if(isset($apiID)){
+				error_log( "GERENCIANET: Tentativa de reembolso via API BOLETOS/CARTÃO pedido {$apiID} valor {$amount}" );
+				error_log("GERENCIANET: Não é possível realizar reembolso automático para boletos ou cartões. Entre em contato com a Gerencianet.");
+				return false;
+			}else{
+				error_log("GERENCIANET: Não foi encontrado E2EID ou CHARGE_ID nesse pedido.");
+				error_log("GERENCIANET: Esse pedido pode ter sido pago em outra instituição de pagamento.");
+				return false;
+			}
+
+
+		}
+
+	public function generateRandomId() {
+			$length = 6;
+			$characters = '0123456789abcdefghijklmnopqrstuvwxyzABCDEFGHIJKLMNOPQRSTUVWXYZ';
+			$charactersLength = strlen($characters);
+			$randomString = '';
+			for ($i = 0; $i < $length; $i++) {
+				$randomString .= $characters[rand(0, $charactersLength - 1)];
+			}
+			return $randomString;
+		}
+
 
     public function on_update_options() {
         $this->save_pix_cert_db();
