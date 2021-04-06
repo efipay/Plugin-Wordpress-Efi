@@ -23,6 +23,7 @@ class WC_Gerencianet_Oficial_Gateway extends WC_Payment_Gateway
         $this->icon = apply_filters('woocommerce_gerencianet_oficial_icon', plugins_url('assets/images/gn-payment.png', plugin_dir_path(__FILE__)));
 		$this->has_fields = false;
 		$this->method_title = __('Gerencianet', WCGerencianetOficial::getTextDomain());
+		$this->method_description = __('With Gerencianet you can receive payments via Bank slip, Credit Card and Pix', WCGerencianetOficial::getTextDomain());
 		$this->supports = array( 'products', 'refunds' );
 
 		// Load the settings.
