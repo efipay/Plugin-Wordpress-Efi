@@ -614,19 +614,19 @@ class WC_Gerencianet_Oficial_Gateway extends WC_Payment_Gateway
 				'title'   => __('Billet Banking', WCGerencianetOficial::getTextDomain()),
 				'type'    => 'checkbox',
 				'label'   => __('Enable Billet Banking', WCGerencianetOficial::getTextDomain()),
-				'default' => 'yes'
+				'default' => 'no'
 			),
 			'credit_card'             	=> array(
 				'title'   => __('Credit Card', WCGerencianetOficial::getTextDomain()),
 				'type'    => 'checkbox',
 				'label'   => __('Enable Credit Card', WCGerencianetOficial::getTextDomain()),
-				'default' => 'yes'
+				'default' => 'no'
 			),
 			'pix' => array(
 				'title'   => __('Pix', WCGerencianetOficial::getTextDomain()),
 				'type'    => 'checkbox',
 				'label'   => __('Enable Pix', WCGerencianetOficial::getTextDomain()),
-				'default' => 'yes'
+				'default' => 'no'
 			),
 			'pix_section' => array(
 				'title'       => __('Pix Settings', WCGerencianetOficial::getTextDomain()),
