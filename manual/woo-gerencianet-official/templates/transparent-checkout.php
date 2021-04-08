@@ -24,7 +24,7 @@ var home_url = "<?php echo esc_url($order_received_url); ?>";
 
 <div class="warning-payment" id="wc-gerencianet-messages">
     <?php if (($card_option && $order_total_card < 500) || ($billet_option && $order_total_billet < 500)) { ?>
-    <div class="woocommerce-error"><?php echo $gn_mininum_gn_charge_price; ?></div>
+    <div class="woocommerce-error"><?php echo __("To pay Bank Slip or Credit Card the order must have more than R$5,00. But you can pay with PIX", WCGerencianetOficial::getTextDomain()); ?></div>
     <?php } ?>
 </div>
 
@@ -802,7 +802,7 @@ var home_url = "<?php echo esc_url($order_received_url); ?>";
         <div id="price-billet" name="price-billet" class="gn-hide">
             <p>
                 <button class="button alt"
-                    id="gn-pay-billet-button"><?php _e('Generate Banking Billet', WCGerencianetOficial::getTextDomain());
+                    id="gn-pay-billet-button"><?php _e('Generate Bank Slip', WCGerencianetOficial::getTextDomain());
                                                                         echo ' &nbsp; | &nbsp; ' . $order_with_billet_discount; ?></button>
             </p>
         </div>

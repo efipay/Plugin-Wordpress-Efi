@@ -1,6 +1,6 @@
 === Woo Gerencianet Oficial ===
 Contributors: Gerencianet
-Tags: woocommerce, gerencianet, payment, transparent checkout, pix, billet, card, brazil, payments brazil
+Tags: woocommerce, gerencianet, payment, transparent checkout, pix, bank slip, card, brazil, payments brazil
 Requires at least: 5.x
 Tested up to: 5.6.2
 Stable tag: 1.1.0

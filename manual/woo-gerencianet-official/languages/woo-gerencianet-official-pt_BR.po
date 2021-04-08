@@ -47,7 +47,7 @@ msgid "Select a payment option"
 msgstr "Selecione a forma de pagamento"
 
 #: templates/transparent-checkout.php:538
-msgid "Generate Banking Billet"
+msgid "Generate Bank Slip"
 msgstr "Gerar boleto bancário"
 
 #: templates/transparent-checkout.php:532
@@ -59,7 +59,7 @@ msgid "This payment will be processed by Gerencianet Payments."
 msgstr "Este pagamento será processado pela Gerencianet Pagamentos."
 
 #: includes/class-wc-gerencianet-oficial-gateway.php:1803
-msgid "Click here to see the Billet"
+msgid "Click here to see the Bank Slip"
 msgstr "Clique aqui para ver o boleto"
 
 #: includes/class-wc-gerencianet-oficial-gateway.php:1768
@@ -123,7 +123,7 @@ msgstr "Falha na Requisição"
 
 #: includes/class-wc-gerencianet-oficial-gateway.php:1607
 #: includes/class-wc-gerencianet-oficial-gateway.php:1785
-msgid "Show Billet"
+msgid "Show Bank Slip"
 msgstr "Mostrar boleto"
 
 #: includes/class-wc-gerencianet-oficial-gateway.php:1606
@@ -139,7 +139,7 @@ msgid "The charge on your card is being processed. Soon as it is confirmed, we w
 msgstr "A transação do seu cartão está sendo processada. Assim que for confirmada lhe enviaremos um email para <b>"
 
 #: includes/class-wc-gerencianet-oficial-gateway.php:1603
-msgid "The Banking Billet was successfully generated. Make payment in bank, lottery, post office or bankline. Stay tuned to the expiration date of the banking billet."
+msgid "The Bank Slip was successfully generated. Make payment in bank, lottery, post office or bankline. Stay tuned to the expiration date of the Bank Slip."
 msgstr "O boleto bancário foi gerado com sucesso. Faça o pagamento em bancos, lotéricas, agências dos correios ou caixa eletrônico. Fique atento(a) a data de vencimento do boleto."
 
 #: includes/class-wc-gerencianet-oficial-gateway.php:1602
@@ -147,7 +147,7 @@ msgid "Your order was successful and your payment is being processed. Wait until
 msgstr "Seu pedido foi realizado com sucesso e seu pagamento está sendo processado. Espere até receber a confirmação do pagamento por e-mail."
 
 #: includes/class-wc-gerencianet-oficial-gateway.php:1601
-msgid "Billet emitted by Gerencianet"
+msgid "Bank Slip emitted by Gerencianet"
 msgstr "Boleto emitido pela Gerencianet"
 
 #: includes/class-wc-gerencianet-oficial-gateway.php:1200
@@ -188,12 +188,12 @@ msgstr "Pague com Cartão de Crédito"
 
 #: includes/class-wc-gerencianet-oficial-gateway.php:1190
 #: includes/class-wc-gerencianet-oficial-gateway.php:1453
-msgid "Pay with Billet Banking"
+msgid "Pay with Bank Slip"
 msgstr "Pague com Boleto Bancário"
 
 #: includes/class-wc-gerencianet-oficial-gateway.php:1189
 #: includes/class-wc-gerencianet-oficial-gateway.php:1452
-msgid "To pay billet bank or credit card the order must have more than R$5,00. But you can pay with PIX"
+msgid "To pay Bank Slip or Credit Card the order must have more than R$5,00. But you can pay with PIX"
 msgstr "Para pagar com boleto ou cartão de crédito o pedido precisa ter mais de R$5,00. Mas você pode pagar com PIX"
 
 #: includes/class-wc-gerencianet-oficial-gateway.php:1187
@@ -308,7 +308,7 @@ msgstr "Nome/Razão Social:"
 
 #: includes/class-wc-gerencianet-oficial-gateway.php:1165
 #: includes/class-wc-gerencianet-oficial-gateway.php:1428
-msgid "Opting to pay by Banking Billet, the confirmation will be performed on the next business day after payment."
+msgid "Opting to pay by Bank Slip, the confirmation will be performed on the next business day after payment."
 msgstr "Optando por pagar através de boleto bancário, a confirmação será feita no próximo dia útil após o pagamento."
 
 #: includes/class-wc-gerencianet-oficial-gateway.php:1164
@@ -326,11 +326,11 @@ msgid "Waiting"
 msgstr "Aguardando"
 
 #: includes/class-wc-gerencianet-oficial-gateway.php:894
-msgid "Billet Banking - Gerencianet"
+msgid "Bank Slip - Gerencianet"
 msgstr "Boleto Bancário - Gerencianet"
 
 #: includes/class-wc-gerencianet-oficial-gateway.php:856
-msgid "% Billet"
+msgid "% Bank Slip"
 msgstr "% Boleto"
 
 #: includes/class-wc-gerencianet-oficial-gateway.php:856
@@ -395,7 +395,7 @@ msgstr "Instruções linha 2"
 #: includes/class-wc-gerencianet-oficial-gateway.php:489
 #: includes/class-wc-gerencianet-oficial-gateway.php:497
 #: includes/class-wc-gerencianet-oficial-gateway.php:505
-msgid "Text of billet instructions. Maximum of 90 characters per line."
+msgid "Text of Bank Slip instructions. Maximum of 90 characters per line."
 msgstr "Texto das instruções do boleto. Máximo de 90 caracteres por linha."
 
 #: includes/class-wc-gerencianet-oficial-gateway.php:479
@@ -403,11 +403,11 @@ msgid "Instructions line 1"
 msgstr "Instruções linha 1"
 
 #: includes/class-wc-gerencianet-oficial-gateway.php:474
-msgid "Billet Instructions (not required)"
+msgid "Bank Slip Instructions (not required)"
 msgstr "Instruções do Boleto (não obrigatório)"
 
 #: includes/class-wc-gerencianet-oficial-gateway.php:468
-msgid "Days to expire the billet after printed."
+msgid "Days to expire the Bank Slip after printed."
 msgstr "Dias para vencimento do boleto após emissão."
 
 #: includes/class-wc-gerencianet-oficial-gateway.php:466
@@ -431,15 +431,15 @@ msgid "Apply discount mode"
 msgstr "Aplica o modo de desconto"
 
 #: includes/class-wc-gerencianet-oficial-gateway.php:450
-msgid "Discount for payment with billet."
+msgid "Discount for payment with Bank Slip."
 msgstr "Desconto para pagamento por boleto."
 
 #: includes/class-wc-gerencianet-oficial-gateway.php:448
-msgid "Billet discount"
+msgid "Bank Slip discount"
 msgstr "Desconto do boleto"
 
 #: includes/class-wc-gerencianet-oficial-gateway.php:443
-msgid "Billet Settings"
+msgid "Bank Slip Settings"
 msgstr "Configurações do Boleto"
 
 #: includes/class-wc-gerencianet-oficial-gateway.php:439
@@ -447,7 +447,7 @@ msgid "Enable Credit Card"
 msgstr "Habilitar cartão de crédito"
 
 #: includes/class-wc-gerencianet-oficial-gateway.php:433
-msgid "Enable Billet Banking"
+msgid "Enable Bank Slip"
 msgstr "Habilitar boleto bancário"
 
 #: includes/woo-gerencianet-official.php:520
@@ -487,15 +487,15 @@ msgid "Discount for payment with Pix"
 msgstr "Desconto para pagamentos com Pix"
 
 #: includes/woo-gerencianet-official.php:57
-msgid "Billet or Credit Card or Pix"
+msgid "Bank Slip or Credit Card or Pix"
 msgstr "Boleto Bancário, Cartão de Crédito ou Pix"
 
 #: includes/woo-gerencianet-official.php:57
-msgid "Billet or Pix"
+msgid "Bank Slip or Pix"
 msgstr "Boleto ou Pix"
 
 #: includes/class-wc-gerencianet-oficial-gateway.php:431
-msgid "Billet Banking"
+msgid "Bank Slip"
 msgstr "Boleto Bancário"
 
 #: includes/class-wc-gerencianet-oficial-gateway.php:428
@@ -612,7 +612,7 @@ msgid "Gerencianet Payments - Official Module"
 msgstr "Gerencianet Pagamentos - Módulo Oficial"
 
 #: includes/class-wc-gerencianet-oficial-gateway.php:42
-msgid "Billet or Credit Card"
+msgid "Bank Slip or Credit Card"
 msgstr "Boleto ou Cartão de Crédito"
 
 #: includes/class-wc-gerencianet-oficial-gateway.php:40
@@ -621,7 +621,7 @@ msgid "Credit Card"
 msgstr "Cartão de Crédito"
 
 #: includes/class-wc-gerencianet-oficial-gateway.php:38
-msgid "Billet"
+msgid "Bank Slip"
 msgstr "Boleto"
 
 #. Author of the plugin
@@ -678,3 +678,7 @@ msgstr "Pague com Pix"
 #: includes/class-wc-gerencianet-oficial-gateway.php:1342
 msgid "Opting to pay by Pix, the payment is processed and the confirmation will take place within a couple seconds."
 msgstr "Optando por pagar via Pix, o pagamento é processado e a confirmação ocorrerá em alguns segundos."
+
+#: includes/class-wc-gerencianet-oficial-gateway.php:26
+msgid "With Gerencianet you can receive payments via Bank slip, Credit Card and Pix!"
+msgstr "Com a Gerencianet você pode receber pagamentos via Boleto Bancário, Cartão de Crédito ou Pix!"
