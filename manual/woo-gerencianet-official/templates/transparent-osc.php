@@ -1943,7 +1943,7 @@ jQuery(document).ready(function($) {
         class="panel-collapse <?php if ($billet_option == "yes" || $card_option == "yes") { ?>gn-hide<?php } ?> gn-osc-background">
         <div class="panel-body">
             <div class="gn-osc-row gn-osc-pay-comments">
-                <p class="gn-left-space-2"><strong>Transferência por Pix</strong></p>
+                <p class="gn-left-space-2"><strong><?php echo __("Opting to pay by Pix, the payment is processed and the confirmation will take place within a couple seconds.", WCGerencianetOficial::getTextDomain()); ?></strong></p>
             </div>
             <div class="gn-form">
                 <div id="pix-data">

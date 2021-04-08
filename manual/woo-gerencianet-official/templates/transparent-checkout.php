@@ -763,6 +763,9 @@ var home_url = "<?php echo esc_url($order_received_url); ?>";
 
         <div id="collapse-payment-pix" class="panel-collapse gn-hide" style="border-top: 1px solid #CCC;">
             <div class="panel-body">
+                <div class="gn-osc-row gn-osc-pay-comments">
+                    <p class="gn-left-space-2"><strong><?php echo __("Opting to pay by Pix, the payment is processed and the confirmation will take place within a couple seconds.", WCGerencianetOficial::getTextDomain()); ?></strong></p>
+                </div>
                 <form class="form-horizontal">
                     <input name="wc_order_id" type="hidden" value="<?php echo $order->id; ?>" />
 
