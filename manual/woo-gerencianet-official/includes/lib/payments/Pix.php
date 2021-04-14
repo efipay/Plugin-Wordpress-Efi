@@ -95,8 +95,6 @@ class Pix {
             $resultQrCode = json_decode($gnApiQrCode, true);
             $resultCheck['charge_id'] = $post_order_id;
 
-            // Atualiza webhook para garantir que o dominio está atualizado
-            Pix::updateWebhook($gateway);
 
             if(isset($resultQrCode['imagemQrcode'])) {
                 $resultCheck['imagemQrcode'] = $resultQrCode['imagemQrcode'];
