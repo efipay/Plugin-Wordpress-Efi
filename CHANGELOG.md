@@ -1,3 +1,21 @@
+# 1.2.0
+* Delete: Remoção da mensagem "Selecione a bandeira do cartão"
+* Fix: Correção da mensagem do label das parcelas
+* Fix: Ajuste no input do cartão
+* Fix: Correção na máscara do input cartão
+* Fix: Validar mtls desmarcado por padrão
+* Add: Adição do endpoint de devolução do PIX
+* Add: Adicionado campo para salvar o e2eid
+* Add: Adicionada a funcionalidade de reembolso automátio [SOMENTE PARA PIX]
+* Fix: Ajuste de compatibilidade com o Brazilian Market on WooCommerce [SOMENTE ONE STEP CHECKOUT]
+* Fix: Correção dos dados da cobrança para o InfoAdicionais
+* Add: Adicionada a descrição do gateway de pagamento
+* Fix: Correção de warning
+* Add: Meios de pagamento desabilitados por padrão
+* Fix: Melhoria na tradução
+* Add: Ajuste nos textos exibidos no checkout
+* Fix: Remoção consumo desnecessário updateWebhook
+
 # 1.1.0
 * Add: Adicionado suporte ao certificado em formato .p12
 * Add: Melhoria Pix copia e cola, botão adicionado
