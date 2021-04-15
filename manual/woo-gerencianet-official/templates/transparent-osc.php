@@ -251,6 +251,17 @@ jQuery(document).ready(function($) {
         }
     });
 
+    $('#billing_cnpj').change(function() {
+        $('#gn_pix_cpf_cnpj').val($('#billing_cnpj').val());
+        validateCardCustomerData(allowedPersonType);
+    });
+    
+    $('#billing_cpf').change(function() {
+        $('#gn_pix_cpf_cnpj').val($('#billing_cpf').val());
+        validateCardCustomerData(allowedPersonType);
+    });
+    
+    
     $('#billing_birthdate').change(function() {
         $('#gn_card_birth').val($('#billing_birthdate').val());
         validateCardCustomerData(allowedPersonType);
@@ -1012,16 +1023,16 @@ jQuery(document).ready(function($) {
             },
             placeholder: "__/__/____"
         });
-        $('#gn_card_number_card').mask('0000 0000 0000 0000999', {
+        $('#gn_card_number_card').mask('0000 0000 0000 0000', {
             placeholder: ""
         });
-        $('#gn_card_cvv').mask('000099', {
+        $('#gn_card_cvv').mask('0000', {
             placeholder: ""
         });
-        $('#input-payment-card-number').mask('0000 0000 0000 0000999', {
+        $('#input-payment-card-number').mask('0000 0000 0000 0000', {
             placeholder: ""
         });
-        $('#input-payment-card-cvv').mask('000099', {
+        $('#input-payment-card-cvv').mask('0000', {
             placeholder: ""
         });
 
@@ -1349,7 +1360,7 @@ jQuery(document).ready(function($) {
 
     <div class="warning-payment" id="wc-gerencianet-messages">
         <?php if (($card_option && $order_total_card < 500) || ($billet_option && $order_total_billet < 500)) { ?>
-        <div class="woocommerce-error"><?php echo $gn_mininum_gn_charge_price; ?></div>
+        <div class="woocommerce-error"><?php echo __("To pay Bank Slip or Credit Card the order must have more than R$5,00. But you can pay with PIX", WCGerencianetOficial::getTextDomain()); ?></div>
         <?php
     	} ?>
     </div>
@@ -1708,9 +1719,6 @@ jQuery(document).ready(function($) {
 
                     <div class="gn-section" style="background-color: #F0F0F0; padding: 5px 10px;">
                         <div class="required gn-osc-row">
-                            <div>
-                                <label class="" for="gn_card_brand"><?php echo $gn_card_brand; ?></label>
-                            </div>
                             <div style="display: none;">
                                 <div class="gn-card-brand-selector">
                                     <input id="none" type="radio" name="gn_card_brand" id="gn_card_brand" value=""
@@ -1811,7 +1819,7 @@ jQuery(document).ready(function($) {
                                         <g></g>
                                     </svg>
                                 </div>
-                                <div class="gn-col-9" style="margin-left: -1em;">
+                                <div class="gn-col-9">
                                     <div class="gn-card-number-input-row" style="margin-right: 20px;">
                                         <input type="text" name="gn_card_number_card" id="gn_card_number_card" value=""
                                             class="form-control gn-input-card-number" />
@@ -1906,7 +1914,7 @@ jQuery(document).ready(function($) {
                             <div class="gn-col-12">
                                 <select name="gn_card_installments" id="gn_card_installments"
                                     class="form-control gn-form-select">
-                                    <option value=""><?php echo $gn_card_brand_select; ?></option>
+                                    <option value=""><?php echo __("Enter your credit card details", WCGerencianetOficial::getTextDomain()); ?></option>
                                 </select>
                             </div>
                             <div class="clear"></div>
@@ -1935,7 +1943,7 @@ jQuery(document).ready(function($) {
         class="panel-collapse <?php if ($billet_option == "yes" || $card_option == "yes") { ?>gn-hide<?php } ?> gn-osc-background">
         <div class="panel-body">
             <div class="gn-osc-row gn-osc-pay-comments">
-                <p class="gn-left-space-2"><strong>Transferência por Pix</strong></p>
+                <p class="gn-left-space-2"><strong><?php echo __("Opting to pay by Pix, the payment is processed and the confirmation will take place within a couple seconds.", WCGerencianetOficial::getTextDomain()); ?></strong></p>
             </div>
             <div class="gn-form">
                 <div id="pix-data">

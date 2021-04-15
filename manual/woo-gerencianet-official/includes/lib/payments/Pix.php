@@ -30,7 +30,7 @@ class Pix {
      *
      * @return array
      */
-    private static function get_gn_api_credentials($credential) {
+    public static function get_gn_api_credentials($credential) {
         $credential['pix_cert'] = Pix::getCertPath();
         return $credential;
     }
@@ -74,7 +74,16 @@ class Pix {
             ],
             'valor' => [ 'original' => sprintf('%0.2f', $totalOrder) ],
             'chave' => $gateway->pix_key,
-            'solicitacaoPagador' => 'Pagamento em '.get_bloginfo().' - Pedido #' . $post_order_id 
+            "infoAdicionais" => [
+                [
+                    "nome" => "Pagamento em",
+                    "valor" => get_bloginfo()
+                ],
+                [
+                    "nome" => "Número do Pedido",
+                    "valor" => "#".$post_order_id
+                ]
+            ]
         ];
 
         $credential = Pix::get_gn_api_credentials($gateway->gnIntegration->get_gn_api_credentials());
@@ -86,8 +95,6 @@ class Pix {
             $resultQrCode = json_decode($gnApiQrCode, true);
             $resultCheck['charge_id'] = $post_order_id;
 
-            // Atualiza webhook para garantir que o dominio está atualizado
-            Pix::updateWebhook($gateway);
 
             if(isset($resultQrCode['imagemQrcode'])) {
                 $resultCheck['imagemQrcode'] = $resultQrCode['imagemQrcode'];
@@ -252,6 +259,7 @@ class Pix {
 
             // Atualiza status
             foreach($orders as &$order) {
+                add_post_meta(intval($order->id), 'endToEndId', $order_notify->endToEndId, true);
                 $order->update_status('processing', __('Paid'));
                 $order->payment_complete();
             }

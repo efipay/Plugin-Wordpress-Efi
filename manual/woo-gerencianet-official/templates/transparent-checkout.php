@@ -24,7 +24,7 @@ var home_url = "<?php echo esc_url($order_received_url); ?>";
 
 <div class="warning-payment" id="wc-gerencianet-messages">
     <?php if (($card_option && $order_total_card < 500) || ($billet_option && $order_total_billet < 500)) { ?>
-    <div class="woocommerce-error"><?php echo $gn_mininum_gn_charge_price; ?></div>
+    <div class="woocommerce-error"><?php echo __("To pay Bank Slip or Credit Card the order must have more than R$5,00. But you can pay with PIX", WCGerencianetOficial::getTextDomain()); ?></div>
     <?php } ?>
 </div>
 
@@ -514,13 +514,6 @@ var home_url = "<?php echo esc_url($order_received_url); ?>";
                                 <p><strong><?php echo $gn_card_title; ?></strong></p>
 
                                 <div class="required gn-row">
-                                    <div>
-                                        <label class=""
-                                            for="input-payment-card-brand"><?php echo $gn_card_brand; ?></label>
-                                    </div>
-
-
-
 
                                     <div style="display: none;">
                                         <div class="gn-card-brand-selector">
@@ -714,7 +707,7 @@ var home_url = "<?php echo esc_url($order_received_url); ?>";
                                     <div class="gn-col-12">
                                         <select name="input-payment-card-installments"
                                             id="input-payment-card-installments" class="form-control gn-form-select">
-                                            <option value=""><?php echo $gn_card_brand_select; ?></option>
+                                            <option value=""><?php echo __("Enter your credit card details", WCGerencianetOficial::getTextDomain()); ?></option>
                                         </select>
                                     </div>
                                     <div class="clear"></div>
@@ -770,6 +763,9 @@ var home_url = "<?php echo esc_url($order_received_url); ?>";
 
         <div id="collapse-payment-pix" class="panel-collapse gn-hide" style="border-top: 1px solid #CCC;">
             <div class="panel-body">
+                <div class="gn-osc-row gn-osc-pay-comments">
+                    <p class="gn-left-space-2"><strong><?php echo __("Opting to pay by Pix, the payment is processed and the confirmation will take place within a couple seconds.", WCGerencianetOficial::getTextDomain()); ?></strong></p>
+                </div>
                 <form class="form-horizontal">
                     <input name="wc_order_id" type="hidden" value="<?php echo $order->id; ?>" />
 
@@ -809,7 +805,7 @@ var home_url = "<?php echo esc_url($order_received_url); ?>";
         <div id="price-billet" name="price-billet" class="gn-hide">
             <p>
                 <button class="button alt"
-                    id="gn-pay-billet-button"><?php _e('Generate Banking Billet', WCGerencianetOficial::getTextDomain());
+                    id="gn-pay-billet-button"><?php _e('Generate Bank Slip', WCGerencianetOficial::getTextDomain());
                                                                         echo ' &nbsp; | &nbsp; ' . $order_with_billet_discount; ?></button>
             </p>
         </div>

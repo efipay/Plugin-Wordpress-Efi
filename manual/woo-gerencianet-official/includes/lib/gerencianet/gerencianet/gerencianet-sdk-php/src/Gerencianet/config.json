@@ -206,6 +206,10 @@
       "pixGenerateQRCode": {
         "route": "/v2/loc/:id/qrcode",
         "method": "get"
+      },
+      "pixDevolution": {
+        "route": "/v2/pix/:e2eId/devolucao/:id",
+        "method": "put"
       }
     }
   }
