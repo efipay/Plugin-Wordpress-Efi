@@ -16,6 +16,10 @@
 * Add: Ajuste nos textos exibidos no checkout
 * Fix: Remoção consumo desnecessário updateWebhook
 
+# 1.1.1
+* Correção na converção do certificado
+* Melhoria na exibição de falhas da conversão
+
 # 1.1.0
 * Add: Adicionado suporte ao certificado em formato .p12
 * Add: Melhoria Pix copia e cola, botão adicionado

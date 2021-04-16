@@ -56,7 +56,6 @@ Caso você tenha alguma dúvida ou sugestão, entre em contato conosco pelo site
 10. Recomendamos que antes de disponibilizar pagamentos pela Gerencianet, o lojista realize testes de cobrança com o sandbox(ambiente de testes) ativado para verificar se o procedimento de pagamento está acontecendo conforme esperado.
 
 = Changelog =
-
 = 1.2.0 =
 * Remoção da mensagem "Selecione a bandeira do cartão"
 * Correção da mensagem do label das parcelas
@@ -74,6 +73,10 @@ Caso você tenha alguma dúvida ou sugestão, entre em contato conosco pelo site
 * Melhoria na tradução
 * Ajuste nos textos exibidos no checkout
 * Remoção consumo desnecessário updateWebhook
+
+= 1.1.1 =
+* Correção na converção do certificado
+* Melhoria na exibição de falhas da conversão
 
 = 1.1.0 =
 * Adicionado suporte ao certificado em formato .p12

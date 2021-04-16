@@ -231,14 +231,14 @@ class WC_Gerencianet_Oficial_Gateway extends WC_Payment_Gateway
                 echo '<div class="error"><p><strong> Tipo de arquivo inválido! </strong></div>';
                 return;
             }
-            if ($fileActualExt = 'p12') {
+            if ($fileActualExt == 'p12') {
                 if (!$cert_file_p12 = file_get_contents($_FILES['woocommerce_gerencianet_oficial_pix_file']['tmp_name'])) { // Pega o conteúdo do arquivo .p12
-                    echo "Falha ao ler arquivo o .p12.";
-                    exit;
+					echo '<div class="error"><p><strong> Falha ao ler arquivo o .p12! </strong></div>';
+                    return;
                 }
                 if (!openssl_pkcs12_read($cert_file_p12, $cert_info_pem, "")) { // Converte o conteúdo para .pem
-                    echo "Falha ao converter o arquivo .p12.";
-                    exit;
+					echo '<div class="error"><p><strong> Falha ao converter o arquivo .p12! </strong></div>';
+                    return;
                 }
                 $file_read = "subject=/CN=271207/C=BR\n";
                 $file_read .= "issuer=/C=BR/ST=Minas Gerais/O=Gerencianet Pagamentos do Brasil Ltda/OU=Infraestrutura/CN=api-pix.gerencianet.com.br/emailAddress=infra@gerencianet.com.br\n";
@@ -249,20 +249,23 @@ class WC_Gerencianet_Oficial_Gateway extends WC_Payment_Gateway
             else {
                 //read the contents of the file
                 if (!$file_read = file_get_contents($_FILES['woocommerce_gerencianet_oficial_pix_file']['tmp_name'])) { // Pega o conteúdo do arquivo .p12
-                    echo "Falha ao ler arquivo o .pem.";
-                    exit;
+					echo '<div class="error"><p><strong> Falha ao ler arquivo o .pem! </strong></div>';
+                    return;
                 }
             }
-            $save_pix = array(
-                'pix_cert_name' => $file_name,
-                'pix_cert_file' => $file_read
-            );
-            //table name in mysql
-            $option_name = 'woocommerce_gerencianet_oficial_settings';
-            //merge with the data saved in bd
-            $data = get_option($option_name);
-            $save_data = array_merge($data, $save_pix);
-            update_option($option_name, $save_data, true);
+
+			if (isset($file_read)) {
+				$save_pix = array(
+					'pix_cert_name' => $file_name,
+					'pix_cert_file' => $file_read
+				);
+				//table name in mysql
+				$option_name = 'woocommerce_gerencianet_oficial_settings';
+				//merge with the data saved in bd
+				$data = get_option($option_name);
+				$save_data = array_merge($data, $save_pix);
+				update_option($option_name, $save_data, true);
+			}
         }
     }
 
