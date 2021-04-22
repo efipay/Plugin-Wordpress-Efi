@@ -259,7 +259,7 @@ class WC_Gerencianet_Oficial_Gateway extends WC_Payment_Gateway
 					'pix_cert_name' => $file_name,
 					'pix_cert_file' => $file_read
 				);
-				//table name in mysql
+				//column name in table WP_OPTIONS in mysql
 				$option_name = 'woocommerce_gerencianet_oficial_settings';
 				//merge with the data saved in bd
 				$data = get_option($option_name);
@@ -270,7 +270,7 @@ class WC_Gerencianet_Oficial_Gateway extends WC_Payment_Gateway
     }
 
 
-    //save file from the temp directory
+    //save file on temp directory
     private function save_pix_cert_dir(){
 		$pix_cert_file = $this->get_option('pix_cert_file');
 
@@ -487,6 +487,8 @@ class WC_Gerencianet_Oficial_Gateway extends WC_Payment_Gateway
 	 */
 	public function styles()
 	{
+		//save certificate in dir path
+		$this->save_pix_cert_dir();
 		wp_enqueue_style('wc-gerencianet-checkout', plugins_url('assets/css/checkout.css', plugin_dir_path(__FILE__)), array(), '', 'all');
 	}
 
@@ -1351,9 +1353,6 @@ class WC_Gerencianet_Oficial_Gateway extends WC_Payment_Gateway
 	 */
 	protected function generate_payment_page_options($order_id)
 	{
-		//save certificate in dir path
-		$this->save_pix_cert_dir();
-
 		$this->styles();
 		$this->scripts();
 
