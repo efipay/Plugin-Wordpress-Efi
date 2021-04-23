@@ -27,6 +27,7 @@ class Request
             'headers' => [
                 'Content-Type' => 'application/json',
                 'api-sdk' => 'php-' . $composerData['version'],
+                'wordpress-plugin' => 'version-1.2.1',  // ATUALIZAR VERSÃO A CADA ATUALIZAÇÃO
                 'partner-token' => $partner_token
             ]
         ];
