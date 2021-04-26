@@ -3,7 +3,7 @@ Contributors: Gerencianet
 Tags: woocommerce, gerencianet, payment, transparent checkout, pix, bank slip, card, brazil, payments brazil
 Requires at least: 5.x
 Tested up to: 5.6.2
-Stable tag: 1.2.0
+Stable tag: 1.2.1
 License: GPLv2 or later
 License URI: http://www.gnu.org/licenses/gpl-2.0.html
 
@@ -56,6 +56,11 @@ Caso você tenha alguma dúvida ou sugestão, entre em contato conosco pelo site
 10. Recomendamos que antes de disponibilizar pagamentos pela Gerencianet, o lojista realize testes de cobrança com o sandbox(ambiente de testes) ativado para verificar se o procedimento de pagamento está acontecendo conforme esperado.
 
 = Changelog =
+= 1.2.1 =
+* Add: Ajuste do header da requisição
+* Fix: Compatibilidade com Brazilian Market on Woocommerce
+* Fix: Certificado recriado internamente
+
 = 1.2.0 =
 * Remoção da mensagem "Selecione a bandeira do cartão"
 * Correção da mensagem do label das parcelas

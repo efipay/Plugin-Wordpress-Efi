@@ -1,3 +1,8 @@
+# 1.2.1
+* Add: Ajuste do header da requisição
+* Fix: Compatibilidade com Brazilian Market on Woocommerce
+* Fix: Certificado recriado internamente
+
 # 1.2.0
 * Delete: Remoção da mensagem "Selecione a bandeira do cartão"
 * Fix: Correção da mensagem do label das parcelas
