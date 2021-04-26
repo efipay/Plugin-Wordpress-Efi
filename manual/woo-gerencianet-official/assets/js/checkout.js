@@ -10,7 +10,7 @@ $gn.ready(function (checkout) {
     getPaymentToken = checkout.getPaymentToken;
 });
 
-jQuery(document).ready(function ($) {
+(function ($) {
 
     if ($().mask) {
         function initOptions() {
@@ -648,7 +648,7 @@ jQuery(document).ready(function ($) {
         $("html, body").animate({ scrollTop: $("#wc-gerencianet-messages").offset().top - 80 }, "slow");
     }
 
-});
+})(jQuery);
 
 function getCardBrand(dirtynumber) {
     let other = '<svg id="ccicon" class="ccicon" viewBox="0 60 500 400" version="1.1" xmlns="http://www.w3.org/2000/svg" xmlns:xlink="http://www.w3.org/1999/xlink"><g><path style="fill:#6ABDA0;" d="M476.69,441.379H35.31c-19.5,0-35.31-15.81-35.31-35.31V105.931c0-19.5,15.81-35.31,35.31-35.31   H476.69c19.5,0,35.31,15.81,35.31,35.31v300.138C512,425.569,496.19,441.379,476.69,441.379"></path><polygon style="fill:#488578;" points="0,194.207 512,194.207 512,123.586 0,123.586  "></polygon><polygon style="fill:#F0C419;" points="300.138,388.414 459.034,388.414 459.034,300.138 300.138,300.138  "></polygon><g><path style="fill:#488578;" d="M123.483,264.828H44.141c-4.882,0-8.828-3.946-8.828-8.828s3.946-8.828,8.828-8.828h79.342    c4.882,0,8.828,3.946,8.828,8.828S128.365,264.828,123.483,264.828"></path><path style="fill:#488578;" d="M238.345,264.828h-79.342c-4.882,0-8.828-3.946-8.828-8.828s3.946-8.828,8.828-8.828h79.342    c4.882,0,8.828,3.946,8.828,8.828S243.226,264.828,238.345,264.828"></path>		<path style="fill:#488578;" d="M176.552,300.138H44.138c-4.882,0-8.828-3.946-8.828-8.828s3.946-8.828,8.828-8.828h132.414    c4.882,0,8.828,3.946,8.828,8.828S181.433,300.138,176.552,300.138"></path>		<path style="fill:#488578;" d="M238.345,300.138h-26.483c-4.882,0-8.828-3.946-8.828-8.828s3.946-8.828,8.828-8.828h26.483    c4.882,0,8.828,3.946,8.828,8.828S243.226,300.138,238.345,300.138"></path></g></g><g></g><g></g><g></g><g></g><g></g><g></g><g></g><g></g><g></g><g></g><g></g><g></g><g></g><g></g><g></g></svg>';
