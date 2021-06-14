@@ -1,4 +1,4 @@
-=== Woo Gerencianet Oficial ===
+=== Woo Gerencianet Oficial - Pix, boletos e cartão ===
 Contributors: Gerencianet
 Tags: woocommerce, gerencianet, payment, transparent checkout, pix, bank slip, card, brazil, payments brazil
 Requires at least: 5.x
