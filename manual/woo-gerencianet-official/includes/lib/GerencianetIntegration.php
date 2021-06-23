@@ -249,7 +249,7 @@ class GerencianetIntegration {
 			$data = array("message" => $e->getMessage());
 		}
 
-        return GerencianetIntegration::result_api($data, $response);
+        return GerencianetIntegration->result_api($data, $response);
 	}
 
     public function generate_qrcode($options, $locationId) {
@@ -271,7 +271,7 @@ class GerencianetIntegration {
            $data = array("message" => $e->getMessage());
         }
 
-        return GerencianetIntegration::result_api($data, $response);
+        return GerencianetIntegration->result_api($data, $response);
     }
 
     public function update_webhook($options, $pix_key, $skip_mtls, $url) {

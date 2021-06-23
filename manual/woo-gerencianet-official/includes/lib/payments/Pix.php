@@ -87,11 +87,11 @@ class Pix {
         ];
 
         $credential = Pix::get_gn_api_credentials($gateway->gnIntegration->get_gn_api_credentials());
-        $gnApiResult = GerencianetIntegration::pay_pix($credential, $body);
+        $gnApiResult = GerencianetIntegration->pay_pix($credential, $body);
 		$resultCheck = json_decode($gnApiResult, true);
 
 		if (isset($resultCheck['txid']) && isset($resultCheck['loc']['id'])) {
-            $gnApiQrCode = GerencianetIntegration::generate_qrcode($credential, $resultCheck['loc']['id']);
+            $gnApiQrCode = GerencianetIntegration->generate_qrcode($credential, $resultCheck['loc']['id']);
             $resultQrCode = json_decode($gnApiQrCode, true);
             $resultCheck['charge_id'] = $post_order_id;
 
@@ -139,7 +139,8 @@ class Pix {
                     add_post_meta(intval($post_order_id), 'txid', $resultCheck['txid'], true);
     			}
     			$order->update_status('on-hold', __('Waiting'));
-    			$order->reduce_order_stock();
+    			// $order->reduce_order_stock();
+                wc_reduce_stock_levels($order->get_id());
     			WC()->cart->empty_cart();
             }
             else {
@@ -259,7 +260,7 @@ class Pix {
 
             // Atualiza status
             foreach($orders as &$order) {
-                add_post_meta(intval($order->id), 'endToEndId', $order_notify->endToEndId, true);
+                add_post_meta(intval($order->get_id()), 'endToEndId', $order_notify->endToEndId, true);
                 $order->update_status('processing', __('Paid'));
                 $order->payment_complete();
             }
