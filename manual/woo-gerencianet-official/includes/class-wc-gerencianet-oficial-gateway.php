@@ -150,8 +150,8 @@ class WC_Gerencianet_Oficial_Gateway extends WC_Payment_Gateway
 				return false;
 			}
 
-			$e2eid = get_post_meta($order_id, 'endToEndId', true);
-			$apiID = get_post_meta($order_id, 'charge_id', true);
+			$e2eid = get_post_meta($order->get_id(), 'endToEndId', true);
+			$apiID = get_post_meta($order->get_id(), 'charge_id', true);
 			
 			if(isset($e2eid) && $e2eid != ""){
 
@@ -1139,8 +1139,7 @@ class WC_Gerencianet_Oficial_Gateway extends WC_Payment_Gateway
 					add_post_meta(intval($post_order_id), 'billet_discount_value', $discountBilletTotal, true);
 				}
 				$order->update_status('on-hold', __('Waiting'));
-				// $order->reduce_order_stock();
-				wc_reduce_stock_levels($order->get_id());
+				wc_reduce_stock_levels($order_id);
 				WC()->cart->empty_cart();
 			} else {
 				if ('yes' == $this->debug) {
@@ -1487,7 +1486,6 @@ class WC_Gerencianet_Oficial_Gateway extends WC_Payment_Gateway
 		$gn_order_cpf_cnpj       = '';
 		$gn_order_name_corporate = '';
 
-		//Verificar 
 		if (isset($order->billing_persontype) && $order->billing_persontype == "1") {
 			if (isset($order->billing_cpf)) {
 				if ($validate->_cpf($order->billing_cpf)) {
@@ -1822,7 +1820,7 @@ class WC_Gerencianet_Oficial_Gateway extends WC_Payment_Gateway
 
 		$pay_charge = ($method_payment !== 'pix')
             ? $this->{$functionCall}('OSC', $order_id, $charge_id)
-            : Pix->gerencianet_pay_pix('OSC', $order_id, $charge_id, $cpf_cnpj);
+            : Pix::woocommerce_gerencianet_pay_pix('OSC', $order_id, $charge_id, $cpf_cnpj);
 
 		$resultCheckPay = array();
 		$resultCheckPay = json_decode($pay_charge, true);
