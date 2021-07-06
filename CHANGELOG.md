@@ -1,3 +1,7 @@
+# 1.3.0
+* Fix: Compatibilidade com PHP 8
+* Fix: Adequação de funções depreciadas
+
 # 1.2.1
 * Add: Ajuste do header da requisição
 * Fix: Compatibilidade com Brazilian Market on Woocommerce
