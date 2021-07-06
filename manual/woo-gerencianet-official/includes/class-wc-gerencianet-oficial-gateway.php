@@ -150,8 +150,8 @@ class WC_Gerencianet_Oficial_Gateway extends WC_Payment_Gateway
 				return false;
 			}
 
-			$e2eid = get_post_meta($order->id, 'endToEndId', true);
-			$apiID = get_post_meta($order->id, 'charge_id', true);
+			$e2eid = get_post_meta($order->get_id(), 'endToEndId', true);
+			$apiID = get_post_meta($order->get_id(), 'charge_id', true);
 			
 			if(isset($e2eid) && $e2eid != ""){
 
@@ -1139,7 +1139,7 @@ class WC_Gerencianet_Oficial_Gateway extends WC_Payment_Gateway
 					add_post_meta(intval($post_order_id), 'billet_discount_value', $discountBilletTotal, true);
 				}
 				$order->update_status('on-hold', __('Waiting'));
-				$order->reduce_order_stock();
+				wc_reduce_stock_levels($order_id);
 				WC()->cart->empty_cart();
 			} else {
 				if ('yes' == $this->debug) {
@@ -1506,20 +1506,20 @@ class WC_Gerencianet_Oficial_Gateway extends WC_Payment_Gateway
 				}
 			}
 
-			if ($validate->_corporate($order->billing_company)) {
+			if ($validate->_corporate($order->get_billing_company())) {
 				$gn_billing_name_corporate_validate = true;
-				$gn_order_name_corporate            = $order->billing_company;
+				$gn_order_name_corporate            = $order->get_billing_company();
 			}
 		}
 
-		if (isset($order->billing_email)) {
-			if ($validate->_email($order->billing_email)) {
+		if ($order->get_billing_email() !== NULL) {
+			if ($validate->_email($order->get_billing_email())) {
 				$gn_billing_email_validate = true;
 			}
 		}
 
-		if (isset($order->billing_phone)) {
-			if ($validate->_phone_number($order->billing_phone)) {
+		if ($order->get_billing_phone() !== NULL) {
+			if ($validate->_phone_number($order->get_billing_phone())) {
 				$gn_billing_phone_number_validate = true;
 			}
 		}
@@ -1530,13 +1530,13 @@ class WC_Gerencianet_Oficial_Gateway extends WC_Payment_Gateway
 			}
 		}
 
-		if (isset($order->billing_address_1)) {
-			if ($validate->_street($order->billing_address_1)) {
+		if ($order->get_billing_address_1() !== NULL) {
+			if ($validate->_street($order->get_billing_address_1())) {
 				$gn_billing_street_validate = true;
 			}
 		}
 
-		if (isset($order->billing_number)) {
+		if ($order->billing_number !== NULL) {
 			if ($validate->_number($order->billing_number)) {
 				$gn_billing_number_validate = true;
 			}
@@ -1548,26 +1548,20 @@ class WC_Gerencianet_Oficial_Gateway extends WC_Payment_Gateway
 			}
 		}
 
-		if (isset($order->billing_city)) {
-			if ($validate->_city($order->billing_city)) {
+		if ($order->get_billing_city() !== NULL) {
+			if ($validate->_city($order->get_billing_city())) {
 				$gn_billing_city_validate = true;
 			}
 		}
 
-		if (isset($order->billing_city)) {
-			if ($validate->_city($order->billing_city)) {
-				$gn_billing_city_validate = true;
-			}
-		}
-
-		if (isset($order->billing_postcode)) {
-			if ($validate->_zipcode($order->billing_postcode)) {
+		if ($order->get_billing_postcode() !== NULL) {
+			if ($validate->_zipcode($order->get_billing_postcode())) {
 				$gn_billing_zipcode_validate = true;
 			}
 		}
 
-		if (isset($order->billing_state)) {
-			if ($validate->_state($order->billing_state)) {
+		if ($order->get_billing_state() !== NULL) {
+			if ($validate->_state($order->get_billing_state())) {
 				$gn_billing_state_validate = true;
 			}
 		}
@@ -1826,7 +1820,7 @@ class WC_Gerencianet_Oficial_Gateway extends WC_Payment_Gateway
 
 		$pay_charge = ($method_payment !== 'pix')
             ? $this->{$functionCall}('OSC', $order_id, $charge_id)
-            : Pix::gerencianet_pay_pix('OSC', $order_id, $charge_id, $cpf_cnpj);
+            : Pix::woocommerce_gerencianet_pay_pix('OSC', $order_id, $charge_id, $cpf_cnpj);
 
 		$resultCheckPay = array();
 		$resultCheckPay = json_decode($pay_charge, true);
@@ -1888,7 +1882,7 @@ class WC_Gerencianet_Oficial_Gateway extends WC_Payment_Gateway
 	{
 		$this->styles();
 		$order = wc_get_order($order_id);
-		$email = $order->billing_email;
+		$email = $order->get_billing_email();
 
 		$billet_url = get_post_meta($order_id, 'billet', true);
         $qrcode = get_post_meta($order_id, 'pix_qr', true);
@@ -2089,7 +2083,7 @@ add_action('woocommerce_order_details_after_order_table', 'gn_order_view_billet_
 function gn_order_view_billet_link($order)
 {
 
-	$billet = get_post_meta($order->id, 'billet', true);
+	$billet = get_post_meta($order->get_id(), 'billet', true);
 	if (!empty($billet)) {
 		if ($order->get_status() == "on-hold" || $order->get_status() == "pending") {
 			echo "
@@ -2107,7 +2101,7 @@ add_action('woocommerce_email_after_order_table', 'gn_email_billet_link');
 function gn_email_billet_link($order)
 {
 
-	$billet = get_post_meta($order->id, 'billet', true);
+	$billet = get_post_meta($order->get_id(), 'billet', true);
 	if (!empty($billet)) {
 		echo "
 		<div>

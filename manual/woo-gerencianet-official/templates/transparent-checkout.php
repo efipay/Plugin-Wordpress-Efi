@@ -71,7 +71,7 @@ var home_url = "<?php echo esc_url($order_received_url); ?>";
             <div class="panel-body">
 
                 <form class="form-horizontal">
-                    <input name="wc_order_id" type="hidden" value="<?php echo $order->id; ?>" />
+                    <input name="wc_order_id" type="hidden" value="<?php echo $order->get_id(); ?>" />
                     <div class="gn-row ">
                         <p class="gn-left-space-2">
                             <strong><?php echo $gn_billet_payment_method_comments; ?></strong>
@@ -102,7 +102,7 @@ var home_url = "<?php echo esc_url($order_received_url); ?>";
                                 </div>
                                 <div class="gn-col-10">
                                     <input type="text" name="input-payment-billet-email"
-                                        value="<?php echo $order->billing_email; ?>" id="input-payment-billet-email"
+                                        value="<?php echo $order->get_billing_email(); ?>" id="input-payment-billet-email"
                                         class="form-control" />
                                 </div>
                             </div>
@@ -129,7 +129,7 @@ var home_url = "<?php echo esc_url($order_received_url); ?>";
                                                 </div>
                                                 <div class="gn-col-4">
                                                     <input type="text" name="phone_number" id="phone_number"
-                                                        value="<?php echo $order->billing_phone; ?>"
+                                                        value="<?php echo $order->get_billing_phone(); ?>"
                                                         class="form-control phone-mask" />
                                                 </div>
                                             </div>
@@ -186,7 +186,7 @@ var home_url = "<?php echo esc_url($order_received_url); ?>";
             <div class="panel-body">
 
                 <form class="form-horizontal" id="payment-card-form">
-                    <input name="wc_order_id" type="hidden" value="<?php echo $order->id; ?>" />
+                    <input name="wc_order_id" type="hidden" value="<?php echo $order->get_id(); ?>" />
                     <div class="gn-row">
                         <p class="gn-left-space-2"><strong><?php echo $gn_card_payment_comments; ?></strong></p>
                     </div>
@@ -227,7 +227,7 @@ var home_url = "<?php echo esc_url($order_received_url); ?>";
                                         </div>
                                         <div class="gn-col-8">
                                             <input type="text" name="input-payment-card-phone"
-                                                value="<?php echo $order->billing_phone; ?>"
+                                                value="<?php echo $order->get_billing_phone(); ?>"
                                                 id="input-payment-card-phone"
                                                 class="form-control phone-mask gn-minimum-size-field" />
                                         </div>
@@ -257,7 +257,7 @@ var home_url = "<?php echo esc_url($order_received_url); ?>";
                                     </div>
                                     <div class="gn-col-10">
                                         <input type="text" name="input-payment-card-email"
-                                            value="<?php echo $order->billing_email; ?>" id="input-payment-card-email"
+                                            value="<?php echo $order->get_billing_email(); ?>" id="input-payment-card-email"
                                             class="form-control" />
                                     </div>
                                 </div>
@@ -282,7 +282,7 @@ var home_url = "<?php echo esc_url($order_received_url); ?>";
                                         <div class="gn-col-6 required">
                                             <input type="text" name="input-payment-card-address-street"
                                                 id="input-payment-card-street"
-                                                value="<?php echo $order->billing_address_1; ?>" class="form-control" />
+                                                value="<?php echo $order->get_billing_address_1(); ?>" class="form-control" />
                                         </div>
                                         <div class="gn-col-6">
                                             <div class=" required gn-left-space-2">
@@ -322,7 +322,7 @@ var home_url = "<?php echo esc_url($order_received_url); ?>";
                                             <div class="gn-col-7">
                                                 <input type="text" name="input-payment-card-complement"
                                                     id="input-payment-card-complement"
-                                                    value="<?php echo $order->billing_address_2; ?>"
+                                                    value="<?php echo $order->get_billing_address_2(); ?>"
                                                     class="form-control" />
                                             </div>
                                         </div>
@@ -340,7 +340,7 @@ var home_url = "<?php echo esc_url($order_received_url); ?>";
 
                                             <input type="text" name="input-payment-card-zipcode"
                                                 id="input-payment-card-zipcode"
-                                                value="<?php echo $order->billing_postcode ?>" class="form-control" />
+                                                value="<?php echo $order->get_billing_postcode() ?>" class="form-control" />
                                         </div>
                                         <div class="gn-col-8">
                                             <div class=" required gn-left-space-2">
@@ -351,7 +351,7 @@ var home_url = "<?php echo esc_url($order_received_url); ?>";
                                                 <div class="gn-col-6">
                                                     <input type="text" name="input-payment-card-city"
                                                         id="input-payment-card-city"
-                                                        value="<?php echo $order->billing_city; ?>"
+                                                        value="<?php echo $order->get_billing_city(); ?>"
                                                         class="form-control" />
                                                 </div>
                                             </div>
@@ -370,137 +370,137 @@ var home_url = "<?php echo esc_url($order_received_url); ?>";
                                             class="form-control gn-form-select">
                                             <option value=""><?php echo $gn_billing_state_select; ?></option>
                                             <option value="AC"
-                                                <?php if ($order->billing_state == "AC" || $order->billing_state == "Acre") { ?>
+                                                <?php if ($order->get_billing_state() == "AC" || $order->get_billing_state() == "Acre") { ?>
                                                 selected <?php } ?>>
                                                 Acre
                                             </option>
                                             <option value="AL"
-                                                <?php if ($order->billing_state == "AL" || $order->billing_state == "Alagoas") { ?>
+                                                <?php if ($order->get_billing_state() == "AL" || $order->get_billing_state() == "Alagoas") { ?>
                                                 selected <?php } ?>>
                                                 Alagoas
                                             </option>
                                             <option value="AP"
-                                                <?php if ($order->billing_state == "AP" || $order->billing_state == "Amapá") { ?>
+                                                <?php if ($order->get_billing_state() == "AP" || $order->get_billing_state() == "Amapá") { ?>
                                                 selected <?php } ?>>
                                                 Amapá
                                             </option>
                                             <option value="AM"
-                                                <?php if ($order->billing_state == "AM" || $order->billing_state == "Amazonas") { ?>
+                                                <?php if ($order->get_billing_state() == "AM" || $order->get_billing_state() == "Amazonas") { ?>
                                                 selected <?php } ?>>
                                                 Amazonas
                                             </option>
                                             <option value="BA"
-                                                <?php if ($order->billing_state == "BA" || $order->billing_state == "Bahia") { ?>
+                                                <?php if ($order->get_billing_state() == "BA" || $order->get_billing_state() == "Bahia") { ?>
                                                 selected <?php } ?>>
                                                 Bahia
                                             </option>
                                             <option value="CE"
-                                                <?php if ($order->billing_state == "CE" || $order->billing_state == "Ceará") { ?>
+                                                <?php if ($order->get_billing_state() == "CE" || $order->get_billing_state() == "Ceará") { ?>
                                                 selected <?php } ?>>
                                                 Ceará
                                             </option>
                                             <option value="DF"
-                                                <?php if ($order->billing_state == "DF" || $order->billing_state == "Distrito Federal") { ?>
+                                                <?php if ($order->get_billing_state() == "DF" || $order->get_billing_state() == "Distrito Federal") { ?>
                                                 selected <?php } ?>>
                                                 Distrito Federal
                                             </option>
                                             <option value="ES"
-                                                <?php if ($order->billing_state == "ES" || $order->billing_state == "Espírito Santo") { ?>
+                                                <?php if ($order->get_billing_state() == "ES" || $order->get_billing_state() == "Espírito Santo") { ?>
                                                 selected <?php } ?>>
                                                 Espírito Santo
                                             </option>
                                             <option value="GO"
-                                                <?php if ($order->billing_state == "GO" || $order->billing_state == "Goiás") { ?>
+                                                <?php if ($order->get_billing_state() == "GO" || $order->get_billing_state() == "Goiás") { ?>
                                                 selected <?php } ?>>
                                                 Goiás
                                             </option>
                                             <option value="MA"
-                                                <?php if ($order->billing_state == "MA" || $order->billing_state == "Maranhão") { ?>
+                                                <?php if ($order->get_billing_state() == "MA" || $order->get_billing_state() == "Maranhão") { ?>
                                                 selected <?php } ?>>
                                                 Maranhão
                                             </option>
                                             <option value="MT"
-                                                <?php if ($order->billing_state == "MT" || $order->billing_state == "Mato Grosso") { ?>
+                                                <?php if ($order->get_billing_state() == "MT" || $order->get_billing_state() == "Mato Grosso") { ?>
                                                 selected <?php } ?>>
                                                 Mato Grosso
                                             </option>
                                             <option value="MS"
-                                                <?php if ($order->billing_state == "MS" || $order->billing_state == "Mato Grosso do Sul") { ?>
+                                                <?php if ($order->get_billing_state() == "MS" || $order->get_billing_state() == "Mato Grosso do Sul") { ?>
                                                 selected <?php } ?>>
                                                 Mato Grosso do Sul
                                             </option>
                                             <option value="MG"
-                                                <?php if ($order->billing_state == "MG" || $order->billing_state == "Minas Gerais") { ?>
+                                                <?php if ($order->get_billing_state() == "MG" || $order->get_billing_state() == "Minas Gerais") { ?>
                                                 selected <?php } ?>>
                                                 Minas Gerais
                                             </option>
                                             <option value="PA"
-                                                <?php if ($order->billing_state == "PA" || $order->billing_state == "Pará") { ?>
+                                                <?php if ($order->get_billing_state() == "PA" || $order->get_billing_state() == "Pará") { ?>
                                                 selected <?php } ?>>
                                                 Pará
                                             </option>
                                             <option value="PB"
-                                                <?php if ($order->billing_state == "PB" || $order->billing_state == "Paraíba") { ?>
+                                                <?php if ($order->get_billing_state() == "PB" || $order->get_billing_state() == "Paraíba") { ?>
                                                 selected <?php } ?>>
                                                 Paraíba
                                             </option>
                                             <option value="PR"
-                                                <?php if ($order->billing_state == "PR" || $order->billing_state == "Paraná") { ?>
+                                                <?php if ($order->get_billing_state() == "PR" || $order->get_billing_state() == "Paraná") { ?>
                                                 selected <?php } ?>>
                                                 Paraná
                                             </option>
                                             <option value="PE"
-                                                <?php if ($order->billing_state == "PE" || $order->billing_state == "Pernambuco") { ?>
+                                                <?php if ($order->get_billing_state() == "PE" || $order->get_billing_state() == "Pernambuco") { ?>
                                                 selected <?php } ?>>
                                                 Pernambuco
                                             </option>
                                             <option value="PI"
-                                                <?php if ($order->billing_state == "PI" || $order->billing_state == "Piauí") { ?>
+                                                <?php if ($order->get_billing_state() == "PI" || $order->get_billing_state() == "Piauí") { ?>
                                                 selected <?php } ?>>
                                                 Piauí
                                             </option>
                                             <option value="RJ"
-                                                <?php if ($order->billing_state == "RJ" || $order->billing_state == "Rio de Janeiro") { ?>
+                                                <?php if ($order->get_billing_state() == "RJ" || $order->get_billing_state() == "Rio de Janeiro") { ?>
                                                 selected <?php } ?>>
                                                 Rio de Janeiro
                                             </option>
                                             <option value="RN"
-                                                <?php if ($order->billing_state == "RN" || $order->billing_state == "Rio Grande do Norte") { ?>
+                                                <?php if ($order->get_billing_state() == "RN" || $order->get_billing_state() == "Rio Grande do Norte") { ?>
                                                 selected <?php } ?>>
                                                 Rio Grande do Norte
                                             </option>
                                             <option value="RS"
-                                                <?php if ($order->billing_state == "RS" || $order->billing_state == "Rio Grande do Sul") { ?>
+                                                <?php if ($order->get_billing_state() == "RS" || $order->get_billing_state() == "Rio Grande do Sul") { ?>
                                                 selected <?php } ?>>
                                                 Rio Grande do Sul
                                             </option>
                                             <option value="RO"
-                                                <?php if ($order->billing_state == "RO" || $order->billing_state == "Rondônia") { ?>
+                                                <?php if ($order->get_billing_state() == "RO" || $order->get_billing_state() == "Rondônia") { ?>
                                                 selected <?php } ?>>
                                                 Rondônia
                                             </option>
                                             <option value="RR"
-                                                <?php if ($order->billing_state == "RR" || $order->billing_state == "Roraima") { ?>
+                                                <?php if ($order->get_billing_state() == "RR" || $order->get_billing_state() == "Roraima") { ?>
                                                 selected <?php } ?>>
                                                 Roraima
                                             </option>
                                             <option value="SC"
-                                                <?php if ($order->billing_state == "SC" || $order->billing_state == "Santa Catarina") { ?>
+                                                <?php if ($order->get_billing_state() == "SC" || $order->get_billing_state() == "Santa Catarina") { ?>
                                                 selected <?php } ?>>
                                                 Santa Catarina
                                             </option>
                                             <option value="SP"
-                                                <?php if ($order->billing_state == "SP" || $order->billing_state == "São Paulo") { ?>
+                                                <?php if ($order->get_billing_state() == "SP" || $order->get_billing_state() == "São Paulo") { ?>
                                                 selected <?php } ?>>
                                                 São Paulo
                                             </option>
                                             <option value="SE"
-                                                <?php if ($order->billing_state == "SE" || $order->billing_state == "Sergipe") { ?>
+                                                <?php if ($order->get_billing_state() == "SE" || $order->get_billing_state() == "Sergipe") { ?>
                                                 selected <?php } ?>>
                                                 Sergipe
                                             </option>
                                             <option value="TO"
-                                                <?php if ($order->billing_state == "TO" || $order->billing_state == "Tocantins") { ?>
+                                                <?php if ($order->get_billing_state() == "TO" || $order->get_billing_state() == "Tocantins") { ?>
                                                 selected <?php } ?>>
                                                 Tocantins
                                             </option>
@@ -767,7 +767,7 @@ var home_url = "<?php echo esc_url($order_received_url); ?>";
                     <p class="gn-left-space-2"><strong><?php echo __("Opting to pay by Pix, the payment is processed and the confirmation will take place within a couple seconds.", WCGerencianetOficial::getTextDomain()); ?></strong></p>
                 </div>
                 <form class="form-horizontal">
-                    <input name="wc_order_id" type="hidden" value="<?php echo $order->id; ?>" />
+                    <input name="wc_order_id" type="hidden" value="<?php echo $order->get_id(); ?>" />
 
                     <div class="gn-form">
                         <div id="pix-data">

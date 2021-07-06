@@ -53,7 +53,7 @@ if ( ! defined( 'ABSPATH' ) ) {
                 <div class="gn-row" style="font-size: 15px!important;text-align: center !important;">
                     <div class="gn-col-12">
                         <span style="font-weight: bold !important;">
-                            <?php echo $pix_copy_paste ?>
+                            <?php echo __('Or copy the Code below and paste it into the app where you are going to make the payment:', WCGerencianetOficial::getTextDomain()) ; ?>
                         </span>
                     </div>
                     <script>

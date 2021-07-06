@@ -11,8 +11,9 @@ class Pix {
      *
      * @return string
      */
-    public static function woocommerce_gerencianet_pay_pix() {
-        echo Pix::gerencianet_pay_pix('checkout_page', null, null);
+    public static function woocommerce_gerencianet_pay_pix($typecheck, $order_id, $charge_id, $cpf_cnpj) {
+        $pix = new Pix();
+        return $pix->gerencianet_pay_pix($typecheck, $order_id, $charge_id, $cpf_cnpj);
         die();
     }
 
@@ -57,8 +58,7 @@ class Pix {
         $gateway = new WC_Gerencianet_Oficial_Gateway();
 
         //get order data
-        $post_order_id = isset($arrayDadosPost['order_id']) ? $arrayDadosPost['order_id'] : $order_id;
-        $order = wc_get_order($post_order_id);
+        $order = wc_get_order($order_id);
         $full_name = $order->get_formatted_billing_full_name();
 
         $totalOrder = strval($gateway->calculatePixDiscount());
@@ -81,30 +81,31 @@ class Pix {
                 ],
                 [
                     "nome" => "Número do Pedido",
-                    "valor" => "#".$post_order_id
+                    "valor" => "#".$order_id
                 ]
             ]
         ];
 
         $credential = Pix::get_gn_api_credentials($gateway->gnIntegration->get_gn_api_credentials());
-        $gnApiResult = GerencianetIntegration::pay_pix($credential, $body);
+        $gnApiResult = $gateway->gnIntegration->pay_pix($credential, $body);
 		$resultCheck = json_decode($gnApiResult, true);
 
 		if (isset($resultCheck['txid']) && isset($resultCheck['loc']['id'])) {
-            $gnApiQrCode = GerencianetIntegration::generate_qrcode($credential, $resultCheck['loc']['id']);
+            $gnApiQrCode = $gateway->gnIntegration->generate_qrcode($credential, $resultCheck['loc']['id']);
             $resultQrCode = json_decode($gnApiQrCode, true);
-            $resultCheck['charge_id'] = $post_order_id;
-
+            $resultCheck['charge_id'] = $order_id;
 
             if(isset($resultQrCode['imagemQrcode'])) {
                 $resultCheck['imagemQrcode'] = $resultQrCode['imagemQrcode'];
     			global $wpdb;
 
-    			if ($order->get_status() != 'failed' && !isset($meta_discount_value_array[0])) {
+                $order_data = $order->get_data();
+
+    			if ($order_data['status'] != 'failed' && !isset($meta_discount_value_array[0])) {
     				$wpdb->insert($wpdb->prefix . 'woocommerce_order_items', array(
     					'order_item_name' => __('Discount of ', WCGerencianetOficial::getTextDomain()) . str_replace(".", ",", $gateway->discountPix) . __('% Pix', WCGerencianetOficial::getTextDomain()),
     					'order_item_type' => 'fee',
-    					'order_id' => intval($post_order_id)
+    					'order_id' => intval($order_id)
     				));
     				$lastid = $wpdb->insert_id;
 
@@ -132,15 +133,15 @@ class Pix {
     					'meta_value'    => '0'
     				));
 
-    				update_post_meta(intval($post_order_id), '_order_total', number_format(intval(ceil($gateway->gn_price_format($totalOrder))) / 100, 2, '.', ''));
-    				update_post_meta(intval($post_order_id), '_payment_method_title', sanitize_text_field(__('Pix - Gerencianet', WCGerencianetOficial::getTextDomain())));
-    				add_post_meta(intval($post_order_id), 'pix_qr', $resultQrCode['imagemQrcode'], true);
-                    add_post_meta(intval($post_order_id), 'pix_qr_copy', $resultQrCode['qrcode'], true); 
-                    add_post_meta(intval($post_order_id), 'txid', $resultCheck['txid'], true);
+    				update_post_meta(intval($order_id), '_order_total', number_format(intval(ceil($gateway->gn_price_format($totalOrder))) / 100, 2, '.', ''));
+    				update_post_meta(intval($order_id), '_payment_method_title', sanitize_text_field(__('Pix - Gerencianet', WCGerencianetOficial::getTextDomain())));
+    				add_post_meta(intval($order_id), 'pix_qr', $resultQrCode['imagemQrcode'], true);
+                    add_post_meta(intval($order_id), 'pix_qr_copy', $resultQrCode['qrcode'], true); 
+                    add_post_meta(intval($order_id), 'txid', $resultCheck['txid'], true);
     			}
     			$order->update_status('on-hold', __('Waiting'));
-    			$order->reduce_order_stock();
-    			WC()->cart->empty_cart();
+    			wc_reduce_stock_levels($order_id);    			
+                WC()->cart->empty_cart();
             }
             else {
     			if ($gateway->gnIntegration->debug == 'yes') {
@@ -202,7 +203,7 @@ class Pix {
             $pix_key = $gateway->pix_key;
             $skip_mtls = ($gateway->pix_mtls == 'yes') ? 'false' : 'true'; // Precisa ser string
 
-            $gnApi = GerencianetIntegration::update_webhook($credential, $pix_key, $skip_mtls, $url);
+            $gnApi = $gateway->gnIntegration->update_webhook($credential, $pix_key, $skip_mtls, $url);
             $result = json_decode($gnApi, true);
 
             if($gateway->debug == 'yes' && $result['webhookUrl']) {
@@ -259,7 +260,7 @@ class Pix {
 
             // Atualiza status
             foreach($orders as &$order) {
-                add_post_meta(intval($order->id), 'endToEndId', $order_notify->endToEndId, true);
+                add_post_meta(intval($order->get_id()), 'endToEndId', $order_notify->endToEndId, true);
                 $order->update_status('processing', __('Paid'));
                 $order->payment_complete();
             }
