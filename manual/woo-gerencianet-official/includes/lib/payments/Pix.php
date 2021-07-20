@@ -62,7 +62,7 @@ class Pix {
         $full_name = $order->get_formatted_billing_full_name();
 
         $totalOrder = strval($gateway->calculatePixDiscount());
-        $discountPix = (float)WC()->cart->get_cart_contents_total() - $gateway->calculatePixDiscount();
+        $discountPix = (float) $gateway->calculateOnlyDiscount();
         $document = isset($cpf_cnpj) ? preg_replace('/[^0-9]/', '', $cpf_cnpj) : $arrayDadosPost['cpf_cnpj'];
         $docType = (strlen($document) == 11) ? 'cpf' : 'cnpj';
 
