@@ -1967,7 +1967,7 @@ jQuery(document).ready(function($) {
         </div>
 
         <div class="gn-osc-row" style="padding: 20px;">
-            <?php if ($discount > 0) { ?>
+            <?php if ($discountPix > 0) { ?>
             <div class="gn-osc-row" style="border: 1px solid #DEDEDE; border-bottom: 0px; margin: 0px; padding:5px;">
                 <div style="float: left;">
                     <strong>DESCONTO DE <?php echo $discount_pix_formatted; ?>% NO PIX:</strong>
