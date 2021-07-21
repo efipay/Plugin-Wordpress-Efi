@@ -1,3 +1,6 @@
+# 1.3.2
+* zip atualizado
+
 # 1.3.1
 * Fix: Exibição e registro dos descontos Pix
 
