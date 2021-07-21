@@ -1360,7 +1360,7 @@ jQuery(document).ready(function($) {
 
     <div class="warning-payment" id="wc-gerencianet-messages">
         <?php if (($card_option && $order_total_card < 500) || ($billet_option && $order_total_billet < 500)) { ?>
-        <div class="woocommerce-error"><?php echo __("To pay Bank Slip or Credit Card the order must have more than R$5,00. But you can pay with PIX", WCGerencianetOficial::getTextDomain()); ?></div>
+        <div class="woocommerce-error"><?php echo __("To pay Boleto or Credit Card the order must have more than R$5,00. But you can pay with PIX", WCGerencianetOficial::getTextDomain()); ?></div>
         <?php
     	} ?>
     </div>

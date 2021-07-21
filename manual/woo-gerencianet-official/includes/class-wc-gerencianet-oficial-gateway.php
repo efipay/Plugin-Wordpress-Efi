@@ -23,7 +23,7 @@ class WC_Gerencianet_Oficial_Gateway extends WC_Payment_Gateway
         $this->icon = apply_filters('woocommerce_gerencianet_oficial_icon', plugins_url('assets/images/gn-payment.png', plugin_dir_path(__FILE__)));
 		$this->has_fields = false;
 		$this->method_title = __('Gerencianet', WCGerencianetOficial::getTextDomain());
-		$this->method_description = __('With Gerencianet you can receive payments via Bank slip, Credit Card and Pix!', WCGerencianetOficial::getTextDomain());
+		$this->method_description = __('With Gerencianet you can receive payments via Boleto, Credit Card and Pix!', WCGerencianetOficial::getTextDomain());
 		$this->supports = array( 'products', 'refunds' );
 
 		// Load the settings.
@@ -43,7 +43,7 @@ class WC_Gerencianet_Oficial_Gateway extends WC_Payment_Gateway
 		$format_title = '';
 		if($this->billet_banking == 'yes')
 		{
-			$format_title = 'Bank Slip';
+			$format_title = 'Boleto';
 		}
 
 		if($this->credit_card == 'yes')
@@ -621,9 +621,9 @@ class WC_Gerencianet_Oficial_Gateway extends WC_Payment_Gateway
 				'description' => __('These options need to be available to you in your gerencianet account.', WCGerencianetOficial::getTextDomain()),
 			),
 			'billet_banking'          	=> array(
-				'title'   => __('Bank Slip', WCGerencianetOficial::getTextDomain()),
+				'title'   => __('Boleto', WCGerencianetOficial::getTextDomain()),
 				'type'    => 'checkbox',
-				'label'   => __('Enable Bank Slip', WCGerencianetOficial::getTextDomain()),
+				'label'   => __('Enable Boleto', WCGerencianetOficial::getTextDomain()),
 				'default' => 'no'
 			),
 			'credit_card'             	=> array(
@@ -698,14 +698,14 @@ class WC_Gerencianet_Oficial_Gateway extends WC_Payment_Gateway
 				'default' => 'no'
 			),
 			'billet_section'     		 => array(
-				'title'       => __('Bank Slip Settings', WCGerencianetOficial::getTextDomain()),
+				'title'       => __('Boleto Settings', WCGerencianetOficial::getTextDomain()),
 				'type'        => 'title',
 				'description' => '',
 			),
 			'billet_discount'    		 => array(
-				'title'       => __('Bank Slip discount', WCGerencianetOficial::getTextDomain()),
+				'title'       => __('Boleto discount', WCGerencianetOficial::getTextDomain()),
 				'type'        => 'text',
-				'description' => __('Discount for payment with Bank Slip.', WCGerencianetOficial::getTextDomain()),
+				'description' => __('Discount for payment with Boleto.', WCGerencianetOficial::getTextDomain()),
 				'desc_tip'    => true,
 				'placeholder' => '0%',
 				'default'     => '0%'
@@ -723,20 +723,20 @@ class WC_Gerencianet_Oficial_Gateway extends WC_Payment_Gateway
 			'billet_number_days'         => array(
 				'title'       => __('Number of Days', WCGerencianetOficial::getTextDomain()),
 				'type'        => 'text',
-				'description' => __('Days to expire the Bank Slip after printed.', WCGerencianetOficial::getTextDomain()),
+				'description' => __('Days to expire the Boleto after printed.', WCGerencianetOficial::getTextDomain()),
 				'desc_tip'    => true,
 				'placeholder' => '5',
 				'default'     => '5'
 			),
 			'billet_instructions_title'  => array(
-				'title'       => __('Bank Slip Instructions (not required)', WCGerencianetOficial::getTextDomain()),
+				'title'       => __('Boleto Instructions (not required)', WCGerencianetOficial::getTextDomain()),
 				'type'        => 'title',
 				'description' => '',
 			),
 			'billet_instructions_line_1' => array(
 				'title'       => __('Instructions line 1', WCGerencianetOficial::getTextDomain()),
 				'type'        => 'text',
-				'description' => __('Text of Bank Slip instructions. Maximum of 90 characters per line.', WCGerencianetOficial::getTextDomain()),
+				'description' => __('Text of Boleto instructions. Maximum of 90 characters per line.', WCGerencianetOficial::getTextDomain()),
 				'desc_tip'    => true,
 				'placeholder' => '',
 				'default'     => ''
@@ -744,7 +744,7 @@ class WC_Gerencianet_Oficial_Gateway extends WC_Payment_Gateway
 			'billet_instructions_line_2' => array(
 				'title'       => __('Instructions line 2', WCGerencianetOficial::getTextDomain()),
 				'type'        => 'text',
-				'description' => __('Text of Bank Slip instructions. Maximum of 90 characters per line.', WCGerencianetOficial::getTextDomain()),
+				'description' => __('Text of Boleto instructions. Maximum of 90 characters per line.', WCGerencianetOficial::getTextDomain()),
 				'desc_tip'    => true,
 				'placeholder' => '',
 				'default'     => ''
@@ -752,7 +752,7 @@ class WC_Gerencianet_Oficial_Gateway extends WC_Payment_Gateway
 			'billet_instructions_line_3' => array(
 				'title'       => __('Instructions line 3', WCGerencianetOficial::getTextDomain()),
 				'type'        => 'text',
-				'description' => __('Text of Bank Slip instructions. Maximum of 90 characters per line.', WCGerencianetOficial::getTextDomain()),
+				'description' => __('Text of Boleto instructions. Maximum of 90 characters per line.', WCGerencianetOficial::getTextDomain()),
 				'desc_tip'    => true,
 				'placeholder' => '',
 				'default'     => ''
@@ -760,7 +760,7 @@ class WC_Gerencianet_Oficial_Gateway extends WC_Payment_Gateway
 			'billet_instructions_line_4' => array(
 				'title'       => __('Instructions line 4', WCGerencianetOficial::getTextDomain()),
 				'type'        => 'text',
-				'description' => __('Text of Bank Slip instructions. Maximum of 90 characters per line.', WCGerencianetOficial::getTextDomain()),
+				'description' => __('Text of Boleto instructions. Maximum of 90 characters per line.', WCGerencianetOficial::getTextDomain()),
 				'desc_tip'    => true,
 				'placeholder' => '',
 				'default'     => ''
@@ -1446,7 +1446,7 @@ class WC_Gerencianet_Oficial_Gateway extends WC_Payment_Gateway
 
 
 		$gn_card_payment_comments          = __("Opting to pay by credit card, the payment is processed and the confirmation will take place within 48 hours.", WCGerencianetOficial::getTextDomain());
-		$gn_billet_payment_method_comments = __("Opting to pay by Bank Slip, the confirmation will be performed on the next business day after payment.", WCGerencianetOficial::getTextDomain());
+		$gn_billet_payment_method_comments = __("Opting to pay by Boleto, the confirmation will be performed on the next business day after payment.", WCGerencianetOficial::getTextDomain());
 		$gn_name_corporate                 = __("Name/Company:", WCGerencianetOficial::getTextDomain());
 		$gn_name                           = __("Name:", WCGerencianetOficial::getTextDomain()); //novo
 		$gn_corporate                      = __("Company:", WCGerencianetOficial::getTextDomain()); //novo
@@ -1470,8 +1470,8 @@ class WC_Gerencianet_Oficial_Gateway extends WC_Payment_Gateway
 		$gn_card_installments_options      = __("Installments: ", WCGerencianetOficial::getTextDomain());
 		$gn_card_brand                     = __("Enter your credit card details", WCGerencianetOficial::getTextDomain());
 
-		$gn_mininum_gn_charge_price = __("To pay Bank Slip or Credit Card the order must have more than R$5,00. But you can pay with PIX", WCGerencianetOficial::getTextDomain());
-		$gn_pay_billet_option       = __("Pay with Bank Slip", WCGerencianetOficial::getTextDomain());
+		$gn_mininum_gn_charge_price = __("To pay Boleto or Credit Card the order must have more than R$5,00. But you can pay with PIX", WCGerencianetOficial::getTextDomain());
+		$gn_pay_billet_option       = __("Pay with Boleto", WCGerencianetOficial::getTextDomain());
 		$gn_discount_billet         = __("Discount of ", WCGerencianetOficial::getTextDomain());
 		$gn_pay_card_option         = __("Pay with Credit Card", WCGerencianetOficial::getTextDomain());
 		$gn_pay_pix_option          = __("Pay with Pix", WCGerencianetOficial::getTextDomain());
@@ -1724,7 +1724,7 @@ class WC_Gerencianet_Oficial_Gateway extends WC_Payment_Gateway
 					'order_total_billet'                => $total_order_pay_by_billet,
 					'sandbox'                           => $this->sandbox,
 					'gn_card_payment_comments'          => __("Opting to pay by credit card, the payment is processed and the confirmation will take place within 48 hours.", WCGerencianetOficial::getTextDomain()),
-					'gn_billet_payment_method_comments' => __("Opting to pay by Bank Slip, the confirmation will be performed on the next business day after payment.", WCGerencianetOficial::getTextDomain()),
+					'gn_billet_payment_method_comments' => __("Opting to pay by Boleto, the confirmation will be performed on the next business day after payment.", WCGerencianetOficial::getTextDomain()),
 					'gn_name_corporate'                 => __("Name/Company:", WCGerencianetOficial::getTextDomain()),
 					'gn_name'                           => __("Name:", WCGerencianetOficial::getTextDomain()), //novo
 					'gn_corporate'                      => __("Company:", WCGerencianetOficial::getTextDomain()), //novo
@@ -1748,8 +1748,8 @@ class WC_Gerencianet_Oficial_Gateway extends WC_Payment_Gateway
 					'gn_card_installments_options'      => __("Installments: ", WCGerencianetOficial::getTextDomain()),
 					'gn_card_brand'                     => __("Enter your credit card details", WCGerencianetOficial::getTextDomain()),
 
-					'gn_mininum_gn_charge_price' => __("To pay Bank Slip or credit card the order must have more than R$5,00. But you can pay with PIX", WCGerencianetOficial::getTextDomain()),
-					'gn_pay_billet_option'       => __("Pay with Bank Slip", WCGerencianetOficial::getTextDomain()),
+					'gn_mininum_gn_charge_price' => __("To pay Boleto or credit card the order must have more than R$5,00. But you can pay with PIX", WCGerencianetOficial::getTextDomain()),
+					'gn_pay_billet_option'       => __("Pay with Boleto", WCGerencianetOficial::getTextDomain()),
 					'gn_discount_billet'         => __("Discount of ", WCGerencianetOficial::getTextDomain()),
 					'gn_pay_card_option'         => __("Pay with Credit Card", WCGerencianetOficial::getTextDomain()),
 					'gn_installments_pay'        => __("Pay in", WCGerencianetOficial::getTextDomain()),
@@ -1919,8 +1919,8 @@ class WC_Gerencianet_Oficial_Gateway extends WC_Payment_Gateway
                 'content' => __('Scan the code below and make the payment for Pix', WCGerencianetOficial::getTextDomain())
             ],
             'billet' => [
-                'title' => __('Bank Slip emitted by Gerencianet', WCGerencianetOficial::getTextDomain()),
-                'content' => __('The Bank Slip was successfully generated. Make payment in bank, lottery, post office or bankline. Stay tuned to the expiration date of the Bank Slip.', WCGerencianetOficial::getTextDomain())
+                'title' => __('Boleto emitted by Gerencianet', WCGerencianetOficial::getTextDomain()),
+                'content' => __('The Boleto was successfully generated. Make payment in bank, lottery, post office or bankline. Stay tuned to the expiration date of the Boleto.', WCGerencianetOficial::getTextDomain())
             ],
             'card' => [
                 'title' => __('Your order was successful and your payment is being processed. Wait until you receive confirmation of payment by email.', WCGerencianetOficial::getTextDomain()),
@@ -1932,7 +1932,7 @@ class WC_Gerencianet_Oficial_Gateway extends WC_Payment_Gateway
         );
 
         $gn_success_payment_charge_number = __("Charge number:", WCGerencianetOficial::getTextDomain());
-		$gn_success_payment_open_billet = __("Show Bank Slip", WCGerencianetOficial::getTextDomain());
+		$gn_success_payment_open_billet = __("Show Boleto", WCGerencianetOficial::getTextDomain());
 
 		ob_start();
 		include plugin_dir_path(dirname(__FILE__)) . 'templates/order-received.php';
@@ -2110,7 +2110,7 @@ function gn_order_view_billet_link($order)
 	if (!empty($billet)) {
 		if ($order->get_status() == "on-hold" || $order->get_status() == "pending") {
 			echo "
-			<div style='text-align: right;'><a class='button' href='" . $billet . "' target='_blank'>" . __('Show Bank Slip', WCGerencianetOficial::getTextDomain()) . "</a></div>";
+			<div style='text-align: right;'><a class='button' href='" . $billet . "' target='_blank'>" . __('Show Boleto', WCGerencianetOficial::getTextDomain()) . "</a></div>";
 		}
 	}
 }
@@ -2128,7 +2128,7 @@ function gn_email_billet_link($order)
 	if (!empty($billet)) {
 		echo "
 		<div>
-			<center><a class='button' href='" . $billet . "' target='_blank'>" . __('Click here to see the Bank Slip', WCGerencianetOficial::getTextDomain()) . "</a></center>
+			<center><a class='button' href='" . $billet . "' target='_blank'>" . __('Click here to see the Boleto', WCGerencianetOficial::getTextDomain()) . "</a></center>
 		</div>";
 	}
 }
