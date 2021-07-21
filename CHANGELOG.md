@@ -1,3 +1,6 @@
+# 1.3.1
+* Fix: Exibição e registro dos descontos Pix
+
 # 1.3.0
 * Fix: Compatibilidade com PHP 8
 * Fix: Adequação de funções depreciadas

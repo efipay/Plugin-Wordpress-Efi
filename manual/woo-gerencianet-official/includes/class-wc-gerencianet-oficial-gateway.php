@@ -1340,6 +1340,29 @@ class WC_Gerencianet_Oficial_Gateway extends WC_Payment_Gateway
         return round($total_value, 2);
     }
 
+	public function calculateOnlyDiscount() {
+        $WC = $this->woocommerce_instance();
+
+        $total_cart   = $WC->cart->get_cart_contents_total();
+        $totalShipping = $WC->cart->get_shipping_total();
+        $totalTax      = $WC->cart->get_cart_contents_tax();
+        $discountPix   = $this->discountPix;
+		$total_value = 0;
+		
+        if(isset($total_cart, $totalShipping, $totalTax, $discountPix) ) {
+            if ($this->pix_discount_shipping == 'products') {
+				$discountPixTotal = (float)($total_cart) * (((float)$discountPix / 100) );
+            } else {
+                $total_value = (float)($total_cart + $totalShipping + $totalTax);
+                $discountPixTotal = $total_value * (((float)$discountPix / 100));
+            }
+        } else {
+            return $this->returnError('An error occurred during your request. Please, try again.');
+        }
+
+        return round($discountPixTotal, 2);
+    }
+
 	/**
 	 * Generate Gerencianet script to get payment token
 	 */
@@ -1675,7 +1698,7 @@ class WC_Gerencianet_Oficial_Gateway extends WC_Payment_Gateway
             $discountPix   =  $this->discountPix;
             $discountPixFormatted = str_replace(".", ",", $discountPix);
             $totalValuePix =  $this->gnIntegration->formatCurrencyBRL($this->gn_price_format($total_value_pix));
-            $discountValuePix = (float)WC()->cart->get_cart_contents_total() - $total_value_pix;
+            $discountValuePix = (float) $this->calculateOnlyDiscount();
             $discountValuePix = $this->gnIntegration->formatCurrencyBRL($this->gn_price_format($discountValuePix));
 
 			if (is_ajax()) {
