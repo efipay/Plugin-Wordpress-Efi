@@ -1,3 +1,6 @@
+# 1.3.4
+* Fix: Melhoria na tradução
+
 # 1.3.3
 * Add: Compatibilidade com wordpress 5.8
 * Fix: Melhoria na tradução
