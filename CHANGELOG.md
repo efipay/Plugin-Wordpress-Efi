@@ -1,3 +1,6 @@
+# 1.3.5
+* Fix: Correção no registro do desconto
+
 # 1.3.4
 * Fix: Melhoria na tradução
 
