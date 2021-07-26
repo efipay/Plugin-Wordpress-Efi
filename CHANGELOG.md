@@ -1,3 +1,6 @@
+# 1.3.6
+* Fix: Correção na exibição do desconto
+
 # 1.3.5
 * Fix: Correção no registro do desconto
 
