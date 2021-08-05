@@ -188,7 +188,7 @@ class Pix {
 	 *
 	 * @return void
 	 */
-    public static function updateWebhook($gateway) {
+    public static function updateWebhook($gateway, $pix_key) {
         $url = WC()->api_request_url('pix');
 
         // Remove /pix/ porque será adicionado pela gerencianet na chamada do webhook
@@ -200,7 +200,6 @@ class Pix {
         }
         else {
             $credential = Pix::get_gn_api_credentials($gateway->gnIntegration->get_gn_api_credentials());
-            $pix_key = $gateway->pix_key;
             $skip_mtls = ($gateway->pix_mtls == 'yes') ? 'false' : 'true'; // Precisa ser string
 
             $gnApi = $gateway->gnIntegration->update_webhook($credential, $pix_key, $skip_mtls, $url);

@@ -216,7 +216,7 @@ class WC_Gerencianet_Oficial_Gateway extends WC_Payment_Gateway
     public function on_update_options() {
         $this->save_pix_cert_db();
         $this->save_pix_cert_dir();
-        Pix::updateWebhook($this);
+        Pix::updateWebhook($this, $this->get_option('pix_key'));
     }
 
 	public function save_pix_cert_db()
