@@ -11,9 +11,8 @@ class Pix {
      *
      * @return string
      */
-    public static function woocommerce_gerencianet_pay_pix($typecheck, $order_id, $charge_id, $cpf_cnpj) {
-        $pix = new Pix();
-        return $pix->gerencianet_pay_pix($typecheck, $order_id, $charge_id, $cpf_cnpj);
+    public static function woocommerce_gerencianet_pay_pix() {
+        echo self::gerencianet_pay_pix('checkout_page', null, null);
         die();
     }
 
@@ -41,7 +40,7 @@ class Pix {
      *
      * @return string
      */
-    public function gerencianet_pay_pix($checkout_type, $order_id, $charge_id, $cpf_cnpj = null) {
+    public static function gerencianet_pay_pix($checkout_type, $order_id, $charge_id, $cpf_cnpj = null) {
         if (count($_POST) < 1) {
             $errorResponse = array(
                 'message' => __('An error occurred during your request. Please, try again.', WCGerencianetOficial::getTextDomain())
@@ -58,7 +57,8 @@ class Pix {
         $gateway = new WC_Gerencianet_Oficial_Gateway();
 
         //get order data
-        $order = wc_get_order($order_id);
+        $post_order_id = isset($arrayDadosPost['order_id']) ? $arrayDadosPost['order_id'] : $order_id;
+        $order = wc_get_order($post_order_id);
         $full_name = $order->get_formatted_billing_full_name();
 
         $totalOrder = strval($gateway->calculatePixDiscount());
@@ -81,7 +81,7 @@ class Pix {
                 ],
                 [
                     "nome" => "Número do Pedido",
-                    "valor" => "#".$order_id
+                    "valor" => "#".$post_order_id
                 ]
             ]
         ];
@@ -93,7 +93,7 @@ class Pix {
 		if (isset($resultCheck['txid']) && isset($resultCheck['loc']['id'])) {
             $gnApiQrCode = $gateway->gnIntegration->generate_qrcode($credential, $resultCheck['loc']['id']);
             $resultQrCode = json_decode($gnApiQrCode, true);
-            $resultCheck['charge_id'] = $order_id;
+            $resultCheck['charge_id'] = $post_order_id; // ---------------------------------------------------- MUDAR PARA ORDER_ID
 
             if(isset($resultQrCode['imagemQrcode'])) {
                 $resultCheck['imagemQrcode'] = $resultQrCode['imagemQrcode'];
@@ -105,7 +105,7 @@ class Pix {
     				$wpdb->insert($wpdb->prefix . 'woocommerce_order_items', array(
     					'order_item_name' => __('Discount of ', WCGerencianetOficial::getTextDomain()) . str_replace(".", ",", $gateway->discountPix) . __('% Pix', WCGerencianetOficial::getTextDomain()),
     					'order_item_type' => 'fee',
-    					'order_id' => intval($order_id)
+    					'order_id' => intval($post_order_id)
     				));
     				$lastid = $wpdb->insert_id;
 
@@ -133,14 +133,14 @@ class Pix {
     					'meta_value'    => '0'
     				));
 
-    				update_post_meta(intval($order_id), '_order_total', number_format(intval(ceil($gateway->gn_price_format($totalOrder))) / 100, 2, '.', ''));
-    				update_post_meta(intval($order_id), '_payment_method_title', sanitize_text_field(__('Pix - Gerencianet', WCGerencianetOficial::getTextDomain())));
-    				add_post_meta(intval($order_id), 'pix_qr', $resultQrCode['imagemQrcode'], true);
-                    add_post_meta(intval($order_id), 'pix_qr_copy', $resultQrCode['qrcode'], true); 
-                    add_post_meta(intval($order_id), 'txid', $resultCheck['txid'], true);
+    				update_post_meta(intval($post_order_id), '_order_total', number_format(intval(ceil($gateway->gn_price_format($totalOrder))) / 100, 2, '.', ''));
+    				update_post_meta(intval($post_order_id), '_payment_method_title', sanitize_text_field(__('Pix - Gerencianet', WCGerencianetOficial::getTextDomain())));
+    				add_post_meta(intval($post_order_id), 'pix_qr', $resultQrCode['imagemQrcode'], true);
+                    add_post_meta(intval($post_order_id), 'pix_qr_copy', $resultQrCode['qrcode'], true); 
+                    add_post_meta(intval($post_order_id), 'txid', $resultCheck['txid'], true);
     			}
     			$order->update_status('on-hold', __('Waiting'));
-    			wc_reduce_stock_levels($order_id);    			
+    			wc_reduce_stock_levels($post_order_id);    			
                 WC()->cart->empty_cart();
             }
             else {
