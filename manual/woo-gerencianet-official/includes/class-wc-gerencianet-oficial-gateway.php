@@ -140,87 +140,86 @@ class WC_Gerencianet_Oficial_Gateway extends WC_Payment_Gateway
 		$this->admin_notices();
 	}
 
-//REEMBOLSO
-		public function process_refund( $order_id, $amount = null, $reason = ''  ) {
-			$order = new WC_Order( $order_id );
+	//REEMBOLSO
+	public function process_refund( $order_id, $amount = null, $reason = ''  ) {
+		$order = new WC_Order( $order_id );
 
-			if ( ! $order ) {
-				// echo '<div class="error"><p>' . __('Order not found.', WCGerencianetOficial::getTextDomain()) . '</p></div>';
-				error_log("GERENCIANET: Pedido não encontrado");
-				return false;
-			}
-
-			$e2eid = get_post_meta($order->get_id(), 'endToEndId', true);
-			$apiID = get_post_meta($order->get_id(), 'charge_id', true);
-			
-			if(isset($e2eid) && $e2eid != ""){
-
-				if ( ! is_null( $amount ) ) {
-					// $symb = array(",", ".");
-					$value = str_replace(",", ".", $amount);
-				}
-
-				error_log( "GERENCIANET: Beginning refund for PIX order {$e2eid} for the amount of {$value}" );
-				$gnGateway = new WC_Gerencianet_Oficial_Gateway();
-				$params = [
-					'e2eId' => $e2eid,
-					'id'    => $gnGateway->generateRandomId()
-				];
-
-				$body = [
-					'valor' => $value
-				];
-				$options = Pix::get_gn_api_credentials($gnGateway->gnIntegration->get_gn_api_credentials());
-				try {
-					$api = Gerencianet::getInstance($options);
-					$pix = $api->pixDevolution($params, $body);
-					error_log(json_encode($pix, JSON_PRETTY_PRINT));
-					error_log("GERENCIANET: Devolução concluída com sucesso!");
-					return true;
-				} catch (GerencianetException $e) {
-					error_log($e->code);
-					error_log($e->error);
-					error_log($e->errorDescription);
-					error_log("GERENCIANET: Falha ao realizar a devolução.");
-					return false;
-					throw new Error($e->error);
-				} catch (Exception $e) {
-					throw new Error($e->getMessage());
-					return false;
-				}
-			}else if(isset($apiID)){
-				error_log( "GERENCIANET: Tentativa de reembolso via API BOLETOS/CARTÃO pedido {$apiID} valor {$amount}" );
-				error_log("GERENCIANET: Não é possível realizar reembolso automático para boletos ou cartões. Entre em contato com a Gerencianet.");
-				return false;
-			}else{
-				error_log("GERENCIANET: Não foi encontrado E2EID ou CHARGE_ID nesse pedido.");
-				error_log("GERENCIANET: Esse pedido pode ter sido pago em outra instituição de pagamento.");
-				return false;
-			}
-
-
+		if ( ! $order ) {
+			// echo '<div class="error"><p>' . __('Order not found.', WCGerencianetOficial::getTextDomain()) . '</p></div>';
+			error_log("GERENCIANET: Pedido não encontrado");
+			return false;
 		}
+
+		$e2eid = get_post_meta($order->get_id(), 'endToEndId', true);
+		$apiID = get_post_meta($order->get_id(), 'charge_id', true);
+		
+		if(isset($e2eid) && $e2eid != ""){
+
+			if ( ! is_null( $amount ) ) {
+				// $symb = array(",", ".");
+				$value = str_replace(",", ".", $amount);
+			}
+
+			error_log( "GERENCIANET: Beginning refund for PIX order {$e2eid} for the amount of {$value}" );
+			$gnGateway = new WC_Gerencianet_Oficial_Gateway();
+			$params = [
+				'e2eId' => $e2eid,
+				'id'    => $gnGateway->generateRandomId()
+			];
+
+			$body = [
+				'valor' => $value
+			];
+			$options = Pix::get_gn_api_credentials($gnGateway->gnIntegration->get_gn_api_credentials());
+			try {
+				$api = Gerencianet::getInstance($options);
+				$pix = $api->pixDevolution($params, $body);
+				error_log(json_encode($pix, JSON_PRETTY_PRINT));
+				error_log("GERENCIANET: Devolução concluída com sucesso!");
+				return true;
+			} catch (GerencianetException $e) {
+				error_log($e->code);
+				error_log($e->error);
+				error_log($e->errorDescription);
+				error_log("GERENCIANET: Falha ao realizar a devolução.");
+				return false;
+				throw new Error($e->error);
+			} catch (Exception $e) {
+				throw new Error($e->getMessage());
+				return false;
+			}
+		}else if(isset($apiID)){
+			error_log( "GERENCIANET: Tentativa de reembolso via API BOLETOS/CARTÃO pedido {$apiID} valor {$amount}" );
+			error_log("GERENCIANET: Não é possível realizar reembolso automático para boletos ou cartões. Entre em contato com a Gerencianet.");
+			return false;
+		}else{
+			error_log("GERENCIANET: Não foi encontrado E2EID ou CHARGE_ID nesse pedido.");
+			error_log("GERENCIANET: Esse pedido pode ter sido pago em outra instituição de pagamento.");
+			return false;
+		}
+
+
+	}
 
 	public function generateRandomId() {
-			$length = 6;
-			$characters = '0123456789abcdefghijklmnopqrstuvwxyzABCDEFGHIJKLMNOPQRSTUVWXYZ';
-			$charactersLength = strlen($characters);
-			$randomString = '';
-			for ($i = 0; $i < $length; $i++) {
-				$randomString .= $characters[rand(0, $charactersLength - 1)];
-			}
-			return $randomString;
+		$length = 6;
+		$characters = '0123456789abcdefghijklmnopqrstuvwxyzABCDEFGHIJKLMNOPQRSTUVWXYZ';
+		$charactersLength = strlen($characters);
+		$randomString = '';
+		for ($i = 0; $i < $length; $i++) {
+			$randomString .= $characters[rand(0, $charactersLength - 1)];
 		}
+		return $randomString;
+	}
 
 
     public function on_update_options() {
         $this->save_pix_cert_db();
         $this->save_pix_cert_dir();
-        Pix::updateWebhook($this);
+        Pix::updateWebhook($this, $this->get_option('pix_key'));
     }
 
-	public function save_pix_cert_db()
-    {
+	public function save_pix_cert_db(){
         $file_id = 'woocommerce_gerencianet_oficial_pix_file';
         $file_name = $_FILES[$file_id]['name'];
         if ($file_name) {
@@ -269,7 +268,6 @@ class WC_Gerencianet_Oficial_Gateway extends WC_Payment_Gateway
         }
     }
 
-
     //save file on temp directory
     private function save_pix_cert_dir(){
 		$pix_cert_file = $this->get_option('pix_cert_file');
@@ -308,8 +306,7 @@ class WC_Gerencianet_Oficial_Gateway extends WC_Payment_Gateway
 	 *
 	 * @return object Returns the main instance of WooCommerce class.
 	 */
-	protected function woocommerce_instance()
-	{
+	protected function woocommerce_instance(){
 		if (function_exists('WC')) {
 			return WC();
 		} else {
@@ -323,8 +320,7 @@ class WC_Gerencianet_Oficial_Gateway extends WC_Payment_Gateway
 	 *
 	 * @return void
 	 */
-	protected function admin_notices()
-	{
+	protected function admin_notices(){
 
 		if (is_admin()) {
 			// Valid for use.
@@ -419,8 +415,7 @@ class WC_Gerencianet_Oficial_Gateway extends WC_Payment_Gateway
 	 *
 	 * @return bool
 	 */
-	public function using_supported_currency()
-	{
+	public function using_supported_currency(){
 		return ('BRL' == get_woocommerce_currency());
 	}
 
@@ -431,8 +426,7 @@ class WC_Gerencianet_Oficial_Gateway extends WC_Payment_Gateway
 	 *
 	 * @return bool
 	 */
-	public function is_available()
-	{
+	public function is_available(){
 		// Check if all required credentials and configurations are defined to sucessfully active the module
 		$available = ('yes' == $this->settings['enabled']) && $this->using_supported_currency() && !empty($this->payee_code) && !empty($this->client_id_production) && !empty($this->client_secret_production) && !empty($this->client_id_development) && !empty($this->client_secret_development);
 
@@ -446,8 +440,7 @@ class WC_Gerencianet_Oficial_Gateway extends WC_Payment_Gateway
 	 *
 	 * @return int Formated price
 	 */
-	public function gn_price_format($value)
-	{
+	public function gn_price_format($value){
 
 		$value = number_format($value, 2, "", "");
 
@@ -459,8 +452,7 @@ class WC_Gerencianet_Oficial_Gateway extends WC_Payment_Gateway
 	 *
 	 * @return void
 	 */
-	public function scripts()
-	{
+	public function scripts(){
 		$jquery = 'jquery';
 		if ($this->osc) {
 			wp_deregister_script('jquery');
@@ -490,8 +482,7 @@ class WC_Gerencianet_Oficial_Gateway extends WC_Payment_Gateway
 	 *
 	 * @return void
 	 */
-	public function styles()
-	{
+	public function styles(){
 		//save certificate in dir path
 		$this->save_pix_cert_dir();
 		wp_enqueue_style('wc-gerencianet-checkout', plugins_url('assets/css/checkout.css', plugin_dir_path(__FILE__)), array(), '', 'all');
@@ -500,8 +491,7 @@ class WC_Gerencianet_Oficial_Gateway extends WC_Payment_Gateway
 	/**
 	 * Admin Panel Options.
 	 */
-	public function admin_options()
-	{
+	public function admin_options(){
 		wp_enqueue_style('wc-gerencianet-checkout', plugins_url('assets/css/admin.css', plugin_dir_path(__FILE__)), array(), '', 'all');
 		wp_enqueue_script('wc-gerencianet', plugins_url('assets/js/admin.min.js', plugin_dir_path(__FILE__)), array('jquery'), '', true);
 		wp_enqueue_script('jquery');
@@ -534,8 +524,7 @@ class WC_Gerencianet_Oficial_Gateway extends WC_Payment_Gateway
 	 *
 	 * @return void
 	 */
-	public function init_form_fields()
-	{
+	public function init_form_fields(){
 
 		$this->form_fields = array(
 			'enabled'                   => array(
@@ -803,18 +792,11 @@ class WC_Gerencianet_Oficial_Gateway extends WC_Payment_Gateway
 	 *
 	 * @return string
 	 */
-	public function add_error($message)
-	{
+	public function add_error($message){
 		wc_add_notice($message, 'error');
 	}
 
-	/**
-	 * Request Gerencianet API Installments.
-	 *
-	 * @return string
-	 */
-	public function gerencianet_validate_credentials()
-	{
+	public function gerencianet_validate_credentials(){
 
 		$gnApiResult = $this->gnIntegration->validate_credentials($_POST['client_id'], $_POST['client_secret'], $_POST['mode']);
 
@@ -826,8 +808,7 @@ class WC_Gerencianet_Oficial_Gateway extends WC_Payment_Gateway
 	 *
 	 * @return string
 	 */
-	public function gerencianet_get_installments()
-	{
+	public function gerencianet_get_installments(){
 
 		$post_order_id = sanitize_text_field($_POST['order_id']);
 		$post_brand    = sanitize_text_field($_POST['brand']);
@@ -1843,7 +1824,7 @@ class WC_Gerencianet_Oficial_Gateway extends WC_Payment_Gateway
 
 		$pay_charge = ($method_payment !== 'pix')
             ? $this->{$functionCall}('OSC', $order_id, $charge_id)
-            : Pix::woocommerce_gerencianet_pay_pix('OSC', $order_id, $charge_id, $cpf_cnpj);
+            : Pix::gerencianet_pay_pix('OSC', $order_id, $charge_id, $cpf_cnpj);
 
 		$resultCheckPay = array();
 		$resultCheckPay = json_decode($pay_charge, true);
