@@ -1,3 +1,9 @@
+# 1.3.8
+* Fix: Correção compra two steps
+
+# 1.3.7 
+* Fix: Correção de chave no Webhook
+
 # 1.3.6
 * Fix: Correção na exibição do desconto
 
