@@ -1300,7 +1300,7 @@ jQuery(document).ready(function($) {
         var data = {
             action: "woocommerce_gerencianet_get_installments",
             security: "woocommerce_gerencianet",
-            order_id: order_id,
+            order_total: finalOrderTotal,
             brand: card_brand
         };
 
@@ -1359,10 +1359,11 @@ jQuery(document).ready(function($) {
     } ?>
 
     <div class="warning-payment" id="wc-gerencianet-messages">
-        <?php if (($card_option && $order_total_card < 500) || ($billet_option && $order_total_billet < 500)) { ?>
-        <div class="woocommerce-error"><?php echo __("To pay Boleto or Credit Card the order must have more than R$5,00. But you can pay with PIX", WCGerencianetOficial::getTextDomain()); ?></div>
+        <?php if (($card_option == "yes" && $order_total_card < 500) || ($billet_option =="yes" && $order_total_billet < 500)) { ?>
+        <div class="woocommerce-error">
+            <?php echo __("To pay Boleto or Credit Card the order must have more than R$5,00. But you can pay with PIX", WCGerencianetOficial::getTextDomain()); ?></div>
         <?php
-    	} ?>
+        } ?>
     </div>
 
     <div style="margin: 0px;">
@@ -1827,11 +1828,9 @@ jQuery(document).ready(function($) {
                                 </div>
 
                                 <script>
-                                const source = document.getElementById('gn_card_number_card');
-                                const inputHandler = function() {
+                                document.getElementById('gn_card_number_card').addEventListener('input', function() {
                                     getCardBrand(document.getElementById('gn_card_number_card').value);
-                                }
-                                source.addEventListener('input', inputHandler);
+                                });
                                 </script>
 
                                 <div class="clear"></div>
@@ -1931,6 +1930,9 @@ jQuery(document).ready(function($) {
                 </div>
                 <div style="float: right;">
                     <strong><?php echo $order_total; ?></strong>
+                    <script>
+                        var finalOrderTotal = '<?php echo$order_total; ?>';
+                    </script>
                 </div>
             </div>
         </div>
