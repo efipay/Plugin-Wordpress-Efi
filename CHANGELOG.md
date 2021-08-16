@@ -1,3 +1,6 @@
+# 1.3.9
+* Fix: Correção ao aplicar desconto
+
 # 1.3.8
 * Fix: Correção compra two steps
 

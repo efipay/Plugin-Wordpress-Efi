@@ -61,8 +61,8 @@ class Pix {
         $order = wc_get_order($post_order_id);
         $full_name = $order->get_formatted_billing_full_name();
 
-        $totalOrder = strval($gateway->calculatePixDiscount());
-        $discountPix = (float) $gateway->calculateOnlyDiscount();
+        $totalOrder = strval($gateway->calculateTotal('pix', $order->get_total(), 'total'));
+        // $discountPix = (float) $gateway->calculateTotal('pix', $order->get_total(), 'discount');
         $document = isset($cpf_cnpj) ? preg_replace('/[^0-9]/', '', $cpf_cnpj) : $arrayDadosPost['cpf_cnpj'];
         $docType = (strlen($document) == 11) ? 'cpf' : 'cnpj';
 
@@ -103,7 +103,7 @@ class Pix {
 
     			if ($order_data['status'] != 'failed' && !isset($meta_discount_value_array[0])) {
     				$wpdb->insert($wpdb->prefix . 'woocommerce_order_items', array(
-    					'order_item_name' => __('Discount of ', WCGerencianetOficial::getTextDomain()) . str_replace(".", ",", $gateway->discountPix) . __('% Pix', WCGerencianetOficial::getTextDomain()),
+    					'order_item_name' => __('Discount of ', WCGerencianetOficial::getTextDomain()) . str_replace(".", ",", $gateway->discountpix) . __('% Pix', WCGerencianetOficial::getTextDomain()),
     					'order_item_type' => 'fee',
     					'order_id' => intval($post_order_id)
     				));
@@ -118,7 +118,7 @@ class Pix {
     				$wpdb->insert($wpdb->prefix . 'woocommerce_order_itemmeta', array(
     					'order_item_id' => $lastid,
     					'meta_key'      => '_line_total',
-    					'meta_value'    => '-' . $gateway->calculateOnlyDiscount()
+    					'meta_value'    => '-' . $gateway->calculateTotal('pix', $order->get_total(), 'total')
     				));
 
     				$wpdb->insert($wpdb->prefix . 'woocommerce_order_itemmeta', array(

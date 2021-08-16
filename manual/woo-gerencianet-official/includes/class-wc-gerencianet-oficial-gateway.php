@@ -80,7 +80,7 @@ class WC_Gerencianet_Oficial_Gateway extends WC_Payment_Gateway
 		// Billet options.
 		$this->billet                   = $this->get_option('billet', 'no');
 		$this->billet_number_days       = $this->get_option('billet_number_days', '5');
-		$this->discountBillet           = floatval(preg_replace('/[^0-9.]/', '', str_replace(",", ".", $this->get_option('billet_discount', '0'))));
+		$this->discountbillet           = floatval(preg_replace('/[^0-9.]/', '', str_replace(",", ".", $this->get_option('billet_discount', '0'))));
 		$this->billet_discount_shipping = $this->get_option('billet_discount_shipping', 'total');
 		$this->instructions_line_1      = substr($this->get_option('billet_instructions_line_1', ''), 0, 90);
 		$this->instructions_line_2      = substr($this->get_option('billet_instructions_line_2', ''), 0, 90);
@@ -88,7 +88,7 @@ class WC_Gerencianet_Oficial_Gateway extends WC_Payment_Gateway
 		$this->instructions_line_4      = substr($this->get_option('billet_instructions_line_4', ''), 0, 90);
 
 		//Pix options.
-		$this->discountPix = floatval(preg_replace('/[^0-9.]/', '', str_replace(",", ".", $this->get_option('pix_discount', '0'))));
+		$this->discountpix = floatval(preg_replace('/[^0-9.]/', '', str_replace(",", ".", $this->get_option('pix_discount', '0'))));
 		$this->pix_discount_shipping = $this->get_option('pix_discount_shipping', 'total');
 		$this->pix_cert_name = $this->get_option('pix_cert_name');
 		$this->pix_cert_file = $this->get_option('pix_cert_file');
@@ -809,15 +809,17 @@ class WC_Gerencianet_Oficial_Gateway extends WC_Payment_Gateway
 	 * @return string
 	 */
 	public function gerencianet_get_installments(){
-
+		$WC = $this->woocommerce_instance();
 		$post_order_id = sanitize_text_field($_POST['order_id']);
 		$post_brand    = sanitize_text_field($_POST['brand']);
+		$order_total = (int)preg_replace("/[^0-9]/", "", $_POST['order_total']);
 
 		if ($post_order_id == "") {
-			$value    = WC()->cart->get_cart_total();
-			$shipping = WC()->cart->get_cart_shipping_total();
-			$tax      = WC()->cart->get_cart_tax();
-			$total    = ((int)preg_replace("/[^0-9]/", "", html_entity_decode($value)) + (int)preg_replace("/[^0-9]/", "", html_entity_decode($shipping)) + (int)preg_replace("/[^0-9]/", "", html_entity_decode($tax)));
+			$value    = $WC->cart->get_cart_total();
+			$shipping = $WC->cart->get_cart_shipping_total();
+			$tax      = $WC->cart->get_cart_tax();
+			// $total    = ((int)preg_replace("/[^0-9]/", "", html_entity_decode($value)) + (int)preg_replace("/[^0-9]/", "", html_entity_decode($shipping)) + (int)preg_replace("/[^0-9]/", "", html_entity_decode($tax)));
+			$total = $order_total;
 		} else {
 			$meta_discount_value_array = get_post_meta(intval($post_order_id), 'billet_discount_value');
 			if (isset($meta_discount_value_array[0])) {
@@ -1022,7 +1024,7 @@ class WC_Gerencianet_Oficial_Gateway extends WC_Payment_Gateway
 		$meta_discount_value_array = get_post_meta(intval($post_order_id), 'billet_discount_value');
 
 		if ($order->get_status() == "failed" || isset($meta_discount_value_array[0])) {
-			$discountBillet     = $this->discountBillet;
+			$discountBillet     = $this->discountbillet;
 			$discountTotalValue = (int)($this->gn_price_format($order->get_total_discount()));
 			if ($this->billet_discount_shipping == "products") {
 				$discountBilletTotal = (int)floor(($this->gn_price_format($order->get_total()) - $totalShipping - $totalTax) * (((float)$discountBillet / 100)));
@@ -1030,7 +1032,7 @@ class WC_Gerencianet_Oficial_Gateway extends WC_Payment_Gateway
 				$discountBilletTotal = (int)floor(($this->gn_price_format($order->get_total())) * (((float)$discountBillet / 100)));
 			}
 		} else {
-			$discountBillet = $this->discountBillet;
+			$discountBillet = $this->discountbillet;
 			if ($this->billet_discount_shipping == "products") {
 				$discountTotalValue  = (int)($this->gn_price_format($order->get_total_discount()) + floor(($this->gn_price_format($order->get_total()) - $totalShipping - $totalTax) * (((float)$discountBillet / 100))));
 				$discountBilletTotal = (int)floor(($this->gn_price_format($order->get_total()) - $totalShipping - $totalTax) * (((float)$discountBillet / 100)));
@@ -1040,11 +1042,18 @@ class WC_Gerencianet_Oficial_Gateway extends WC_Payment_Gateway
 			}
 		}
 
+		$total_cart    = WC()->cart->get_cart_contents_total();
+		$totalShipping = WC()->cart->get_shipping_total();
+		$totalTax      = WC()->cart->get_cart_contents_tax();
+		$totalbruto = $total_cart + $totalShipping  + $totalTax;
+		$totalDesconto = $totalbruto - $order->get_total();
 
-		if ($discountTotalValue > 0) {
+		$descontofinal = $discountTotalValue + $totalDesconto*100;
+
+		if ($descontofinal > 0) {
 			$discount = array(
 				'type'  => 'currency',
-				'value' => $discountTotalValue
+				'value' => $descontofinal
 			);
 		} else {
 			$discount = null;
@@ -1236,13 +1245,21 @@ class WC_Gerencianet_Oficial_Gateway extends WC_Payment_Gateway
 		);
 
 		$order = wc_get_order($post_order_id);
+		$WC = $this->woocommerce_instance();
 
+		$total_cart    = $WC->cart->get_cart_contents_total();
+		$totalShipping = $WC->cart->get_shipping_total();
+		$totalTax      = $WC->cart->get_cart_contents_tax();
+		$totalbruto = $total_cart + $totalShipping  + $totalTax;
+		$totalDesconto = $totalbruto - $order->get_total();
 		$discountTotalValue = (int)($this->gn_price_format($order->get_total_discount()));
+		
+		$descontofinal = $discountTotalValue + $totalDesconto*100;
 
-		if ($discountTotalValue > 0) {
+		if ($descontofinal > 0) {
 			$discount = array(
 				'type'  => 'currency',
-				'value' => $discountTotalValue
+				'value' => $descontofinal
 			);
 		} else {
 			$discount = null;
@@ -1289,59 +1306,53 @@ class WC_Gerencianet_Oficial_Gateway extends WC_Payment_Gateway
 	}
 
     /**
-     * Calculate pix discount
+     * Calculate total or discount
      *
-     * @param void
-     *
+     * @param string $method_payment Aceita os valores 'billet' ou 'pix'
+     * @param float $showTotalOrder Valor total do Pedido
+	 * @param string $typeReturn Define se será retornado o valor total ou o desconto. Aceita os valores 'total' ou 'discount' ou null
      * @return float
      */
-    public function calculatePixDiscount() {
+	public function calculateTotal($method_payment, $showTotalOrder, $typeReturn = null) {
+		$functionCall = $method_payment.'_discount_shipping';
+ 		$attributeCall = 'discount'.$method_payment;
         $WC = $this->woocommerce_instance();
 
         $total_cart   = $WC->cart->get_cart_contents_total();
         $totalShipping = $WC->cart->get_shipping_total();
         $totalTax      = $WC->cart->get_cart_contents_tax();
-        $discountPix   = $this->discountPix;
+        $discountPercent   = $this->{$attributeCall};
 		$total_value = 0;
-		
-        if(isset($total_cart, $totalShipping, $totalTax, $discountPix) ) {
-            if ($this->pix_discount_shipping == 'products') {
-				$discountPixTotal = (float)($total_cart) * (((float)$discountPix / 100) );
+		$discountTotal = 0;
+
+        if(isset($total_cart, $totalShipping, $totalTax, $discountPercent) ) {
+            if ($this->{$functionCall} == 'products') {
+				$subtotal = $showTotalOrder - $totalShipping - $totalTax;
+				$discountTotal = (float)($subtotal) * (((float)$discountPercent / 100) );
 				
-				$total_value = (float)($total_cart  - $discountPixTotal + $totalShipping + $totalTax);
+				$total_value = (float)($subtotal  - $discountTotal + $totalShipping + $totalTax);
             } else {
-                $total_value = (float)($total_cart + $totalShipping + $totalTax);
-                $discountPixTotal = $total_value * (((float)$discountPix / 100));
-				$total_value = (float)($total_value  - $discountPixTotal);
+                //$total_value = (float)($total_cart + $totalShipping + $totalTax);
+                $discountTotal = $showTotalOrder * (((float)$discountPercent / 100));
+				$total_value = (float)($showTotalOrder  - $discountTotal);
             }
         } else {
             return $this->returnError('An error occurred during your request. Please, try again.');
         }
 
-        return round($total_value, 2);
-    }
-
-	public function calculateOnlyDiscount() {
-        $WC = $this->woocommerce_instance();
-
-        $total_cart   = $WC->cart->get_cart_contents_total();
-        $totalShipping = $WC->cart->get_shipping_total();
-        $totalTax      = $WC->cart->get_cart_contents_tax();
-        $discountPix   = $this->discountPix;
-		$total_value = 0;
-		
-        if(isset($total_cart, $totalShipping, $totalTax, $discountPix) ) {
-            if ($this->pix_discount_shipping == 'products') {
-				$discountPixTotal = (float)($total_cart) * (((float)$discountPix / 100) );
-            } else {
-                $total_value = (float)($total_cart + $totalShipping + $totalTax);
-                $discountPixTotal = $total_value * (((float)$discountPix / 100));
-            }
-        } else {
-            return $this->returnError('An error occurred during your request. Please, try again.');
-        }
-
-        return round($discountPixTotal, 2);
+		if($typeReturn == 'total'){
+			if($method_payment == 'billet'){
+				return $total_value*100;
+			}else{
+				return round($total_value, 2);
+			}
+		}else{
+			if($method_payment == 'billet'){
+				return $discountTotal*100;
+			}else{
+				return round($discountTotal, 2);
+			}
+		}
     }
 
 	/**
@@ -1387,7 +1398,7 @@ class WC_Gerencianet_Oficial_Gateway extends WC_Payment_Gateway
 			$totalTax = 0;
 		}
 
-		$discount                  = $this->discountBillet;
+		$discount                  = $this->discountbillet;
 		$meta_discount_value_array = get_post_meta(intval($order_id), 'billet_discount_value');
 
 		if (isset($meta_discount_value_array[0])) {
@@ -1468,8 +1479,8 @@ class WC_Gerencianet_Oficial_Gateway extends WC_Payment_Gateway
 
         // Pix options
         $gn_discount_pix = __("Discount of ", WCGerencianetOficial::getTextDomain());
-        $total_value_pix =  $this->calculatePixDiscount();
-        $discountPix =  $this->discountPix;
+        $total_value_pix =  $this->calculateTotal('pix', $order->get_total(), 'total');
+        $discountPix =  $this->discountpix;
         $totalValuePix =  $this->gnIntegration->formatCurrencyBRL($this->gn_price_format($total_value_pix));
 
 		$gn_billing_cpf_cnpj_validate       = false;
@@ -1584,7 +1595,6 @@ class WC_Gerencianet_Oficial_Gateway extends WC_Payment_Gateway
 	{
 
 		global $woocommerce, $post, $order_id;
-
 		if ($this->checkout_type == "OSC") {
 
 			$this->styles();
@@ -1648,38 +1658,34 @@ class WC_Gerencianet_Oficial_Gateway extends WC_Payment_Gateway
 				$order_total_shipping_value                 = $totalShipping;
 			} else {
 				$meta_discount_value                        = 0;
-				$order_total_tax_value                      = WC()->cart->get_cart_tax();
-				$order_total_value_without_shipping_and_tax = WC()->cart->get_cart_total();
+				$order_total_tax_value                      = WC()->cart->get_cart_contents_tax();
+				$order_total_value_without_shipping_and_tax = WC()->cart->get_total();
 				$order_total_shipping_value                 = WC()->cart->get_cart_shipping_total();
 			}
 
-			$order_total = ((int)preg_replace("/[^0-9]/", "", html_entity_decode($order_total_value_without_shipping_and_tax))) / 100 + ((int)preg_replace("/[^0-9]/", "", html_entity_decode($order_total_shipping_value))) / 100 + ((int)preg_replace("/[^0-9]/", "", html_entity_decode($order_total_tax_value))) / 100;
+			$order_total = ((int)preg_replace("/[^0-9]/", "", html_entity_decode($order_total_value_without_shipping_and_tax))) / 100;
 
 			$order_total_without_shipping = ((int)preg_replace("/[^0-9]/", "", html_entity_decode($order_total_value_without_shipping_and_tax))) / 100;
 
 			if ($meta_discount_value > 0) {
 				$discount = 0;
 			} else {
-				$discount = $this->discountBillet;
+				$discount = $this->discountbillet;
 			}
 
 			$discountBilletFormatted = str_replace(".", ",", $discount);
 
-			if ($this->billet_discount_shipping == "products") {
-				$total_order_pay_by_billet = ceil($this->gn_price_format($order_total_without_shipping) * (1 - ((float)$discount / 100)) + ((int)preg_replace("/[^0-9]/", "", html_entity_decode($order_total_shipping_value))) + ((int)preg_replace("/[^0-9]/", "", html_entity_decode($order_total_tax_value))));
-			} else {
-				$total_order_pay_by_billet = ceil($this->gn_price_format($order_total) * (1 - ((float)$discount / 100)));
-			}
+			$total_order_pay_by_billet = $this->calculateTotal('billet', $order_total, 'total');
 
 			$total_order_pay_by_card = $this->gn_price_format($order_total) + $meta_discount_value;
 			$discount_value          = $total_order_pay_by_card - $total_order_pay_by_billet;
 
             //Pix values
-            $total_value_pix = $this->calculatePixDiscount();
-            $discountPix   =  $this->discountPix;
+            $total_value_pix = $this->calculateTotal('pix', $order_total, 'total');
+            $discountPix   =  $this->discountpix;
             $discountPixFormatted = str_replace(".", ",", $discountPix);
             $totalValuePix =  $this->gnIntegration->formatCurrencyBRL($this->gn_price_format($total_value_pix));
-            $discountValuePix = (float) $this->calculateOnlyDiscount();
+            $discountValuePix = (float) $this->calculateTotal('pix', $order_total, 'discount');
             $discountValuePix = $this->gnIntegration->formatCurrencyBRL($this->gn_price_format($discountValuePix));
 
 			if (is_ajax()) {

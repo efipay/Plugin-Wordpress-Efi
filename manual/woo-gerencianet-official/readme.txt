@@ -3,17 +3,16 @@ Contributors: Gerencianet
 Tags: woocommerce, gerencianet, payment, transparent checkout, pix, Boleto, card, brazil, payments brazil
 Requires at least: 5.x
 Tested up to: 5.8
-Stable tag: 1.3.8
+Stable tag: 1.3.9
 License: GPLv2 or later
 License URI: http://www.gnu.org/licenses/gpl-2.0.html
 
 Receba pagamentos por Boleto bancário e cartão de crédito em sua loja WooCommerce com a Gerencianet.
 
-== Description ==
+== Suporte Técnico ==
+Atenção: Para agilizar o atendimento, abra um ticket informando a falha apresentada. Você pode abrir um ticket [Clicando Aqui!](https://sistema.gerencianet.com.br/tickets/criar/)
 
-O módulo Gerencianet para WooCommerce permite receber pagamentos por meio do checkout transparente da nossa API. Compatível com as versões 5.x do WooCommerce.
-
-= Descrição =
+== Descrição ==
 
 Este é o Módulo Oficial de integração fornecido pela [Gerencianet](https://gerencianet.com.br/) para WooCommerce. Com ele, o proprietário da loja pode optar por receber pagamentos por boleto bancário, cartão de crédito e/ou Pix. Todo processo é realizado por meio do checkout transparente. Com isso, o comprador não precisa sair do site da loja para efetuar o pagamento.
 
@@ -21,7 +20,7 @@ Caso você tenha alguma dúvida ou sugestão, entre em contato conosco pelo site
 
 = Requisitos =
 
-* Versão do PHP: 7.x
+* Versão do PHP: 7.x ou 8.x
 * Versão do WooCommerce: 5.x
 * Versão do WordPress: 5.x
 
@@ -56,6 +55,9 @@ Caso você tenha alguma dúvida ou sugestão, entre em contato conosco pelo site
 10. Recomendamos que antes de disponibilizar pagamentos pela Gerencianet, o lojista realize testes de cobrança com o sandbox(ambiente de testes) ativado para verificar se o procedimento de pagamento está acontecendo conforme esperado.
 
 = Changelog =
+
+= 1.3.9 =
+* Fix: Correção ao aplicar desconto
 
 = 1.3.8 = 
 * Fix: Correção compra two steps
@@ -108,116 +110,3 @@ Caso você tenha alguma dúvida ou sugestão, entre em contato conosco pelo site
 * Melhoria na tradução
 * Ajuste nos textos exibidos no checkout
 * Remoção consumo desnecessário updateWebhook
-
-= 1.1.1 =
-* Correção na converção do certificado
-* Melhoria na exibição de falhas da conversão
-
-= 1.1.0 =
-* Adicionado suporte ao certificado em formato .p12
-* Melhoria Pix copia e cola, botão adicionado
-* Identificando bandeira do cartão pelo número
-* Novo arquivo de tradução gerado
-* Correção chamada de textos localizados/traduzidos
-* Correção cobrança do frete no PIX
-
-= 1.0.2 =
-* Exibir linha "Copia e Cola" do Pix
-* Descrição da cobrança com nome da loja e número do pedido no PSP que ler o Qr Code.
-* Correção de alerta de pagamentos desabilitados.
-* Ícone Pix adicionado na página de checkout.
-* Melhorias na tradução.
-
-= 1.0.1 =
-* Remoção de mensagem de contestação em pagamentos via cartão de crédito
-
-= 1.0.0 =
-* Adição da funcionalidade Pix.
-* Atualização das versões das dependências.
-
-= 0.7.3 =
-* Add: Realiza verificação da versão do TLS do servidor.
-
-= 0.7.2 =
-* Fix: Erro na máscara de Telefone.
-
-= 0.7.1 =
-* Fix: Erro na máscara de CPF/CNPJ no checkout em um passo do plugin.
-* Fix: Atualização no link do boleto gerado, agora o link encaminha para um PDF.
-
-= 0.7.0 =
-* Delete: Bandeiras jcb, aura e discover do checkout da Gerencianet.
-* Add: Bandeira hipertcard no checkout da Gerencianet.
-* Fix: Layout quebrado da tela de checkout tradicional da Gerencianet.
-
-= 0.6.4 =
-* Fix: Layout quebrado nos campos de detalhes da cobrança.
-
-= 0.6.3 =
-* Add: Internacionalization and translation template.
-
-= 0.6.2 =
-* Fix: Erro na máscara de CPF/CNPJ no checkout em um passo do plugin.
-
-= 0.6.1 =
-* Fix: Erros ao carregar objeto jquery da Gerencianet no checkout.
-
-= 0.6.0 =
-* Fix: Compatibilidade do módulo com WooCommerce 3.x e PHP 7.x
-* Add: Atualização da identidade visual da Gerencianet.
-
-= 0.5.3 =
-* Fix: Layout quebrado da tela de checkout em um passo.
-* Fix: Preenchimento automático de campos em compras exclusivas para Pessoa Física ou compras exlusivas para Pessoa Jurídica.
-
-= 0.5.2 =
-* Fix: Considera impostos do WooCommerce no boleto Gerencianet.
-* Fix: Retira obrigatoriedade do campo referente a CPF nas compras de Pessoal Jurídica.
-
-= 0.5.1 =
-* Fix: Link para pagamento da cobrança.
-
-= 0.5.0 =
-* Added: Configuração das linhas de instrução presentes no Boleto bancário.
-* Added: Opção da forma de aplicar desconto no boleto.
-
-= 0.4.4 =
-* Fix: Compatibilidade com versão 2.6.0 do WooCommerce.
-
-= 0.4.3 =
-* Fix: Correção layout responsivo.
-* Fix: Compatibilidade.
-
-= 0.4.2 =
-* Fix: Bandeira dos cartões.
-* Added: Validação da versão do PHP.
-
-= 0.4.1 =
-* Added: Opção de checkout na tela de Finalizar Compra.
-* Added: Validação de credenciais na configuração do plugin.
-
-= 0.3.1 =
-* Added: Validações antes de exibir campos no formulário de pagamento e otimização no preenchimento dos dados.
-* Fix: Máscara de campos obrigatórios.
-
-= 0.3.0 =
-* Modificação na atualização do status do pedido de acordo com o pagamento: A partir da versão 0.3.0, o status do pedido será modificado para "Aguardando" quando o cliente gerar a cobrança com cartão de crédito ou boleto bancário. Caso a configuração de atualização de status automática estiver ativa, quando o pagamento for confirmado o status do pedido será alterado para "Processando".
-
-= 0.2.3 =
-* Fix: especificações de mensagem de erros durante pagamento.
-
-= 0.2.2 =
-* Fix: correção de versão
-
-= 0.2.1 =
-* Fix: mensagens de erros durante pagamento.
-* Fix: estilos no formulário de pagamento.
-
-= 0.2.0 =
-* Fix: erros de javascript e styles; optimização de layout de pagamento via cartão de crédito.
-
-= 0.1.2 =
-* Fix: erro de compatibilidade
-
-= 0.1.1 =
-* Versão Beta disponibilizada.
