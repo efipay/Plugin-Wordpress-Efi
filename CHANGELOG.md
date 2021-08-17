@@ -1,3 +1,6 @@
+# 1.4.2
+* Fix: Correção de versão da release
+
 # 1.4.1
 * Fix: Zip atualizado
 
