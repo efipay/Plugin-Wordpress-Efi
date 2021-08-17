@@ -3,7 +3,7 @@ Contributors: Gerencianet
 Tags: woocommerce, gerencianet, payment, transparent checkout, pix, Boleto, card, brazil, payments brazil
 Requires at least: 5.x
 Tested up to: 5.8
-Stable tag: 1.3.9
+Stable tag: 1.4.1
 License: GPLv2 or later
 License URI: http://www.gnu.org/licenses/gpl-2.0.html
 

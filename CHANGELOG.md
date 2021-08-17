@@ -1,3 +1,9 @@
+# 1.4.1
+* Fix: Zip atualizado
+
+# 1.4.0
+* Fix: Correção na visualização do desconto no checkout
+
 # 1.3.9
 * Fix: Correção ao aplicar desconto
 
