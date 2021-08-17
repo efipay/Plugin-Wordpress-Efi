@@ -118,7 +118,7 @@ class Pix {
     				$wpdb->insert($wpdb->prefix . 'woocommerce_order_itemmeta', array(
     					'order_item_id' => $lastid,
     					'meta_key'      => '_line_total',
-    					'meta_value'    => '-' . $gateway->calculateTotal('pix', $order->get_total(), 'total')
+    					'meta_value'    => '-' . $gateway->calculateTotal('pix', $order->get_total(), 'discount')
     				));
 
     				$wpdb->insert($wpdb->prefix . 'woocommerce_order_itemmeta', array(

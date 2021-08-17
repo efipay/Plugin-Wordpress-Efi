@@ -1,3 +1,6 @@
+# 1.4.0
+* Fix: Correção na visualização do desconto no checkout
+
 # 1.3.9
 * Fix: Correção ao aplicar desconto
 
