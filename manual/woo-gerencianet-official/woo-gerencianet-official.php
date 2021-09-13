@@ -28,7 +28,7 @@ if (!class_exists('WCGerencianetOficial')) :
 		 *
 		 * @var string
 		 */
-		const VERSION = '1.4.2';
+		const VERSION = '1.4.3';
 
 		/**
 		 * Integration id.

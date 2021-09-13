@@ -169,40 +169,22 @@ class GerencianetIntegration {
 		}
 	}
 
-	public function pay_billet( $charge_id, $expirationDate, $customer, $instructions, $discount = false ) {
+	public function pay_billet( $charge_id, $expirationDate, $customer, $discount = false ) {
 
 		$options = GerencianetIntegration::get_gn_api_credentials();
 		$params  = array( 'id' => $charge_id );
 
 		if ( $discount ) {
-			if ( sizeof( $instructions ) == 0 ) {
 				$banking_billet = array(
 					'expire_at' => $expirationDate,
 					'customer'  => $customer,
 					'discount'  => $discount
 				);
-			} else {
-				$banking_billet = array(
-					'expire_at'    => $expirationDate,
-					'customer'     => $customer,
-					'instructions' => $instructions,
-					'discount'     => $discount
-				);
-			}
-
 		} else {
-			if ( sizeof( $instructions ) == 0 ) {
 				$banking_billet = array(
 					'expire_at' => $expirationDate,
 					'customer'  => $customer
 				);
-			} else {
-				$banking_billet = array(
-					'expire_at'    => $expirationDate,
-					'customer'     => $customer,
-					'instructions' => $instructions
-				);
-			}
 		}
 
 		$body = array(

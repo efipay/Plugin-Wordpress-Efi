@@ -82,10 +82,6 @@ class WC_Gerencianet_Oficial_Gateway extends WC_Payment_Gateway
 		$this->billet_number_days       = $this->get_option('billet_number_days', '5');
 		$this->discountbillet           = floatval(preg_replace('/[^0-9.]/', '', str_replace(",", ".", $this->get_option('billet_discount', '0'))));
 		$this->billet_discount_shipping = $this->get_option('billet_discount_shipping', 'total');
-		$this->instructions_line_1      = substr($this->get_option('billet_instructions_line_1', ''), 0, 90);
-		$this->instructions_line_2      = substr($this->get_option('billet_instructions_line_2', ''), 0, 90);
-		$this->instructions_line_3      = substr($this->get_option('billet_instructions_line_3', ''), 0, 90);
-		$this->instructions_line_4      = substr($this->get_option('billet_instructions_line_4', ''), 0, 90);
 
 		//Pix options.
 		$this->discountpix = floatval(preg_replace('/[^0-9.]/', '', str_replace(",", ".", $this->get_option('pix_discount', '0'))));
@@ -717,43 +713,6 @@ class WC_Gerencianet_Oficial_Gateway extends WC_Payment_Gateway
 				'placeholder' => '5',
 				'default'     => '5'
 			),
-			'billet_instructions_title'  => array(
-				'title'       => __('Boleto Instructions (not required)', WCGerencianetOficial::getTextDomain()),
-				'type'        => 'title',
-				'description' => '',
-			),
-			'billet_instructions_line_1' => array(
-				'title'       => __('Instructions line 1', WCGerencianetOficial::getTextDomain()),
-				'type'        => 'text',
-				'description' => __('Text of Boleto instructions. Maximum of 90 characters per line.', WCGerencianetOficial::getTextDomain()),
-				'desc_tip'    => true,
-				'placeholder' => '',
-				'default'     => ''
-			),
-			'billet_instructions_line_2' => array(
-				'title'       => __('Instructions line 2', WCGerencianetOficial::getTextDomain()),
-				'type'        => 'text',
-				'description' => __('Text of Boleto instructions. Maximum of 90 characters per line.', WCGerencianetOficial::getTextDomain()),
-				'desc_tip'    => true,
-				'placeholder' => '',
-				'default'     => ''
-			),
-			'billet_instructions_line_3' => array(
-				'title'       => __('Instructions line 3', WCGerencianetOficial::getTextDomain()),
-				'type'        => 'text',
-				'description' => __('Text of Boleto instructions. Maximum of 90 characters per line.', WCGerencianetOficial::getTextDomain()),
-				'desc_tip'    => true,
-				'placeholder' => '',
-				'default'     => ''
-			),
-			'billet_instructions_line_4' => array(
-				'title'       => __('Instructions line 4', WCGerencianetOficial::getTextDomain()),
-				'type'        => 'text',
-				'description' => __('Text of Boleto instructions. Maximum of 90 characters per line.', WCGerencianetOficial::getTextDomain()),
-				'desc_tip'    => true,
-				'placeholder' => '',
-				'default'     => ''
-			),
 			'callback_section'           => array(
 				'title'       => __('Callback', WCGerencianetOficial::getTextDomain()),
 				'type'        => 'title',
@@ -1059,20 +1018,8 @@ class WC_Gerencianet_Oficial_Gateway extends WC_Payment_Gateway
 			$discount = null;
 		}
 
-		$instructionsList = array(
-			$this->instructions_line_1,
-			$this->instructions_line_2,
-			$this->instructions_line_3,
-			$this->instructions_line_4
-		);
-		$instructions     = array();
-		foreach ($instructionsList as $instruction) {
-			if ($instruction != '' && $instruction != null) {
-				array_push($instructions, $instruction);
-			}
-		}
 
-		$gnApiResult = $this->gnIntegration->pay_billet($post_charge_id, $expirationDate, $customer, $instructions, $discount);
+		$gnApiResult = $this->gnIntegration->pay_billet($post_charge_id, $expirationDate, $customer, $discount);
 
 		$resultCheck = array();
 		$resultCheck = json_decode($gnApiResult, true);
@@ -1337,7 +1284,7 @@ class WC_Gerencianet_Oficial_Gateway extends WC_Payment_Gateway
 				$total_value = (float)($showTotalOrder  - $discountTotal);
             }
         } else {
-            return $this->returnError('An error occurred during your request. Please, try again.');
+            throw new Error('An error occurred during your request. Please, try again.');
         }
 
 		if($typeReturn == 'total'){
