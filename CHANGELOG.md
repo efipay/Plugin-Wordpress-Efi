@@ -1,3 +1,6 @@
+# 1.4.4
+* Fix: Remoção do campo instructions
+
 # 1.4.3
 * Fix: Remoção do campo instructions
 
