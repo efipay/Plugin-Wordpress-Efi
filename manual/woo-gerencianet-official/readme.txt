@@ -3,7 +3,7 @@ Contributors: Gerencianet
 Tags: woocommerce, gerencianet, payment, transparent checkout, pix, Boleto, card, brazil, payments brazil
 Requires at least: 5.x
 Tested up to: 5.8
-Stable tag: 1.4.2
+Stable tag: 1.4.3
 License: GPLv2 or later
 License URI: http://www.gnu.org/licenses/gpl-2.0.html
 
@@ -53,69 +53,3 @@ Caso você tenha alguma dúvida ou sugestão, entre em contato conosco pelo site
 8. Escolha se deseja que o plugin atualize os status dos pedidos da loja automaticamente, de acordo com as notificações de alteração do status da cobrança Gerencianet.
 9. Configure se deseja ativar o Sandbox (ambiente de testes) e Debug.
 10. Recomendamos que antes de disponibilizar pagamentos pela Gerencianet, o lojista realize testes de cobrança com o sandbox(ambiente de testes) ativado para verificar se o procedimento de pagamento está acontecendo conforme esperado.
-
-= Changelog =
-
-# 1.4.2
-* Fix: Correção de versão da release
-
-= 1.4.1 =
-* Fix: Zip atualizado
-
-= 1.4.0 =
-* Fix: Correção na exibição do desconto
-
-= 1.3.9 =
-* Fix: Correção ao aplicar desconto
-
-= 1.3.8 = 
-* Fix: Correção compra two steps
-
-= 1.3.7 = 
-* Fix: Correção de chave no Webhook
-
-= 1.3.6 = 
-* Fix: Correção na exibição do desconto
-
-= 1.3.5 =
-* Fix: Correção no registro do desconto
-
-= 1.3.4 = 
-* Fix: Melhoria na tradução
-
-= 1.3.3 =
-* Add: Compatibilidade com wordpress 5.8
-* Fix: Melhoria na tradução
-
-= 1.3.2 =
-* Fix: zip atualizado
-
-= 1.3.1 =
-* Fix: Exibição e registro dos descontos Pix
-
-= 1.3.0 =
-* Fix: Compatibilidade com PHP 8
-* Fix: Adequação de funções depreciadas
-
-= 1.2.1 =
-* Add: Ajuste do header da requisição
-* Fix: Compatibilidade com Brazilian Market on Woocommerce
-* Fix: Certificado recriado internamente
-
-= 1.2.0 =
-* Remoção da mensagem "Selecione a bandeira do cartão"
-* Correção da mensagem do label das parcelas
-* Ajuste no input do cartão
-* Correção na máscara do input cartão
-* Validar mtls desmarcado por padrão
-* Adição do endpoint de devolução do PIX
-* Adicionado campo para salvar o e2eid
-* Adicionada a funcionalidade de reembolso automátio [SOMENTE PARA PIX]
-* Ajuste de compatibilidade com o Brazilian Market on WooCommerce [SOMENTE ONE STEP CHECKOUT]
-* Correção dos dados da cobrança para o InfoAdicionais
-* Adicionada a descrição do gateway de pagamento
-* Correção de warning
-* Meios de pagamento desabilitados por padrão
-* Melhoria na tradução
-* Ajuste nos textos exibidos no checkout
-* Remoção consumo desnecessário updateWebhook
