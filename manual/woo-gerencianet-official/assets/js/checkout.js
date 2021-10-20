@@ -316,7 +316,6 @@ $gn.ready(function (checkout) {
             order_id: jQuery('input[name="wc_order_id"]').val(),
             name_corporate: jQuery('#name_corporate').val(),
             cpf_cnpj: jQuery('#cpf-cnpj').val().replace(/[^\d]+/g, ''),
-            phone_number: jQuery('#phone_number').val().replace(/[^\d]+/g, ''),
             email: jQuery('#input-payment-billet-email').val()
         };
 
@@ -362,8 +361,6 @@ $gn.ready(function (checkout) {
         }
         if ($('#name_corporate').val() == "") {
             errorMessage = 'Digite o Nome ou a Razão Social.';
-        } else if (!(verifyPhone($('#phone_number').val()))) {
-            errorMessage = 'O Telefone digitado é inválido.';
         } else if (!(verifyEmail($('#input-payment-billet-email').val()))) {
             errorMessage = 'O e-mail digitado é inválido.';
         }

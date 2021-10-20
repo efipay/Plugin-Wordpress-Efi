@@ -108,7 +108,7 @@ var home_url = "<?php echo esc_url($order_received_url); ?>";
                             </div>
 
                             <div
-                                class="required gn-row gn-billet-field <?php if ($gn_billing_cpf_cnpj_validate && $gn_billing_phone_number_validate) { ?> gn-hide <?php } ?>">
+                                class="required gn-row gn-billet-field <?php if ($gn_billing_cpf_cnpj_validate) { ?> gn-hide <?php } ?>">
                                 <div class="gn-col-2 gn-label">
                                     <label for="input-payment-billet-cpf-cnpj"
                                         class="gn-right-padding-1"><?php echo $gn_cpf_cnpj; ?></label>
@@ -120,19 +120,6 @@ var home_url = "<?php echo esc_url($order_received_url); ?>";
                                             <input type="text" name="cpf-cnpj" id="cpf-cnpj"
                                                 value="<?php echo $gn_order_cpf_cnpj; ?>"
                                                 class="form-control cpf-mask" />
-                                        </div>
-                                        <div class="gn-col-8">
-                                            <div class=" required">
-                                                <div class="gn-col-4 gn-label">
-                                                    <label class="gn-col-12 gn-right-padding-1"
-                                                        for="input-payment-billet-phone"><?php echo $gn_phone; ?></label>
-                                                </div>
-                                                <div class="gn-col-4">
-                                                    <input type="text" name="phone_number" id="phone_number"
-                                                        value="<?php echo $order->get_billing_phone(); ?>"
-                                                        class="form-control phone-mask" />
-                                                </div>
-                                            </div>
                                         </div>
                                     </div>
                                 </div>

@@ -110,8 +110,6 @@ jQuery(document).ready(function($) {
 
     if ($('#gn_billet_email').val() == "")
         $('#gn_billet_email').val($('#billing_email').val());
-    if ($('#gn_billet_phone_number').val() == "")
-        $('#gn_billet_phone_number').val($('#billing_phone').val());
 
     if ($('#gn_billet_cpf_cnpj').val() == "") {
         if ($('#billing_persontype').val() == "1" || allowedPersonType == 1) {
@@ -138,8 +136,6 @@ jQuery(document).ready(function($) {
 
     if ($('#gn_card_email').val() == "")
         $('#gn_card_email').val($('#billing_email').val());
-    if ($('#gn_card_phone_number').val() == "")
-        $('#gn_card_phone_number').val($('#billing_phone').val());
 
     if ($('#gn_card_cpf_cnpj').val() == "") {
         if ($('#billing_persontype').val() == "1" || allowedPersonType == 1) {
@@ -224,10 +220,8 @@ jQuery(document).ready(function($) {
     });
 
     $('#billing_phone').change(function() {
-        $('#gn_billet_phone_number').val($('#billing_phone').val());
         $('#gn_card_phone_number').val($('#billing_phone').val());
         applyPhoneMask();
-        validateBilletCustomerData(allowedPersonType);
         validateCardCustomerData(allowedPersonType);
     });
 
@@ -441,16 +435,6 @@ jQuery(document).ready(function($) {
                 $('#gn_billet_cpf_cnpj').addClass("gn-inputs-error");
                 showError("CPF inválido. Por favor, digite novamente.");
             }
-        }
-    });
-
-    $('#gn_billet_phone_number').change(function() {
-        if (validatePhone($('#gn_billet_phone_number').val())) {
-            $('#gn_billet_phone_number').removeClass("gn-inputs-error");
-            hideError();
-        } else {
-            $('#gn_billet_phone_number').addClass("gn-inputs-error");
-            showError("Telefone inválido. Por favor, digite novamente.");
         }
     });
 
@@ -669,13 +653,6 @@ jQuery(document).ready(function($) {
             }
         }
 
-        if (validatePhone($('#gn_billet_phone_number').val())) {
-            $('#gn_billet_phone_number').removeClass("gn-inputs-error");
-        } else {
-            $('#gn_billet_phone_number').addClass("gn-inputs-error");
-            errorMessage = "Telefone inválido. Por favor, digite novamente.";
-        }
-
         if (errorMessage != "") {
             showError(errorMessage);
             return false;
@@ -812,8 +789,7 @@ jQuery(document).ready(function($) {
         }
 
         if (((verifyCPF($('#gn_billet_cpf_cnpj').val()) && allowedPersonType != 2) ||
-                (verifyCNPJ($('#gn_billet_cpf_cnpj').val()) && allowedPersonType != 1)) &&
-            validatePhone($('#gn_billet_phone_number').val())) {
+            (verifyCNPJ($('#gn_billet_cpf_cnpj').val()) && allowedPersonType != 1))) {
             $('#gn_cpf_cnpj_phone_row').hide();
             hideError();
         } else {
@@ -1476,7 +1452,6 @@ jQuery(document).ready(function($) {
 
                     <div id="gn_cpf_cnpj_phone_row" class="required gn-osc-row gn-billet-field">
                         <div class="gn-col-12">
-
                             <div class="gn-col-3 gn-label">
                                 <label for="gn_billet_cpf_cnpj"
                                     class="document-label gn-right-padding-1"><?php echo $gn_cpf_cnpj; ?></label>
@@ -1486,19 +1461,6 @@ jQuery(document).ready(function($) {
                                 <input type="text" name="gn_billet_cpf_cnpj" id="gn_billet_cpf_cnpj" value=""
                                     class="form-control cpf-mask" />
                             </div>
-
-                            <div class=" required">
-                                <div class="gn-col-2 gn-label">
-                                    <label class="gn-right-padding-1"
-                                        for="gn_billet_phone_number"><?php echo $gn_phone; ?>
-                                    </label>
-                                </div>
-                                <div class="gn-col-3">
-                                    <input type="text" name="gn_billet_phone_number" id="gn_billet_phone_number"
-                                        value="" class="form-control phone-mask" />
-                                </div>
-                            </div>
-
                         </div>
                     </div>
 

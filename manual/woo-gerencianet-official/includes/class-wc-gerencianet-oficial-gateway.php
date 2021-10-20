@@ -934,7 +934,6 @@ class WC_Gerencianet_Oficial_Gateway extends WC_Payment_Gateway
 			$post_name_corporate = $arrayDadosPost['gn_billet_name_corporate'];
 			$post_cpf_cnpj       = preg_replace('/[^0-9]/', '', $arrayDadosPost['gn_billet_cpf_cnpj']);
 			$post_email          = sanitize_email($arrayDadosPost['gn_billet_email']);
-			$post_phone_number   = preg_replace('/[^0-9]/', '', $arrayDadosPost['gn_billet_phone_number']);
 			$post_charge_id      = $charge_id;
 		} else {
 
@@ -942,7 +941,6 @@ class WC_Gerencianet_Oficial_Gateway extends WC_Payment_Gateway
 			$post_name_corporate = $arrayDadosPost['name_corporate'];
 			$post_cpf_cnpj       = $arrayDadosPost['cpf_cnpj'];
 			$post_email          = sanitize_email($arrayDadosPost['email']);
-			$post_phone_number   = $arrayDadosPost['phone_number'];
 			$post_charge_id      = $arrayDadosPost['charge_id'];
 		}
 
@@ -953,7 +951,6 @@ class WC_Gerencianet_Oficial_Gateway extends WC_Payment_Gateway
 			);
 
 			$customer = array(
-				'phone_number'     => $post_phone_number,
 				'email'            => $post_email,
 				'juridical_person' => $juridical_data
 			);
@@ -961,7 +958,6 @@ class WC_Gerencianet_Oficial_Gateway extends WC_Payment_Gateway
 			$customer = array(
 				'name'         => $post_name_corporate,
 				'cpf'          => $post_cpf_cnpj,
-				'phone_number' => $post_phone_number,
 				'email'        => $post_email
 			);
 		}
