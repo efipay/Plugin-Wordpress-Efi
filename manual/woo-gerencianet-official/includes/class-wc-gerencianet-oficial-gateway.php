@@ -49,13 +49,13 @@ class WC_Gerencianet_Oficial_Gateway extends WC_Payment_Gateway
 		if($this->credit_card == 'yes')
 		{
 			$format_title = $this->billet_banking == 'yes' ?
-							$format_title. " or Credit Card" :
-							$format_title. "Credit Card";
+							$format_title. " ou Cartão de Crédito" :
+							$format_title. "Cartão de Crédito";
 		}
 		if($this->pix == 'yes')
 		{
 			$format_title = $this->billet_banking == 'yes' || $this->credit_card == 'yes' ?
-							$format_title. " or Pix" :
+							$format_title. " ou Pix" :
 							$format_title. "Pix";
 		}
 
