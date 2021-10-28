@@ -1,3 +1,6 @@
+# 1.4.5
+* Fix: Remoção da obrigatoriedade do telefone
+
 # 1.4.4
 * Fix: Remoção do campo instructions
 
