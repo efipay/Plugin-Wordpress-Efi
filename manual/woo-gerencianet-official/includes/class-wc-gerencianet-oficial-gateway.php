@@ -1197,12 +1197,12 @@ class WC_Gerencianet_Oficial_Gateway extends WC_Payment_Gateway
 		$totalDesconto = $totalbruto - $order->get_total();
 		$discountTotalValue = (int)($this->gn_price_format($order->get_total_discount()));
 		
-		$descontofinal = $discountTotalValue + $totalDesconto*100;
+		$descontofinal = (int)$discountTotalValue + (int)($totalDesconto*100);
 
 		if ($descontofinal > 0) {
 			$discount = array(
 				'type'  => 'currency',
-				'value' => $descontofinal
+				'value' => (int)($descontofinal)
 			);
 		} else {
 			$discount = null;
