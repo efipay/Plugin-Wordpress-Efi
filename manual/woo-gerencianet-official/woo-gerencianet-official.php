@@ -5,7 +5,7 @@
  * Description: Gateway de pagamento Gerencianet para WooCommerce.
  * Author: Gerencianet
  * Author URI: http://www.gerencianet.com.br
- * Version: 1.4.4
+ * Version: 1.4.5
  * License: GPLv2 or later
  * Text Domain: woo-gerencianet-official
  * Domain Path: /languages
@@ -28,7 +28,7 @@ if (!class_exists('WCGerencianetOficial')) :
 		 *
 		 * @var string
 		 */
-		const VERSION = '1.4.4';
+		const VERSION = '1.4.5';
 
 		/**
 		 * Integration id.
