@@ -687,6 +687,13 @@ class WC_Gerencianet_Oficial_Gateway extends WC_Payment_Gateway
 				'type'        => 'title',
 				'description' => '',
 			),
+			'billet_unpaid'          	=> array(
+				'title'   => __('Cancel unpaid Boletos?', WCGerencianetOficial::getTextDomain()),
+				'type'    => 'checkbox',
+				'label'   => __('Enable cancellation of unpaid Boletos', WCGerencianetOficial::getTextDomain()),
+				'description' => __('When enabled, cancels all Boletos that have not been paid. Preventing the customer from paying the Boleto after the due date.', WCGerencianetOficial::getTextDomain()),
+				'default' => 'no'
+			),
 			'billet_discount'    		 => array(
 				'title'       => __('Boleto discount', WCGerencianetOficial::getTextDomain()),
 				'type'        => 'text',
@@ -1912,6 +1919,7 @@ class WC_Gerencianet_Oficial_Gateway extends WC_Payment_Gateway
 				foreach ($notification->data as $notification_data) {
 					$orderIdFromNotification     = $notification_data->custom_id;
 					$orderStatusFromNotification = $notification_data->status->current;
+					$gerencianetChargeId = $notification_data->identifiers->charge_id;
 				}
 
 				$order = wc_get_order($orderIdFromNotification);
@@ -1919,20 +1927,25 @@ class WC_Gerencianet_Oficial_Gateway extends WC_Payment_Gateway
 				if ($this->callback == 'yes') {
 					switch ($orderStatusFromNotification) {
 						case 'paid':
-							$order->update_status('processing', __('Paid '));
+							$order->update_status('processing', __('Paid ', WCGerencianetOficial::getTextDomain()));
 							$order->payment_complete();
 							break;
 						case 'unpaid':
-							$order->update_status('failed', __('Unpaid  '));
+							$order->update_status('failed', __('Unpaid  ', WCGerencianetOficial::getTextDomain()));
+
+							if($this->get_option('billet_unpaid') == 'yes' ){
+								$this->gnIntegration->cancel_charge($gerencianetChargeId);
+							}
+
 							break;
 						case 'refunded':
-							$order->update_status('failed', __('Refunded '));
+							$order->update_status('refund', __('Refunded ', WCGerencianetOficial::getTextDomain()));
 							break;
 						case 'contested':
-							$order->update_status('failed', __('Contested '));
+							$order->update_status('failed', __('Contested ', WCGerencianetOficial::getTextDomain()));
 							break;
 						case 'canceled':
-							$order->update_status('cancelled', __('Canceled '));
+							$order->update_status('cancelled', __('Canceled ', WCGerencianetOficial::getTextDomain()));
 							break;
 						default:
 							//no action
