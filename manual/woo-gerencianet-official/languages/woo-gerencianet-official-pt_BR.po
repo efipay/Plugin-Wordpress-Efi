@@ -58,6 +58,18 @@ msgstr "Cancelar pedido &amp; limpar carrinho"
 msgid "This payment will be processed by Gerencianet Payments."
 msgstr "Este pagamento será processado pela Gerencianet Pagamentos."
 
+#: includes/class-wc-gerencianet-oficial-gateway.php:691
+msgid "Cancel unpaid Boletos?"
+msgstr "Cancelar Boletos inadimplentes?"
+
+#: includes/class-wc-gerencianet-oficial-gateway.php:693
+msgid "Enable cancellation of unpaid Boletos"
+msgstr "Habilitar cancelamento de Boletos inadimplentes"
+
+#: includes/class-wc-gerencianet-oficial-gateway.php:694
+msgid "When enabled, cancels all Boletos that have not been paid. Preventing the customer from paying the Boleto after the due date."
+msgstr "Quando ativado, cancela todos os boletos que não foram pagos. Evitando que o cliente pague o boleto após o vencimento."
+
 #: includes/class-wc-gerencianet-oficial-gateway.php:1803
 msgid "Click here to see the Boleto"
 msgstr "Clique aqui para ver o boleto"
