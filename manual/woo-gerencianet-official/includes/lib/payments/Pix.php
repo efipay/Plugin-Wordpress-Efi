@@ -242,7 +242,6 @@ class Pix {
 	 * @return void
 	 */
 	public static function successful_webhook($posted) {
-
         // Percorre lista de notificações
         foreach($posted->pix as &$order_notify) {
             $args = array(
@@ -253,15 +252,20 @@ class Pix {
                 'meta_compare' => '=',
                 'meta_value' => $order_notify->txid
             );
-
+            
             // Busca pedidos
             $orders = wc_get_orders($args);
-
+            
             // Atualiza status
             foreach($orders as &$order) {
                 add_post_meta(intval($order->get_id()), 'endToEndId', $order_notify->endToEndId, true);
-                $order->update_status('processing', __('Paid'));
-                $order->payment_complete();
+
+                if(isset($order_notify->devolucoes)){
+                    $order->update_status('refund');
+                }else{
+                    $order->update_status('processing', __('Paid'));
+                    $order->payment_complete();
+                }
             }
         }
 

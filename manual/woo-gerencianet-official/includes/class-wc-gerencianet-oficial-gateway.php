@@ -170,6 +170,7 @@ class WC_Gerencianet_Oficial_Gateway extends WC_Payment_Gateway
 			try {
 				$api = Gerencianet::getInstance($options);
 				$pix = $api->pixDevolution($params, $body);
+				$order->update_status('refund');
 				error_log(json_encode($pix, JSON_PRETTY_PRINT));
 				error_log("GERENCIANET: Devolução concluída com sucesso!");
 				return true;
@@ -1848,7 +1849,6 @@ class WC_Gerencianet_Oficial_Gateway extends WC_Payment_Gateway
         $qrcode = get_post_meta($order_id, 'pix_qr', true);
 		$pixCopiaCola = get_post_meta($order_id, 'pix_qr_copy', true); 
 		$generated_payment_type = sanitize_text_field($_GET['method']);
-		$charge_id = sanitize_text_field($_GET['charge_id']);
 
         $showText = array(
             'pix' => [
