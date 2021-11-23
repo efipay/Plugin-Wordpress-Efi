@@ -1036,11 +1036,14 @@ class WC_Gerencianet_Oficial_Gateway extends WC_Payment_Gateway
 				global $wpdb;
 
 				if ($order->get_status() != "failed" && !isset($meta_discount_value_array[0])) {
-					$wpdb->insert($wpdb->prefix . "woocommerce_order_items", array(
-						'order_item_name' => __('Discount of ', WCGerencianetOficial::getTextDomain()) . str_replace(".", ",", $discountBillet) . __('% Billet', WCGerencianetOficial::getTextDomain()),
-						'order_item_type' => 'fee',
-						'order_id'        => intval($post_order_id)
-					));
+					if(!is_null($discount)){
+
+						$wpdb->insert($wpdb->prefix . "woocommerce_order_items", array(
+							'order_item_name' => __('Discount of ', WCGerencianetOficial::getTextDomain()) . str_replace(".", ",", $discountBillet) . __('% Billet', WCGerencianetOficial::getTextDomain()),
+							'order_item_type' => 'fee',
+							'order_id'        => intval($post_order_id)
+						));
+					}
 					$lastid = $wpdb->insert_id;
 					$wpdb->insert($wpdb->prefix . "woocommerce_order_itemmeta", array(
 						'order_item_id' => $lastid,
