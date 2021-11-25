@@ -215,6 +215,33 @@ class GerencianetIntegration {
 		}
 	}
 
+	public function cancel_charge( $charge_id ) {
+
+		$options = GerencianetIntegration::get_gn_api_credentials();
+		$params  = array( 'id' => $charge_id );
+
+		try {
+			$api    = new Gerencianet( $options );
+			$charge = $api->cancelCharge( $params, [] );
+
+			return GerencianetIntegration::result_api( $charge, true );
+		} catch ( GerencianetException $e ) {
+			$errorResponse = array(
+				"code"    => $e->getCode(),
+				"error"   => $e->error,
+				"message" => $e->errorDescription,
+			);
+
+			return GerencianetIntegration::result_api( $errorResponse, false );
+		} catch ( Exception $e ) {
+			$errorResponse = array(
+				"message" => $e->getMessage(),
+			);
+
+			return GerencianetIntegration::result_api( $errorResponse, false );
+		}
+	}
+
     public function pay_pix($options, $body) {
         $response = false;
         try {
@@ -582,7 +609,7 @@ class GerencianetIntegration {
 	}
 
 	public static function formatCurrencyBRL( $value ) {
-		$formated = "R$" . number_format( intval( $value ) / 100, 2, ',', '.' );
+		$formated = "R$" . number_format( $value  / 100, 2, ',', '.' );
 
 		return $formated;
 	}

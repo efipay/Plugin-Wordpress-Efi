@@ -1,3 +1,8 @@
+# 1.4.6
+* Fix: Correção da exibição do desconto no boleto
+* Add: Cancelamento de cobranças inadimplentes
+* Fix: Melhoria na tradução
+
 # 1.4.5
 * Fix: Remoção da obrigatoriedade do telefone
 

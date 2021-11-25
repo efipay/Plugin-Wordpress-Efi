@@ -170,6 +170,7 @@ class WC_Gerencianet_Oficial_Gateway extends WC_Payment_Gateway
 			try {
 				$api = Gerencianet::getInstance($options);
 				$pix = $api->pixDevolution($params, $body);
+				$order->update_status('refund');
 				error_log(json_encode($pix, JSON_PRETTY_PRINT));
 				error_log("GERENCIANET: Devolução concluída com sucesso!");
 				return true;
@@ -687,6 +688,13 @@ class WC_Gerencianet_Oficial_Gateway extends WC_Payment_Gateway
 				'type'        => 'title',
 				'description' => '',
 			),
+			'billet_unpaid'          	=> array(
+				'title'   => __('Cancel unpaid Boletos?', WCGerencianetOficial::getTextDomain()),
+				'type'    => 'checkbox',
+				'label'   => __('Enable cancellation of unpaid Boletos', WCGerencianetOficial::getTextDomain()),
+				'description' => __('When enabled, cancels all Boletos that have not been paid. Preventing the customer from paying the Boleto after the due date.', WCGerencianetOficial::getTextDomain()),
+				'default' => 'no'
+			),
 			'billet_discount'    		 => array(
 				'title'       => __('Boleto discount', WCGerencianetOficial::getTextDomain()),
 				'type'        => 'text',
@@ -1028,11 +1036,14 @@ class WC_Gerencianet_Oficial_Gateway extends WC_Payment_Gateway
 				global $wpdb;
 
 				if ($order->get_status() != "failed" && !isset($meta_discount_value_array[0])) {
-					$wpdb->insert($wpdb->prefix . "woocommerce_order_items", array(
-						'order_item_name' => __('Discount of ', WCGerencianetOficial::getTextDomain()) . str_replace(".", ",", $discountBillet) . __('% Billet', WCGerencianetOficial::getTextDomain()),
-						'order_item_type' => 'fee',
-						'order_id'        => intval($post_order_id)
-					));
+					if(!is_null($discount)){
+
+						$wpdb->insert($wpdb->prefix . "woocommerce_order_items", array(
+							'order_item_name' => __('Discount of ', WCGerencianetOficial::getTextDomain()) . str_replace(".", ",", $discountBillet) . __('% Billet', WCGerencianetOficial::getTextDomain()),
+							'order_item_type' => 'fee',
+							'order_id'        => intval($post_order_id)
+						));
+					}
 					$lastid = $wpdb->insert_id;
 					$wpdb->insert($wpdb->prefix . "woocommerce_order_itemmeta", array(
 						'order_item_id' => $lastid,
@@ -1841,7 +1852,6 @@ class WC_Gerencianet_Oficial_Gateway extends WC_Payment_Gateway
         $qrcode = get_post_meta($order_id, 'pix_qr', true);
 		$pixCopiaCola = get_post_meta($order_id, 'pix_qr_copy', true); 
 		$generated_payment_type = sanitize_text_field($_GET['method']);
-		$charge_id = sanitize_text_field($_GET['charge_id']);
 
         $showText = array(
             'pix' => [
@@ -1912,6 +1922,7 @@ class WC_Gerencianet_Oficial_Gateway extends WC_Payment_Gateway
 				foreach ($notification->data as $notification_data) {
 					$orderIdFromNotification     = $notification_data->custom_id;
 					$orderStatusFromNotification = $notification_data->status->current;
+					$gerencianetChargeId = $notification_data->identifiers->charge_id;
 				}
 
 				$order = wc_get_order($orderIdFromNotification);
@@ -1919,20 +1930,25 @@ class WC_Gerencianet_Oficial_Gateway extends WC_Payment_Gateway
 				if ($this->callback == 'yes') {
 					switch ($orderStatusFromNotification) {
 						case 'paid':
-							$order->update_status('processing', __('Paid '));
+							$order->update_status('processing', __('Paid ', WCGerencianetOficial::getTextDomain()));
 							$order->payment_complete();
 							break;
 						case 'unpaid':
-							$order->update_status('failed', __('Unpaid  '));
+							$order->update_status('failed', __('Unpaid  ', WCGerencianetOficial::getTextDomain()));
+
+							if($this->get_option('billet_unpaid') == 'yes' ){
+								$this->gnIntegration->cancel_charge($gerencianetChargeId);
+							}
+
 							break;
 						case 'refunded':
-							$order->update_status('failed', __('Refunded '));
+							$order->update_status('refund', __('Refunded ', WCGerencianetOficial::getTextDomain()));
 							break;
 						case 'contested':
-							$order->update_status('failed', __('Contested '));
+							$order->update_status('failed', __('Contested ', WCGerencianetOficial::getTextDomain()));
 							break;
 						case 'canceled':
-							$order->update_status('cancelled', __('Canceled '));
+							$order->update_status('cancelled', __('Canceled ', WCGerencianetOficial::getTextDomain()));
 							break;
 						default:
 							//no action

@@ -35,13 +35,15 @@ if ( ! defined( 'ABSPATH' ) ) {
                 </div>
 
                 <div class="gn-col-10 gn-success-payment-billet-comments" style="font-size: 15px!important;">
-                    <?php echo $showText[$generated_payment_type]['content']; ?>
-
-                    <?php if ($charge_id != '') { ?>
+                    <?php echo $showText[$generated_payment_type]['content']; 
+                    
+                    if(isset($charge_id)){
+                    if ($charge_id != '') { ?>
                     <p>
                         <?php echo $gn_success_payment_charge_number; ?> <b><?php echo $charge_id; ?></b>
                     </p>
-                    <?php } ?>
+                    <?php }
+                    } ?>
                 </div>
 
             </div>
