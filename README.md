@@ -28,9 +28,9 @@ Caso você tenha alguma dúvida ou sugestão, entre em contato conosco pelo site
 3. Insira o Payee Code (Identificador de Conta) de sua conta Gerencianet. Para encontrar o Payee Code, entre em sua conta Gerencianet, acesse o menu "API" e clique em "Identificador de Conta".
 4. Configure as opções de pagamento que deseja receber: Boleto, Cartão de Crédito e/ou Pix.
 5. Caso utilize a opção de Pix:
-    1. Insira sua Chave Pix cadastrada em sua conta Gerencianet.
-    2. Insira o seu certificado (arquivo .p12 ou .pem).
-    3. Marque o campo "Validar mTLS" caso deseje utilizar a validação mTLS em seu servidor.
+   1. Insira sua Chave Pix cadastrada em sua conta Gerencianet.
+   2. Insira o seu certificado (arquivo .p12 ou .pem).
+   3. Marque o campo "Validar mTLS" caso deseje utilizar a validação mTLS em seu servidor.
 6. Defina se deseja aplicar desconto para pagamentos com Boleto, o modo de aplicar esse desconto e insira o número de dias corridos para vencimento.
 7. Defina as instruções para pagamento no Boleto em quatro linhas de até 90 caracteres cada uma. Caso essas linhas não sejam definidas pelo lojista, será exibido no boleto as instruções padrões da Gerencianet.
 8. Escolha se deseja que o plugin atualize os status dos pedidos da loja automaticamente, de acordo com as notificações de alteração do status da cobrança Gerencianet.
@@ -39,6 +39,6 @@ Caso você tenha alguma dúvida ou sugestão, entre em contato conosco pelo site
 
 ## Requisitos
 
--   Versão do PHP: 7.x
--   Versão do WooCommerce: 5.x
--   Versão do WordPress: 5.x
+- Versão do PHP: 7.x ao 8.x
+- Versão do WooCommerce: 5.x ao 6.x
+- Versão do WordPress: 5.x ao 6.x
