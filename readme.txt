@@ -1,23 +1,30 @@
-# Plugin Oficial Gerencianet para Wordpress/Woocommerce
+=== Plugin Name ===
+Contributors: Gerencianet
+Tags: woocommerce, gerencianet, payment, transparent checkout, pix, Boleto, card, brazil, payments brazil, cartão de crédito
+Requires at least: 5.x
+Tested up to: 6.1
+Stable tag: 2.0.3
+License: GPLv2 or later
+License URI: http://www.gnu.org/licenses/gpl-2.0.html
 
-Receba pagamentos por Boleto bancário, Pix e cartão de crédito em sua loja WooCommerce com a Gerencianet!
+Receba pagamentos por Boleto bancário, Pix e cartão de crédito em sua loja WooCommerce com a Gerencianet.
 
-## Suporte Técnico
+== Suporte Técnico ==
 Atenção: Para agilizar o atendimento, abra um ticket informando a falha apresentada. Você pode abrir um ticket [Clicando Aqui!](https://sistema.gerencianet.com.br/tickets/criar/)
 
-## Descrição 
+== Descrição ==
 
 Este é o Módulo Oficial de integração fornecido pela [Gerencianet](https://gerencianet.com.br/) para WooCommerce. Com ele, o proprietário da loja pode optar por receber pagamentos por boleto bancário, cartão de crédito e/ou Pix. Todo processo é realizado por meio do checkout transparente. Com isso, o comprador não precisa sair do site da loja para efetuar o pagamento.
 
 Caso você tenha alguma dúvida ou sugestão, entre em contato conosco pelo site [Gerencianet](https://gerencianet.com.br/fale-conosco/).
 
-## Requisitos
+= Requisitos =
 
 * Versão do PHP: 7.x ou 8.x
 * Versão do WooCommerce: 5.x
 * Versão do WordPress: 5.x
 
-## Instalação automática 
+= Instalação automática =
 
 1. Acesse o link em sua loja "Plugins" -> "Adicionar novo" -> No campo de busca, pesquise por "Gerencianet Oficial".
 2. Clique em "Instalar agora".
@@ -25,7 +32,7 @@ Caso você tenha alguma dúvida ou sugestão, entre em contato conosco pelo site
 5. Configure o plugin em "WooCommerce" > "Configurações" > "Finalizar Compra" > "Gerencianet" e comece a receber pagamentos.
 
 
-## Configuração 
+= Configuração = 
 
 1. Ative o plugin.
 2. Configure as credenciais de sua Aplicação Gerencianet. Para criar uma nova Aplicação, entre em sua conta Gerencianet, acesse o menu "API" e clique em "Aplicações" -> "Nova aplicação". Insira as credenciais disponíveis neste link (Client ID e Client Secret de produção e homologação) nos respectivos campos de configuração do plugin.

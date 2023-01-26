@@ -1,0 +1,506 @@
+[
+    {
+        "code": "3500000",
+        "message": "Erro interno do servidor.",
+        "solve": "Esse erro acontece quando não é possivel receber a chamada de seu servidor para processamento",
+        "endpoints": "Em todos os endpoints"
+    },
+    {
+        "code": "3500021",
+        "message": "O número de parcelas não pode ser superior a 1 para assinaturas.",
+        "solve": "Não é possivel dividir o valor da assinatura por já ser um valor recorrente",
+        "endpoints": [
+            {
+                "method": "POST",
+                "route": "/v1/charge/:id/pay"
+            },
+            {
+                "method": "POST",
+                "route": "/v1/charge/one-step"
+            }
+        ]
+    },
+    {
+        "code": "3500032",
+        "message": "O plano não pode ser removido pois possui transações associadas.",
+        "solve": "É necessario remover transações associadas aquele plano primeiramente",
+        "endpoints": [
+            {
+                "method": "DELETE",
+                "route": "/v1/plan/:id"
+            }
+        ]
+    },
+    {
+        "code": "3500038",
+        "message": "Apenas transações com status [waiting] ou [unpaid] podem ser canceladas.",
+        "solve": "Nesse caso um exemplo seria tentar cancelar uma cobrança com status paga ou o inverso, tentar pagar uma cobrança com status cancelada ou seja status finais não podem ser atualizados",
+        "endpoints": [
+            {
+                "method": "PUT",
+                "route": "/v1/charge/:id/billet"
+            },
+            {
+                "method": "PUT",
+                "route": "/v1/carnet/:id/parcel/:parcel"
+            }
+        ]
+    },
+    {
+        "code": "3500040",
+        "message": "Apenas assinaturas com status [new] ou [active] podem ser canceladas.",
+        "solve": "Verifique o status da assinatura que está tentando cancelar",
+        "endpoints": [
+            {
+                "method": "PUT",
+                "route": "/v1/subscription/:id/cancel"
+            }
+        ]
+    },
+    {
+        "code": "3500041",
+        "message": "A propriedade [repeats] deve ser maior ou igual a dois.",
+        "solve": "Verifique a propriedade repeats, pois caso pretente utilizar a propriedade com o valor igual a 1 é recomedado utilizar o titulo avulso (boleto)",
+        "endpoints": [
+            {
+                "method": "POST",
+                "route": "/v1/carnet"
+            }
+        ]
+    },
+    {
+        "code": "3500043",
+        "message": "Apenas transações com status [new],[link],[waiting] ou [unpaid] podem ser canceladas.",
+        "solve": "Verifique se o status da transação que está tentando cancelar não está em um status diferente dos mencionados",
+        "endpoints": [
+            {
+                "method": "PUT",
+                "route": "/v1/charge/:id/cancel"
+            },
+            {
+                "method": "PUT",
+                "route": "/v1/carnet/:id/parcel/:parcel/cancel"
+            }
+        ]
+    },
+    {
+        "code": "3500050",
+        "message": "Erro interno. Por favor, entre em contato com o proprietário da loja.",
+        "solve": "Verifique o seu indetificador da conta está correto",
+        "endpoints": [
+            {
+                "method": "GET",
+                "route": "/v1/installments"
+            }
+        ]
+    },
+    {
+        "code": "3500052",
+        "message": "Erro interno. Por favor, entre em contato com o proprietário da loja.",
+        "solve": "A função de callback é obrigatória.",
+        "endpoints": []
+    },
+    {
+        "code": "3500053",
+        "message": "Total inválido. Por favor, entre em contato com o proprietário da loja.",
+        "solve": "O valor total deve ser passado em inteiro por exemplo total = 1040 isso é igual a R$10,40",
+        "endpoints": []
+    },
+    {
+        "code": "3500054",
+        "message": "O campo 'bandeira do cartão' é obrigatório.",
+        "solve": "A bandeira do cartão é obrigatório",
+        "endpoints": []
+    },
+    {
+        "code": "3500056",
+        "message": "O Bandeira do cartão inválida. As opções aceitas são: Visa, Mastercard, Amex, Elo ou Hipercard.",
+        "solve": "A bandeira informada não é aceita pela Gerencianet",
+        "endpoints": []
+    },
+    {
+        "code": "3500057",
+        "message": "O campo 'Número do cartão' é obrigatório.",
+        "solve": "O numero do cartão é obrigatório.",
+        "endpoints": []
+    },
+    {
+        "code": "3500058",
+        "message": "O campo 'Número do cartão' informado é inválido.",
+        "solve": "O numero do cartão informado é inválido",
+        "endpoints": []
+    },
+    {
+        "code": "3500059",
+        "message": "O campo cvv é obrigatório.",
+        "solve": "Verifique se está sendo informado cvv",
+        "endpoints": []
+    },
+    {
+        "code": "3500060",
+        "message": "O campo 'mês de expiração' é obrigatório.",
+        "solve": "",
+        "endpoints": []
+    },
+    {
+        "code": "3500061",
+        "message": "O campo 'ano de expiração' é obrigatório.",
+        "solve": "",
+        "endpoints": []
+    },
+    {
+        "code": "3500062",
+        "message": "O campo 'mês de expiração' informado é inválido.",
+        "solve": "",
+        "endpoints": []
+    },
+    {
+        "code": "3500070",
+        "message": "Apenas cobranças com status [waiting] que não foram pagas com cartão de crédito podem ser canceladas.",
+        "solve": "Cobranças definada com metódo de pagamento cartão de crédito ficam com o status waiting durante seu processamento por isso não podem ser atualizadas",
+        "endpoints": [
+            {
+                "method": "PUT",
+                "route": "/v1/charge/:id/cancel"
+            }
+        ]
+    },
+    {
+        "code": "3500072",
+        "message": "Não foi possível finalizar sua solicitação. Por favor, entre em contato com o proprietário da loja.",
+        "solve": "Verifique se existe algum bloqueio de emissão em sua conta ou caso esteja emitindo uma cobrança com o pagamento para cartão de credito verifique se o ramo de atividade ja foi cadastrado",
+        "endpoints": [
+            {
+                "method": "PUT",
+                "route": "/v1/charge/:id/billet"
+            },
+            {
+                "method": "PUT",
+                "route": "/v1/carnet/:id/parcel/:parcel"
+            },
+            {
+                "method": "PUT",
+                "route": "/v1/plan/:id"
+            },
+            {
+                "method": "POST",
+                "route": "/v1/charge"
+            },
+            {
+                "method": "POST",
+                "route": "/v1/one-step"
+            },
+            {
+                "method": "POST",
+                "route": "/v1/carnet"
+            },
+            {
+                "method": "POST",
+                "route": "/v1/plan"
+            },
+            {
+                "method": "POST",
+                "route": "/v1/plan/:id/subscription"
+            }
+        ]
+    },
+    {
+        "code": "4600007",
+        "message": "Data de vencimento inválida. Por favor, entre em contato com o proprietário da loja.",
+        "solve": "A data do vencimento do boleto deve ser maior ou igual que a data atual.",
+        "endpoints": [
+            {
+                "method": "PUT",
+                "route": "/v1/charge/:id/billet"
+            },
+            {
+                "method": "POST",
+                "route": "/v1/charge/:id/pay"
+            },
+            {
+                "method": "POST",
+                "route": "/v1/charge/:id/link"
+            },
+            {
+                "method": "POST",
+                "route": "/v1/charge/one-step"
+            },
+            {
+                "method": "POST",
+                "route": "/v1/carnet"
+            },
+            {
+                "method": "POST",
+                "route": "/v1/subscription/:id/pay"
+            }
+        ]
+    },
+    {
+        "code": "4600035",
+        "message": "Serviço indisponível. Por favor, entre em contato com o proprietário da loja.",
+        "solve": "Entre em contato com o suporte Gerencianet",
+        "endpoints": [
+            {
+                "method": "POST",
+                "route": "/v1/charge/:id/pay"
+            },
+            {
+                "method": "POST",
+                "route": "/v1/charge/one-step"
+            },
+            {
+                "method": "POST",
+                "route": "/v1/subscription/:id/pay"
+            }
+        ]
+    },
+    {
+        "code": "4600036",
+        "message": "O valor mínimo do para pagamentos em boleto é de R$5,00. Por favor, verifique seu carrinho e tente novamente.",
+        "solve": "Verifique o valor que está tentando emitir ele deve ser superior a R$5,00",
+        "endpoints": [
+            {
+                "method": "GET",
+                "route": "/v1/installments"
+            }
+        ]
+    },
+    {
+        "code": "4600037",
+        "message": "O valor de emissão excedido. Por favor, entre em contato com o proprietário da loja.",
+        "solve": "Entre em contato com o suporte Gerencianet",
+        "endpoints": [
+            {
+                "method": "POST",
+                "route": "/v1/charge/:id/pay"
+            },
+            {
+                "method": "POST",
+                "route": "/v1/charge/one-step"
+            },
+            {
+                "method": "POST",
+                "route": "/v1/carnet"
+            },
+            {
+                "method": "POST",
+                "route": "/v1/subscription/:id/pay"
+            }
+        ]
+    },
+    {
+        "code": "4600060",
+        "message": "A data informada é inválida.",
+        "solve": "Verifique se a data não é inferior a data de hoje e está no formato yyyy-MM-dd",
+        "endpoints": [
+            {
+                "method": "PUT",
+                "route": "/v1/charge/:id/billet"
+            },
+            {
+                "method": "POST",
+                "route": "/v1/charge/:id/pay"
+            },
+            {
+                "method": "POST",
+                "route": "/v1/charge/:id/link"
+            },
+            {
+                "method": "POST",
+                "route": "/v1/charge/one-step"
+            },
+            {
+                "method": "POST",
+                "route": "/v1/carnet"
+            },
+            {
+                "method": "POST",
+                "route": "/v1/subscription/:id/pay"
+            }
+        ]
+    },
+    {
+        "code": "4600100",
+        "message": "Não foi possível validar os dados enviados. Por favor, tente novamente mais tarde.",
+        "solve": "Não foi possivel realizar a operação no momento",
+        "endpoints": "Em todos os endpoints"
+    },
+    {
+        "code": "4600142",
+        "message": "Transação não processada por conter incoerência nos dados cadastrais.",
+        "solve": "Verifique se o CPF informado está vinculado ao respectivo cliente",
+        "endpoints": [
+            {
+                "method": "POST",
+                "route": "/v1/charge/:id/pay"
+            },
+            {
+                "method": "POST",
+                "route": "/v1/charge/one-step"
+            },
+            {
+                "method": "POST",
+                "route": "/v1/carnet"
+            },
+            {
+                "method": "POST",
+                "route": "/v1/subscription/:id/pay"
+            }
+        ]
+    },
+    {
+        "code": "4600209",
+        "message": "Limite de emissões diárias excedido. Por favor, entre em contato com o proprietário da loja.",
+        "solve": "Entre em contato com o suporte Gerencianet",
+        "endpoints": [
+            {
+                "method": "POST",
+                "route": "/v1/charge/:id/pay"
+            },
+            {
+                "method": "POST",
+                "route": "/v1/charge/one-step"
+            },
+            {
+                "method": "POST",
+                "route": "/v1/carnet"
+            }
+        ]
+    },
+    {
+        "code": "4600210",
+        "message": "Não é possível emitir três cobranças idênticas. Por favor, entre em contato com o proprietário da loja.",
+        "solve": "Alterar a descrição do cobrança inserindo um ponto final por exemplo ja resolveria ou ainda alterar a data de vencimento ou o valor",
+        "endpoints": [
+            {
+                "method": "POST",
+                "route": "/v1/charge/:id/pay"
+            },
+            {
+                "method": "POST",
+                "route": "/v1/charge/one-step"
+            },
+            {
+                "method": "POST",
+                "route": "/v1/carnet"
+            },
+            {
+                "method": "POST",
+                "route": "/v1/subscription/:id/pay"
+            }
+        ]
+    },
+    {
+        "code": "4600211",
+        "message": "Limite de emissões mensais excedido. Por favor, entre em contato com o proprietário da loja.",
+        "solve": "Emissão para clientes diferentes utilizando o mesmo email ou telefone",
+        "endpoints": [
+            {
+                "method": "POST",
+                "route": "/v1/charge/:id/pay"
+            },
+            {
+                "method": "POST",
+                "route": "/v1/charge/one-step"
+            },
+            {
+                "method": "POST",
+                "route": "/v1/carnet"
+            },
+            {
+                "method": "POST",
+                "route": "/v1/subscription/:id/pay"
+            }
+        ]
+    },
+    {
+        "code": "4600222",
+        "message": "Dados do cliente inválidos. Por favor, verifique os dados e tente novamente.",
+        "solve": "Verifique se está utilizando algum dado do titular da conta para emitir a cobrança",
+        "endpoints": [
+            {
+                "method": "POST",
+                "route": "/v1/charge/:id/pay"
+            },
+            {
+                "method": "POST",
+                "route": "/v1/charge/one-step"
+            },
+            {
+                "method": "POST",
+                "route": "/v1/carnet"
+            },
+            {
+                "method": "POST",
+                "route": "/v1/subscription/:id/pay"
+            }
+        ]
+    },
+    {
+        "code": "4600224",
+        "message": "Falha na autorização. Por favor, entre em contato com o proprietário da loja.",
+        "solve": "Entre em contato com o suporte Gerencianet",
+        "endpoints": [
+            {
+                "method": "POST",
+                "route": "/v1/charge/:id/pay"
+            },
+            {
+                "method": "POST",
+                "route": "/v1/charge/one-step"
+            },
+            {
+                "method": "POST",
+                "route": "/v1/subscription/:id/pay"
+            }
+        ]
+    },
+    {
+        "code": "4600414",
+        "message": "Vencimento do boleto inválido. Entre em contato com o responsável da loja.",
+        "solve": "A data limite é em torno de 3 anos e 5 meses",
+        "endpoints": [
+            {
+                "method": "POST",
+                "route": "/v1/carnet"
+            },
+            {
+                "method": "POST",
+                "route": "/v1/charge/:id/pay"
+            },
+            {
+                "method": "POST",
+                "route": "/v1/charge/one-step"
+            }
+        ]
+    },
+    {
+        "code": "4600523",
+        "message": "O valor mínimo para o pedido é de: R$ 5,00.",
+        "solve": "Verifique se o valor total da cobranca menos o desconto é superior a R$5,00",
+        "endpoints": [
+            {
+                "method": "POST",
+                "route": "/v1/charge/:id/pay"
+            },
+            {
+                "method": "POST",
+                "route": "/v1/charge/one-step"
+            },
+            {
+                "method": "POST",
+                "route": "/v1/carnet"
+            },
+            {
+                "method": "POST",
+                "route": "/v1/subscription/:id/pay"
+            }
+        ]
+    },
+    {
+        "code": "4699999",
+        "message": "Ocorreu um erro ao tentar realizar a sua requisição. Entre em contato com o proprietário da loja.",
+        "solve": "Entre em contato com o suporte Gerencianet",
+        "endpoints": "Em todos os endpoints"
+    }
+]
