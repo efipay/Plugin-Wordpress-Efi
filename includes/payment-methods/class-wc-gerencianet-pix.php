@@ -32,8 +32,8 @@ function init_gerencianet_pix() {
 			$this->gerencianetSDK = new Gerencianet_Integration();
 
 			$discountText = '';
-			if ( $this->get_option( 'gn_pix_discount' ) != '' && $this->get_option( 'gn_pix_discount' ) != '0%' ) {
-				$discountText = ' - ' . $this->get_option( 'gn_pix_discount' ) . ' de Desconto';
+			if ( $this->get_option( 'gn_pix_discount' ) != '' && $this->get_option( 'gn_pix_discount' ) != '0' ) {
+				$discountText = ' - ' . $this->get_option( 'gn_pix_discount' ) . '% de Desconto';
 			}
 
 			// Load the settings.
@@ -75,8 +75,10 @@ function init_gerencianet_pix() {
 		}
 
 		public function savePixCertificate() {
+			
 			$file_name = $_FILES['woocommerce_WC_Gerencianet_Pix_gn_pix_file']['name'];
-			if ( $file_name == '' ) {
+
+			if ( $_FILES['woocommerce_WC_Gerencianet_Pix_gn_pix_file']['error'] != 0 ) {
 				return;
 			}
 
@@ -193,10 +195,10 @@ function init_gerencianet_pix() {
 				),
 				'gn_pix_discount'               => array(
 					'title'       => __( 'Desconto no Pix', Gerencianet_I18n::getTextDomain() ),
-					'type'        => 'text',
+					'type'        => 'number',
 					'description' => __( 'Desconto a ser aplicado para pagamentos com Pix. (Deixe em branco ou como 0 para não aplicar desconto)', Gerencianet_I18n::getTextDomain() ),
-					'placeholder' => '0%',
-					'default'     => '0%',
+					'placeholder' => '0',
+					'default'     => '0',
 				),
 				'gn_pix_discount_shipping'      => array(
 					'title'       => __( 'Modo de desconto', Gerencianet_I18n::getTextDomain() ),
@@ -210,9 +212,9 @@ function init_gerencianet_pix() {
 				),
 				'gn_pix_number_hours'           => array(
 					'title'       => __( 'Expiração do pix', Gerencianet_I18n::getTextDomain() ),
-					'type'        => 'text',
+					'type'        => 'number',
 					'description' => __( 'Em quantas horas o Pix expira depois de emitido', Gerencianet_I18n::getTextDomain() ),
-					'placeholder' => '24',
+					'placeholder' => '0',
 					'default'     => '24',
 				),
 				'gn_pix_mtls'                   => array(
@@ -285,7 +287,7 @@ function init_gerencianet_pix() {
 						$shippingTotal += $item->get_total();
 						break;
 					case 'coupon':
-						$value -= $item->get_total();
+						$value -= $item->get_discount();
 						break;
 					default:
 						$product = $item->get_product();
@@ -302,13 +304,16 @@ function init_gerencianet_pix() {
 
 				if ( $this->get_option( 'gn_pix_discount_shipping' ) == 'total' ) {
 					$discount = ( ( $value ) * ( intval( $this->get_option( 'gn_pix_discount' ) ) / 100 ) );
+					$discountMessage = ' no valor total da compra';
 				} else {
 					$discount = ( ( $value - $shippingTotal ) * ( intval( $this->get_option( 'gn_pix_discount' ) ) / 100 ) );
+					$discountMessage = ' no valor total dos produtos (frete não incluso)';
 				}
+				
 				$order_item_id = wc_add_order_item(
 					$order_id,
 					array(
-						'order_item_name' => $this->get_option( 'gn_pix_discount' ) . __( ' de desconto no Pix' ),
+						'order_item_name' => $this->get_option( 'gn_pix_discount' ) . __( '% de desconto no Pix' ).$discountMessage,
 						'order_item_type' => 'fee',
 					)
 				);
