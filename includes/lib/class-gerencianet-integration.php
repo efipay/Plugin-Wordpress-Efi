@@ -93,7 +93,7 @@ class Gerencianet_Integration {
 		}
 	}
 
-	public function one_step_billet( $order_id, $items, $shipping, $notification_url, $customer, $discount = false, $expirationDate ) {
+	public function one_step_billet( $order_id, $items, $shipping, $notification_url, $customer, $expirationDate, $discount = false ) {
 		$payment = array(
 			'banking_billet' => array(
 				'expire_at' => $expirationDate,
