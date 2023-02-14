@@ -33,8 +33,8 @@ function init_gerencianet_boleto() {
 
 			$discountText = '';
 
-			if ( $this->get_option( 'gn_billet_discount' ) != '' && $this->get_option( 'gn_billet_discount' ) != '0%' && $this->get_option( 'gn_billet_discount' ) != null ) {
-				$discountText = ' - ' . esc_html( $this->get_option( 'gn_billet_discount' ) ) . ' de Desconto';
+			if ( $this->get_option( 'gn_billet_discount' ) != '' && $this->get_option( 'gn_billet_discount' ) != '0' && $this->get_option( 'gn_billet_discount' ) != null && intval($this->get_option( 'gn_billet_discount' )) > 0) {
+				$discountText = ' - ' . esc_html( $this->get_option( 'gn_billet_discount' ) ) . '% de Desconto';
 			}
 
 			// Load the settings.
@@ -59,7 +59,6 @@ function init_gerencianet_boleto() {
 			add_action( 'woocommerce_admin_order_data_after_billing_address', array( $this, 'add_view_payment_methods' ) );
 			wp_enqueue_script( 'gn_sweetalert', GERENCIANET_OFICIAL_PLUGIN_URL . 'assets/js/sweetalert.js', array( 'jquery' ), GERENCIANET_OFICIAL_VERSION, false );
 			add_action( 'woocommerce_api_' . strtolower( GERENCIANET_BOLETO_ID ), array( $this, 'webhook' ) );
-
 		}
 
 		public function init_form_fields() {
@@ -74,28 +73,28 @@ function init_gerencianet_boleto() {
 					'title'       => __( 'Client_id Produção', Gerencianet_I18n::getTextDomain() ),
 					'type'        => 'text',
 					'description' => __( 'Por favor, insira seu Client_id. Isso é necessário para receber o pagamento.', Gerencianet_I18n::getTextDomain() ),
-					'desc_tip'    => true,
+					'desc_tip'    => false,
 					'default'     => '',
 				),
 				'gn_client_secret_production'   => array(
 					'title'       => __( 'Client_secret Produção', Gerencianet_I18n::getTextDomain() ),
 					'type'        => 'text',
 					'description' => __( 'Por favor, insira seu Client_secret. Isso é necessário para receber o pagamento.', Gerencianet_I18n::getTextDomain() ),
-					'desc_tip'    => true,
+					'desc_tip'    => false,
 					'default'     => '',
 				),
 				'gn_client_id_homologation'     => array(
 					'title'       => __( 'Client_id Homologação', Gerencianet_I18n::getTextDomain() ),
 					'type'        => 'text',
 					'description' => __( 'Por favor, insira seu Client_id de Homologação. Isso é necessário para testar os pagamentos.', Gerencianet_I18n::getTextDomain() ),
-					'desc_tip'    => true,
+					'desc_tip'    => false,
 					'default'     => '',
 				),
 				'gn_client_secret_homologation' => array(
 					'title'       => __( 'Client_secret Homologação', Gerencianet_I18n::getTextDomain() ),
 					'type'        => 'text',
 					'description' => __( 'Por favor, insira seu Client_secret de Homologação. Isso é necessário para testar os pagamentos.', Gerencianet_I18n::getTextDomain() ),
-					'desc_tip'    => true,
+					'desc_tip'    => false,
 					'default'     => '',
 				),
 				'gn_sandbox_section'            => array(
@@ -128,11 +127,11 @@ function init_gerencianet_boleto() {
 				),
 				'gn_billet_discount'            => array(
 					'title'       => __( 'Desconto no Boleto', Gerencianet_I18n::getTextDomain() ),
-					'type'        => 'text',
-					'description' => __( 'Desconto para pagamento com Boleto. (Opcional)', Gerencianet_I18n::getTextDomain() ),
-					'desc_tip'    => true,
-					'placeholder' => '0%',
-					'default'     => '0%',
+					'type'        => 'number',
+					'description' => __( 'Porcentagem de desconto para pagamento com Boleto. (Opcional)', Gerencianet_I18n::getTextDomain() ),
+					'desc_tip'    => false,
+					'placeholder' => '10',
+					'default'     => '0',
 				),
 				'gn_billet_discount_shipping'   => array(
 					'title'       => __( 'Aplicar desconto do Boleto', Gerencianet_I18n::getTextDomain() ),
@@ -146,12 +145,13 @@ function init_gerencianet_boleto() {
 				),
 				'gn_billet_number_days'         => array(
 					'title'       => __( 'Vencimento do Boleto', Gerencianet_I18n::getTextDomain() ),
-					'type'        => 'text',
+					'type'        => 'number',
 					'description' => __( 'Dias para expirar o Boleto depois de emitido.', Gerencianet_I18n::getTextDomain() ),
-					'desc_tip'    => true,
-					'placeholder' => '5',
+					'desc_tip'    => false,
+					'placeholder' => '0',
 					'default'     => '5',
 				),
+				
 			);
 		}
 
@@ -234,7 +234,7 @@ function init_gerencianet_boleto() {
 					case 'coupon':
 						$newDiscount = array(
 							'type'  => 'currency',
-							'value' => $item->get_total() * 100,
+							'value' => $item->get_discount() * 100,
 						);
 						$discount    = $newDiscount;
 						break;
@@ -286,27 +286,34 @@ function init_gerencianet_boleto() {
 						'value' => 0,
 					);
 				}
+				
+				$discount_gn = 0;
 
 				if ( $this->get_option( 'gn_billet_discount_shipping' ) == 'total' ) {
-					if ( isset( $shipping['value'] ) ) {
-						$discount['value'] += ( ( $orderTotal + $shipping['value'] ) * ( intval( $this->get_option( 'gn_billet_discount' ) ) / 100 ) );
+					$discountMessage = ' no valor total da compra';
+					if ( isset( $shipping[0]['value'] ) ) {
+					    $discount_gn = ( $orderTotal + $shipping[0]['value'] ) * ( intval( $this->get_option( 'gn_billet_discount' ) ) / 100 );
+						$discount['value'] += $discount_gn;
 					} else {
-						$discount['value'] += ( ( $orderTotal ) * ( intval( $this->get_option( 'gn_billet_discount' ) ) / 100 ) );
+					    $discount_gn = ( ( $orderTotal ) * ( intval( $this->get_option( 'gn_billet_discount' ) ) / 100 ) );
+						$discount['value'] += $discount_gn;
 					}
 				} else {
-					$discount['value'] += ( $orderTotal * ( intval( $this->get_option( 'gn_billet_discount' ) ) / 100 ) );
+					$discountMessage = ' no valor total dos produtos (frete não incluso)';
+				    $discount_gn = ( $orderTotal * ( intval( $this->get_option( 'gn_billet_discount' ) ) / 100 ) );
+					$discount['value'] += $discount_gn;
 				}
 				$order_item_id = wc_add_order_item(
 					$order_id,
 					array(
-						'order_item_name' => $this->get_option( 'gn_billet_discount' ) . __( '% desconto no boleto' ),
+						'order_item_name' => $this->get_option( 'gn_billet_discount' ) . __( '% de desconto no boleto' ).$discountMessage,
 						'order_item_type' => 'fee',
 					)
 				);
 				if ( $order_item_id ) {
-					wc_add_order_item_meta( $order_item_id, '_fee_amount', -$discount['value'] / 100, true );
-					wc_add_order_item_meta( $order_item_id, '_line_total', -$discount['value'] / 100, true );
-					$order->set_total( $order->get_total() - ( $discount['value'] / 100 ) );
+					wc_add_order_item_meta( $order_item_id, '_fee_amount', -$discount_gn / 100, true );
+					wc_add_order_item_meta( $order_item_id, '_line_total', -$discount_gn / 100, true );
+					$order->set_total( $order->get_total() - ( $discount_gn / 100 ) );
 					$order->save();
 
 				}
@@ -319,7 +326,7 @@ function init_gerencianet_boleto() {
 			}
 
 			try {
-				$response = $this->gerencianetSDK->one_step_billet( $order_id, $items, $shipping, strtolower( $woocommerce->api_request_url( GERENCIANET_BOLETO_ID ) ), $customer, $discount, $expirationDate );
+				$response = $this->gerencianetSDK->one_step_billet( $order_id, $items, $shipping, strtolower( $woocommerce->api_request_url( GERENCIANET_BOLETO_ID ) ), $customer, $expirationDate, $discount );
 				$charge   = json_decode( $response, true );
 
 				if ( isset( $charge['data']['barcode'] ) ) {
