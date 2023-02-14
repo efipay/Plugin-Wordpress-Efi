@@ -62,28 +62,28 @@ function init_gerencianet_cartao() {
 					'title'       => __( 'Client_id Produção', Gerencianet_I18n::getTextDomain() ),
 					'type'        => 'text',
 					'description' => __( 'Por favor, insira seu Client_id. Isso é necessário para receber o pagamento.', Gerencianet_I18n::getTextDomain() ),
-					'desc_tip'    => true,
+					'desc_tip'    => false,
 					'default'     => '',
 				),
 				'gn_client_secret_production'   => array(
 					'title'       => __( 'Client_secret Produção', Gerencianet_I18n::getTextDomain() ),
 					'type'        => 'text',
 					'description' => __( 'Por favor, insira seu Client_secret. Isso é necessário para receber o pagamento.', Gerencianet_I18n::getTextDomain() ),
-					'desc_tip'    => true,
+					'desc_tip'    => false,
 					'default'     => '',
 				),
 				'gn_client_id_homologation'     => array(
 					'title'       => __( 'Client_id Homologação', Gerencianet_I18n::getTextDomain() ),
 					'type'        => 'text',
 					'description' => __( 'Por favor, insira seu Client_id de Homologação. Isso é necessário para testar os pagamentos.', Gerencianet_I18n::getTextDomain() ),
-					'desc_tip'    => true,
+					'desc_tip'    => false,
 					'default'     => '',
 				),
 				'gn_client_secret_homologation' => array(
 					'title'       => __( 'Client_secret Homologação', Gerencianet_I18n::getTextDomain() ),
 					'type'        => 'text',
 					'description' => __( 'Por favor, insira seu Client_secret de Homologação. Isso é necessário para testar os pagamentos.', Gerencianet_I18n::getTextDomain() ),
-					'desc_tip'    => true,
+					'desc_tip'    => false,
 					'default'     => '',
 				),
 				'gn_sandbox_section'            => array(
@@ -111,7 +111,7 @@ function init_gerencianet_cartao() {
 					'title'       => __( 'Identificador de Conta', Gerencianet_I18n::getTextDomain() ),
 					'type'        => 'text',
 					'description' => __( 'Por favor, insira seu identificador de conta. Isso é necessário para receber os pagamentos.', Gerencianet_I18n::getTextDomain() ),
-					'desc_tip'    => true,
+					'desc_tip'    => false,
 					'default'     => '',
 				),
 			);
@@ -145,7 +145,7 @@ function init_gerencianet_cartao() {
 					</div>
 				</div>
 				<div class="form-row form-row-wide"><label><?php echo __( 'Número do Cartão', Gerencianet_I18n::getTextDomain() ); ?><span class="required">*</span></label>
-					<input id="gn_cartao_number"  name="gn_cartao_number" type="text" autocomplete="off">
+					<input id="gn_cartao_number"  name="gn_cartao_number" type="text" autocomplete="off" style="width: 100%;">
 				</div>
 				<div class="form-row form-row-first"><label>CVV<span class="required">*</span></label>
 					<input id="gn_cartao_cvv" name="gn_cartao_cvv" type="text" autocomplete="off">
@@ -156,7 +156,7 @@ function init_gerencianet_cartao() {
 				<div class="clear"></div>
 				<div class="form-row form-row-wide"><label><?php echo __( 'Parcelas', Gerencianet_I18n::getTextDomain() ); ?><span class="required">*</span></label>
 					<input id="gn_cartao_no_installments" name="gn_cartao_no_installments" type="text" value="<?php echo __( 'Por favor, insira o número do seu cartão', Gerencianet_I18n::getTextDomain() ); ?>" style="text-align: center; width: 100%;" disabled>
-					<select id="gn_cartao_installments" name="gn_cartao_installments" style="display:none;width: 100%;height: 2em;border-color: #dcd7ca;"></select>
+					<select id="gn_cartao_installments" name="gn_cartao_installments" style="display:none;width: 100%;border-color: #dcd7ca;"></select>
 				</div>
 				<input id="gn_payment_token" name="gn_payment_token" type="hidden">
 			</fieldset>
