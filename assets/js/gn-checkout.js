@@ -8,7 +8,7 @@ window.onload = function () {
 			if ($( '#gn_boleto_cpf_cnpj' )) {
 				$( '#gn_boleto_cpf_cnpj' ).keyup(
 					function () {
-						// $( '#gn_boleto_cpf_cnpj' ).val().length > 14 ? $( '#gn_boleto_cpf_cnpj' ).mask( '00.000.000/0000-00' ) : $( '#gn_boleto_cpf_cnpj' ).mask( '000.000.000-00#' );
+						$( '#gn_boleto_cpf_cnpj' ).val().length > 14 ? VMasker(document.querySelector("#gn_boleto_cpf_cnpj")).maskPattern("99.999.999/9999-99") : VMasker(document.querySelector("#gn_boleto_cpf_cnpj")).maskPattern("999.999.999-99");
 					}
 				)
 				$( '#gn_boleto_cpf_cnpj' ).blur(
@@ -28,7 +28,7 @@ window.onload = function () {
 			if ($( '#gn_pix_cpf_cnpj' )) {
 				$( '#gn_pix_cpf_cnpj' ).keyup(
 					function () {
-						// $( '#gn_pix_cpf_cnpj' ).val().length > 14 ? $( '#gn_pix_cpf_cnpj' ).mask( '00.000.000/0000-00' ) : $( '#gn_pix_cpf_cnpj' ).mask( '000.000.000-00#' );
+						$( '#gn_pix_cpf_cnpj' ).val().length > 14 ? VMasker(document.querySelector("#gn_pix_cpf_cnpj")).maskPattern("99.999.999/9999-99") : VMasker(document.querySelector("#gn_pix_cpf_cnpj")).maskPattern("999.999.999-99");
 					}
 				)
 				$( '#gn_pix_cpf_cnpj' ).blur(
@@ -48,7 +48,7 @@ window.onload = function () {
 			if ($( '#gn_cartao_cpf_cnpj' )) {
 				$( '#gn_cartao_cpf_cnpj' ).keyup(
 					function () {
-						// $( '#gn_cartao_cpf_cnpj' ).val().length > 14 ? $( '#gn_cartao_cpf_cnpj' ).mask( '00.000.000/0000-00' ) : $( '#gn_cartao_cpf_cnpj' ).mask( '000.000.000-00#' );
+						 $( '#gn_cartao_cpf_cnpj' ).val().length > 14 ? VMasker(document.querySelector("#gn_cartao_cpf_cnpj")).maskPattern("99.999.999/9999-99") : VMasker(document.querySelector("#gn_cartao_cpf_cnpj")).maskPattern("999.999.999-99");
 					}
 				)
 				$( '#gn_cartao_cpf_cnpj' ).blur(
@@ -66,7 +66,7 @@ window.onload = function () {
 			}
 
 			if ($( '#gn_cartao_birth' )) {
-				// $( '#gn_cartao_birth' ).mask( '99/99/9999', { placeholder: "__/__/____" } );
+				VMasker(document.querySelector("#gn_cartao_birth")).maskPattern("99/99/9999");
 				$( '#gn_cartao_birth' ).blur(
 					function () {
 						var date = $( '#gn_cartao_birth' ).val();
@@ -82,7 +82,7 @@ window.onload = function () {
 			}
 
 			if ($( '#gn_cartao_expiration' )) {
-				// $( '#gn_cartao_expiration' ).mask( '99/9999', { placeholder: "MM/AAAA" } );
+				VMasker(document.querySelector("#gn_cartao_expiration")).maskPattern("99/9999");
 				$( '#gn_cartao_expiration' ).blur(
 					function () {
 						var exp = $( '#gn_cartao_expiration' ).val();
@@ -98,12 +98,25 @@ window.onload = function () {
 			}
 
 			if ($( '#gn_cartao_number' )) {
-				// $( '#gn_cartao_number' ).mask( '0000 0000 0000 0000999', { placeholder: "" } );
+				VMasker(document.querySelector("#gn_cartao_number")).maskPattern("9999 9999 9999 99999");
 			}
 
 			// Esconder campos caso haja o brazillian market
 
 			if (typeof $( '#billing_cpf' ).val() !== 'undefined') {
+
+				// cpf_cnpj boleto
+				$( '#gn_boleto_cpf_cnpj' ).val( $( '#billing_cpf' ).val() )
+				$( '#gn_field_boleto' ).hide();
+
+				// cpf_cnpj cartão
+				$( '#gn_cartao_cpf_cnpj' ).val( $( '#billing_cpf' ).val() )
+				$( '#gn_field_cpf_cnpj' ).hide();
+				$( "#gn_field_birth" ).removeClass( "form-row-last" ).addClass( "form-row-wide" );
+
+				// cpf_cnpj Pix
+				$( '#gn_pix_cpf_cnpj' ).val( $( '#billing_cpf' ).val() )
+				$( '#gn_field_pix' ).hide();
 
 				$( '#billing_cpf' ).keyup(
 					function () {
@@ -114,7 +127,8 @@ window.onload = function () {
 
 						// cpf_cnpj cartão
 						$( '#gn_cartao_cpf_cnpj' ).val( $( '#billing_cpf' ).val() )
-						$( '#gn_cartao_cpf_cnpj' ).hide();
+						$( '#gn_field_cpf_cnpj' ).hide();
+						$( "#gn_field_birth" ).removeClass( "form-row-last" ).addClass( "form-row-wide" );
 
 						// cpf_cnpj Pix
 						$( '#gn_pix_cpf_cnpj' ).val( $( '#billing_cpf' ).val() )
@@ -132,7 +146,8 @@ window.onload = function () {
 
 						// cpf_cnpj cartão
 						$( '#gn_cartao_cpf_cnpj' ).val( $( '#billing_cnpj' ).val() )
-						$( '#gn_cartao_cpf_cnpj' ).hide();
+						$( '#gn_field_cpf_cnpj' ).hide();
+						$( "#gn_field_birth" ).removeClass( "form-row-last" ).addClass( "form-row-wide" );
 
 						// cpf_cnpj Pix
 						$( '#gn_pix_cpf_cnpj' ).val( $( '#billing_cnpj' ).val() )
@@ -142,16 +157,16 @@ window.onload = function () {
 			}
 
 			if (typeof $( '#billing_birthdate' ).val() !== 'undefined') {
+
+				$( '#gn_cartao_birth' ).val( $( '#billing_birthdate' ).val() )
+				$( '#gn_field_birth' ).hide();
+
 				$( '#billing_birthdate' ).keyup(
 					function () {
 						$( '#gn_cartao_birth' ).val( $( '#billing_birthdate' ).val() )
-						$( '#gn_cartao_birth' ).hide();
+						$( '#gn_field_birth' ).hide();
 					}
 				)
-			}
-
-			if ((typeof $( '#billing_cnpj' ).val() !== 'undefined' || typeof $( '#billing_cpf' ).val() !== 'undefined') && typeof $( '#billing_birthdate' ).val() !== 'undefined') {
-				$( '#gn_row_cpf_birth' ).hide()
 			}
 
 			// Bairro obrigatório
