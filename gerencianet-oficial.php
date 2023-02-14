@@ -9,7 +9,7 @@ use GN_Includes\Gerencianet_Deactivator;
  * Plugin Name:       Gerencianet Oficial
  * Plugin URI:        https://wordpress.org/plugins/woo-gerencianet-official/
  * Description:       Gateway de pagamento Gerencianet para WooCommerce
- * Version:           2.0.3
+ * Version:           2.0.4
  * Author:            Gerencianet
  * Author URI:        https://www.gerencianet.com.br
  * License:           GPL-2.0+
@@ -17,7 +17,7 @@ use GN_Includes\Gerencianet_Deactivator;
  * Text Domain:       gerencianet-oficial
  * Domain Path:       /languages
  * WC requires at least: 5.0.0
- * WC tested up to: 6.9.2
+ * WC tested up to: 7.4.0
  */
 
 // If this file is called directly, abort.
@@ -25,7 +25,7 @@ if ( ! defined( 'WPINC' ) ) {
 	die;
 }
 
-define( 'GERENCIANET_OFICIAL_VERSION', '2.0.3' );
+define( 'GERENCIANET_OFICIAL_VERSION', '2.0.4' );
 define( 'GERENCIANET_BOLETO_ID', 'WC_Gerencianet_Boleto' );
 define( 'GERENCIANET_CARTAO_ID', 'WC_Gerencianet_Cartao' );
 define( 'GERENCIANET_PIX_ID', 'WC_Gerencianet_Pix' );

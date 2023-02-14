@@ -131,9 +131,9 @@ class Gerencianet_Oficial {
 			return;
 		}
 
-		wp_register_script( 'gn-jquery-mask', plugins_url( 'assets/js/jquery.mask.js', plugin_dir_path( __FILE__ ) ), array( 'jquery' ), '1.14.16', true );
+		wp_register_script( 'gn-vmask', plugins_url( 'assets/js/vanilla-masker.min.js', plugin_dir_path( __FILE__ ) ), array( 'jquery' ), '1.1.1', true );
 
-		wp_enqueue_script( 'gn-checkout', plugins_url( 'assets/js/gn-checkout.js', plugin_dir_path( __FILE__ ) ), array( 'jquery', 'gn-jquery-mask' ), '1.0.0', true );
+		wp_enqueue_script( 'gn-checkout', plugins_url( 'assets/js/gn-checkout.js', plugin_dir_path( __FILE__ ) ), array( 'jquery', 'gn-vmask' ), '1.0.0', true );
 
 		if ( ! is_plugin_active( 'woocommerce-extra-checkout-fields-for-brazil/woocommerce-extra-checkout-fields-for-brazil.php' ) ) {
 			$wcSettings = maybe_unserialize( get_option( 'woocommerce_WC_Gerencianet_Cartao_settings' ) );
