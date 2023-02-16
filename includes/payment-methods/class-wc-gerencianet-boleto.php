@@ -160,6 +160,20 @@ function init_gerencianet_boleto() {
 				echo wpautop( wp_kses_post( $this->description ) );
 			}
 
+			if(intval( $this->get_option( 'gn_billet_discount' ) ) > 0){
+				$discountMessage = '';
+				if ( $this->get_option( 'gn_billet_discount_shipping' ) == 'total' ) {
+					$discountMessage = ' no valor total da compra (frete incluso)';
+				}else{
+					$discountMessage = ' no valor total dos produtos (frete não incluso)';
+				}
+				
+				$discountWarn = '<div class="warning-payment" id="wc-gerencianet-messages-sandbox">
+										<div class="woocommerce-info">' .esc_html( $this->get_option( 'gn_billet_discount' ) ) . '% de Desconto'.$discountMessage. '</div>
+									</div>';
+				echo wpautop( wp_kses_post( $discountWarn ) );
+			}
+			
 			$is_sandbox = $this->get_option( 'gn_sandbox' ) == 'yes' ? true : false;
 			if ( $is_sandbox ) {
 				$sandboxWarn = '<div class="warning-payment" id="wc-gerencianet-messages-sandbox">
@@ -241,11 +255,11 @@ function init_gerencianet_boleto() {
 					case 'line_item':
 						$product     = $item->get_product();
 						$newItem     = array(
-							'name'   => $item->get_name(),
+							'name'   => $product->get_name(),
 							'amount' => $item->get_quantity(),
-							'value'  => $item->get_total() * 100,
+							'value'  => $product->get_price() * 100,
 						);
-						$orderTotal += $item->get_total() * 100 * $item->get_quantity();
+						$orderTotal += $product->get_price() * 100 * $item->get_quantity();
 						$items[]     = $newItem;
 						break;
 					default:
@@ -300,17 +314,15 @@ function init_gerencianet_boleto() {
 				$discount_gn = 0;
 
 				if ( $this->get_option( 'gn_billet_discount_shipping' ) == 'total' ) {
-					$discountMessage = ' no valor total da compra';
 					if ( isset( $shipping[0]['value'] ) ) {
-					    $discount_gn = ( $orderTotal + $shipping[0]['value'] ) * ( intval( $this->get_option( 'gn_billet_discount' ) ) / 100 );
+					    $discount_gn = round(( $orderTotal + $shipping[0]['value'] ) * ( intval( $this->get_option( 'gn_billet_discount' ) ) / 100 ), 0, PHP_ROUND_HALF_UP);
 						$discount['value'] += $discount_gn;
 					} else {
-					    $discount_gn = ( ( $orderTotal ) * ( intval( $this->get_option( 'gn_billet_discount' ) ) / 100 ) );
+					    $discount_gn = round( ( $orderTotal ) * ( intval( $this->get_option( 'gn_billet_discount' ) ) / 100 ), 0, PHP_ROUND_HALF_UP );
 						$discount['value'] += $discount_gn;
 					}
 				} else {
-					$discountMessage = ' no valor total dos produtos (frete não incluso)';
-				    $discount_gn = ( $orderTotal * ( intval( $this->get_option( 'gn_billet_discount' ) ) / 100 ) );
+				    $discount_gn = round( $orderTotal * ( intval( $this->get_option( 'gn_billet_discount' ) ) / 100 ), 0, PHP_ROUND_HALF_UP );
 					$discount['value'] += $discount_gn;
 				}
 				$order_item_id = wc_add_order_item(

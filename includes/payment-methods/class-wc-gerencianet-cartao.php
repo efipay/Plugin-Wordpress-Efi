@@ -222,13 +222,12 @@ function init_gerencianet_cartao() {
 							'amount' => 1,
 							'value'  => $item->get_subtotal() * 100,
 						);
-						$orderTotal += $item->get_subtotal() * 100;
 						$items[]     = $newFee;
 						break;
 					case 'shipping':
 						if ( $item->get_total() > 0 ) {
 							$shipping[] = array(
-								'name'  => __( 'Frete', Gerencianet_I18n::getTextDomain() ),
+								'name'  => __( 'Frete', Gerencianet_I18n::getTextDomain()),
 								'value' => $item->get_total() * 100,
 							);
 						}
@@ -236,18 +235,17 @@ function init_gerencianet_cartao() {
 					case 'coupon':
 						$newDiscount = array(
 							'type'  => 'currency',
-							'value' => $item->get_total() * 100,
+							'value' => $item->get_discount() * 100,
 						);
 						$discount    = $newDiscount;
 						break;
 					case 'line_item':
 						$product     = $item->get_product();
 						$newItem     = array(
-							'name'   => $item->get_name(),
+							'name'   => $product->get_name(),
 							'amount' => $item->get_quantity(),
-							'value'  => $item->get_total() * 100,
+							'value'  => $product->get_price() * 100,
 						);
-						$orderTotal += $item->get_total() * 100 * $item->get_quantity();
 						$items[]     = $newItem;
 						break;
 					default:
@@ -257,7 +255,6 @@ function init_gerencianet_cartao() {
 							'amount' => $item->get_quantity(),
 							'value'  => $product->get_price() * 100,
 						);
-						$orderTotal += $product->get_price() * 100 * $item->get_quantity();
 						$items[]     = $newItem;
 						break;
 				}
@@ -308,7 +305,7 @@ function init_gerencianet_cartao() {
 			);
 
 			try {
-				$response = $this->gerencianetSDK->one_step_card( $order_id, $items, $shipping, strtolower( $woocommerce->api_request_url( GERENCIANET_CARTAO_ID ) ), $customer, $paymentToken, $installments, $billingAddress );
+				$response = $this->gerencianetSDK->one_step_card( $order_id, $items, $shipping, strtolower( $woocommerce->api_request_url( GERENCIANET_CARTAO_ID ) ), $customer, $paymentToken, $installments, $billingAddress, $discount );
 				$charge   = json_decode( $response, true );
 
 				$order->update_status( 'pending-payment' );
