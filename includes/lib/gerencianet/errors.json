@@ -32,6 +32,12 @@
         ]
     },
     {
+        "code": "3500034",
+        "message": "O valor total da cobrança deve ser maior ou igual a R$ 5,00.",
+        "solve": "",
+        "endpoints": []
+    },
+    {
         "code": "3500038",
         "message": "Apenas transações com status [waiting] ou [unpaid] podem ser canceladas.",
         "solve": "Nesse caso um exemplo seria tentar cancelar uma cobrança com status paga ou o inverso, tentar pagar uma cobrança com status cancelada ou seja status finais não podem ser atualizados",
