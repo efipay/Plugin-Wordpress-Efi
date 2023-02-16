@@ -32,8 +32,28 @@ class Gerencianet_Integration {
 		);
 
 		if ( $paymentMethod == GERENCIANET_PIX_ID ) {
+
 			$gn_credentials['headers']  = array( 'x-skip-mtls-checking' => $wcSettings['gn_pix_mtls'] == 'yes' ? 'false' : 'true' );
-			$gn_credentials['pix_cert'] = $wcSettings['gn_pix_file'];
+				
+				$certificatePath = get_temp_dir(). $wcSettings['gn_pix_file_name'];
+
+				if(!file_exists($certificatePath)){
+					try {
+						$file = fopen( $certificatePath, 'w+' );
+						if ( $file ) {
+							$a = fwrite( $file, $wcSettings['gn_pix_file'] );
+							$b = fclose( $file );
+						}
+						
+						$wcSettings['gn_pix_file_path'] = $certificatePath;
+						update_option('woocommerce_' . GERENCIANET_PIX_ID . '_settings', $pixSettings);
+
+					} catch (Error $e) {
+						return self::result_api('<div class="error"><p><strong> Falha ao encontrar Certificado Pix, entre em contato com o administrador da loja. </strong></div>', false);
+					}
+					
+				}
+			$gn_credentials['pix_cert'] = $certificatePath;
 		}
 		return $gn_credentials;
 	}
