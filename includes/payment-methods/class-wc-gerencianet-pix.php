@@ -75,58 +75,52 @@ function init_gerencianet_pix() {
 		}
 
 		public function savePixCertificate() {
-			
 			$file_name = $_FILES['woocommerce_WC_Gerencianet_Pix_gn_pix_file']['name'];
-
+			
 			if ( $_FILES['woocommerce_WC_Gerencianet_Pix_gn_pix_file']['error'] != 0 ) {
 				return;
 			}
-
+			
 			// get the file extension
 			$fileExt       = explode( '.', $file_name );
 			$fileActualExt = strtolower( end( $fileExt ) );
-			if ( $fileActualExt != 'pem' && $fileActualExt != 'p12' ) {
-				echo '<div class="error"><p><strong> Certificado Pix inválido! </strong></div>';
-				return;
-			}
-			if ( $fileActualExt == 'p12' ) {
-				if ( ! $cert_file_p12 = file_get_contents( $_FILES['woocommerce_WC_Gerencianet_Pix_gn_pix_file']['tmp_name'] ) ) { // Pega o conteúdo do arquivo .p12
-					echo '<div class="error"><p><strong> Falha ao ler arquivo o Certificado Pix! </strong></div>';
+			$file_read = null;
+			
+			switch ($fileActualExt) {
+				case 'pem':
+					if ( ! $file_read = file_get_contents( $_FILES['woocommerce_WC_Gerencianet_Pix_gn_pix_file']['tmp_name'] ) ) { // Pega o conteúdo do arquivo
+						echo '<div class="error"><p><strong> Falha ao ler arquivo o Certificado Pix! </strong></div>';
+						return;
+					}
+					break;
+				case 'p12':
+					if ( ! $cert_file_p12 = file_get_contents( $_FILES['woocommerce_WC_Gerencianet_Pix_gn_pix_file']['tmp_name'] ) ) { // Pega o conteúdo do arquivo
+						echo '<div class="error"><p><strong> Falha ao ler arquivo o Certificado Pix! </strong></div>';
+						return;
+					}
+					if ( ! openssl_pkcs12_read( $cert_file_p12, $cert_info_pem, '' ) ) { // Converte o conteúdo para .pem
+						echo '<div class="error"><p><strong> Falha ao converter o arquivo .p12! </strong></div>';
+						return;
+					}
+					$file_read  = "subject=/CN=271207/C=BR\n";
+					$file_read .= "issuer=/C=BR/ST=Minas Gerais/O=Gerencianet Pagamentos do Brasil Ltda/OU=Infraestrutura/CN=api-pix.gerencianet.com.br/emailAddress=infra@gerencianet.com.br\n";
+					$file_read .= $cert_info_pem['cert'];
+					$file_read .= "Key Attributes: <No Attributes>\n";
+					$file_read .= $cert_info_pem['pkey'];
+					break;
+				default:
+					echo '<div class="error"><p><strong> Certificado Pix inválido! </strong></div>';
 					return;
-				}
-				if ( ! openssl_pkcs12_read( $cert_file_p12, $cert_info_pem, '' ) ) { // Converte o conteúdo para .pem
-					echo '<div class="error"><p><strong> Falha ao converter o arquivo .p12! </strong></div>';
-					return;
-				}
-				$file_read  = "subject=/CN=271207/C=BR\n";
-				$file_read .= "issuer=/C=BR/ST=Minas Gerais/O=Gerencianet Pagamentos do Brasil Ltda/OU=Infraestrutura/CN=api-pix.gerencianet.com.br/emailAddress=infra@gerencianet.com.br\n";
-				$file_read .= $cert_info_pem['cert'];
-				$file_read .= "Key Attributes: <No Attributes>\n";
-				$file_read .= $cert_info_pem['pkey'];
-			} else {
-				// read the contents of the file
-				if ( ! $file_read = file_get_contents( $_FILES['woocommerce_WC_Gerencianet_Pix_gn_pix_file']['tmp_name'] ) ) { // Pega o conteúdo do arquivo .p12
-					echo '<div class="error"><p><strong> Falha ao ler arquivo o .pem! </strong></div>';
-					return;
-				}
 			}
 			if ( isset( $file_read ) ) {
-
-				$dir_gerencianet = '/tmp/';
-				
-				$file = fopen( $dir_gerencianet . $file_name, 'w+' );
-				if ( $file ) {
-					$a = fwrite( $file, $file_read );
-					$b = fclose( $file );
-				}
-
-				$this->update_option( 'gn_pix_file', $dir_gerencianet . $file_name );
+				$this->update_option( 'gn_pix_file_name', $file_name );
+				$this->update_option( 'gn_pix_file', $file_read );
 			}
 
 		}
 
 		public function init_form_fields() {
-			$certificateLabel = $this->get_option( 'gn_pix_file' ) != '' ? 'Certificado Pix salvo: <code>' . $this->get_option( 'gn_pix_file' ) . '</code>' : 'Nenhum certificado salvo';
+			$certificateLabel = $this->get_option( 'gn_pix_file' ) != '' ? 'Certificado Pix salvo:<code>'.$this->get_option( 'gn_pix_file_name' ).'</code>' : 'Nenhum certificado salvo';
 
 			$this->form_fields = array(
 				'gn_api_section'                => array(
@@ -231,6 +225,20 @@ function init_gerencianet_pix() {
 				echo wpautop( wp_kses_post( $this->description ) );
 			}
 
+			if(intval( $this->get_option( 'gn_pix_discount' ) ) > 0){
+				$discountMessage = '';
+				if ( $this->get_option( 'gn_pix_discount_shipping' ) == 'total' ) {
+					$discountMessage = ' no valor total da compra (frete incluso)';
+				}else{
+					$discountMessage = ' no valor total dos produtos (frete não incluso)';
+				}
+				
+				$discountWarn = '<div class="warning-payment" id="wc-gerencianet-messages-sandbox">
+										<div class="woocommerce-info">' .esc_html( $this->get_option( 'gn_pix_discount' ) ) . '% de Desconto'.$discountMessage. '</div>
+									</div>';
+				echo wpautop( wp_kses_post( $discountWarn ) );
+			}
+
 			$is_sandbox = $this->get_option( 'gn_sandbox' ) == 'yes' ? true : false;
 			if ( $is_sandbox ) {
 				$sandboxWarn = '<div class="warning-payment" id="wc-gerencianet-messages-sandbox">
@@ -283,14 +291,15 @@ function init_gerencianet_pix() {
 						$value += $item->get_subtotal();
 						break;
 					case 'shipping':
-						$value         += $item->get_total();
+						$value += $item->get_total();
 						$shippingTotal += $item->get_total();
 						break;
 					case 'coupon':
 						$value -= $item->get_discount();
 						break;
 					case 'line_item':
-						$value         += $item->get_total();
+						$product = $item->get_product();
+						$value += $item->get_quantity() * $product->get_price();
 						break;
 					default:
 						$product = $item->get_product();
@@ -328,6 +337,8 @@ function init_gerencianet_pix() {
 
 				}
 			}
+
+			$value -= $discount;
 
 			$cpf_cnpj = str_replace( '.', '', sanitize_text_field( $_POST['gn_pix_cpf_cnpj'] ) );
 			$cpf_cnpj = str_replace( '-', '', $cpf_cnpj );
