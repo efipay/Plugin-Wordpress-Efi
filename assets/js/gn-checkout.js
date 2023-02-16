@@ -4,8 +4,8 @@ window.onload = function () {
 
 			let swalCss = $( "<style></style>" ).html( ".colored-toast .swal2-title {color: white;}.colored-toast .swal2-close {color: white;}.colored-toast .swal2-html-container {color: white;}.colored-toast.swal2-icon-error {background-color: #f27474 !important;}" )
 			$( "#gn-checkout-js" ).after( swalCss );
-
-			if ($( '#gn_boleto_cpf_cnpj' )) {
+		
+			if (document.getElementById("gn_boleto_cpf_cnpj")) {
 				$( '#gn_boleto_cpf_cnpj' ).keyup(
 					function () {
 						$( '#gn_boleto_cpf_cnpj' ).val().length > 14 ? VMasker(document.querySelector("#gn_boleto_cpf_cnpj")).maskPattern("99.999.999/9999-99") : VMasker(document.querySelector("#gn_boleto_cpf_cnpj")).maskPattern("999.999.999-99");
@@ -25,7 +25,7 @@ window.onload = function () {
 				)
 			}
 
-			if ($( '#gn_pix_cpf_cnpj' )) {
+			if (document.getElementById('#gn_pix_cpf_cnpj' )) {
 				$( '#gn_pix_cpf_cnpj' ).keyup(
 					function () {
 						$( '#gn_pix_cpf_cnpj' ).val().length > 14 ? VMasker(document.querySelector("#gn_pix_cpf_cnpj")).maskPattern("99.999.999/9999-99") : VMasker(document.querySelector("#gn_pix_cpf_cnpj")).maskPattern("999.999.999-99");
@@ -45,7 +45,7 @@ window.onload = function () {
 				)
 			}
 
-			if ($( '#gn_cartao_cpf_cnpj' )) {
+			if (document.getElementById('#gn_cartao_cpf_cnpj' )) {
 				$( '#gn_cartao_cpf_cnpj' ).keyup(
 					function () {
 						 $( '#gn_cartao_cpf_cnpj' ).val().length > 14 ? VMasker(document.querySelector("#gn_cartao_cpf_cnpj")).maskPattern("99.999.999/9999-99") : VMasker(document.querySelector("#gn_cartao_cpf_cnpj")).maskPattern("999.999.999-99");
@@ -65,7 +65,7 @@ window.onload = function () {
 				)
 			}
 
-			if ($( '#gn_cartao_birth' )) {
+			if (document.getElementById('#gn_cartao_birth' )) {
 				VMasker(document.querySelector("#gn_cartao_birth")).maskPattern("99/99/9999");
 				$( '#gn_cartao_birth' ).blur(
 					function () {
@@ -81,7 +81,7 @@ window.onload = function () {
 				)
 			}
 
-			if ($( '#gn_cartao_expiration' )) {
+			if (document.getElementById( '#gn_cartao_expiration' )) {
 				VMasker(document.querySelector("#gn_cartao_expiration")).maskPattern("99/9999");
 				$( '#gn_cartao_expiration' ).blur(
 					function () {
@@ -97,8 +97,8 @@ window.onload = function () {
 				)
 			}
 
-			if ($( '#gn_cartao_number' )) {
-				VMasker(document.querySelector("#gn_cartao_number")).maskPattern("9999 9999 9999 99999");
+			if (document.getElementById('#gn_cartao_number' )) {
+				VMasker(document.querySelector("#gn_cartao_number")).maskPattern("**** **** **** *****");
 			}
 
 			// Esconder campos caso haja o brazillian market
@@ -118,8 +118,7 @@ window.onload = function () {
 				$( '#gn_pix_cpf_cnpj' ).val( $( '#billing_cpf' ).val() )
 				$( '#gn_field_pix' ).hide();
 
-				$( '#billing_cpf' ).keyup(
-					function () {
+				$( '#billing_cpf' ).keyup(function () {
 
 						// cpf_cnpj boleto
 						$( '#gn_boleto_cpf_cnpj' ).val( $( '#billing_cpf' ).val() )
