@@ -33,7 +33,7 @@
     },
     {
         "code": "3500034",
-        "message": "O valor total da cobrança deve ser maior ou igual a R$ 5,00.",
+        "message": "Um ou mais campos inválidos, por favor verifique as informações de cadastro e tente novamente.",
         "solve": "",
         "endpoints": []
     },
