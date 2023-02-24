@@ -17,7 +17,7 @@ window.onload = function () {
 
 						if ( ! validate_cpf_cnpj( cpf_cnpj )) {
 							$( '#gn_boleto_cpf_cnpj' ).css( 'border', '1px solid red' );
-							customError();
+							customError("CPF/CNPJ Inválido");
 						} else {
 							$( '#gn_boleto_cpf_cnpj' ).css( 'border', '1px solid green' );
 						}
@@ -25,7 +25,7 @@ window.onload = function () {
 				)
 			}
 
-			if (document.getElementById('#gn_pix_cpf_cnpj' )) {
+			if (document.getElementById('gn_pix_cpf_cnpj' )) {
 				$( '#gn_pix_cpf_cnpj' ).keyup(
 					function () {
 						$( '#gn_pix_cpf_cnpj' ).val().length > 14 ? VMasker(document.querySelector("#gn_pix_cpf_cnpj")).maskPattern("99.999.999/9999-99") : VMasker(document.querySelector("#gn_pix_cpf_cnpj")).maskPattern("999.999.999-99");
@@ -37,7 +37,7 @@ window.onload = function () {
 
 						if ( ! validate_cpf_cnpj( cpf_cnpj )) {
 							$( '#gn_pix_cpf_cnpj' ).css( 'border', '1px solid red' );
-							customError();
+							customError("CPF/CNPJ Inválido");
 						} else {
 							$( '#gn_pix_cpf_cnpj' ).css( 'border', '1px solid green' );
 						}
@@ -45,7 +45,7 @@ window.onload = function () {
 				)
 			}
 
-			if (document.getElementById('#gn_cartao_cpf_cnpj' )) {
+			if (document.getElementById('gn_cartao_cpf_cnpj' )) {
 				$( '#gn_cartao_cpf_cnpj' ).keyup(
 					function () {
 						 $( '#gn_cartao_cpf_cnpj' ).val().length > 14 ? VMasker(document.querySelector("#gn_cartao_cpf_cnpj")).maskPattern("99.999.999/9999-99") : VMasker(document.querySelector("#gn_cartao_cpf_cnpj")).maskPattern("999.999.999-99");
@@ -57,7 +57,7 @@ window.onload = function () {
 
 						if ( ! validate_cpf_cnpj( cpf_cnpj )) {
 							$( '#gn_cartao_cpf_cnpj' ).css( 'border', '1px solid red' );
-							customError();
+							customError("CPF/CNPJ Inválido");
 						} else {
 							$( '#gn_cartao_cpf_cnpj' ).css( 'border', '1px solid green' );
 						}
@@ -65,7 +65,7 @@ window.onload = function () {
 				)
 			}
 
-			if (document.getElementById('#gn_cartao_birth' )) {
+			if (document.getElementById('gn_cartao_birth' )) {
 				VMasker(document.querySelector("#gn_cartao_birth")).maskPattern("99/99/9999");
 				$( '#gn_cartao_birth' ).blur(
 					function () {
@@ -73,7 +73,7 @@ window.onload = function () {
 
 						if ( ! verify_date( date )) {
 							$( '#gn_cartao_birth' ).css( 'border', '1px solid red' );
-							alert( 'Data de nascimento inválida!' );
+							customError( 'Data de nascimento inválida!' );
 						} else {
 							$( '#gn_cartao_birth' ).css( 'border', '1px solid green' );
 						}
@@ -81,7 +81,7 @@ window.onload = function () {
 				)
 			}
 
-			if (document.getElementById( '#gn_cartao_expiration' )) {
+			if (document.getElementById( 'gn_cartao_expiration' )) {
 				VMasker(document.querySelector("#gn_cartao_expiration")).maskPattern("99/9999");
 				$( '#gn_cartao_expiration' ).blur(
 					function () {
@@ -89,7 +89,7 @@ window.onload = function () {
 
 						if ( ! validate_cartao_expiration( exp )) {
 							$( '#gn_cartao_expiration' ).css( 'border', '1px solid red' );
-							alert( 'Validade do cartão inválida!' );
+							customError( 'Validade do cartão inválida!' );
 						} else {
 							$( '#gn_cartao_expiration' ).css( 'border', '1px solid green' );
 						}
@@ -97,7 +97,7 @@ window.onload = function () {
 				)
 			}
 
-			if (document.getElementById('#gn_cartao_number' )) {
+			if (document.getElementById('gn_cartao_number' )) {
 				VMasker(document.querySelector("#gn_cartao_number")).maskPattern("**** **** **** *****");
 			}
 
@@ -274,7 +274,7 @@ window.onload = function () {
 
 	}
 
-	function customError() {
+	function customError(msg) {
 		Swal.mixin(
 			{
 				toast: true,
@@ -287,7 +287,7 @@ window.onload = function () {
 				timer: 5000,
 				timerProgressBar: true
 			}
-		).fire( { icon: 'error', title: 'CPF/CNPJ inválido!' } )
+		).fire( { icon: 'error', title: msg } )
 	}
 
 };
