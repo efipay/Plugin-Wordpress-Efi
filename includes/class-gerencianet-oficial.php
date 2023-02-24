@@ -133,13 +133,13 @@ class Gerencianet_Oficial {
 
 		wp_register_script( 'gn-vmask', plugins_url( 'assets/js/vanilla-masker.min.js', plugin_dir_path( __FILE__ ) ), array( 'jquery' ), '1.1.1', true );
 
+		wp_register_script( 'gn-checkout', plugins_url( 'assets/js/gn-checkout.js', plugin_dir_path( __FILE__ ) ), array( 'jquery', 'gn-vmask' ), '1.0.0', true );
 		wp_enqueue_script( 'gn-checkout', plugins_url( 'assets/js/gn-checkout.js', plugin_dir_path( __FILE__ ) ), array( 'jquery', 'gn-vmask' ), '1.0.0', true );
 
-		if ( ! is_plugin_active( 'woocommerce-extra-checkout-fields-for-brazil/woocommerce-extra-checkout-fields-for-brazil.php' ) ) {
-			$wcSettings = maybe_unserialize( get_option( 'woocommerce_WC_Gerencianet_Cartao_settings' ) );
-			if ( $wcSettings['gn_credit_card'] == 'yes' ) {
-				wp_enqueue_script( 'gn-fields', plugins_url( 'assets/js/checkout-fields.js', plugin_dir_path( __FILE__ ) ), array( 'jquery' ), '1.0.0', true );
-			}
+		$wcSettings = maybe_unserialize( get_option( 'woocommerce_WC_Gerencianet_Cartao_settings' ) );
+		if ( $wcSettings['gn_credit_card'] == 'yes' ) {
+			wp_register_script( 'gn-fields', plugins_url( 'assets/js/checkout-fields.js', plugin_dir_path( __FILE__ ) ), array( 'jquery' ), '1.0.0', true );
+			wp_enqueue_script( 'gn-fields', plugins_url( 'assets/js/checkout-fields.js', plugin_dir_path( __FILE__ ) ), array( 'jquery' ), '1.0.0', true );
 		}
 	}
 
