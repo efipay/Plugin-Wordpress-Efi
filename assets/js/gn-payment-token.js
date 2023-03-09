@@ -55,13 +55,11 @@ jQuery(document).ready(function ($) {
                                 console.error(error);
                                 Swal.fire(
                                     'Ocorreu um erro',
-                                    'Por favor, entre em contato com o administrador da loja.',
+                                    'Houve uma falha ao gerar o Token do seu cartão. Por favor, entre em contato com o administrador da loja.',
                                     'error'
                                 )
-                                console.log("1")
                             } else {
                                 // Trata a resposta
-                                console.log('sucesso!');
                                 $('#gn_payment_token').val(response.data.payment_token);
                                 swal.close()
                             }
@@ -76,7 +74,7 @@ jQuery(document).ready(function ($) {
 
         $("#gn_cartao_number").keyup(function () {
 
-            let total = document.querySelector("#order_review > table > tfoot > tr.order-total > td > strong > span > bdi").innerHTML.replace('<span class="woocommerce-Price-currencySymbol">R$</span>&nbsp;', '').replaceAll(',', '').replaceAll('.', '');
+            let total = document.querySelector("#order_review > table > tfoot > tr.order-total > td > strong > span > bdi").innerHTML.replace('<span class="woocommerce-Price-currencySymbol">R$</span>', '').replaceAll(',', '').replaceAll('.', '').replaceAll('&nbsp;', '');
             console.log(total);
             let cardNumber = $("#gn_cartao_number").val().replace(/\s/g, '');
             if (cardNumber.length >= 16) {
@@ -93,7 +91,7 @@ jQuery(document).ready(function ($) {
                                 console.log(error);
                                 Swal.fire(
                                     'Ocorreu um erro',
-                                    'Por favor, entre em contato com o administrador da loja.',
+                                    'Houve um erro ao recuperar o número de parcelas. Por favor, entre em contato com o administrador da loja.',
                                     'error'
                                 )
                             } else {
