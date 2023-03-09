@@ -9,8 +9,8 @@ use GN_Includes\Gerencianet_Deactivator;
  * Plugin Name:       Efí by Gerencianet Oficial
  * Plugin URI:        https://wordpress.org/plugins/woo-gerencianet-official/
  * Description:       Gateway de pagamento Efi by Gerencianet para WooCommerce
- * Version:           2.0.6
- * Author:            Gerencianet
+ * Version:           2.0.7
+ * Author:            Efi by Gerencianet
  * Author URI:        https://www.sejaefi.com.br
  * License:           GPL-2.0+
  * License URI:       http://www.gnu.org/licenses/gpl-2.0.txt
@@ -25,7 +25,7 @@ if ( ! defined( 'WPINC' ) ) {
 	die;
 }
 
-define( 'GERENCIANET_OFICIAL_VERSION', '2.0.6' );
+define( 'GERENCIANET_OFICIAL_VERSION', '2.0.7' );
 define( 'GERENCIANET_BOLETO_ID', 'WC_Gerencianet_Boleto' );
 define( 'GERENCIANET_CARTAO_ID', 'WC_Gerencianet_Cartao' );
 define( 'GERENCIANET_PIX_ID', 'WC_Gerencianet_Pix' );
