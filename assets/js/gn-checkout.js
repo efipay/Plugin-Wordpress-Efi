@@ -98,7 +98,7 @@ window.onload = function () {
 			}
 
 			if (document.getElementById('gn_cartao_number' )) {
-				VMasker(document.querySelector("#gn_cartao_number")).maskPattern("**** **** **** *****");
+				VMasker(document.querySelector("#gn_cartao_number")).maskPattern("9999 9999 9999 99999");
 			}
 
 			// Esconder campos caso haja o brazillian market
