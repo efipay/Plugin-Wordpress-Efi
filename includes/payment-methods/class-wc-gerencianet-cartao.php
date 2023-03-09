@@ -207,6 +207,11 @@ function init_gerencianet_cartao() {
 			global $woocommerce;
 
 			$order = wc_get_order( $order_id );
+			$customer_id = $order->get_customer_id();
+
+			// Salva os campos customizados
+			update_user_meta( $customer_id, 'gn_billing_neighborhood', $_POST['gn_billing_neighborhood']);
+			update_user_meta( $customer_id, 'gn_billing_number', $_POST['gn_billing_number']);
 
 			$types    = array( 'line_item', 'fee', 'shipping', 'coupon' );
 			$items    = array();
@@ -293,12 +298,12 @@ function init_gerencianet_cartao() {
 
 			$installments = intval( sanitize_text_field( $_POST['gn_cartao_installments'] ) );
 
-			$number = sanitize_text_field( $_POST['gn_billing_number'] ) != null ? sanitize_text_field( $_POST['gn_billing_number'] ) : sanitize_text_field( $_POST['billing_number'] );
+			$number = sanitize_text_field( $_POST['billing_number'] ) != null ? sanitize_text_field( $_POST['billing_number'] ) : sanitize_text_field( $_POST['gn_billing_number'] );
 
 			$billingAddress = array(
 				'street'       => $order->get_billing_address_1(),
 				'number'       => $number,
-				'neighborhood' => sanitize_text_field( $_POST['billing_neighborhood'] ) != null ? sanitize_text_field( $_POST['billing_neighborhood'] ) : $order->get_billing_address_2(),
+				'neighborhood' => sanitize_text_field( $_POST['billing_neighborhood'] ) != null ? sanitize_text_field( $_POST['billing_neighborhood'] ) : sanitize_text_field( $_POST['gn_billing_neighborhood'] ),
 				'zipcode'      => str_replace( '-', '', $order->get_billing_postcode() ),
 				'city'         => $order->get_billing_city(),
 				'state'        => $order->get_billing_state(),
