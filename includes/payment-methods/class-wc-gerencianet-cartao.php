@@ -159,6 +159,7 @@ function init_gerencianet_cartao() {
 					<select id="gn_cartao_installments" name="gn_cartao_installments" style="display:none;width: 100%;border-color: #dcd7ca;"></select>
 				</div>
 				<input id="gn_payment_token" name="gn_payment_token" type="hidden">
+				<script src="<?php echo plugins_url( '../assets/js/scripts-cartao.js', plugin_dir_path( __FILE__ ) ); ?>"></script>
 			</fieldset>
 			<?php
 
@@ -180,7 +181,6 @@ function init_gerencianet_cartao() {
 				echo html_entity_decode( "<script type='text/javascript'>var s=document.createElement('script');s.type='text/javascript';var v=parseInt(Math.random()*1000000);s.src='https://api.gerencianet.com.br/v1/cdn/" . esc_html($this->get_option( 'gn_payee_code' )) . "/'+v;s.async=false;s.id='" . esc_html($this->get_option( 'gn_payee_code' )) . "';if(!document.getElementById('" . esc_html($this->get_option( 'gn_payee_code' )) . "')){document.getElementsByTagName('head')[0].appendChild(s);};&#36;gn={validForm:true,processed:false,done:{},ready:function(fn){&#36;gn.done=fn;}};</script>" );
 			}
 			wp_enqueue_script( 'gn-sweetalert', plugins_url( '../assets/js/sweetalert.js', plugin_dir_path( __FILE__ ) ), '11.0.0', true );
-			wp_enqueue_script( 'gn-payment-token', plugins_url( '../assets/js/gn-payment-token.js', plugin_dir_path( __FILE__ ) ), '1.0.0', true );
 
 		}
 

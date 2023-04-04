@@ -2,8 +2,8 @@
 Contributors: Efí Bank
 Tags: woocommerce, gerencianet, payment, transparent checkout, pix, Boleto, card, brazil, payments brazil, cartão de crédito, efí, efi, efipay, efi bank, efi pay, efípay, efí bank, efí pay
 Requires at least: 5.x
-Tested up to: 6.1
-Stable tag: 2.0.7
+Tested up to: 6.2
+Stable tag: 2.0.8
 License: GPLv2 or later
 License URI: http://www.gnu.org/licenses/gpl-2.0.html
 
@@ -21,8 +21,8 @@ Caso você tenha alguma dúvida ou sugestão, entre em contato conosco pelo site
 = Requisitos =
 
 * Versão do PHP: 7.x ou 8.x
-* Versão do WooCommerce: 5.x
-* Versão do WordPress: 5.x
+* Versão do WooCommerce: 5.x ou superior
+* Versão do WordPress: 5.x ou superior
 
 = Instalação automática =
 

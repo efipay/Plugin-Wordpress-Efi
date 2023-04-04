@@ -1,5 +1,4 @@
 <?php
-
 namespace GN_Includes;
 
 require __DIR__ . '/lib/gerencianet-logger.php';
@@ -130,17 +129,9 @@ class Gerencianet_Oficial {
 		if ( ! is_cart() && ! is_checkout() && ! isset( $_GET['pay_for_order'] ) ) {
 			return;
 		}
-
-		wp_register_script( 'gn-vmask', plugins_url( 'assets/js/vanilla-masker.min.js', plugin_dir_path( __FILE__ ) ), array( 'jquery' ), '1.1.1', true );
-
-		wp_register_script( 'gn-checkout', plugins_url( 'assets/js/gn-checkout.js', plugin_dir_path( __FILE__ ) ), array( 'jquery', 'gn-vmask' ), '1.0.0', true );
-		wp_enqueue_script( 'gn-checkout', plugins_url( 'assets/js/gn-checkout.js', plugin_dir_path( __FILE__ ) ), array( 'jquery', 'gn-vmask' ), '1.0.0', true );
-
-		$wcSettings = maybe_unserialize( get_option( 'woocommerce_WC_Gerencianet_Cartao_settings' ) );
-		if ( $wcSettings['gn_credit_card'] == 'yes' ) {
-			wp_register_script( 'gn-fields', plugins_url( 'assets/js/checkout-fields.js', plugin_dir_path( __FILE__ ) ), array( 'jquery' ), '1.0.0', true );
-			wp_enqueue_script( 'gn-fields', plugins_url( 'assets/js/checkout-fields.js', plugin_dir_path( __FILE__ ) ), array( 'jquery' ), '1.0.0', true );
-		}
+		wp_enqueue_script( 'gn-vmask', plugins_url( 'assets/js/vanilla-masker.min.js', plugin_dir_path( __FILE__ ) ), array( 'jquery' ), '1.1.1', true );
+		wp_enqueue_script( 'gn-fields', plugins_url( 'assets/js/checkout-fields.js', plugin_dir_path( __FILE__ ) ), array( 'jquery', 'gn-vmask' ), '1.0.0', true );
+		// wp_enqueue_script( 'gn-checkout', plugins_url( 'assets/js/gn-checkout.js', plugin_dir_path( __FILE__ ) ), array( 'jquery', 'gn-vmask' ), '1.0.0', true );
 	}
 
 	/**
@@ -203,8 +194,14 @@ class Gerencianet_Oficial {
 		$boletoSettings = maybe_unserialize( get_option( 'woocommerce_' . GERENCIANET_BOLETO_ID . '_settings' ) );
 		$cardSettings   = maybe_unserialize( get_option( 'woocommerce_' . GERENCIANET_CARTAO_ID . '_settings' ) );
 
-		$boletoEnabled = $boletoSettings['gn_billet_banking'];
-		$cardEnabled   = $cardSettings['gn_credit_card'];
+		if(isset($boletoSettings['gn_billet_banking'])) {
+			$boletoEnabled = $boletoSettings['gn_billet_banking'];
+		}
+		
+		if(isset($cardSettings['gn_credit_card'])) {
+			$cardEnabled   = $cardSettings['gn_credit_card'];
+		}
+		
 
 		$current_shipping_method = WC()->session->get( 'chosen_shipping_methods' );
 		$shippingCost            = 0;

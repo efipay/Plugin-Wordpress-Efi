@@ -77,7 +77,7 @@ jQuery( document ).ready(function ($) {
 		$( '#gn_billing_number' ).blur(function () {
 			let valor = $( '#gn_billing_number' ).val();
 
-			if ( valor == "" || valor.length < 3) {
+			if ( valor == "" || valor.length < 1) {
 				$( '#gn_billing_number' ).css( 'border', '1px solid red' );
 				Swal.mixin(
 					{

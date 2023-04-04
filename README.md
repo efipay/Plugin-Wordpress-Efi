@@ -1,4 +1,4 @@
-# Plugin Oficial Gerencianet para Wordpress/Woocommerce
+# Plugin Oficial Efi by Gerencianet para Wordpress/Woocommerce
 
 Receba pagamentos por Boleto bancário, Pix e cartão de crédito em sua loja WooCommerce com a Gerencianet!
 
@@ -14,8 +14,8 @@ Caso você tenha alguma dúvida ou sugestão, entre em contato conosco pelo site
 ## Requisitos
 
 * Versão do PHP: 7.x ou 8.x
-* Versão do WooCommerce: 5.x
-* Versão do WordPress: 5.x
+* Versão do WooCommerce: 5.x ou superior
+* Versão do WordPress: 5.x ou superior
 
 ## Instalação automática 
 
