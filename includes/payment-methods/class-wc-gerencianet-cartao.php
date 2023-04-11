@@ -159,6 +159,7 @@ function init_gerencianet_cartao() {
 					<select id="gn_cartao_installments" name="gn_cartao_installments" style="display:none;width: 100%;border-color: #dcd7ca;"></select>
 				</div>
 				<input id="gn_payment_token" name="gn_payment_token" type="hidden">
+				<script src="<?php echo plugins_url( '../assets/js/vanilla-masker.min.js', plugin_dir_path( __FILE__ ) ); ?>"></script>
 				<script src="<?php echo plugins_url( '../assets/js/scripts-cartao.js', plugin_dir_path( __FILE__ ) ); ?>"></script>
 			</fieldset>
 			<?php

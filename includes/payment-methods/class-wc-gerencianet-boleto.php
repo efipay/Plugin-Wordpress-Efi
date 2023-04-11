@@ -190,6 +190,7 @@ function init_gerencianet_boleto() {
 					<input id="gn_boleto_cpf_cnpj" name="gn_boleto_cpf_cnpj" type="text" placeholder="___.___.___-__" autocomplete="off" onkeypress="return event.charCode >= 48 && event.charCode <= 57">
 				</div>
 				<div class="clear"></div></fieldset>
+				<script src="<?php echo plugins_url( '../assets/js/vanilla-masker.min.js', plugin_dir_path( __FILE__ ) ); ?>"></script>
 				<script src="<?php echo plugins_url( '../assets/js/scripts-boleto.js', plugin_dir_path( __FILE__ ) ); ?>"></script>
 			<?php
 
