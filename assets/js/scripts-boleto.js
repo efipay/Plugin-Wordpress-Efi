@@ -1,8 +1,10 @@
 	jQuery(document).ready(
 		function ($) {
 
-			let swalCss = $("<style></style>").html(".colored-toast .swal2-title {color: white;}.colored-toast .swal2-close {color: white;}.colored-toast .swal2-html-container {color: white;}.colored-toast.swal2-icon-error {background-color: #f27474 !important;}")
-			$("#payment").after(swalCss);
+			if(!document.getElementById('swalCss')){
+				let swalCss = $( "<style id='swalCss'></style>" ).html( ".colored-toast .swal2-title {color: white;}.colored-toast .swal2-close {color: white;}.colored-toast .swal2-html-container {color: white;}.colored-toast.swal2-icon-error {background-color: #f27474 !important;}" )
+				$( "#payment" ).after( swalCss );
+			}
 
 			if (document.getElementById("gn_boleto_cpf_cnpj")) {
 				$('#gn_boleto_cpf_cnpj').keyup(

@@ -160,6 +160,13 @@ function init_gerencianet_cartao() {
 				</div>
 				<input id="gn_payment_token" name="gn_payment_token" type="hidden">
 				<script src="<?php echo plugins_url( '../assets/js/vanilla-masker.min.js', plugin_dir_path( __FILE__ ) ); ?>"></script>
+				<script>
+					var options = {
+						payeeCode: '<?php echo esc_html($this->get_option( 'gn_payee_code' )); ?>',
+						enviroment:'<?php echo esc_html($this->get_option( 'gn_sandbox' )) == 'yes'? 'homologation' : 'production'; ?>'
+					}
+				</script>
+				<script type="module" src="<?php echo plugins_url( '../assets/js/payment-token-efi.min.js', plugin_dir_path( __FILE__ ) ); ?>"></script>
 				<script src="<?php echo plugins_url( '../assets/js/scripts-cartao.js', plugin_dir_path( __FILE__ ) ); ?>"></script>
 			</fieldset>
 			<?php
@@ -176,11 +183,6 @@ function init_gerencianet_cartao() {
 				return;
 			}
 
-			if ( $this->get_option( 'gn_sandbox' ) == 'yes' ) {
-				echo html_entity_decode( "<script type='text/javascript'>var s=document.createElement('script');s.type='text/javascript';var v=parseInt(Math.random()*1000000);s.src='https://sandbox.gerencianet.com.br/v1/cdn/" . esc_html($this->get_option( 'gn_payee_code' )) . "/'+v;s.async=false;s.id='" . esc_html($this->get_option( 'gn_payee_code' )) . "';if(!document.getElementById('" . esc_html($this->get_option( 'gn_payee_code' )) . "')){document.getElementsByTagName('head')[0].appendChild(s);};&#36;gn={validForm:true,processed:false,done:{},ready:function(fn){&#36;gn.done=fn;}};</script>" );
-			} else {
-				echo html_entity_decode( "<script type='text/javascript'>var s=document.createElement('script');s.type='text/javascript';var v=parseInt(Math.random()*1000000);s.src='https://api.gerencianet.com.br/v1/cdn/" . esc_html($this->get_option( 'gn_payee_code' )) . "/'+v;s.async=false;s.id='" . esc_html($this->get_option( 'gn_payee_code' )) . "';if(!document.getElementById('" . esc_html($this->get_option( 'gn_payee_code' )) . "')){document.getElementsByTagName('head')[0].appendChild(s);};&#36;gn={validForm:true,processed:false,done:{},ready:function(fn){&#36;gn.done=fn;}};</script>" );
-			}
 			wp_enqueue_script( 'gn-sweetalert', plugins_url( '../assets/js/sweetalert.js', plugin_dir_path( __FILE__ ) ), '11.0.0', true );
 
 		}

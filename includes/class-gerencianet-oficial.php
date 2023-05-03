@@ -131,7 +131,6 @@ class Gerencianet_Oficial {
 		}
 		wp_enqueue_script( 'gn-vmask', plugins_url( 'assets/js/vanilla-masker.min.js', plugin_dir_path( __FILE__ ) ), array( 'jquery' ), '1.1.1', true );
 		wp_enqueue_script( 'gn-fields', plugins_url( 'assets/js/checkout-fields.js', plugin_dir_path( __FILE__ ) ), array( 'jquery', 'gn-vmask' ), '1.0.0', true );
-		// wp_enqueue_script( 'gn-checkout', plugins_url( 'assets/js/gn-checkout.js', plugin_dir_path( __FILE__ ) ), array( 'jquery', 'gn-vmask' ), '1.0.0', true );
 	}
 
 	/**
