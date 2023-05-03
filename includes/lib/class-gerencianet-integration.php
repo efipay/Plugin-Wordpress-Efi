@@ -46,9 +46,11 @@ class Gerencianet_Integration {
 						}
 						
 						$wcSettings['gn_pix_file_path'] = $certificatePath;
-						update_option('woocommerce_' . GERENCIANET_PIX_ID . '_settings', $pixSettings);
+						update_option('woocommerce_' . GERENCIANET_PIX_ID . '_settings', $wcSettings);
 
 					} catch (Error $e) {
+						gn_log('Falha ao recriar certificado');
+						gn_log($e);
 						return self::result_api('<div class="error"><p><strong> Falha ao encontrar Certificado Pix, entre em contato com o administrador da loja. </strong></div>', false);
 					}
 					
