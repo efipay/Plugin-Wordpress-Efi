@@ -155,6 +155,11 @@ function init_gerencianet_boleto() {
 			);
 		}
 
+		public function gn_price_format($value){
+			$value = number_format($value, 2, "", "");
+			return $value;
+		}
+
 		public function payment_fields() {
 			if ( $this->description ) {
 				echo wpautop( wp_kses_post( $this->description ) );
@@ -234,23 +239,23 @@ function init_gerencianet_boleto() {
 						$newFee      = array(
 							'name'   => __( 'Taxas', Gerencianet_I18n::getTextDomain() ),
 							'amount' => 1,
-							'value'  => $item->get_subtotal() * 100,
+							'value'  => (int)$this->gn_price_format($item->get_subtotal()),
 						);
-						$orderTotal += $item->get_subtotal() * 100;
+						$orderTotal += (int)$this->gn_price_format($item->get_subtotal());
 						$items[]     = $newFee;
 						break;
 					case 'shipping':
 						if ( $item->get_total() > 0 ) {
 							$shipping[] = array(
 								'name'  => __( 'Frete', Gerencianet_I18n::getTextDomain() ),
-								'value' => $item->get_total() * 100,
+								'value' => (int)$this->gn_price_format($item->get_total()),
 							);
 						}
 						break;
 					case 'coupon':
 						$newDiscount = array(
 							'type'  => 'currency',
-							'value' => $item->get_discount() * 100,
+							'value' => (int)$this->gn_price_format($item->get_discount()),
 						);
 						$discount    = $newDiscount;
 						break;
@@ -259,9 +264,9 @@ function init_gerencianet_boleto() {
 						$newItem     = array(
 							'name'   => $product->get_name(),
 							'amount' => $item->get_quantity(),
-							'value'  => $product->get_price() * 100,
+							'value'  => (int)$this->gn_price_format($product->get_price()),
 						);
-						$orderTotal += $product->get_price() * 100 * $item->get_quantity();
+						$orderTotal += (int)$this->gn_price_format($product->get_price() * $item->get_quantity());
 						$items[]     = $newItem;
 						break;
 					default:
@@ -269,9 +274,9 @@ function init_gerencianet_boleto() {
 						$newItem     = array(
 							'name'   => $item->get_name(),
 							'amount' => $item->get_quantity(),
-							'value'  => $product->get_price() * 100,
+							'value'  => (int)$this->gn_price_format($product->get_price()),
 						);
-						$orderTotal += $product->get_price() * 100 * $item->get_quantity();
+						$orderTotal += (int)$this->gn_price_format($product->get_price() * $item->get_quantity());
 						$items[]     = $newItem;
 						break;
 				}
@@ -281,7 +286,7 @@ function init_gerencianet_boleto() {
 				$newItem     = array(
 					'name'   => 'Taxas',
 					'amount' => 1,
-					'value'  => $order->get_total_tax() * 100,
+					'value'  => (int)$this->gn_price_format($order->get_total_tax())
 				);
 				array_push($items, $newItem);
 			}
