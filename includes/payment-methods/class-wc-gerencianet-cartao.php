@@ -50,6 +50,11 @@ function init_gerencianet_cartao() {
 			add_action( 'wp_enqueue_scripts', array( $this, 'payment_scripts' ) );
 		}
 
+		public function gn_price_format($value){
+			$value = number_format($value, 2, "", "");
+			return $value;
+		}
+
 		public function init_form_fields() {
 
 			$this->form_fields = array(
@@ -159,6 +164,7 @@ function init_gerencianet_cartao() {
 					<select id="gn_cartao_installments" name="gn_cartao_installments" style="display:none;width: 100%;border-color: #dcd7ca;"></select>
 				</div>
 				<input id="gn_payment_token" name="gn_payment_token" type="hidden">
+				<input id="gn_payment_total" name="gn_payment_total" type="hidden" value="<?php echo WC()->cart->total; ?>">
 				<script src="<?php echo plugins_url( '../assets/js/vanilla-masker.min.js', plugin_dir_path( __FILE__ ) ); ?>"></script>
 				<script>
 					var options = {
@@ -228,7 +234,7 @@ function init_gerencianet_cartao() {
 						$newFee      = array(
 							'name'   => __( 'Taxas', Gerencianet_I18n::getTextDomain() ),
 							'amount' => 1,
-							'value'  => $item->get_subtotal() * 100,
+							'value'  => (int)$this->gn_price_format($item->get_subtotal()),
 						);
 						$items[]     = $newFee;
 						break;
@@ -236,14 +242,14 @@ function init_gerencianet_cartao() {
 						if ( $item->get_total() > 0 ) {
 							$shipping[] = array(
 								'name'  => __( 'Frete', Gerencianet_I18n::getTextDomain()),
-								'value' => $item->get_total() * 100,
+								'value' => (int)$this->gn_price_format($item->get_total()),
 							);
 						}
 						break;
 					case 'coupon':
 						$newDiscount = array(
 							'type'  => 'currency',
-							'value' => $item->get_discount() * 100,
+							'value' => (int)$this->gn_price_format($item->get_discount()),
 						);
 						$discount    = $newDiscount;
 						break;
@@ -252,7 +258,7 @@ function init_gerencianet_cartao() {
 						$newItem     = array(
 							'name'   => $product->get_name(),
 							'amount' => $item->get_quantity(),
-							'value'  => $product->get_price() * 100,
+							'value'  => (int)$this->gn_price_format($product->get_price()),
 						);
 						$items[]     = $newItem;
 						break;
@@ -261,7 +267,7 @@ function init_gerencianet_cartao() {
 						$newItem     = array(
 							'name'   => $item->get_name(),
 							'amount' => $item->get_quantity(),
-							'value'  => $product->get_price() * 100,
+							'value'  => (int)$this->gn_price_format($product->get_price()),
 						);
 						$items[]     = $newItem;
 						break;
@@ -272,7 +278,7 @@ function init_gerencianet_cartao() {
 				$newItem     = array(
 					'name'   => 'Taxas',
 					'amount' => 1,
-					'value'  => $order->get_total_tax() * 100,
+					'value'  => (int)$this->gn_price_format($order->get_total_tax()),
 				);
 				array_push($items, $newItem);
 			}

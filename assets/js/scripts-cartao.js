@@ -1,6 +1,6 @@
 jQuery(document).ready(function ($) {
 
-    if(!document.getElementById('swalCss')){
+    if (!document.getElementById('swalCss')) {
         let swalCss = $("<style id='swalCss'></style>").html(".colored-toast .swal2-title {color: white;}.colored-toast .swal2-close {color: white;}.colored-toast .swal2-html-container {color: white;}.colored-toast.swal2-icon-error {background-color: #f27474 !important;}")
         $("#payment").after(swalCss);
     }
@@ -58,7 +58,8 @@ jQuery(document).ready(function ($) {
     // Buscar Parcelas
     jQuery("#gn_cartao_number").keyup(function () {
 
-        let total = document.querySelector("#order_review > table > tfoot > tr.order-total > td > strong > span > bdi").innerHTML.replace('<span class="woocommerce-Price-currencySymbol">R$</span>', '').replaceAll(',', '').replaceAll('.', '').replaceAll('&nbsp;', '');
+        let total = document.querySelector("#gn_payment_total").value;
+        total = parseInt(total.replace('.', ''));
         console.log(total);
 
         if (jQuery("#gn_cartao_number").val().length >= 19) {
@@ -312,7 +313,7 @@ jQuery(document).ready(function ($) {
         if (msg == 'Error: O total fornecido é superior ao limite máximo por transação.')
             msg = 'O valor total da compra é superior ao limite para emissão.'
 
-        if(msg.toString().includes('Identificador de conta'))
+        if (msg.toString().includes('Identificador de conta'))
             msg = 'Identificador de Conta inválido. Entre em contato com o administrador da loja.'
 
         if (msg != null && msg != '') {
