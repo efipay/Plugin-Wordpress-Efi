@@ -102,8 +102,7 @@ function init_gerencianet_pix() {
 						echo '<div class="error"><p><strong> Falha ao converter o arquivo .p12! </strong></div>';
 						return;
 					}
-					$file_read  = "subject=/CN=271207/C=BR\n";
-					$file_read .= "issuer=/C=BR/ST=Minas Gerais/O=Gerencianet Pagamentos do Brasil Ltda/OU=Infraestrutura/CN=api-pix.gerencianet.com.br/emailAddress=infra@gerencianet.com.br\n";
+					$file_read  = "";
 					$file_read .= $cert_info_pem['cert'];
 					$file_read .= "Key Attributes: <No Attributes>\n";
 					$file_read .= $cert_info_pem['pkey'];
@@ -113,7 +112,7 @@ function init_gerencianet_pix() {
 					return;
 			}
 			if ( isset( $file_read ) ) {
-				$this->update_option( 'gn_pix_file_name', $file_name );
+				$this->update_option( 'gn_pix_file_name', str_replace('p12', 'pem', $file_name) );
 				$this->update_option( 'gn_pix_file', $file_read );
 			}
 
@@ -252,7 +251,7 @@ function init_gerencianet_pix() {
 			?>
 			<div class="form-row form-row-wide" id="gn_field_pix">
 				<label>CPF/CNPJ <span class="required">*</span></label>
-				<input id="gn_pix_cpf_cnpj" name="gn_pix_cpf_cnpj" type="text" placeholder="___.___.___-__" autocomplete="off" onkeypress="return event.charCode >= 48 && event.charCode <= 57">
+				<input id="gn_pix_cpf_cnpj" inputmode="numeric" name="gn_pix_cpf_cnpj" type="text" placeholder="___.___.___-__" autocomplete="off" onkeypress="return event.charCode >= 48 && event.charCode <= 57">
 			</div>
 			<div class="clear"></div>
 			<script src="<?php echo plugins_url( '../assets/js/vanilla-masker.min.js', plugin_dir_path( __FILE__ ) ); ?>"></script>
@@ -384,9 +383,7 @@ function init_gerencianet_pix() {
 				$qrCodeResponse = $this->gerencianetSDK->generate_qrcode( $charge['loc']['id'] );
 				$qrCode         = json_decode( $qrCodeResponse, true );
 
-				$linkPix = str_replace( 'qrcodes-pix.gerencianet.com.br/v2/', 'https://pix.gerencianet.com.br/cob/pagar/', $charge['loc']['location'] );
-
-				update_post_meta( $order_id, '_gn_pix_link', $linkPix );
+				update_post_meta( $order_id, '_gn_pix_link', $qrCode['linkVisualizacao'] );
 				update_post_meta( $order_id, '_gn_pix_qrcode', $qrCode['imagemQrcode'] );
 				update_post_meta( $order_id, '_gn_pix_copy', $qrCode['qrcode'] );
 				update_post_meta( $order_id, '_gn_pix_txid', $charge['txid'] );

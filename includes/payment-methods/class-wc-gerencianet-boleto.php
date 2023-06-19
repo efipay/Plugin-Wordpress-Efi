@@ -192,7 +192,7 @@ function init_gerencianet_boleto() {
 			?>
 				<div class="form-row form-row-wide" id="gn_field_boleto">
 					<label>CPF/CNPJ <span class="required">*</span></label>
-					<input id="gn_boleto_cpf_cnpj" name="gn_boleto_cpf_cnpj" type="text" placeholder="___.___.___-__" autocomplete="off" onkeypress="return event.charCode >= 48 && event.charCode <= 57">
+					<input id="gn_boleto_cpf_cnpj" inputmode="numeric" name="gn_boleto_cpf_cnpj" type="text" placeholder="___.___.___-__" autocomplete="off" onkeypress="return event.charCode >= 48 && event.charCode <= 57">
 				</div>
 				<div class="clear"></div></fieldset>
 				<script src="<?php echo plugins_url( '../assets/js/vanilla-masker.min.js', plugin_dir_path( __FILE__ ) ); ?>"></script>
