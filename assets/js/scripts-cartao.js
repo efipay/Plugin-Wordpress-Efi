@@ -56,13 +56,13 @@ jQuery(document).ready(function ($) {
 
 
     // Buscar Parcelas
-    jQuery("#gn_cartao_number").keyup(function () {
+    jQuery("#gn_cartao_number").on('keyup mouseout', function () {
 
         let total = document.querySelector("#gn_payment_total").value;
         total = parseInt(total.replace('.', ''));
         console.log(total);
 
-        if (jQuery("#gn_cartao_number").val().length >= 19) {
+        if (jQuery("#gn_cartao_number").val().length >= 15) {
 
             EfiJs.CreditCard
                 // .debugger(true)
@@ -105,7 +105,7 @@ jQuery(document).ready(function ($) {
         }
     })
 
-
+    
     if (document.getElementById('gn_cartao_cpf_cnpj')) {
         jQuery('#gn_cartao_cpf_cnpj').keyup(
             function () {
@@ -159,7 +159,7 @@ jQuery(document).ready(function ($) {
     }
 
     if (document.getElementById('gn_cartao_number')) {
-        VMasker(document.querySelector("#gn_cartao_number")).maskPattern("9999 9999 9999 99999");
+        VMasker(document.querySelector("#gn_cartao_number")).maskPattern("9999 9999 9999 9999");
     }
 
     if (typeof jQuery('#billing_cpf').val() !== 'undefined') {
@@ -295,11 +295,13 @@ jQuery(document).ready(function ($) {
     }
 
     function validate_cartao_expiration(exp) {
+        if (exp == "" || exp.length < 6)
+            return false;
         exp = exp.split('/');
         const newDate = new Date();
         const year = newDate.getFullYear();
 
-        if ((parseInt(exp[0]) > 12 || (parseInt(exp[0] < 0)) || (parseInt(exp[1] < year)))) {
+        if ((parseInt(exp[0]) > 12 || (parseInt(exp[0] < 0)) || (parseInt(exp[1]) < parseInt(year)))) {
             return false;
         }
         return true;
