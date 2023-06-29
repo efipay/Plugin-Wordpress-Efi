@@ -27,7 +27,7 @@ class ApiRequest
         $requestTimeout = isset($this->options['timeout']) ? (float)$this->options['timeout'] : 30.0;
         $requestHeaders = [
             'Authorization' => 'Bearer ' . $this->auth->accessToken,
-            'api-sdk' => 'php-' . $composerData['version']
+            'api-sdk' => 'wordpress-' . GERENCIANET_OFICIAL_VERSION
         ];
 
         if (isset($this->options['partner_token']) || isset($this->options['partner-token'])) {
