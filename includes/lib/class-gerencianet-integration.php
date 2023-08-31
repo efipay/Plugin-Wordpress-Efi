@@ -31,31 +31,44 @@ class Gerencianet_Integration {
 			'sandbox'       => $isSandbox,
 		);
 
-		if ( $paymentMethod == GERENCIANET_PIX_ID ) {
+		if ( $paymentMethod == GERENCIANET_PIX_ID || $paymentMethod == GERENCIANET_OPEN_FINANCE_ID ) {
 
-			$gn_credentials['headers']  = array( 'x-skip-mtls-checking' => $wcSettings['gn_pix_mtls'] == 'yes' ? 'false' : 'true' );
-				
-				$certificatePath = get_temp_dir(). $wcSettings['gn_pix_file_name'];
+			if ( $paymentMethod == GERENCIANET_PIX_ID) {
+				$gn_credentials['headers']  = array( 'x-skip-mtls-checking' => $wcSettings['gn_pix_mtls'] == 'yes' ? 'false' : 'true' );
+			}
+			
+			$certsFolder = md5($gn_credentials['client_id'].$gn_credentials['client_secret']);
+			
+			$certsFolder = plugin_dir_path( __FILE__ ).'../../'.$certsFolder.'/'.$paymentMethod.'/';
 
-				if(!file_exists($certificatePath)){
-					try {
-						$file = fopen( $certificatePath, 'w+' );
-						if ( $file ) {
-							$a = fwrite( $file, $wcSettings['gn_pix_file'] );
-							$b = fclose( $file );
+			
+			$certificatePath = $certsFolder.$wcSettings['gn_certificate_file_name'];
+
+			if(!file_exists($certificatePath)){
+				try {
+						if(!is_dir($certsFolder)){
+							mkdir($certsFolder, 0777, true);
 						}
-						
-						$wcSettings['gn_pix_file_path'] = $certificatePath;
-						update_option('woocommerce_' . GERENCIANET_PIX_ID . '_settings', $wcSettings);
 
-					} catch (Error $e) {
-						gn_log('Falha ao recriar certificado');
-						gn_log($e);
-						return self::result_api('<div class="error"><p><strong> Falha ao encontrar Certificado Pix, entre em contato com o administrador da loja. </strong></div>', false);
+					$file = fopen( $certificatePath, 'w+' );
+					if ( $file ) {
+						$a = fwrite( $file, $wcSettings['gn_certificate_file'] );
+						$b = fclose( $file );
 					}
-					
+
+
+				} catch (Error $e) {
+					gn_log('Falha ao recriar certificado');
+					gn_log($e);
+					return self::result_api('<div class="error"><p><strong> Falha ao encontrar Certificado, entre em contato com o administrador da loja. </strong></div>', false);
 				}
+				
+			}
 			$gn_credentials['certificate'] = $certificatePath;
+
+			if ( $paymentMethod == GERENCIANET_OPEN_FINANCE_ID) {
+				$gn_credentials['headers']  = array( 'x-idempotency-key' => substr(uniqid(rand(), true), 0, 72) );
+			}
 		}
 		return $gn_credentials;
 	}
@@ -431,4 +444,132 @@ class Gerencianet_Integration {
 
 		return $formated;
 	}
+
+	public function get_participants() {
+		$response = false;
+		try {
+			$api      = new Gerencianet( $this->get_credentials( GERENCIANET_OPEN_FINANCE_ID ) );
+			$data     = $api->ofListParticipants();
+			$arrayParticipantes = $data['participantes'];
+			$identificadorEfi =  "ebbed125-5cd7-42e3-965d-2e7af8e3b7ae";
+			$objEfi = null;
+			foreach($arrayParticipantes as $participante) {
+				if($participante["identificador"] === $identificadorEfi){
+					$objEfi = $participante;
+					break;
+				}
+			}
+			$indice = array_search($objEfi, $arrayParticipantes);
+			if($indice !== false) {
+				array_splice($arrayParticipantes, $indice, 1);
+				array_splice($arrayParticipantes, 0, 0 , (object) array($objEfi));
+			}
+			$response = true;
+		} catch ( GerencianetException $e ) {
+			$data = array(
+				'code'    => $e->getCode(),
+				'error'   => $e->error,
+				'message' => $e->errorDescription,
+			);
+		} catch ( Exception $e ) {
+			$data = array( 'message' => $e->getMessage() );
+		}
+
+		return self::result_api( $arrayParticipantes, $response );
+	}
+
+	public function pay_open_finance($body) {
+		$response = false;
+		gn_log($body);
+		try {
+			$api      = new Gerencianet( $this->get_credentials( GERENCIANET_OPEN_FINANCE_ID ) );
+			$data     = $api->ofStartPixPayment($params = [], $body);
+			$response = true;
+		} catch ( GerencianetException $e ) {
+			$data = array(
+				'code'    => $e->getCode(),
+				'error'   => $e->error,
+				'message' => $e->errorDescription,
+			);
+		} catch ( Exception $e ) {
+			$data = array( 'message' => $e->getMessage() );
+		}
+		gn_log($data);
+		return self::result_api( $data, $response );
+	}
+
+	public function update_webhook_open_finance( $url, $redirectUrl ) {
+		$response = false;
+
+		try {
+			$credentials = $this->get_credentials( GERENCIANET_OPEN_FINANCE_ID );
+			$api      = new Gerencianet($credentials);
+			$body     = array( 
+				'webhookURL' => strval( $url ), 
+				'redirectURL' => $redirectUrl,
+				'webhookSecurity'=> array(
+					'type' => 'hmac',
+					'hash' =>  md5($credentials['client_id'])
+  				),
+			);
+			$data     = $api->ofConfigUpdate($params = [], $body);
+			$response = true;
+		} catch ( GerencianetException $e ) {
+			$data = array(
+				'code'    => $e->getCode(),
+				'error'   => $e->error,
+				'message' => $e->errorDescription,
+			);
+		} catch ( Exception $e ) {
+			$data = array( 'message' => $e->getMessage() );
+		}
+
+		return self::result_api( $data, $response );
+	}
+
+    public function open_finance_refund( $order_id, $amount = null ) {
+		$order = new WC_Order( $order_id );
+
+		if ( ! $order ) {
+			gn_log( "Pedido #{$order_id} não encontrado" );
+			return self::result_api( "Pedido #{$order_id} não encontrado", false );
+		}
+
+			$e2eid = get_post_meta( $order_id, '_gn_open_finance_E2EID', true );
+			$identificadorPagamento  = get_post_meta( $order_id, '_gn_of_identificador_pagamento', true );
+
+		if ( isset( $e2eid ) && $e2eid != '' ) {
+
+			if ( ! is_null( $amount ) ) {
+				$value = str_replace( ',', '.', $amount );
+			}
+
+			gn_log( "Iniciando reembolso de R$ {$value} do pedido {$order_id} | Identificador do Pagamento: {$identificadorPagamento} | E2EID: {$e2eid}" );
+
+			$params = array(
+				'identificadorPagamento' => $identificadorPagamento,
+			);
+
+			$body = array(
+				'valor' => $value,
+			);
+
+			try {
+				$api = new Gerencianet( $this->get_credentials( GERENCIANET_OPEN_FINANCE_ID ) );
+				$devolution = $api->ofDevolutionPix( $params, $body );
+				gn_log( 'Devolução em processamento!' );
+
+				return self::result_api( true, true );
+			} catch ( Exception $e ) {
+				return self::result_api( false, false );
+			}
+		} elseif ( isset( $identificadorPagamento ) ) {
+			gn_log( "Tentativa de reembolso sem e2eid pedido {$order_id} valor {$amount}" );
+			return self::result_api( false, false );
+		} else {
+			gn_log( 'Não foi encontrado E2EID ou Identificador de Pagamento nesse pedido. Ele pode ter sido pago por outro meio de pagamento.' );
+			return self::result_api( false, false );
+		}
+	}
+
 }

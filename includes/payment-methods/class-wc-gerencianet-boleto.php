@@ -20,8 +20,8 @@ function init_gerencianet_boleto() {
 
 			$this->id                 = GERENCIANET_BOLETO_ID; // payment gateway plugin ID
 			$this->has_fields         = true; // custom form
-			$this->method_title       = __( 'Gerencianet - Boletos', Gerencianet_I18n::getTextDomain() );
-			$this->method_description = __( 'Com a Gerencianet você pode receber pagamentos via Boleto', Gerencianet_I18n::getTextDomain() );
+			$this->method_title       = __( 'Efí - Boletos', Gerencianet_I18n::getTextDomain() );
+			$this->method_description = __( 'Com a Efí você pode receber pagamentos via Boleto', Gerencianet_I18n::getTextDomain() );
 
 			$this->supports = array(
 				'products',
@@ -65,7 +65,7 @@ function init_gerencianet_boleto() {
 
 			$this->form_fields = array(
 				'gn_api_section'                => array(
-					'title'       => __( 'Credenciais Gerencianet', Gerencianet_I18n::getTextDomain() ),
+					'title'       => __( 'Credenciais Efí', Gerencianet_I18n::getTextDomain() ),
 					'type'        => 'title',
 					'description' => __( "<a href='https://gerencianet.com.br/artigo/como-obter-chaves-client-id-e-client-secret-na-api/#versao-7' target='_blank'>Clique aqui para obter seu Client_id e Client_secret! </a>", Gerencianet_I18n::getTextDomain() ),
 				),
@@ -100,7 +100,7 @@ function init_gerencianet_boleto() {
 				'gn_sandbox_section'            => array(
 					'title'       => __( 'Ambiente Sandbox', Gerencianet_I18n::getTextDomain() ),
 					'type'        => 'title',
-					'description' => 'Habilite para usar o ambiente de testes da Gerencianet. Nenhuma cobrança emitida nesse modo poderá ser paga.',
+					'description' => 'Habilite para usar o ambiente de testes da Efí. Nenhuma cobrança emitida nesse modo poderá ser paga.',
 				),
 				'gn_sandbox'                    => array(
 					'title'   => __( 'Sandbox', Gerencianet_I18n::getTextDomain() ),
@@ -150,7 +150,7 @@ function init_gerencianet_boleto() {
 					'desc_tip'    => false,
 					'placeholder' => '0',
 					'default'     => '5',
-				),
+				)
 				
 			);
 		}
@@ -192,7 +192,7 @@ function init_gerencianet_boleto() {
 			?>
 				<div class="form-row form-row-wide" id="gn_field_boleto">
 					<label>CPF/CNPJ <span class="required">*</span></label>
-					<input id="gn_boleto_cpf_cnpj" inputmode="numeric" name="gn_boleto_cpf_cnpj" type="text" placeholder="___.___.___-__" autocomplete="off" onkeypress="return event.charCode >= 48 && event.charCode <= 57">
+					<input id="gn_boleto_cpf_cnpj" class="input-text" inputmode="numeric" name="gn_boleto_cpf_cnpj" type="text" placeholder="___.___.___-__" autocomplete="off" onkeypress="return event.charCode >= 48 && event.charCode <= 57">
 				</div>
 				<div class="clear"></div></fieldset>
 				<script src="<?php echo plugins_url( '../assets/js/vanilla-masker.min.js', plugin_dir_path( __FILE__ ) ); ?>"></script>

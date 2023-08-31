@@ -1,0 +1,78 @@
+.swal2-html-container {
+    max-height: 350px;
+    overflow: hidden;
+}
+
+.gn-participants-list {
+
+    height: 300px;
+    overflow-y: scroll;
+    -webkit-overflow-scrolling: touch;
+    overflow-x: hidden;
+
+}
+
+.gn-participant-item {
+    width: 100%;
+    display: inline-flex;
+    padding: 6px;
+}
+
+.gn-participant {
+    margin-right: 5px;
+    border-radius: 5px;
+}
+
+.gn-participant:hover {
+    background: #f4f4f4;
+    cursor: pointer;
+}
+
+.gn-participant-logo {
+    width: 50px !important;
+    height: 50px !important;
+    align-self: center;
+}
+
+.gn-participant-name {
+    margin-left: auto;
+    align-self: center;
+    padding-right: 20px;
+    cursor: pointer;
+}
+
+.gn-hr {
+    border: 0;
+    height: 1px;
+    background-image: linear-gradient(to right, rgba(163, 163, 163, 0), rgba(163, 163, 163, 0.75), rgba(163, 163, 163, 0));
+    margin-bottom: 0;
+}
+
+.gn-of-search {
+    width: 80%;
+    padding: 10px;
+    border-color: rgba(163, 163, 163);
+    border-width: thin;
+    border-radius: 5px;
+    margin-bottom: 20px;
+}
+
+.gn-default-participant {
+    background: #f4f4f4;
+    cursor: pointer;
+    border-radius: 5px;
+}
+
+.gn-default-participant label {
+    margin-left: 10px;
+    align-self: end;
+    cursor: pointer;
+}
+
+.gn-of-edit {
+    margin-left: auto;
+    margin-right: 20px;
+    width: 25px;
+    height: 25px;
+    align-self: center;
+}

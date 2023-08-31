@@ -19,8 +19,8 @@ function init_gerencianet_pix() {
 		public function __construct() {
 			$this->id                 = GERENCIANET_PIX_ID; // payment gateway plugin ID
 			$this->has_fields         = true; // custom form
-			$this->method_title       = __( 'Gerencianet - PIX', Gerencianet_I18n::getTextDomain() );
-			$this->method_description = __( 'Com Gerencianet você pode receber pagamentos via Pix', Gerencianet_I18n::getTextDomain() );
+			$this->method_title       = __( 'Efí - PIX', Gerencianet_I18n::getTextDomain() );
+			$this->method_description = __( 'Com Efí você pode receber pagamentos via Pix', Gerencianet_I18n::getTextDomain() );
 
 			$this->supports = array(
 				'products',
@@ -43,7 +43,7 @@ function init_gerencianet_pix() {
 			$this->enabled     = $this->get_option( 'gn_pix' );
 
 			$this->gn_pix_key               = sanitize_text_field( $this->get_option( 'gn_pix_key' ) );
-			$this->gn_pix_file              = sanitize_text_field( $this->get_option( 'gn_pix_file' ) );
+			$this->gn_certificate_file              = sanitize_text_field( $this->get_option( 'gn_certificate_file' ) );
 			$this->gn_pix_discount          = sanitize_text_field( $this->get_option( 'gn_pix_discount' ) );
 			$this->gn_pix_discount_shipping = sanitize_text_field( $this->get_option( 'gn_pix_discount_shipping' ) );
 			$this->gn_pix_number_hours      = sanitize_text_field( $this->get_option( 'gn_pix_number_hours' ) );
@@ -75,9 +75,9 @@ function init_gerencianet_pix() {
 		}
 
 		public function savePixCertificate() {
-			$file_name = $_FILES['woocommerce_WC_Gerencianet_Pix_gn_pix_file']['name'];
+			$file_name = $_FILES['woocommerce_WC_Gerencianet_Pix_gn_certificate_file']['name'];
 			
-			if ( $_FILES['woocommerce_WC_Gerencianet_Pix_gn_pix_file']['error'] != 0 ) {
+			if ( $_FILES['woocommerce_WC_Gerencianet_Pix_gn_certificate_file']['error'] != 0 ) {
 				return;
 			}
 			
@@ -88,13 +88,13 @@ function init_gerencianet_pix() {
 			
 			switch ($fileActualExt) {
 				case 'pem':
-					if ( ! $file_read = file_get_contents( $_FILES['woocommerce_WC_Gerencianet_Pix_gn_pix_file']['tmp_name'] ) ) { // Pega o conteúdo do arquivo
+					if ( ! $file_read = file_get_contents( $_FILES['woocommerce_WC_Gerencianet_Pix_gn_certificate_file']['tmp_name'] ) ) { // Pega o conteúdo do arquivo
 						echo '<div class="error"><p><strong> Falha ao ler arquivo o Certificado Pix! </strong></div>';
 						return;
 					}
 					break;
 				case 'p12':
-					if ( ! $cert_file_p12 = file_get_contents( $_FILES['woocommerce_WC_Gerencianet_Pix_gn_pix_file']['tmp_name'] ) ) { // Pega o conteúdo do arquivo
+					if ( ! $cert_file_p12 = file_get_contents( $_FILES['woocommerce_WC_Gerencianet_Pix_gn_certificate_file']['tmp_name'] ) ) { // Pega o conteúdo do arquivo
 						echo '<div class="error"><p><strong> Falha ao ler arquivo o Certificado Pix! </strong></div>';
 						return;
 					}
@@ -112,18 +112,18 @@ function init_gerencianet_pix() {
 					return;
 			}
 			if ( isset( $file_read ) ) {
-				$this->update_option( 'gn_pix_file_name', str_replace('p12', 'pem', $file_name) );
-				$this->update_option( 'gn_pix_file', $file_read );
+				$this->update_option( 'gn_certificate_file_name', str_replace('p12', 'pem', $file_name) );
+				$this->update_option( 'gn_certificate_file', $file_read );
 			}
 
 		}
 
 		public function init_form_fields() {
-			$certificateLabel = $this->get_option( 'gn_pix_file' ) != '' ? 'Certificado Pix salvo:<code>'.$this->get_option( 'gn_pix_file_name' ).'</code>' : 'Nenhum certificado salvo';
+			$certificateLabel = $this->get_option( 'gn_certificate_file' ) != '' ? 'Certificado Pix salvo:<code>'.$this->get_option( 'gn_certificate_file_name' ).'</code>' : 'Nenhum certificado salvo';
 
 			$this->form_fields = array(
 				'gn_api_section'                => array(
-					'title'       => __( 'Credenciais Gerencianet', Gerencianet_I18n::getTextDomain() ),
+					'title'       => __( 'Credenciais Efí', Gerencianet_I18n::getTextDomain() ),
 					'type'        => 'title',
 					'description' => __( "<a href='https://gerencianet.com.br/artigo/como-obter-chaves-client-id-e-client-secret-na-api/#versao-7' target='_blank'>Clique aqui para obter seu Client_id e Client_secret! </a>", Gerencianet_I18n::getTextDomain() ),
 				),
@@ -154,7 +154,7 @@ function init_gerencianet_pix() {
 				'gn_sandbox_section'            => array(
 					'title'       => __( 'Ambiente Sandbox', Gerencianet_I18n::getTextDomain() ),
 					'type'        => 'title',
-					'description' => 'Habilite para usar o ambiente de testes da Gerencianet. Nenhuma cobrança emitida nesse modo poderá ser paga.',
+					'description' => 'Habilite para usar o ambiente de testes da Efí. Nenhuma cobrança emitida nesse modo poderá ser paga.',
 				),
 				'gn_sandbox'                    => array(
 					'title'   => __( 'Sandbox', Gerencianet_I18n::getTextDomain() ),
@@ -175,12 +175,12 @@ function init_gerencianet_pix() {
 				'gn_pix_key'                    => array(
 					'title'       => __( 'Chave Pix', Gerencianet_I18n::getTextDomain() ),
 					'type'        => 'text',
-					'description' => __( 'Insira sua chave Pix da Gerencianet', Gerencianet_I18n::getTextDomain() ),
+					'description' => __( 'Insira sua chave Pix da Efí', Gerencianet_I18n::getTextDomain() ),
 					'desc_tip'    => false,
 					'placeholder' => '',
 					'default'     => '',
 				),
-				'gn_pix_file'                   => array(
+				'gn_certificate_file'                   => array(
 					'title'       => __( 'Certificado Pix', Gerencianet_I18n::getTextDomain() ),
 					'type'        => 'file',
 					'description' => $certificateLabel,
@@ -251,7 +251,7 @@ function init_gerencianet_pix() {
 			?>
 			<div class="form-row form-row-wide" id="gn_field_pix">
 				<label>CPF/CNPJ <span class="required">*</span></label>
-				<input id="gn_pix_cpf_cnpj" inputmode="numeric" name="gn_pix_cpf_cnpj" type="text" placeholder="___.___.___-__" autocomplete="off" onkeypress="return event.charCode >= 48 && event.charCode <= 57">
+				<input id="gn_pix_cpf_cnpj" class="input-text" inputmode="numeric" name="gn_pix_cpf_cnpj" type="text" placeholder="___.___.___-__" autocomplete="off" onkeypress="return event.charCode >= 48 && event.charCode <= 57">
 			</div>
 			<div class="clear"></div>
 			<script src="<?php echo plugins_url( '../assets/js/vanilla-masker.min.js', plugin_dir_path( __FILE__ ) ); ?>"></script>
@@ -311,9 +311,9 @@ function init_gerencianet_pix() {
 
 			$value += $order->get_total_tax();
 
-			if ( $this->get_option( 'gn_pix_discount' ) != '' && $this->get_option( 'gn_pix_discount' ) != '0' ) {
+			$discount = 0;
 
-				$discount = 0;
+			if ( $this->get_option( 'gn_pix_discount' ) != '' && $this->get_option( 'gn_pix_discount' ) != '0' ) {
 
 				if ( $this->get_option( 'gn_pix_discount_shipping' ) == 'total' ) {
 					$discount = ( ( $value ) * ( intval( $this->get_option( 'gn_pix_discount' ) ) / 100 ) );

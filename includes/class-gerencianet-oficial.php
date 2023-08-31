@@ -7,6 +7,7 @@ require __DIR__ . '/lib/class-gerencianet-validate.php';
 require __DIR__ . '/payment-methods/class-wc-gerencianet-boleto.php';
 require __DIR__ . '/payment-methods/class-wc-gerencianet-cartao.php';
 require __DIR__ . '/payment-methods/class-wc-gerencianet-pix.php';
+require __DIR__ . '/payment-methods/class-wc-gerencianet-open-finance.php';
 require __DIR__ . '/class-gerencianet-i18n.php';
 
 
@@ -73,6 +74,7 @@ class Gerencianet_Oficial {
 		add_action( 'plugins_loaded', 'init_gerencianet_boleto' );
 		add_action( 'plugins_loaded', 'init_gerencianet_cartao' );
 		add_action( 'plugins_loaded', 'init_gerencianet_pix' );
+		add_action( 'plugins_loaded', 'init_gerencianet_open_finance' );
 
 		// Add gateway to woocommerce options
 		$this->loader->add_filter( 'woocommerce_payment_gateways', $this, 'gerencianet_add_gateway_class' );
@@ -177,6 +179,7 @@ class Gerencianet_Oficial {
 		$gateways[] = GERENCIANET_BOLETO_ID;
 		$gateways[] = GERENCIANET_CARTAO_ID;
 		$gateways[] = GERENCIANET_PIX_ID;
+		$gateways[] = GERENCIANET_OPEN_FINANCE_ID;
 		return $gateways;
 	}
 

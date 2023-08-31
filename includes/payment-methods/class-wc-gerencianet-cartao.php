@@ -20,8 +20,8 @@ function init_gerencianet_cartao() {
 
 			$this->id                 = GERENCIANET_CARTAO_ID; // payment gateway plugin ID
 			$this->has_fields         = true; // custom form
-			$this->method_title       = __( 'Gerencianet - Cartão de Crédito', Gerencianet_I18n::getTextDomain() );
-			$this->method_description = __( 'Com a Gerencianet você pode receber pagamentos via Cartão de Crédito', Gerencianet_I18n::getTextDomain() );
+			$this->method_title       = __( 'Efí - Cartão de Crédito', Gerencianet_I18n::getTextDomain() );
+			$this->method_description = __( 'Com a Efí você pode receber pagamentos via Cartão de Crédito', Gerencianet_I18n::getTextDomain() );
 
 			$this->supports = array(
 				'products',
@@ -59,7 +59,7 @@ function init_gerencianet_cartao() {
 
 			$this->form_fields = array(
 				'gn_api_section'                => array(
-					'title'       => __( 'Credenciais Gerencianet', Gerencianet_I18n::getTextDomain() ),
+					'title'       => __( 'Credenciais Efí', Gerencianet_I18n::getTextDomain() ),
 					'type'        => 'title',
 					'description' => __( "<a href='https://gerencianet.com.br/artigo/como-obter-chaves-client-id-e-client-secret-na-api/#versao-7' target='_blank'>Clique aqui para obter seu Client_id e Client_secret! </a>", Gerencianet_I18n::getTextDomain() ),
 				),
@@ -94,7 +94,7 @@ function init_gerencianet_cartao() {
 				'gn_sandbox_section'            => array(
 					'title'       => __( 'Ambiente Sandbox', Gerencianet_I18n::getTextDomain() ),
 					'type'        => 'title',
-					'description' => 'Habilite para usar o ambiente de testes da Gerencianet. Nenhuma cobrança emitida nesse modo poderá ser paga.',
+					'description' => 'Habilite para usar o ambiente de testes da Efí. Nenhuma cobrança emitida nesse modo poderá ser paga.',
 				),
 				'gn_sandbox'                    => array(
 					'title'   => __( 'Sandbox', Gerencianet_I18n::getTextDomain() ),
@@ -142,25 +142,25 @@ function init_gerencianet_cartao() {
 				<div id="gn_row_cpf_birth">
 					<div class="form-row form-row-first" id="gn_field_cpf_cnpj">
 						<label>CPF/CNPJ <span class="required">*</span></label>
-						<input id="gn_cartao_cpf_cnpj" inputmode="numeric" name="gn_cartao_cpf_cnpj" type="text" placeholder="___.___.___-__" autocomplete="off" onkeypress="return event.charCode >= 48 && event.charCode <= 57">
+						<input id="gn_cartao_cpf_cnpj" class="input-text" inputmode="numeric" name="gn_cartao_cpf_cnpj" type="text" placeholder="___.___.___-__" autocomplete="off" onkeypress="return event.charCode >= 48 && event.charCode <= 57">
 					</div>
 					<div class="form-row form-row-last" id="gn_field_birth">
 						<label><?php echo __( 'Data de Nasc.', Gerencianet_I18n::getTextDomain() ); ?><span class="required">*</span></label>
-						<input id="gn_cartao_birth" inputmode="numeric" name="gn_cartao_birth" placeholder="__/__/____" type="text" autocomplete="off">
+						<input id="gn_cartao_birth" class="input-text" inputmode="numeric" name="gn_cartao_birth" placeholder="__/__/____" type="text" autocomplete="off">
 					</div>
 				</div>
 				<div class="form-row form-row-wide"><label><?php echo __( 'Número do Cartão', Gerencianet_I18n::getTextDomain() ); ?><span class="required">*</span></label>
-					<input id="gn_cartao_number" inputmode="numeric" name="gn_cartao_number" type="text" autocomplete="off" style="width: 100%;">
+					<input id="gn_cartao_number" class="input-text" inputmode="numeric" name="gn_cartao_number" type="text" autocomplete="off" style="width: 100%;">
 				</div>
 				<div class="form-row form-row-first"><label>CVV<span class="required">*</span></label>
-					<input id="gn_cartao_cvv" inputmode="numeric" name="gn_cartao_cvv" type="text" autocomplete="off">
+					<input id="gn_cartao_cvv" class="input-text" inputmode="numeric" name="gn_cartao_cvv" type="text" autocomplete="off">
 				</div>
 				<div class="form-row form-row-last"><label><?php echo __( 'Expiração', Gerencianet_I18n::getTextDomain() ); ?><span class="required">*</span></label>
-					<input id="gn_cartao_expiration" inputmode="numeric" placeholder="__/____" name="gn_cartao_expiration" type="text" autocomplete="off">
+					<input id="gn_cartao_expiration" class="input-text" inputmode="numeric" placeholder="__/____" name="gn_cartao_expiration" type="text" autocomplete="off">
 				</div>
 				<div class="clear"></div>
 				<div class="form-row form-row-wide"><label><?php echo __( 'Parcelas', Gerencianet_I18n::getTextDomain() ); ?><span class="required">*</span></label>
-					<input id="gn_cartao_no_installments" name="gn_cartao_no_installments" type="text" value="<?php echo __( 'Por favor, insira o número do seu cartão', Gerencianet_I18n::getTextDomain() ); ?>" style="text-align: center; width: 100%;" disabled>
+					<input id="gn_cartao_no_installments" class="input-text" name="gn_cartao_no_installments" type="text" value="<?php echo __( 'Por favor, insira o número do seu cartão', Gerencianet_I18n::getTextDomain() ); ?>" style="text-align: center; width: 100%;" disabled>
 					<select id="gn_cartao_installments" name="gn_cartao_installments" style="display:none;width: 100%;border-color: #dcd7ca;"></select>
 				</div>
 				<input id="gn_payment_token" name="gn_payment_token" type="hidden">
