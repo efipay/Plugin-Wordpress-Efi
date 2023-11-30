@@ -20,7 +20,7 @@ function init_gerencianet_pix() {
 			$this->id                 = GERENCIANET_PIX_ID; // payment gateway plugin ID
 			$this->has_fields         = true; // custom form
 			$this->method_title       = __( 'Efí - PIX', Gerencianet_I18n::getTextDomain() );
-			$this->method_description = __( 'Com Efí você pode receber pagamentos via Pix', Gerencianet_I18n::getTextDomain() );
+			$this->method_description = __( 'Com a Efí você pode receber pagamentos via Pix', Gerencianet_I18n::getTextDomain() );
 
 			$this->supports = array(
 				'products',

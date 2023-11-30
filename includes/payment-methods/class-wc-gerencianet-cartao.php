@@ -169,7 +169,7 @@ function init_gerencianet_cartao() {
 				<script>
 					var options = {
 						payeeCode: '<?php echo esc_html($this->get_option( 'gn_payee_code' )); ?>',
-						enviroment:'<?php echo esc_html($this->get_option( 'gn_sandbox' )) == 'yes'? 'homologation' : 'production'; ?>'
+						enviroment:'<?php echo esc_html($this->get_option( 'gn_sandbox' )) == 'yes'? 'sandbox' : 'production'; ?>'
 					}
 				</script>
 				<script type="module" src="<?php echo plugins_url( '../assets/js/payment-token-efi.min.js', plugin_dir_path( __FILE__ ) ); ?>"></script>
