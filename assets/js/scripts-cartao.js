@@ -115,12 +115,14 @@ jQuery(document).ready(function ($) {
         jQuery('#gn_cartao_cpf_cnpj').blur(
             function () {
                 var cpf_cnpj = jQuery('#gn_cartao_cpf_cnpj').val();
-
-                if (!validate_cpf_cnpj(cpf_cnpj)) {
-                    jQuery('#gn_cartao_cpf_cnpj').css('border', '1px solid red');
-                    toastError("CPF/CNPJ Inválido");
-                } else {
-                    jQuery('#gn_cartao_cpf_cnpj').css('border', '1px solid green');
+                
+                if(cpf_cnpj != "") {
+                    if (!validate_cpf_cnpj(cpf_cnpj)) {
+                        jQuery('#gn_cartao_cpf_cnpj').css('border', '1px solid red');
+                        toastError("CPF/CNPJ Inválido");
+                    } else {
+                        jQuery('#gn_cartao_cpf_cnpj').css('border', '1px solid green');
+                    }
                 }
             }
         )
@@ -131,12 +133,14 @@ jQuery(document).ready(function ($) {
         jQuery('#gn_cartao_birth').blur(
             function () {
                 var date = jQuery('#gn_cartao_birth').val();
-
-                if (!verify_date(date)) {
-                    jQuery('#gn_cartao_birth').css('border', '1px solid red');
-                    toastError('Data de nascimento inválida!');
-                } else {
-                    jQuery('#gn_cartao_birth').css('border', '1px solid green');
+                
+                if(date != "") {
+                    if (!verify_date(date)) {
+                        jQuery('#gn_cartao_birth').css('border', '1px solid red');
+                        toastError('Data de nascimento inválida!');
+                    } else {
+                        jQuery('#gn_cartao_birth').css('border', '1px solid green');
+                    }
                 }
             }
         )
@@ -147,12 +151,13 @@ jQuery(document).ready(function ($) {
         jQuery('#gn_cartao_expiration').blur(
             function () {
                 var exp = jQuery('#gn_cartao_expiration').val();
-
-                if (!validate_cartao_expiration(exp)) {
-                    jQuery('#gn_cartao_expiration').css('border', '1px solid red');
-                    toastError('Validade do cartão inválida!');
-                } else {
-                    jQuery('#gn_cartao_expiration').css('border', '1px solid green');
+                if(exp != "") {
+                    if (!validate_cartao_expiration(exp)) {
+                        jQuery('#gn_cartao_expiration').css('border', '1px solid red');
+                        toastError('Validade do cartão inválida!');
+                    } else {
+                        jQuery('#gn_cartao_expiration').css('border', '1px solid green');
+                    }
                 }
             }
         )

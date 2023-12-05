@@ -15,12 +15,14 @@
 				$('#gn_pix_cpf_cnpj').blur(
 					function () {
 						var cpf_cnpj = $('#gn_pix_cpf_cnpj').val();
-
-						if (!validate_cpf_cnpj(cpf_cnpj)) {
-							$('#gn_pix_cpf_cnpj').css('border', '1px solid red');
-							customError("CPF/CNPJ Inválido");
-						} else {
-							$('#gn_pix_cpf_cnpj').css('border', '1px solid green');
+						
+						if(cpf_cnpj != "") {
+    						if (!validate_cpf_cnpj(cpf_cnpj)) {
+    							$('#gn_pix_cpf_cnpj').css('border', '1px solid red');
+    							customError("CPF/CNPJ Inválido");
+    						} else {
+    							$('#gn_pix_cpf_cnpj').css('border', '1px solid green');
+    						}
 						}
 					}
 				)

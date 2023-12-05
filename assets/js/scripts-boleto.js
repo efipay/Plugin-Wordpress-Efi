@@ -15,12 +15,14 @@
 				$('#gn_boleto_cpf_cnpj').blur(
 					function () {
 						var cpf_cnpj = $('#gn_boleto_cpf_cnpj').val();
-
-						if (!validate_cpf_cnpj(cpf_cnpj)) {
-							$('#gn_boleto_cpf_cnpj').css('border', '1px solid red');
-							customError("CPF/CNPJ Inválido");
-						} else {
-							$('#gn_boleto_cpf_cnpj').css('border', '1px solid green');
+						
+						if(cpf_cnpj != "") {
+    						if (!validate_cpf_cnpj(cpf_cnpj)) {
+    							$('#gn_boleto_cpf_cnpj').css('border', '1px solid red');
+    							customError("CPF/CNPJ Inv谩lido");
+    						} else {
+    							$('#gn_boleto_cpf_cnpj').css('border', '1px solid green');
+    						}
 						}
 					}
 				)
@@ -57,9 +59,9 @@
 				)
 			}
 
-			// Bairro obrigatório
+			// Bairro obrigat贸rio
 			if (typeof $('#billing_neighborhood_field > label > span').html() !== 'undefined') {
-				$('#billing_neighborhood_field > label > span').html($('#billing_neighborhood_field > label > span').html().replace('opcional', 'obrigatório'))
+				$('#billing_neighborhood_field > label > span').html($('#billing_neighborhood_field > label > span').html().replace('opcional', 'obrigat贸rio'))
 			}
 
 		}

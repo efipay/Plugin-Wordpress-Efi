@@ -82,12 +82,15 @@ if (document.getElementById('gn_open_finance_cpf_cnpj')) {
     jQuery('#gn_open_finance_cpf_cnpj').blur(
         function () {
             var cpf_cnpj = jQuery('#gn_open_finance_cpf_cnpj').val();
-
-            if (!validate_cpf_cnpj(cpf_cnpj)) {
-                jQuery('#gn_open_finance_cpf_cnpj').css('border', '1px solid red');
-                toastError("CPF/CNPJ Inválido");
-            } else {
-                jQuery('#gn_open_finance_cpf_cnpj').css('border', '1px solid green');
+            
+            if(cpf_cnpj != "") {
+    
+                if (!validate_cpf_cnpj(cpf_cnpj)) {
+                    jQuery('#gn_open_finance_cpf_cnpj').css('border', '1px solid red');
+                    toastError("CPF/CNPJ Inválido");
+                } else {
+                    jQuery('#gn_open_finance_cpf_cnpj').css('border', '1px solid green');
+                }
             }
         }
     )
