@@ -403,8 +403,19 @@ function init_gerencianet_pix() {
 		}
 
 		public function webhook() {
-			header( 'HTTP/1.0 200 OK' );
-			$this->successful_webhook( file_get_contents( 'php://input' ) );
+
+			if(isset($_GET['hmac'])) {
+				$hmac = $_GET['hmac'];
+				$credential = md5($this->gn_sandbox  == 'yes' ? $this->get_option( 'gn_client_id_homologation') : $this->get_option( 'gn_client_id_production')); 
+				if($hmac == $credential) {
+					header( 'HTTP/1.0 200 OK' );
+					$this->successful_webhook( file_get_contents( 'php://input' ) );
+				} else {
+					header('HTTP/1.1 403 Forbidden');
+					gn_log("Não foi possível receber a notificação do Pix");
+				}
+			}
+
 		}
 
 		public function registerWebhook() {
@@ -412,7 +423,7 @@ function init_gerencianet_pix() {
 
 			try {
 				$pix_key  = $this->get_option( 'gn_pix_key' );
-				$url      = strtolower( $woocommerce->api_request_url( GERENCIANET_PIX_ID ) . '?ignore=' );
+				$url      = strtolower( $woocommerce->api_request_url( GERENCIANET_PIX_ID ));
 				$response = $this->gerencianetSDK->update_webhook( $pix_key, $url );
 			} catch ( \Throwable $th ) {
 				gn_log( $th );

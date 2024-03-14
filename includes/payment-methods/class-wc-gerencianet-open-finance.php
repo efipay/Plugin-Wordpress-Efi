@@ -390,7 +390,7 @@ function init_gerencianet_open_finance() {
 				wc_reduce_stock_levels( $order_id );
 				$woocommerce->cart->empty_cart();
 
-    gn_log('processando');
+    			gn_log('processando');
                 gn_log($charge['identificadorPagamento']);
 				update_post_meta( $order_id, '_gn_of_identificador_pagamento', $charge['identificadorPagamento'] );
 
@@ -424,6 +424,7 @@ function init_gerencianet_open_finance() {
 			try {
 				$redirectUrl = strtolower( $woocommerce->api_request_url( GERENCIANET_OPEN_FINANCE_ID.'-order-received') );
 				$url      = strtolower( $woocommerce->api_request_url( GERENCIANET_OPEN_FINANCE_ID ));
+				// hmac criado dentro da SDK
 				$response = $this->gerencianetSDK->update_webhook_open_finance($url, $redirectUrl);
 			} catch ( \Throwable $th ) {
 				gn_log( $th );

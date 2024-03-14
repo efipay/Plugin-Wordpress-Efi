@@ -237,10 +237,11 @@ class Gerencianet_Integration {
 	public function update_webhook( $pix_key, $url ) {
 		$response = false;
 		$params   = array( 'chave' => $pix_key );
+		$credentials = $this->get_credentials( GERENCIANET_PIX_ID );
 
 		try {
-			$api      = new Gerencianet( $this->get_credentials( GERENCIANET_PIX_ID ) );
-			$body     = array( 'webhookUrl' => strval( $url ) );
+			$api      = new Gerencianet( $credentials );
+			$body     = array( 'webhookUrl' => strval( $url ).'?hmac='.md5($credentials['client_id']).'&ignore=' );
 			$data     = $api->pixConfigWebhook( $params, $body );
 			$response = true;
 		} catch ( GerencianetException $e ) {
