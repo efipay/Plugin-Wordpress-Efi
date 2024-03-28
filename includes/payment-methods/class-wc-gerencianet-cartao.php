@@ -15,6 +15,13 @@ function init_gerencianet_cartao() {
 		public $method_title;
 		public $method_description;
 		public $supports;
+		private $gerencianetSDK;
+		private $gn_payee_code;
+		private $gn_client_id_production;
+		private $gn_client_secret_production;
+		private $gn_client_id_homologation;
+		private $gn_client_secret_homologation;
+		private $gn_sandbox;
 
 		public function __construct() {
 
@@ -307,12 +314,22 @@ function init_gerencianet_cartao() {
 
 			$installments = intval( sanitize_text_field( $_POST['gn_cartao_installments'] ) );
 
-			$number = sanitize_text_field( $_POST['billing_number'] ) != null ? sanitize_text_field( $_POST['billing_number'] ) : sanitize_text_field( $_POST['gn_billing_number'] );
+			if(isset($_POST['billing_number']) && $_POST['billing_number'] != ''){
+				$number = sanitize_text_field( $_POST['billing_number'] );
+			}else{
+				$number = sanitize_text_field( $_POST['gn_billing_number'] );
+			}
+
+			if(isset($_POST['billing_neighborhood']) && $_POST['billing_neighborhood'] != ''){
+				$neighborhood = sanitize_text_field( $_POST['billing_neighborhood'] );
+			}else{
+				$neighborhood = sanitize_text_field( $_POST['gn_billing_neighborhood'] );
+			}
 
 			$billingAddress = array(
 				'street'       => $order->get_billing_address_1(),
 				'number'       => $number,
-				'neighborhood' => sanitize_text_field( $_POST['billing_neighborhood'] ) != null ? sanitize_text_field( $_POST['billing_neighborhood'] ) : sanitize_text_field( $_POST['gn_billing_neighborhood'] ),
+				'neighborhood' => $neighborhood,
 				'zipcode'      => str_replace( '-', '', $order->get_billing_postcode() ),
 				'city'         => $order->get_billing_city(),
 				'state'        => $order->get_billing_state(),

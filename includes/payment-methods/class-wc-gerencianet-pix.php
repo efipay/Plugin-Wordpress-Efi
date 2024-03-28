@@ -15,6 +15,14 @@ function init_gerencianet_pix() {
 		public $method_title;
 		public $method_description;
 		public $supports;
+		private $gerencianetSDK;
+		private $gn_pix_key;
+		private $gn_certificate_file;
+		private $gn_pix_discount;
+		private $gn_pix_discount_shipping;
+		private $gn_pix_number_hours;
+		private $gn_pix_mtls;
+		private $gn_sandbox;
 
 		public function __construct() {
 			$this->id                 = GERENCIANET_PIX_ID; // payment gateway plugin ID

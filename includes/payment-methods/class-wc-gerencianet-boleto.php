@@ -15,6 +15,16 @@ function init_gerencianet_boleto() {
 		public $method_title;
 		public $method_description;
 		public $supports;
+		private $gerencianetSDK;
+		private $gn_billet_unpaid;
+		private $gn_billet_discount;
+		private $gn_billet_discount_shipping;
+		private $gn_billet_number_days;
+		private $gn_client_id_production;
+		private $gn_client_secret_production;
+		private $gn_client_id_homologation;
+		private $gn_client_secret_homologation;
+		private $gn_sandbox;
 
 		public function __construct() {
 

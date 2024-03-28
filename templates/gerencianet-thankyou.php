@@ -61,7 +61,11 @@ switch ( $payment_method ) {
 <script>
 	function gncopy() {
 		document.getElementById('gnbtncopy').innerHTML = 'Copiado!';
-		navigator.clipboard.writeText('<?php echo esc_html( $pixCopy ); ?>');
+		navigator.clipboard.writeText('<?php 
+		if(isset($pixCopy)){
+			echo esc_html( $pixCopy );
+		}
+		 ?>');
 		setTimeout(()=> {
 			document.getElementById('gnbtncopy').innerHTML = 'Copiar Pix Copia e Cola';
 			},1000)

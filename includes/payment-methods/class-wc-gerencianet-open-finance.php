@@ -15,6 +15,13 @@ function init_gerencianet_open_finance() {
 		public $method_title;
 		public $method_description;
 		public $supports;
+		private $gerencianetSDK;
+		private $gn_open_finance_document;
+		private $gn_open_finance_name;
+		private $gn_open_finance_account;
+		private $gn_certificate_file;
+		private $gn_open_finance_mtls;
+		private $gn_sandbox;
 
 		public function __construct() {
 			$this->id                 = GERENCIANET_OPEN_FINANCE_ID; // payment gateway plugin ID

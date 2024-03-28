@@ -136,9 +136,9 @@ class Gerencianet_Integration {
 			),
 		);
 
-		if ( $discount['value'] > 0 ) {
-			$discount['value']                     = intval( $discount['value'] );
-			$payment['banking_billet']['discount'] = $discount;
+		if(isset($discount['value']) && $discount['value'] > 0){
+				$discount['value']                     = intval( $discount['value'] );
+				$payment['banking_billet']['discount'] = $discount;
 		}
 
 		$body = array(
