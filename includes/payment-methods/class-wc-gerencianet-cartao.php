@@ -234,7 +234,7 @@ function init_gerencianet_cartao() {
 						$newFee      = array(
 							'name'   => __( 'Taxas', Gerencianet_I18n::getTextDomain() ),
 							'amount' => 1,
-							'value'  => (int)$this->gn_price_format($item->get_subtotal()),
+							'value'  => (int)$this->gn_price_format($item->get_total()),
 						);
 						$items[]     = $newFee;
 						break;

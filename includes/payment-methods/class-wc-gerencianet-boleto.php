@@ -239,9 +239,9 @@ function init_gerencianet_boleto() {
 						$newFee      = array(
 							'name'   => __( 'Taxas', Gerencianet_I18n::getTextDomain() ),
 							'amount' => 1,
-							'value'  => (int)$this->gn_price_format($item->get_subtotal()),
+							'value'  => (int)$this->gn_price_format($item->get_total()),
 						);
-						$orderTotal += (int)$this->gn_price_format($item->get_subtotal());
+						$orderTotal += (int)$this->gn_price_format($item->get_total());
 						$items[]     = $newFee;
 						break;
 					case 'shipping':

@@ -325,7 +325,7 @@ function init_gerencianet_open_finance() {
 			foreach ( $order->get_items( $types ) as $item_id => $item ) {
 				switch ( $item->get_type() ) {
 					case 'fee':
-						$value += $item->get_subtotal();
+						$value += $item->get_total();
 						break;
 					case 'shipping':
 						$value += $item->get_total();
@@ -345,8 +345,9 @@ function init_gerencianet_open_finance() {
 				}
 			}
 
-			$value += $order->get_total_tax();
-
+			if($order->get_total_tax()>0) {
+				$value += $order->get_total_tax();
+			}
 
 			$cpf_cnpj = str_replace( '.', '', sanitize_text_field( $_POST['gn_open_finance_cpf_cnpj'] ) );
 			$cpf_cnpj = str_replace( '-', '', $cpf_cnpj );

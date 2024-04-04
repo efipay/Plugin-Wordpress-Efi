@@ -289,7 +289,7 @@ function init_gerencianet_pix() {
 			foreach ( $order->get_items( $types ) as $item_id => $item ) {
 				switch ( $item->get_type() ) {
 					case 'fee':
-						$value += $item->get_subtotal();
+						$value += $item->get_total();
 						break;
 					case 'shipping':
 						$value += $item->get_total();
@@ -309,8 +309,10 @@ function init_gerencianet_pix() {
 				}
 			}
 
-			$value += $order->get_total_tax();
-
+			if($order->get_total_tax()>0) {
+				$value += $order->get_total_tax();
+			}
+			
 			$discount = 0;
 
 			if ( $this->get_option( 'gn_pix_discount' ) != '' && $this->get_option( 'gn_pix_discount' ) != '0' ) {
