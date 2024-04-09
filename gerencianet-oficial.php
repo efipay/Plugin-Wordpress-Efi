@@ -1,9 +1,5 @@
 <?php
-namespace Gerencianet_Oficial;
 
-use GN_Includes\Gerencianet_Oficial;
-use GN_Includes\Gerencianet_Activator;
-use GN_Includes\Gerencianet_Deactivator;
 
 /**
  * Plugin Name:       Efí by Gerencianet Oficial
@@ -15,9 +11,8 @@ use GN_Includes\Gerencianet_Deactivator;
  * License:           GPL-2.0+
  * License URI:       http://www.gnu.org/licenses/gpl-2.0.txt
  * Text Domain:       gerencianet-oficial
- * Domain Path:       /languages
  * WC requires at least: 5.0.0
- * WC tested up to: 8.3.0
+ * WC tested up to: 8.7.0
  */
 
 // If this file is called directly, abort.
@@ -53,6 +48,15 @@ register_activation_hook( GERENCIANET_OFICIAL_PLUGIN_FILE, array( Gerencianet_Ac
  * This action is documented in includes/class-gerencianet-oficial-deactivator.php
  */
 register_deactivation_hook( GERENCIANET_OFICIAL_PLUGIN_FILE, array( Gerencianet_Deactivator::class, 'deactivate' ) );
+
+/**
+ * Declarando compatibilidade com Woocommerce HPOS
+ */
+add_action( 'before_woocommerce_init', function() {
+		if ( class_exists( \Automattic\WooCommerce\Utilities\FeaturesUtil::class ) ) {
+			\Automattic\WooCommerce\Utilities\FeaturesUtil::declare_compatibility( 'custom_order_tables', __FILE__, true );
+		}
+	} );
 
 /**
  * Begins execution of the plugin.

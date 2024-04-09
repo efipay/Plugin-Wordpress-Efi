@@ -1,15 +1,4 @@
 <?php
-namespace GN_Includes;
-
-require __DIR__ . '/lib/gerencianet-logger.php';
-require __DIR__ . '/lib/class-gerencianet-integration.php';
-require __DIR__ . '/lib/class-gerencianet-validate.php';
-require __DIR__ . '/payment-methods/class-wc-gerencianet-boleto.php';
-require __DIR__ . '/payment-methods/class-wc-gerencianet-cartao.php';
-require __DIR__ . '/payment-methods/class-wc-gerencianet-pix.php';
-require __DIR__ . '/payment-methods/class-wc-gerencianet-open-finance.php';
-require __DIR__ . '/class-gerencianet-i18n.php';
-
 
 /**
  * The file that defines the core plugin class

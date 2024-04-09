@@ -2,18 +2,19 @@
 
 // EXAMPLES
 // Append an entry to the uploads/plugin.log file.
-// gn_log( 'Something happened.' );
+// new gn_log( 'Something happened.' );
 // Append an array entry to the uploads/plugin.log file.
-// gn_log( ['new_user' => 'benmarshall' ] );
+// new gn_log( ['new_user' => 'benmarshall' ] );
 // Write an entry to the uploads/plugin.log file, deleting the existing entries.
-// gn_log( 'Awesome sauce.', 'w' );
+// new gn_log( 'Awesome sauce.', 'w' );
 // Append an entry to a different log file in the uploads directory.
-// gn_log( 'Simple stuff.', 'a', 'simple-stuff' );
+// new gn_log( 'Simple stuff.', 'a', 'simple-stuff' );
 
+class gn_log {
 
-
-if ( ! function_exists( 'gn_log' ) ) {
-	function gn_log( $entry, $mode = 'a', $file = 'gerencianet' ) {
+	public function __construct($entry){
+		$mode = 'a';
+		$file = 'gerencianet';
 		// Get WordPress WP-CONTENT directory.
 		$upload_dir = WP_CONTENT_DIR;
 		// If the entry is array, json_encode.
@@ -29,4 +30,8 @@ if ( ! function_exists( 'gn_log' ) ) {
 		fclose( $file );
 		return $bytes;
 	}
+
 }
+
+
+

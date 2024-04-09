@@ -1,5 +1,4 @@
 <?php
-
 /**
  * Provide a public-facing view for the plugin
  *
@@ -18,13 +17,13 @@ switch ( $payment_method ) {
 		// echo "<p>".__("CPF is required!", Gerencianet_I18n::getTextDomain())."</p>";
 		break;
 	case GERENCIANET_BOLETO_ID:
-		echo '<iframe  src=' . esc_url( get_post_meta( $order_id, '_gn_link_responsive', true ) ) . " width='900' height='400'></iframe>";
+		echo '<iframe  src=' . esc_url( Hpos_compatibility::get_meta( $order_id, '_gn_link_responsive', true ) ) . " width='900' height='400'></iframe>";
 		break;
 	case GERENCIANET_PIX_ID:
-		$pixCopy = get_post_meta( $order_id, '_gn_pix_copy', true );
+		$pixCopy = Hpos_compatibility::get_meta( $order_id, '_gn_pix_copy', true );
 		echo "<h2>Escaneie o QrCode abaixo para pagar</h2>
                 <div style='float:left'>
-                    <img src='" . esc_html(get_post_meta( $order_id, '_gn_pix_qrcode', true )) . "' />
+                    <img src='" . esc_html(Hpos_compatibility::get_meta( $order_id, '_gn_pix_qrcode', true )) . "' />
                 </div>
                 <div style='padding: 10px;'>
                     <p style='font-weight: bold;'>Ou copie o Pix Copia e Cola clicando no botão abaixo!</p>

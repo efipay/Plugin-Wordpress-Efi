@@ -1,6 +1,5 @@
 <?php
 
-namespace GN_Includes;
 
 /**
  * Fired during plugin deactivation

@@ -4,10 +4,7 @@
  */
 
 require_once 'gerencianet/autoload.php';
-require 'gerencianet-logger.php';
-use Gerencianet\Exception\GerencianetException;
 use Gerencianet\Gerencianet;
-use GN_Includes\Gerencianet_I18n;
 
 class Gerencianet_Integration {
 
@@ -58,8 +55,8 @@ class Gerencianet_Integration {
 
 
 				} catch (Error $e) {
-					gn_log('Falha ao recriar certificado');
-					gn_log($e);
+					new gn_log('Falha ao recriar certificado');
+					new gn_log($e);
 					return self::result_api('<div class="error"><p><strong> Falha ao encontrar Certificado, entre em contato com o administrador da loja. </strong></div>', false);
 				}
 				
@@ -328,12 +325,12 @@ class Gerencianet_Integration {
 		$order = new WC_Order( $order_id );
 
 		if ( ! $order ) {
-			gn_log( "Pedido #{$order_id} não encontrado" );
+			new gn_log( "Pedido #{$order_id} não encontrado" );
 			return self::result_api( "Pedido #{$order_id} não encontrado", false );
 		}
 
-			$e2eid = get_post_meta( $order_id, '_gn_pix_E2EID', true );
-			$txid  = get_post_meta( $order_id, '_gn_pix_txid', true );
+			$e2eid = Hpos_compatibility::get_meta( $order_id, '_gn_pix_E2EID' );
+			$txid  = Hpos_compatibility::get_meta( $order_id, '_gn_pix_txid' );
 
 		if ( isset( $e2eid ) && $e2eid != '' ) {
 
@@ -341,7 +338,7 @@ class Gerencianet_Integration {
 				$value = str_replace( ',', '.', $amount );
 			}
 
-			gn_log( "Iniciando reembolso de R$ {$value} do pedido {$order_id} | TXID: {$txid} | E2EID: {$e2eid}" );
+			new gn_log( "Iniciando reembolso de R$ {$value} do pedido {$order_id} | TXID: {$txid} | E2EID: {$e2eid}" );
 
 			$params = array(
 				'e2eId' => $e2eid,
@@ -356,17 +353,17 @@ class Gerencianet_Integration {
 				$api = new Gerencianet( $this->get_credentials( GERENCIANET_PIX_ID ) );
 				$pix = $api->pixDevolution( $params, $body );
 				$order->update_status( 'refund' );
-				gn_log( 'Devolução concluída com sucesso!' );
+				new gn_log( 'Devolução concluída com sucesso!' );
 
 				return self::result_api( true, true );
 			} catch ( Exception $e ) {
 				return self::result_api( false, false );
 			}
 		} elseif ( isset( $txid ) ) {
-			gn_log( "Tentativa de reembolso sem e2eid pedido {$order_id} valor {$amount}" );
+			new gn_log( "Tentativa de reembolso sem e2eid pedido {$order_id} valor {$amount}" );
 			return self::result_api( false, false );
 		} else {
-			gn_log( 'Não foi encontrado E2EID ou TXID nesse pedido. Ele pode ter sido pago por outro meio de pagamento.' );
+			new gn_log( 'Não foi encontrado E2EID ou TXID nesse pedido. Ele pode ter sido pago por outro meio de pagamento.' );
 			return self::result_api( false, false );
 		}
 	}
@@ -390,7 +387,7 @@ class Gerencianet_Integration {
 				'code'    => $messageShow['code'],
 				'message' => $messageShow['message'],
 			);
-			gn_log( $errorResponse );
+			new gn_log( $errorResponse );
 			throw new Exception( $errorResponse['message'], 1 );
 		}
 	}
@@ -417,7 +414,7 @@ class Gerencianet_Integration {
 			$message['message'] = $messages[ $messageIndex ]['message'];
 			$message['code']    = $messages[ $messageIndex ]['code'];
 		} catch ( \Throwable $th ) {
-			gn_log( $th );
+			new gn_log( $th );
 			$message['message'] = __( 'Ocorreu um erro ao tentar realizar a sua requisição. Entre em contato com o proprietário da loja.', Gerencianet_I18n::getTextDomain() );
 			$message['code']    = 0;
 		}
@@ -481,7 +478,7 @@ class Gerencianet_Integration {
 
 	public function pay_open_finance($body) {
 		$response = false;
-		gn_log($body);
+		new gn_log($body);
 		try {
 			$api      = new Gerencianet( $this->get_credentials( GERENCIANET_OPEN_FINANCE_ID ) );
 			$data     = $api->ofStartPixPayment($params = [], $body);
@@ -495,7 +492,7 @@ class Gerencianet_Integration {
 		} catch ( Exception $e ) {
 			$data = array( 'message' => $e->getMessage() );
 		}
-		gn_log($data);
+		new gn_log($data);
 		return self::result_api( $data, $response );
 	}
 
@@ -532,12 +529,12 @@ class Gerencianet_Integration {
 		$order = new WC_Order( $order_id );
 
 		if ( ! $order ) {
-			gn_log( "Pedido #{$order_id} não encontrado" );
+			new gn_log( "Pedido #{$order_id} não encontrado" );
 			return self::result_api( "Pedido #{$order_id} não encontrado", false );
 		}
 
-			$e2eid = get_post_meta( $order_id, '_gn_open_finance_E2EID', true );
-			$identificadorPagamento  = get_post_meta( $order_id, '_gn_of_identificador_pagamento', true );
+			$e2eid = Hpos_compatibility::get_meta( $order_id, '_gn_open_finance_E2EID' );
+			$identificadorPagamento  = Hpos_compatibility::get_meta( $order_id, '_gn_of_identificador_pagamento' );
 
 		if ( isset( $e2eid ) && $e2eid != '' ) {
 
@@ -545,7 +542,7 @@ class Gerencianet_Integration {
 				$value = str_replace( ',', '.', $amount );
 			}
 
-			gn_log( "Iniciando reembolso de R$ {$value} do pedido {$order_id} | Identificador do Pagamento: {$identificadorPagamento} | E2EID: {$e2eid}" );
+			new gn_log( "Iniciando reembolso de R$ {$value} do pedido {$order_id} | Identificador do Pagamento: {$identificadorPagamento} | E2EID: {$e2eid}" );
 
 			$params = array(
 				'identificadorPagamento' => $identificadorPagamento,
@@ -558,17 +555,17 @@ class Gerencianet_Integration {
 			try {
 				$api = new Gerencianet( $this->get_credentials( GERENCIANET_OPEN_FINANCE_ID ) );
 				$devolution = $api->ofDevolutionPix( $params, $body );
-				gn_log( 'Devolução em processamento!' );
+				new gn_log( 'Devolução em processamento!' );
 
 				return self::result_api( true, true );
 			} catch ( Exception $e ) {
 				return self::result_api( false, false );
 			}
 		} elseif ( isset( $identificadorPagamento ) ) {
-			gn_log( "Tentativa de reembolso sem e2eid pedido {$order_id} valor {$amount}" );
+			new gn_log( "Tentativa de reembolso sem e2eid pedido {$order_id} valor {$amount}" );
 			return self::result_api( false, false );
 		} else {
-			gn_log( 'Não foi encontrado E2EID ou Identificador de Pagamento nesse pedido. Ele pode ter sido pago por outro meio de pagamento.' );
+			new gn_log( 'Não foi encontrado E2EID ou Identificador de Pagamento nesse pedido. Ele pode ter sido pago por outro meio de pagamento.' );
 			return self::result_api( false, false );
 		}
 	}

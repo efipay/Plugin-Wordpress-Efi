@@ -10,29 +10,26 @@
  *
  * All classes must follow WP class naming convention and be in the same folder as this file
  */
-spl_autoload_register(
-	function( $required_file ) {
+spl_autoload_register(function ($class) {
 
-		// Transform file name from class based to file based
-		$fixed_name = strtolower( str_ireplace( '_', '-', $required_file ) );
-		$file_path  = explode( '\\', $fixed_name );
-		$last_index = count( $file_path ) - 1;
-		$file_name  = "class-{$file_path[$last_index]}.php";
+    $baseDir = __DIR__;
 
-		// Get fully qualified path
-		$fully_qualified_path = trailingslashit( dirname( __FILE__ ), 2 );
-		for ( $key = 1; $key < $last_index; $key++ ) {
-			$fully_qualified_path .= trailingslashit( $file_path[ $key ] );
-		}
-		$fully_qualified_path .= $file_name;
-
-		// Include the file
-		if ( stream_resolve_include_path( $fully_qualified_path ) ) {
-			include_once $fully_qualified_path;
-		}
-
-	}
-);
+    $files = find_files($baseDir);
+    foreach ($files as $file) {
+        require_once $file;
+    }
+});
+// Função recursiva para buscar arquivos em subpastas
+    function find_files($dir) {
+        $files = glob($dir . '/*.php');
+        foreach (glob($dir . '/*', GLOB_ONLYDIR) as $subdir) {
+			if(!str_contains($subdir, 'lib/gerencianet')){
+				$files = array_merge($files, find_files($subdir));
+			}	
+        }
+		
+        return $files;
+    }
 
 /**
  * Check if the plugin template part loader is already loaded

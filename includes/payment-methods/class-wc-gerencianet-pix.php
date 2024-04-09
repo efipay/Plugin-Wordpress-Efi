@@ -1,7 +1,5 @@
 <?php
 
-use GN_Includes\Gerencianet_I18n;
-
 function init_gerencianet_pix() {
 	if ( ! class_exists( 'WC_Payment_Gateway' ) ) {
 		return;
@@ -391,10 +389,10 @@ function init_gerencianet_pix() {
 				$qrCodeResponse = $this->gerencianetSDK->generate_qrcode( $charge['loc']['id'] );
 				$qrCode         = json_decode( $qrCodeResponse, true );
 
-				update_post_meta( $order_id, '_gn_pix_link', $qrCode['linkVisualizacao'] );
-				update_post_meta( $order_id, '_gn_pix_qrcode', $qrCode['imagemQrcode'] );
-				update_post_meta( $order_id, '_gn_pix_copy', $qrCode['qrcode'] );
-				update_post_meta( $order_id, '_gn_pix_txid', $charge['txid'] );
+				Hpos_compatibility::update_meta( $order_id, '_gn_pix_link', $qrCode['linkVisualizacao'] );
+				Hpos_compatibility::update_meta( $order_id, '_gn_pix_qrcode', $qrCode['imagemQrcode'] );
+				Hpos_compatibility::update_meta( $order_id, '_gn_pix_copy', $qrCode['qrcode'] );
+				Hpos_compatibility::update_meta( $order_id, '_gn_pix_txid', $charge['txid'] );
 
 				$order->update_status( 'pending-payment' );
 				wc_reduce_stock_levels( $order_id );
@@ -420,7 +418,7 @@ function init_gerencianet_pix() {
 					$this->successful_webhook( file_get_contents( 'php://input' ) );
 				} else {
 					header('HTTP/1.1 403 Forbidden');
-					gn_log("Não foi possível receber a notificação do Pix");
+					new gn_log("Não foi possível receber a notificação do Pix");
 				}
 			}
 
@@ -428,13 +426,12 @@ function init_gerencianet_pix() {
 
 		public function registerWebhook() {
 			global $woocommerce;
-
 			try {
 				$pix_key  = $this->get_option( 'gn_pix_key' );
 				$url      = strtolower( $woocommerce->api_request_url( GERENCIANET_PIX_ID ));
 				$response = $this->gerencianetSDK->update_webhook( $pix_key, $url );
 			} catch ( \Throwable $th ) {
-				gn_log( $th );
+				new gn_log( $th );
 			}
 		}
 
@@ -460,10 +457,10 @@ function init_gerencianet_pix() {
 			// Atualiza status
 			foreach ( $orders as $order ) {
 
-				if ( isset( $pix[0]['txid'] ) && $pix[0]['txid'] != '' && ( get_post_meta( $order->get_id(), '_gn_pix_txid', true ) == $pix[0]['txid'] ) ) {
-					add_post_meta( intval( $order->get_id() ), '_gn_pix_E2EID', $pix[0]['endToEndId'], true );
+				if ( isset( $pix[0]['txid'] ) && $pix[0]['txid'] != '' && ( Hpos_compatibility::get_meta( $order->get_id(), '_gn_pix_txid', true ) == $pix[0]['txid'] ) ) {
+					Hpos_compatibility::update_meta( intval( $order->get_id() ), '_gn_pix_E2EID', $pix[0]['endToEndId'], true );
 
-					gn_log( $pix[0] );
+					new gn_log( $pix[0] );
 					if ( isset( $pix[0]['devolucoes'] ) && $pix[0]['devolucoes'][0]['status'] == 'DEVOLVIDO' ) {
 						$order->update_status( 'refund' );
 					} else {
@@ -482,7 +479,7 @@ function init_gerencianet_pix() {
 				return;
 			}
 
-			if ( get_post_meta( $order->get_id(), '_gn_pix_copy', true ) || get_post_meta( $order->get_id(), '_gn_pix_link', true ) ) {
+			if ( Hpos_compatibility::get_meta( $order->get_id(), '_gn_pix_copy', true ) || Hpos_compatibility::get_meta( $order->get_id(), '_gn_pix_link', true ) ) {
 				?>
 					<style>
 
@@ -520,7 +517,7 @@ function init_gerencianet_pix() {
 
 				function gncopy($field) {
 					document.getElementById('gnpix').innerHTML = 'Copiado!';
-					navigator.clipboard.writeText('<?php echo esc_html( get_post_meta( $order->get_id(), '_gn_pix_copy', true ) ); ?>');
+					navigator.clipboard.writeText('<?php echo esc_html( Hpos_compatibility::get_meta( $order->get_id(), '_gn_pix_copy', true ) ); ?>');
 					setTimeout(()=> {
 							document.getElementById('gnpix').innerHTML = 'Copiar Pix Copia e Cola';
 						},1000)
@@ -530,7 +527,7 @@ function init_gerencianet_pix() {
 					Swal.fire({
 						title: 'Meios de Pagamento Disponíveis',
 						icon: 'info',
-						html: '<div class="gngrid-container"><div class="gngrid-item"><?php if ( get_post_meta( $order->get_id(), '_gn_pix_copy', true ) !== NULL ) { ?><div class="gn-item-area"><img style="width:150px;" src=" <?php echo esc_url(plugins_url( 'woo-gerencianet-official/assets/img/pix-copia.png' )); ?> " /><br> <a onclick="gncopy(2)" id="gnpix" class="button gn-btn">Copiar Pix Copia e Cola</a> </div><?php }?></div><div class="gn-item-area"><?php if ( get_post_meta( $order->get_id(), '_gn_pix_link', true ) !== NULL ) { ?> <div class="gngrid-item"><img style="width:150px;" src=" <?php echo esc_url(plugins_url( 'woo-gerencianet-official/assets/img/boleto-online.png' )); ?> " /><br><a href=" <?php echo esc_url(get_post_meta( $order->get_id(), '_gn_pix_link', true )); ?>  " target="_blank" class="button gn-btn">Acessar Pix Online</a></div> <?php }?> </div></div>',
+						html: '<div class="gngrid-container"><div class="gngrid-item"><?php if ( Hpos_compatibility::get_meta( $order->get_id(), '_gn_pix_copy', true ) !== NULL ) { ?><div class="gn-item-area"><img style="width:150px;" src=" <?php echo esc_url(plugins_url( 'woo-gerencianet-official/assets/img/pix-copia.png' )); ?> " /><br> <a onclick="gncopy(2)" id="gnpix" class="button gn-btn">Copiar Pix Copia e Cola</a> </div><?php }?></div><div class="gn-item-area"><?php if ( Hpos_compatibility::get_meta( $order->get_id(), '_gn_pix_link', true ) !== NULL ) { ?> <div class="gngrid-item"><img style="width:150px;" src=" <?php echo esc_url(plugins_url( 'woo-gerencianet-official/assets/img/boleto-online.png' )); ?> " /><br><a href=" <?php echo esc_url(Hpos_compatibility::get_meta( $order->get_id(), '_gn_pix_link', true )); ?>  " target="_blank" class="button gn-btn">Acessar Pix Online</a></div> <?php }?> </div></div>',
 						showCloseButton: true,
 						showCancelButton: false,
 						showConfirmButton: false

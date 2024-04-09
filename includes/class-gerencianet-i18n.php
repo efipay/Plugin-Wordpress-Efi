@@ -1,7 +1,5 @@
 <?php
 
-namespace GN_Includes;
-
 /**
  * Define the internationalization functionality
  *

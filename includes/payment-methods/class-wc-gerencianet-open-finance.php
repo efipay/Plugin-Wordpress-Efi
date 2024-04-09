@@ -1,6 +1,5 @@
 <?php
 
-use GN_Includes\Gerencianet_I18n;
 
 function init_gerencianet_open_finance() {
 	if ( ! class_exists( 'WC_Payment_Gateway' ) ) {
@@ -105,7 +104,7 @@ function init_gerencianet_open_finance() {
 		   if(isset($_GET['erro'])){
 		        wp_redirect($this->get_return_url( $orders[0] ).$params);     
 		   }else{
-		       gn_log('sem erro');
+		       new gn_log('sem erro');
 		        wp_redirect($this->get_return_url( $orders[0] ));   
 		   }
 		   
@@ -397,9 +396,9 @@ function init_gerencianet_open_finance() {
 				wc_reduce_stock_levels( $order_id );
 				$woocommerce->cart->empty_cart();
 
-    			gn_log('processando');
-                gn_log($charge['identificadorPagamento']);
-				update_post_meta( $order_id, '_gn_of_identificador_pagamento', $charge['identificadorPagamento'] );
+    			new gn_log('processando');
+                new gn_log($charge['identificadorPagamento']);
+				Hpos_compatibility::update_meta( $order_id, '_gn_of_identificador_pagamento', $charge['identificadorPagamento'] );
 
 				return array(
 					'result'   => 'success',
@@ -420,7 +419,7 @@ function init_gerencianet_open_finance() {
 					$this->successful_webhook( file_get_contents( 'php://input' ) );
 				} else {
 					header('HTTP/1.1 403 Forbidden');
-					gn_log("Não foi possível receber a notificação do Open Finance");
+					new gn_log("Não foi possível receber a notificação do Open Finance");
 				}
 			}
 		}
@@ -434,7 +433,7 @@ function init_gerencianet_open_finance() {
 				// hmac criado dentro da SDK
 				$response = $this->gerencianetSDK->update_webhook_open_finance($url, $redirectUrl);
 			} catch ( \Throwable $th ) {
-				gn_log( $th );
+				new gn_log( $th );
 			}
 		}
 
@@ -460,13 +459,13 @@ function init_gerencianet_open_finance() {
 			// Atualiza status
 			foreach ( $orders as $order ) {
 
-				if ( isset( $payment['identificadorPagamento'] ) && $payment['identificadorPagamento'] != '' && ( get_post_meta( $order->get_id(), '_gn_of_identificador_pagamento', true ) == $payment['identificadorPagamento'] ) ) {
-					add_post_meta( intval( $order->get_id() ), '_gn_open_finance_E2EID', $payment['endToEndId'], true );
+				if ( isset( $payment['identificadorPagamento'] ) && $payment['identificadorPagamento'] != '' && ( Hpos_compatibility::get_meta( $order->get_id(), '_gn_of_identificador_pagamento', true ) == $payment['identificadorPagamento'] ) ) {
+					Hpos_compatibility::update_meta( intval( $order->get_id() ), '_gn_open_finance_E2EID', $payment['endToEndId'], true );
 
-					gn_log( $payment);
+					new gn_log( $payment);
 
 					if ( isset( $payment['identificadorDevolucao'] ) && $payment['tipo'] == 'devolucao' && $payment['status'] == 'aceito') {
-						add_post_meta( intval( $order->get_id() ), '_gn_open_finance_identificadorDevolucao', $payment['identificadorDevolucao'], true );
+						Hpos_compatibility::update_meta( intval( $order->get_id() ), '_gn_open_finance_identificadorDevolucao', $payment['identificadorDevolucao'], true );
 						$order->update_status( 'refunded' );
 					} else if ($payment['status'] == 'expirado' && $payment['tipo'] == 'pagamento') {
 						$order->update_status( 'failed' );
@@ -502,7 +501,7 @@ function init_gerencianet_open_finance() {
 				return;
 			}
 
-			if ( get_post_meta( $order->get_id(), '_gn_pix_copy', true ) || get_post_meta( $order->get_id(), '_gn_pix_link', true ) ) {
+			if ( Hpos_compatibility::get_meta( $order->get_id(), '_gn_pix_copy', true ) || Hpos_compatibility::get_meta( $order->get_id(), '_gn_pix_link', true ) ) {
 				?>
 					<style>
 
@@ -540,7 +539,7 @@ function init_gerencianet_open_finance() {
 
 				function gncopy($field) {
 					document.getElementById('gnpix').innerHTML = 'Copiado!';
-					navigator.clipboard.writeText('<?php echo esc_html( get_post_meta( $order->get_id(), '_gn_pix_copy', true ) ); ?>');
+					navigator.clipboard.writeText('<?php echo esc_html( Hpos_compatibility::get_meta( $order->get_id(), '_gn_pix_copy', true ) ); ?>');
 					setTimeout(()=> {
 							document.getElementById('gnpix').innerHTML = 'Copiar Pix Copia e Cola';
 						},1000)
@@ -550,7 +549,7 @@ function init_gerencianet_open_finance() {
 					Swal.fire({
 						title: 'Meios de Pagamento Disponíveis',
 						icon: 'info',
-						html: '<div class="gngrid-container"><div class="gngrid-item"><?php if ( get_post_meta( $order->get_id(), '_gn_pix_copy', true ) !== NULL ) { ?><div class="gn-item-area"><img style="width:150px;" src=" <?php echo esc_url(plugins_url( 'woo-gerencianet-official/assets/img/pix-copia.png' )); ?> " /><br> <a onclick="gncopy(2)" id="gnpix" class="button gn-btn">Copiar Pix Copia e Cola</a> </div><?php }?></div><div class="gn-item-area"><?php if ( get_post_meta( $order->get_id(), '_gn_pix_link', true ) !== NULL ) { ?> <div class="gngrid-item"><img style="width:150px;" src=" <?php echo esc_url(plugins_url( 'woo-gerencianet-official/assets/img/boleto-online.png' )); ?> " /><br><a href=" <?php echo esc_url(get_post_meta( $order->get_id(), '_gn_pix_link', true )); ?>  " target="_blank" class="button gn-btn">Acessar Pix Online</a></div> <?php }?> </div></div>',
+						html: '<div class="gngrid-container"><div class="gngrid-item"><?php if ( Hpos_compatibility::get_meta( $order->get_id(), '_gn_pix_copy', true ) !== NULL ) { ?><div class="gn-item-area"><img style="width:150px;" src=" <?php echo esc_url(plugins_url( 'woo-gerencianet-official/assets/img/pix-copia.png' )); ?> " /><br> <a onclick="gncopy(2)" id="gnpix" class="button gn-btn">Copiar Pix Copia e Cola</a> </div><?php }?></div><div class="gn-item-area"><?php if ( Hpos_compatibility::get_meta( $order->get_id(), '_gn_pix_link', true ) !== NULL ) { ?> <div class="gngrid-item"><img style="width:150px;" src=" <?php echo esc_url(plugins_url( 'woo-gerencianet-official/assets/img/boleto-online.png' )); ?> " /><br><a href=" <?php echo esc_url(Hpos_compatibility::get_meta( $order->get_id(), '_gn_pix_link', true )); ?>  " target="_blank" class="button gn-btn">Acessar Pix Online</a></div> <?php }?> </div></div>',
 						showCloseButton: true,
 						showCancelButton: false,
 						showConfirmButton: false

@@ -1,7 +1,5 @@
 <?php
 
-use GN_Includes\Gerencianet_I18n;
-
 function init_gerencianet_cartao() {
 	if ( ! class_exists( 'WC_Payment_Gateway' ) ) {
 		return;
@@ -397,7 +395,7 @@ function init_gerencianet_cartao() {
 							break;
 					}
 				} else {
-					gn_log( 'Notification Request : FAIL ' );
+					new gn_log( 'Notification Request : FAIL ' );
 				}
 
 				exit();
