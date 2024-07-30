@@ -2,12 +2,12 @@
 Contributors: Efí Bank
 Tags: woocommerce, gerencianet, payment, transparent checkout, pix, Boleto, card, brazil, payments brazil, cartão de crédito, efí, efi, efipay, efi bank, efi pay, efípay, efí bank, efí pay, Open Finance
 Requires at least: 5.x
-Tested up to: 6.4
-Stable tag: 2.2.4
+Tested up to: 6.6
+Stable tag: 2.3.0
 License: GPLv2 or later
 License URI: http://www.gnu.org/licenses/gpl-2.0.html
 
-Receba pagamentos por Boleto bancário, Pix, Cartão de Crédito e Open Finance em sua loja WooCommerce com a Efí Bank.
+Receba pagamentos por Boleto bancário, Pix, Cartão de Crédito, Open Finance, Assinaturas via Boleto e/ou Cartão de Crédito em sua loja WooCommerce com a Efí Bank.
 
 == Descrição ==
 

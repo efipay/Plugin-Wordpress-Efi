@@ -1,0 +1,103 @@
+.order-status {
+  display: inline-flex;
+  line-height: 2.5em;
+  color: #777;
+  background: #e5e5e5;
+  border-radius: 4px;
+  border-bottom: 1px solid rgba(0, 0, 0, 0.05);
+  margin: 0;
+  cursor: inherit !important;
+  white-space: nowrap;
+  max-width: 100%;
+}
+.order-status.status-processing {
+  background: #c6e1c6;
+  color: #5b841b;
+}
+.order-status > span {
+  margin: 0 1em;
+  overflow: hidden;
+  text-overflow: ellipsis;
+}
+
+/* aguardando */
+
+.order-status.status-completed {
+  background: #c8d7e1;
+  color: #2e4453;
+}
+
+/* expirado */
+
+.order-status.status-on-hold {
+  background: #f8dda7;
+  color: #94660c;
+}
+
+/* cancelado */
+
+.order-status.status-failed {
+  background: #eba3a3;
+  color: #761919;
+}
+
+#postbox-container-1 {
+  display: none;
+}
+
+#post-body {
+  width: 100%;
+}
+
+body{
+  background-color: #f0f0f1 !important;
+}
+
+.custom-panel{
+    background-color: #ffff;
+    border: 1px #C3C4C7 solid;
+	padding: 10px;
+}
+
+.custom-panel h2{
+	font-size: 25px !important;
+  margin-bottom: 5px;
+}
+
+.custom-panel h3{
+	font-size: 20px !important;
+  border-bottom: 1px #C3C4C7 solid;
+}
+
+.custom-panel-container{
+	display: flex;
+	width: 100%;
+}
+
+.custom-panel-column{
+	flex: 1; /* Cada coluna ocupa 50% do espaço */
+	padding: 20px;
+	box-sizing: border-box;
+}
+
+.btn-efi {
+    color: #fff;
+    background: #EB6608;
+    border-color: none;
+}
+
+.btn-efi:hover {
+    color: #fff;
+}
+
+#title{
+  display: none;
+}
+
+.subscription-label{
+  display: block;
+}
+
+.subscription-label span{
+  font-weight: bold;
+}

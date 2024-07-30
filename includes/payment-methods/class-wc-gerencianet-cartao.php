@@ -155,7 +155,7 @@ function init_gerencianet_cartao() {
 				<div class="form-row form-row-first"><label>CVV<span class="required">*</span></label>
 					<input id="gn_cartao_cvv" class="input-text" inputmode="numeric" name="gn_cartao_cvv" type="text" autocomplete="off">
 				</div>
-				<div class="form-row form-row-last"><label><?php echo __( 'Expiração', Gerencianet_I18n::getTextDomain() ); ?><span class="required">*</span></label>
+				<div class="form-row form-row-last"><label><?php echo __( 'Expiração (MM/AAAA)', Gerencianet_I18n::getTextDomain() ); ?><span class="required">*</span></label>
 					<input id="gn_cartao_expiration" class="input-text" inputmode="numeric" placeholder="__/____" name="gn_cartao_expiration" type="text" autocomplete="off">
 				</div>
 				<div class="clear"></div>
@@ -321,6 +321,10 @@ function init_gerencianet_cartao() {
 			try {
 				$response = $this->gerencianetSDK->one_step_card( $order_id, $items, $shipping, strtolower( $woocommerce->api_request_url( GERENCIANET_CARTAO_ID ) ), $customer, $paymentToken, $installments, $billingAddress, $discount );
 				$charge   = json_decode( $response, true );
+
+				if ( isset( $charge['data']['status'] ) ) {
+					Gerencianet_Hpos::update_meta( $order_id, '_gn_status_card', $charge['data']['status'] );
+				}
 
 				$order->update_status( 'pending-payment' );
 				wc_reduce_stock_levels( $order_id );

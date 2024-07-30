@@ -59,6 +59,8 @@ function init_gerencianet_pix() {
 
 			// This hook add the "view payment methods" button
 			add_action( 'woocommerce_admin_order_data_after_billing_address', array( $this, 'add_view_payment_methods' ) );
+
+			add_filter( 'woocommerce_my_account_my_orders_actions', array($this, 'substituir_link_pagar'), 10, 2 );
 		}
 
 		public function process_refund( $order_id, $amount = null, $reason = '' ) {
@@ -385,10 +387,10 @@ function init_gerencianet_pix() {
 				$qrCodeResponse = $this->gerencianetSDK->generate_qrcode( $charge['loc']['id'] );
 				$qrCode         = json_decode( $qrCodeResponse, true );
 
-				update_post_meta( $order_id, '_gn_pix_link', $qrCode['linkVisualizacao'] );
-				update_post_meta( $order_id, '_gn_pix_qrcode', $qrCode['imagemQrcode'] );
-				update_post_meta( $order_id, '_gn_pix_copy', $qrCode['qrcode'] );
-				update_post_meta( $order_id, '_gn_pix_txid', $charge['txid'] );
+				Gerencianet_Hpos::update_meta( $order_id, '_gn_pix_link', $qrCode['linkVisualizacao'] );
+				Gerencianet_Hpos::update_meta( $order_id, '_gn_pix_qrcode', $qrCode['imagemQrcode'] );
+				Gerencianet_Hpos::update_meta( $order_id, '_gn_pix_copy', $qrCode['qrcode'] );
+				Gerencianet_Hpos::update_meta( $order_id, '_gn_pix_txid', $charge['txid'] );
 
 				$order->update_status( 'pending-payment' );
 				wc_reduce_stock_levels( $order_id );
@@ -454,8 +456,8 @@ function init_gerencianet_pix() {
 			// Atualiza status
 			foreach ( $orders as $order ) {
 
-				if ( isset( $pix[0]['txid'] ) && $pix[0]['txid'] != '' && ( get_post_meta( $order->get_id(), '_gn_pix_txid', true ) == $pix[0]['txid'] ) ) {
-					add_post_meta( intval( $order->get_id() ), '_gn_pix_E2EID', $pix[0]['endToEndId'], true );
+				if ( isset( $pix[0]['txid'] ) && $pix[0]['txid'] != '' && ( Gerencianet_Hpos::get_meta( $order->get_id(), '_gn_pix_txid', true ) == $pix[0]['txid'] ) ) {
+					Gerencianet_Hpos::update_meta( intval( $order->get_id() ), '_gn_pix_E2EID', $pix[0]['endToEndId'], true );
 
 					gn_log( $pix[0] );
 					if ( isset( $pix[0]['devolucoes'] ) && $pix[0]['devolucoes'][0]['status'] == 'DEVOLVIDO' ) {
@@ -476,7 +478,7 @@ function init_gerencianet_pix() {
 				return;
 			}
 
-			if ( get_post_meta( $order->get_id(), '_gn_pix_copy', true ) || get_post_meta( $order->get_id(), '_gn_pix_link', true ) ) {
+			if ( Gerencianet_Hpos::get_meta( $order->get_id(), '_gn_pix_copy', true ) || Gerencianet_Hpos::get_meta( $order->get_id(), '_gn_pix_link', true ) ) {
 				?>
 					<style>
 
@@ -514,7 +516,7 @@ function init_gerencianet_pix() {
 
 				function gncopy($field) {
 					document.getElementById('gnpix').innerHTML = 'Copiado!';
-					navigator.clipboard.writeText('<?php echo esc_html( get_post_meta( $order->get_id(), '_gn_pix_copy', true ) ); ?>');
+					navigator.clipboard.writeText('<?php echo esc_html( Gerencianet_Hpos::get_meta( $order->get_id(), '_gn_pix_copy', true ) ); ?>');
 					setTimeout(()=> {
 							document.getElementById('gnpix').innerHTML = 'Copiar Pix Copia e Cola';
 						},1000)
@@ -524,7 +526,7 @@ function init_gerencianet_pix() {
 					Swal.fire({
 						title: 'Meios de Pagamento Disponíveis',
 						icon: 'info',
-						html: '<div class="gngrid-container"><div class="gngrid-item"><?php if ( get_post_meta( $order->get_id(), '_gn_pix_copy', true ) !== NULL ) { ?><div class="gn-item-area"><img style="width:150px;" src=" <?php echo esc_url(plugins_url( 'woo-gerencianet-official/assets/img/pix-copia.png' )); ?> " /><br> <a onclick="gncopy(2)" id="gnpix" class="button gn-btn">Copiar Pix Copia e Cola</a> </div><?php }?></div><div class="gn-item-area"><?php if ( get_post_meta( $order->get_id(), '_gn_pix_link', true ) !== NULL ) { ?> <div class="gngrid-item"><img style="width:150px;" src=" <?php echo esc_url(plugins_url( 'woo-gerencianet-official/assets/img/boleto-online.png' )); ?> " /><br><a href=" <?php echo esc_url(get_post_meta( $order->get_id(), '_gn_pix_link', true )); ?>  " target="_blank" class="button gn-btn">Acessar Pix Online</a></div> <?php }?> </div></div>',
+						html: '<div class="gngrid-container"><div class="gngrid-item"><?php if ( Gerencianet_Hpos::get_meta( $order->get_id(), '_gn_pix_copy', true ) !== NULL ) { ?><div class="gn-item-area"><img style="width:150px;" src=" <?php echo esc_url(plugins_url( 'woo-gerencianet-official/assets/img/pix-copia.png' )); ?> " /><br> <a onclick="gncopy(2)" id="gnpix" class="button gn-btn">Copiar Pix Copia e Cola</a> </div><?php }?></div><div class="gn-item-area"><?php if ( Gerencianet_Hpos::get_meta( $order->get_id(), '_gn_pix_link', true ) !== NULL ) { ?> <div class="gngrid-item"><img style="width:150px;" src=" <?php echo esc_url(plugins_url( 'woo-gerencianet-official/assets/img/boleto-online.png' )); ?> " /><br><a href=" <?php echo esc_url(Gerencianet_Hpos::get_meta( $order->get_id(), '_gn_pix_link', true )); ?>  " target="_blank" class="button gn-btn">Acessar Pix Online</a></div> <?php }?> </div></div>',
 						showCloseButton: true,
 						showCancelButton: false,
 						showConfirmButton: false
@@ -540,6 +542,15 @@ function init_gerencianet_pix() {
 
 				<?php
 			}
+		}
+
+		public function substituir_link_pagar( $actions, $order ) {
+			if ( isset( $actions['pay'] ) ) {
+				if(Gerencianet_Hpos::get_meta( $order->get_id(), '_gn_pix_link', true ) != null) {
+					$actions['pay']['url'] = esc_url(Gerencianet_Hpos::get_meta( $order->get_id(), '_gn_pix_link', true ));;
+				}
+			}
+			return $actions;
 		}
 	}
 }

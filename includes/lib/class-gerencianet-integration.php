@@ -332,8 +332,8 @@ class Gerencianet_Integration {
 			return self::result_api( "Pedido #{$order_id} não encontrado", false );
 		}
 
-			$e2eid = get_post_meta( $order_id, '_gn_pix_E2EID', true );
-			$txid  = get_post_meta( $order_id, '_gn_pix_txid', true );
+			$e2eid = Gerencianet_Hpos::get_meta( $order_id, '_gn_pix_E2EID', true );
+			$txid  = Gerencianet_Hpos::get_meta( $order_id, '_gn_pix_txid', true );
 
 		if ( isset( $e2eid ) && $e2eid != '' ) {
 
@@ -394,7 +394,7 @@ class Gerencianet_Integration {
 			throw new Exception( $errorResponse['message'], 1 );
 		}
 	}
-
+	
 	public function generateRandomId() {
 		$length           = 6;
 		$characters       = '0123456789abcdefghijklmnopqrstuvwxyzABCDEFGHIJKLMNOPQRSTUVWXYZ';
@@ -448,12 +448,14 @@ class Gerencianet_Integration {
 
 	public function get_participants() {
 		$response = false;
+		$arrayParticipantes = [];
 		try {
 			$api      = new Gerencianet( $this->get_credentials( GERENCIANET_OPEN_FINANCE_ID ) );
 			$data     = $api->ofListParticipants();
 			$arrayParticipantes = $data['participantes'];
 			$identificadorEfi =  "ebbed125-5cd7-42e3-965d-2e7af8e3b7ae";
 			$objEfi = null;
+
 			foreach($arrayParticipantes as $participante) {
 				if($participante["identificador"] === $identificadorEfi){
 					$objEfi = $participante;
@@ -466,6 +468,7 @@ class Gerencianet_Integration {
 				array_splice($arrayParticipantes, 0, 0 , (object) array($objEfi));
 			}
 			$response = true;
+			$data = $arrayParticipantes;
 		} catch ( GerencianetException $e ) {
 			$data = array(
 				'code'    => $e->getCode(),
@@ -476,7 +479,7 @@ class Gerencianet_Integration {
 			$data = array( 'message' => $e->getMessage() );
 		}
 
-		return self::result_api( $arrayParticipantes, $response );
+		return self::result_api( $data, $response );
 	}
 
 	public function pay_open_finance($body) {
@@ -536,8 +539,8 @@ class Gerencianet_Integration {
 			return self::result_api( "Pedido #{$order_id} não encontrado", false );
 		}
 
-			$e2eid = get_post_meta( $order_id, '_gn_open_finance_E2EID', true );
-			$identificadorPagamento  = get_post_meta( $order_id, '_gn_of_identificador_pagamento', true );
+			$e2eid = Gerencianet_Hpos::get_meta( $order_id, '_gn_open_finance_E2EID', true );
+			$identificadorPagamento  = Gerencianet_Hpos::get_meta( $order_id, '_gn_of_identificador_pagamento', true );
 
 		if ( isset( $e2eid ) && $e2eid != '' ) {
 
@@ -572,5 +575,188 @@ class Gerencianet_Integration {
 			return self::result_api( false, false );
 		}
 	}
+
+	public function create_plan( $paymentMethod, $name, $interval, $repeats ) {
+
+		if($repeats == 1)
+			$repeats = null;
+		
+		$body = [
+			"name" => $name,
+			"interval" => $interval,
+			"repeats" => $repeats
+		];
+		try {
+			$api      = new Gerencianet( $this->get_credentials( $paymentMethod ) );
+			$response = $api->createPlan($params = [], $body);
+			return self::result_api( $response, true );
+		} catch ( GerencianetException $e ) {
+			$errorResponse = array(
+				'code'    => $e->getCode(),
+				'error'   => $e->error,
+				'message' => $e->errorDescription,
+			);
+			return self::result_api( $errorResponse, false );
+		} catch ( Exception $e ) {
+			$errorResponse = array(
+				'message' => $e->getMessage(),
+			);
+			return self::result_api( $errorResponse, false );
+		}
+	}
+
+	public function create_subscription_billet($plan_id, $order_id, $items, $shipping, $notification_url, $customer, $expirationDate, $discount = false ){
+
+		$params = [
+			"id" => $plan_id  // plan_id
+		];
+
+		$payment = array(
+			'banking_billet' => array(
+				'expire_at' => $expirationDate,
+				'customer'  => $customer,
+			),
+		);
+
+		if ( $discount['value'] > 0 ) {
+			$discount['value']                     = intval( $discount['value'] );
+			$payment['banking_billet']['discount'] = $discount;
+		}
+
+		$body = array(
+			'items'    => $items,
+			'metadata' => array(
+				'custom_id'        => strval( $order_id ),
+				'notification_url' => $notification_url,
+			),
+			'payment'  => $payment,
+		);
+
+		if ( $shipping ) {
+			$body ['shippings'] = $shipping;
+		}
+
+		try {
+			$api      = new Gerencianet( $this->get_credentials( GERENCIANET_ASSINATURAS_BOLETO_ID ) );
+			$response = $api->createOneStepSubscription($params, $body);
+			return self::result_api( $response, true );
+		} catch ( GerencianetException $e ) {
+			$errorResponse = array(
+				'code'    => $e->getCode(),
+				'error'   => $e->error,
+				'message' => $e->errorDescription,
+			);
+			return self::result_api( $errorResponse, false );
+		} catch ( Exception $e ) {
+			$errorResponse = array(
+				'message' => $e->getMessage(),
+			);
+			return self::result_api( $errorResponse, false );
+		}
+	}
+
+	public function create_subscription_card($plan_id, $order_id, $items, $shipping, $notification_url, $customer, $paymentToken, $billingAddress, $trial_days, $discount = false){
+
+		$params = [
+			"id" => $plan_id  // plan_id
+		];
+
+		$body = array(
+			'items'    => $items,
+			'metadata' => array(
+				'custom_id'        => strval( $order_id ),
+				'notification_url' => $notification_url,
+			),
+			'payment'  => array(
+				'credit_card' => array(
+					'customer'        => $customer,
+					'billing_address' => $billingAddress,
+					'payment_token'   => $paymentToken,
+				),
+			),
+		);
+
+		if ( $discount['value'] > 0 ) {
+			$discount['value']                     = intval( $discount['value'] );
+			$body['payment']['credit_card']['discount'] = $discount;
+		}
+
+		if ( $shipping ) {
+			$body['shippings'] = $shipping;
+		}
+
+		if ($trial_days != 0) {
+			$body['payment']['credit_card']['trial_days'] = $trial_days;
+		}
+
+		try {
+			$api      = new Gerencianet( $this->get_credentials( GERENCIANET_ASSINATURAS_CARTAO_ID ) );
+			$response = $api->createOneStepSubscription($params, $body);
+			return self::result_api( $response, true );
+		} catch ( GerencianetException $e ) {
+			$errorResponse = array(
+				'code'    => $e->getCode(),
+				'error'   => $e->error,
+				'message' => $e->errorDescription,
+			);
+			return self::result_api( $errorResponse, false );
+		} catch ( Exception $e ) {
+			$errorResponse = array(
+				'message' => $e->getMessage(),
+			);
+			return self::result_api( $errorResponse, false );
+		}
+	}
+
+	public function cancel_subscription ($paymentMethod, $subscription_id) {
+
+		$params = [
+			"id" => $subscription_id
+		];
+
+		try {
+			$api      = new Gerencianet( $this->get_credentials( $paymentMethod ) );
+			$response = $api->cancelSubscription($params);
+			return self::result_api( $response, true );
+		} catch ( GerencianetException $e ) {
+			$errorResponse = array(
+				'code'    => $e->getCode(),
+				'error'   => $e->error,
+				'message' => $e->errorDescription,
+			);
+
+			return self::result_api( $errorResponse, false );
+		} catch ( Exception $e ) {
+			$errorResponse = array(
+				'message' => $e->getMessage(),
+			);
+			return self::result_api( $errorResponse, false );
+		}
+	}
+
+	public function get_charge ($paymentMethod, $charge_id) {
+
+        $params = [
+            "id" => $charge_id
+        ];
+
+        try {
+            $api      = new Gerencianet( $this->get_credentials( $paymentMethod ) );
+            $response = $api->detailCharge($params);
+            return self::result_api( $response, true );
+        } catch ( GerencianetException $e ) {
+            $errorResponse = array(
+                'code'    => $e->getCode(),
+                'error'   => $e->error,
+                'message' => $e->errorDescription,
+            );
+            return self::result_api( $errorResponse, false );
+        } catch ( Exception $e ) {
+            $errorResponse = array(
+                'message' => $e->getMessage(),
+            );
+            return self::result_api( $errorResponse, false );
+        }
+    }
 
 }

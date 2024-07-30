@@ -27,7 +27,7 @@ Caso você tenha alguma dúvida ou sugestão, entre em contato conosco pelo site
 
 2. Configure as credenciais de sua Aplicação. Para criar uma nova Aplicação, entre em sua conta Efí Bank, acesse o menu "API" e clique em "Aplicações" -> "Nova aplicação". Libere os escopos desejados e então insira as credenciais Client ID e Client Secret de produção e homologação nos respectivos campos de configuração do plugin.
 
-3. Configure as opções de pagamento que deseja receber: Boleto, Cartão de Crédito, Open Finance e/ou Pix.
+3. Configure as opções de pagamento que deseja receber: Boleto, Cartão de Crédito, Open Finance, Pix, Assinatura via Boleto e/ou Assinatura via Cartão de Crédito.
 
 4. Caso utilize a opção de Cartão de Crédito:
    * Insira o Identificador de Conta de sua conta Efí Bank. 

@@ -59,6 +59,8 @@ function init_gerencianet_boleto() {
 			add_action( 'woocommerce_admin_order_data_after_billing_address', array( $this, 'add_view_payment_methods' ) );
 			wp_enqueue_script( 'gn_sweetalert', GERENCIANET_OFICIAL_PLUGIN_URL . 'assets/js/sweetalert.js', array( 'jquery' ), GERENCIANET_OFICIAL_VERSION, false );
 			add_action( 'woocommerce_api_' . strtolower( GERENCIANET_BOLETO_ID ), array( $this, 'webhook' ) );
+			add_filter( 'woocommerce_my_account_my_orders_actions', array($this, 'substituir_link_pagar'), 10, 2 );
+
 		}
 
 		public function init_form_fields() {
@@ -359,15 +361,15 @@ function init_gerencianet_boleto() {
 				$charge   = json_decode( $response, true );
 
 				if ( isset( $charge['data']['barcode'] ) ) {
-					update_post_meta( $order_id, '_gn_barcode', $charge['data']['barcode'] );
+					Gerencianet_Hpos::update_meta( $order_id, '_gn_barcode', $charge['data']['barcode'] );
 				}
 				if ( isset( $charge['data']['pix'] ) ) {
-					update_post_meta( $order_id, '_gn_pix_qrcode', $charge['data']['pix']['qrcode_image'] );
-					update_post_meta( $order_id, '_gn_pix_copy', $charge['data']['pix']['qrcode'] );
+					Gerencianet_Hpos::update_meta( $order_id, '_gn_pix_qrcode', $charge['data']['pix']['qrcode_image'] );
+					Gerencianet_Hpos::update_meta( $order_id, '_gn_pix_copy', $charge['data']['pix']['qrcode'] );
 				}
 				if ( isset( $charge['data']['link'] ) ) {
-					update_post_meta( $order_id, '_gn_link_responsive', $charge['data']['link'] );
-					update_post_meta( $order_id, '_gn_link_pdf', $charge['data']['pdf']['charge'] );
+					Gerencianet_Hpos::update_meta( $order_id, '_gn_link_responsive', $charge['data']['link'] );
+					Gerencianet_Hpos::update_meta( $order_id, '_gn_link_pdf', $charge['data']['pdf']['charge'] );
 				}
 
 				$order->update_status( 'pending-payment' );
@@ -487,11 +489,11 @@ function init_gerencianet_boleto() {
 						if($field == 1){
 							id="gnbarcode";
 							btnlabel = 'Copiar Código de Barras'
-							copyText = '<?php echo esc_html(get_post_meta( $order->get_id(), '_gn_barcode', true )); ?>';
+							copyText = '<?php echo esc_html(Gerencianet_Hpos::get_meta( $order->get_id(), '_gn_barcode', true )); ?>';
 						}else{
 							id="gnpix";
 							btnlabel = 'Copiar Pix Copia e Cola'
-							copyText = '<?php echo esc_html(get_post_meta( $order->get_id(), '_gn_pix_copy', true )); ?>'
+							copyText = '<?php echo esc_html(Gerencianet_Hpos::get_meta( $order->get_id(), '_gn_pix_copy', true )); ?>'
 						}
 						
 						document.getElementById(id).innerHTML = 'Copiado!';
@@ -505,7 +507,7 @@ function init_gerencianet_boleto() {
 						Swal.fire({
 							title: 'Meios de Pagamento Disponíveis',
 							icon: 'info',
-							html: '<div class="gngrid-container"><?php if ( get_post_meta( $order->get_id(), '_gn_pix_copy', true ) !== NULL ) { ?><div class="gngrid-item"><div class="gn-item-area"><img style="width:150px;"src="<?php echo esc_url(plugins_url( 'woo-gerencianet-official/assets/img/pix-copia.png' ))?>" /><br><a onclick="gncopy(2)" class="button gn-btn" id="gnpix">Copiar Pix Copia e Cola</a></div></div><?php }if ( get_post_meta( $order->get_id(), '_gn_link_responsive', true ) !== NULL ) {	?><div class="gn-item-area"><div class="gngrid-item"><img style="width:150px;" src="<?php echo esc_url(plugins_url('woo-gerencianet-official/assets/img/boleto-online.png' )); ?>" /><br><a href="<?php echo esc_url(get_post_meta( $order->get_id(), '_gn_link_responsive', true )); ?>" target="_blank" class="button gn-btn">Acessar Boleto Online</a></div></div>	<?php }	if ( get_post_meta( $order->get_id(), '_gn_barcode', true ) !== NULL ) {?><div class="gn-item-area"><div class="gngrid-item"><img style="width:150px;" src="<?php echo esc_url(plugins_url('woo-gerencianet-official/assets/img/copy-barcode.png' )); ?>" /><br><a onclick="gncopy(1)" class="button gn-btn" id="gnbarcode">Copiar Código de Barras</a></div></div><?php }if(get_post_meta( $order->get_id(), '_gn_link_pdf', true ) !== NULL) {	?><div class="gn-item-area"><div class="gngrid-item"><img style="width:150px;" src="<?php echo esc_url(plugins_url('woo-gerencianet-official/assets/img/download-boleto.png' )); ?>" /><br><a href="<?php echo esc_url( get_post_meta( $order->get_id(), '_gn_link_pdf', true ) ); ?>" target="_blank" class="button gn-btn">Baixar Boleto</a></div></div><?php } ?></div>',
+							html: '<div class="gngrid-container"><?php if ( Gerencianet_Hpos::get_meta( $order->get_id(), '_gn_pix_copy', true ) !== NULL ) { ?><div class="gngrid-item"><div class="gn-item-area"><img style="width:150px;"src="<?php echo esc_url(plugins_url( 'woo-gerencianet-official/assets/img/pix-copia.png' ))?>" /><br><a onclick="gncopy(2)" class="button gn-btn" id="gnpix">Copiar Pix Copia e Cola</a></div></div><?php }if ( Gerencianet_Hpos::get_meta( $order->get_id(), '_gn_link_responsive', true ) !== NULL ) {	?><div class="gn-item-area"><div class="gngrid-item"><img style="width:150px;" src="<?php echo esc_url(plugins_url('woo-gerencianet-official/assets/img/boleto-online.png' )); ?>" /><br><a href="<?php echo esc_url(Gerencianet_Hpos::get_meta( $order->get_id(), '_gn_link_responsive', true )); ?>" target="_blank" class="button gn-btn">Acessar Boleto Online</a></div></div>	<?php }	if ( Gerencianet_Hpos::get_meta( $order->get_id(), '_gn_barcode', true ) !== NULL ) {?><div class="gn-item-area"><div class="gngrid-item"><img style="width:150px;" src="<?php echo esc_url(plugins_url('woo-gerencianet-official/assets/img/copy-barcode.png' )); ?>" /><br><a onclick="gncopy(1)" class="button gn-btn" id="gnbarcode">Copiar Código de Barras</a></div></div><?php }if(Gerencianet_Hpos::get_meta( $order->get_id(), '_gn_link_pdf', true ) !== NULL) {	?><div class="gn-item-area"><div class="gngrid-item"><img style="width:150px;" src="<?php echo esc_url(plugins_url('woo-gerencianet-official/assets/img/download-boleto.png' )); ?>" /><br><a href="<?php echo esc_url( Gerencianet_Hpos::get_meta( $order->get_id(), '_gn_link_pdf', true ) ); ?>" target="_blank" class="button gn-btn">Baixar Boleto</a></div></div><?php } ?></div>',
 							showCloseButton: true,
 							showCancelButton: false,
 							showConfirmButton: false
@@ -521,7 +523,18 @@ function init_gerencianet_boleto() {
 				</div>
 				
 				<?php
-			}
+		}
 		
+
+		public function substituir_link_pagar( $actions, $order ) {
+			if ( isset( $actions['pay'] ) ) {
+				if(Gerencianet_Hpos::get_meta( $order->get_id(), '_gn_link_responsive', true ) != null) {
+					$actions['pay']['url'] = esc_url(Gerencianet_Hpos::get_meta( $order->get_id(), '_gn_link_pdf', true ));;
+				}
+			}
+			return $actions;
+		}
+
+
 	}
 }
