@@ -363,22 +363,27 @@ function init_gerencianet_pix() {
 				return false;
 			}
 
+			
+
 			$body = array(
 				'calendario'     => array( 'expiracao' => intval( $this->get_option( 'gn_pix_number_hours' ) ) * 3600 ),
 				'devedor'        => $customer,
 				'valor'          => array( 'original' => sprintf( '%0.2f', $value ) ),
 				'chave'          => $this->get_option( 'gn_pix_key' ),
-				'infoAdicionais' => array(
+			);
+
+			$body['infoAdicionais'] = [];
+
+			if(get_bloginfo() != ""){
+				$body['infoAdicionais'] = array(
 					array(
 						'nome'  => 'Pagamento em',
 						'valor' => get_bloginfo(),
-					),
-					array(
-						'nome'  => 'Numero do Pedido',
-						'valor' => '#' . $order_id,
-					),
-				),
-			);
+					)
+				);
+			}
+			
+			array_push($body['infoAdicionais'],array('nome'  => 'Numero do Pedido','valor' => '#' . $order_id));
 
 			try {
 				$chargeResponse = $this->gerencianetSDK->pay_pix( $body );
