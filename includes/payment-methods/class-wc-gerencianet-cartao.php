@@ -140,11 +140,11 @@ function init_gerencianet_cartao() {
 
 			?>
 				<div id="gn_row_cpf_birth">
-					<div class="form-row form-row-first" id="gn_field_cpf_cnpj">
+					<div class="form-row form-row-wide" id="gn_field_cpf_cnpj">
 						<label>CPF/CNPJ <span class="required">*</span></label>
 						<input id="gn_cartao_cpf_cnpj" class="input-text" inputmode="numeric" name="gn_cartao_cpf_cnpj" type="text" placeholder="___.___.___-__" autocomplete="off" onkeypress="return event.charCode >= 48 && event.charCode <= 57">
 					</div>
-					<div class="form-row form-row-last" id="gn_field_birth">
+					<div class="form-row form-row-wide" id="gn_field_birth">
 						<label><?php echo __( 'Data de Nasc.', Gerencianet_I18n::getTextDomain() ); ?><span class="required">*</span></label>
 						<input id="gn_cartao_birth" class="input-text" inputmode="numeric" name="gn_cartao_birth" placeholder="__/__/____" type="text" autocomplete="off">
 					</div>
@@ -152,11 +152,11 @@ function init_gerencianet_cartao() {
 				<div class="form-row form-row-wide"><label><?php echo __( 'Número do Cartão', Gerencianet_I18n::getTextDomain() ); ?><span class="required">*</span></label>
 					<input id="gn_cartao_number" class="input-text" inputmode="numeric" name="gn_cartao_number" type="text" autocomplete="off" style="width: 100%;">
 				</div>
-				<div class="form-row form-row-first"><label>CVV<span class="required">*</span></label>
+				<div class="form-row form-row-wide"><label>CVV<span class="required">*</span></label>
 					<input id="gn_cartao_cvv" class="input-text" inputmode="numeric" name="gn_cartao_cvv" type="text" autocomplete="off">
 				</div>
-				<div class="form-row form-row-last"><label><?php echo __( 'Expiração (MM/AAAA)', Gerencianet_I18n::getTextDomain() ); ?><span class="required">*</span></label>
-					<input id="gn_cartao_expiration" class="input-text" inputmode="numeric" placeholder="__/____" name="gn_cartao_expiration" type="text" autocomplete="off">
+				<div class="form-row form-row-wide"><label><?php echo __( 'Expiração (MM/AA)', Gerencianet_I18n::getTextDomain() ); ?><span class="required">*</span></label>
+					<input id="gn_cartao_expiration" class="input-text" inputmode="numeric" placeholder="__/__" name="gn_cartao_expiration" type="text" autocomplete="off">
 				</div>
 				<div class="clear"></div>
 				<div class="form-row form-row-wide"><label><?php echo __( 'Parcelas', Gerencianet_I18n::getTextDomain() ); ?><span class="required">*</span></label>
@@ -303,6 +303,10 @@ function init_gerencianet_cartao() {
 			$birth             = explode( '/', sanitize_text_field( $_POST['gn_cartao_birth'] ) );
 			$customer['birth'] = $birth[2] . '-' . $birth[1] . '-' . $birth[0];
 
+			if(!isset($_POST['gn_payment_token']) || $_POST['gn_payment_token'] == ""){
+				wc_add_notice( "Não foi possível validar os dados do cartão. Atualize a página e tente novamente.", 'error' );
+				return;
+			}
 			$paymentToken = sanitize_text_field( $_POST['gn_payment_token'] );
 
 			$installments = intval( sanitize_text_field( $_POST['gn_cartao_installments'] ) );

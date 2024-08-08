@@ -5,13 +5,31 @@ jQuery(document).ready(function ($) {
         $("#payment").after(swalCss);
     }
 
+    function getFullYear(lastTwoDigits) {
+        // Obtendo o ano atual
+        const currentYear = new Date().getFullYear();
+
+        const currentYearLastTwoDigits = currentYear % 100;
+
+        if (lastTwoDigits < currentYearLastTwoDigits) {
+            // Aciona o erro de ano inválido da lib
+            return 0;
+        }
+
+        // Se os dois últimos dígitos forem menores que os do ano atual, adicione 100 anos
+        const year = lastTwoDigits >= currentYearLastTwoDigits
+            ? currentYear - currentYearLastTwoDigits + parseInt(lastTwoDigits)
+            : 0; // Setado como zero para acionar o erro de ano inválido
+
+        return year.toString();
+    }
 
 
     // Gerar Payment Token
     jQuery("#gn_cartao_expiration").on('keyup', function () {
         let cardExpiration = jQuery("#gn_cartao_expiration").val().split("/");
 
-        if (jQuery("#gn_cartao_expiration").val().length >= 7) {
+        if (jQuery("#gn_cartao_expiration").val().length >= 5) {
 
             Swal.fire({
                 title: 'Por favor, aguarde...',
@@ -34,7 +52,7 @@ jQuery(document).ready(function ($) {
                                 number: jQuery("#gn_cartao_number").val(),
                                 cvv: jQuery("#gn_cartao_cvv").val(),
                                 expirationMonth: cardExpiration[0],
-                                expirationYear: cardExpiration[1]
+                                expirationYear: getFullYear(cardExpiration[1])
                             })
                             .getPaymentToken()
                             .then(data => {
@@ -105,7 +123,7 @@ jQuery(document).ready(function ($) {
         }
     })
 
-    
+
     if (document.getElementById('gn_cartao_cpf_cnpj')) {
         jQuery('#gn_cartao_cpf_cnpj').keyup(
             function () {
@@ -115,8 +133,8 @@ jQuery(document).ready(function ($) {
         jQuery('#gn_cartao_cpf_cnpj').blur(
             function () {
                 var cpf_cnpj = jQuery('#gn_cartao_cpf_cnpj').val();
-                
-                if(cpf_cnpj != "") {
+
+                if (cpf_cnpj != "") {
                     if (!validate_cpf_cnpj(cpf_cnpj)) {
                         jQuery('#gn_cartao_cpf_cnpj').css('border', '1px solid red');
                         toastError("CPF/CNPJ Inválido");
@@ -133,8 +151,8 @@ jQuery(document).ready(function ($) {
         jQuery('#gn_cartao_birth').blur(
             function () {
                 var date = jQuery('#gn_cartao_birth').val();
-                
-                if(date != "") {
+
+                if (date != "") {
                     if (!verify_date(date)) {
                         jQuery('#gn_cartao_birth').css('border', '1px solid red');
                         toastError('Data de nascimento inválida!');
@@ -147,11 +165,11 @@ jQuery(document).ready(function ($) {
     }
 
     if (document.getElementById('gn_cartao_expiration')) {
-        VMasker(document.querySelector("#gn_cartao_expiration")).maskPattern("99/9999");
+        VMasker(document.querySelector("#gn_cartao_expiration")).maskPattern("99/99");
         jQuery('#gn_cartao_expiration').blur(
             function () {
                 var exp = jQuery('#gn_cartao_expiration').val();
-                if(exp != "") {
+                if (exp != "") {
                     if (!validate_cartao_expiration(exp)) {
                         jQuery('#gn_cartao_expiration').css('border', '1px solid red');
                         toastError('Validade do cartão inválida!');
@@ -300,11 +318,12 @@ jQuery(document).ready(function ($) {
     }
 
     function validate_cartao_expiration(exp) {
-        if (exp == "" || exp.length < 6)
+        if (exp == "" || exp.length < 5)
             return false;
         exp = exp.split('/');
         const newDate = new Date();
-        const year = newDate.getFullYear();
+        let year = newDate.getFullYear();
+        year = year % 100;
 
         if ((parseInt(exp[0]) > 12 || (parseInt(exp[0] < 0)) || (parseInt(exp[1]) < parseInt(year)))) {
             return false;
