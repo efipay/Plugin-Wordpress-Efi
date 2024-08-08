@@ -260,7 +260,7 @@ class Gerencianet_Oficial
 			}
 		}
 
-		if (isset(WC()->cart->subtotal) && ((WC()->cart->subtotal + $shippingCost) < 5)) {
+		if (isset(WC()->cart->subtotal) && ((WC()->cart->subtotal + $shippingCost) < 5) && isset($boletoEnabled) && isset($cardEnabled)) {
 			wc_clear_notices();
 			if ($boletoEnabled == 'yes' && $cardEnabled == 'yes') {
 				wc_add_notice('O pagamento via Boleto ou Cartão de Crédito só está disponível em pedidos acima de R$5,00', 'notice');
