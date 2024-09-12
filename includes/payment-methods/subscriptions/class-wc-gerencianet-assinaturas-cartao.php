@@ -168,8 +168,8 @@ function init_gerencianet_assinaturas_cartao() {
 				<div class="form-row form-row-first"><label>CVV<span class="required">*</span></label>
 					<input id="gn_cartao_cvv" class="input-text" inputmode="numeric" name="gn_cartao_cvv" type="text" autocomplete="off">
 				</div>
-				<div class="form-row form-row-last"><label><?php echo __( 'Expiração (MM/AAAA)', Gerencianet_I18n::getTextDomain() ); ?><span class="required">*</span></label>
-					<input id="gn_cartao_expiration" class="input-text" inputmode="numeric" placeholder="__/____" name="gn_cartao_expiration" type="text" autocomplete="off">
+				<div class="form-row form-row-last"><label><?php echo __( 'Expiração (MM/AA)', Gerencianet_I18n::getTextDomain() ); ?><span class="required">*</span></label>
+					<input id="gn_cartao_expiration" class="input-text" inputmode="numeric" placeholder="__/__" name="gn_cartao_expiration" type="text" autocomplete="off">
 				</div>
 				<input id="gn_payment_token" name="gn_payment_token" type="hidden">
 				<input id="gn_payment_total" name="gn_payment_total" type="hidden" value="<?php echo WC()->cart->total; ?>">
@@ -189,12 +189,34 @@ function init_gerencianet_assinaturas_cartao() {
 
 		public function payment_scripts() {
 
-			if ( ! is_cart() && ! is_checkout() && ! isset( $_GET['pay_for_order'] ) ) {
+			if ( $this->enabled != 'yes' ) {
 				return;
 			}
 
-			if ( $this->enabled != 'yes' ) {
-				return;
+			// if ( ! is_cart() && ! is_checkout() && ! isset( $_GET['pay_for_order'] ) ) {
+			// 	return;
+			// }
+
+			if ( is_account_page() ) {
+				// Enfileira o script JavaScript
+				wp_enqueue_script( 'gn_retry_assinatura', plugins_url( '../../assets/js/retry-assinatura.js', plugin_dir_path( __FILE__ ) ), array('jquery'), null, true );
+				wp_enqueue_script( 'gn_payment_token', plugins_url( '../../assets/js/payment-token-efi.min.js', plugin_dir_path( __FILE__ ) ), array('jquery'), null, true );
+				wp_enqueue_script( 'gn_vmasker', plugins_url( '../../assets/js/vanilla-masker.min.js', plugin_dir_path( __FILE__ ) ), array('jquery'), null, true );
+
+				?>
+					<script>
+						var options = {
+							payeeCode: '<?php echo esc_html($this->get_option( 'gn_payee_code' )); ?>',
+							enviroment:'<?php echo esc_html($this->get_option( 'gn_sandbox' )) == 'yes'? 'sandbox' : 'production'; ?>',
+						}
+					</script>
+				<?php
+				
+				// Passa a URL do AJAX para o script
+				wp_localize_script( 'gn_retry_assinatura', 'retry_assinatura', array(
+					'ajax_url' => admin_url( 'admin-ajax.php' ),
+					'security' => wp_create_nonce('woocommerce_gerencianet_assinatura_retry'),
+				));
 			}
 
 			wp_enqueue_script( 'gn-sweetalert', plugins_url( '../../assets/js/sweetalert.js', plugin_dir_path( __FILE__ ) ), '11.0.0', true );
@@ -417,7 +439,9 @@ function init_gerencianet_assinaturas_cartao() {
 							break;
 					}
 				} else {
-					gn_log( 'Notification Request : FAIL ' );
+					gn_log( 'Notification Request : FAIL ', GERENCIANET_ASSINATURAS_CARTAO_ID);
+					gn_log( $notification, GERENCIANET_ASSINATURAS_CARTAO_ID);
+					
 				}
 
 				exit();
@@ -450,7 +474,6 @@ function init_gerencianet_assinaturas_cartao() {
 			// Inserir o post da assinatura
 			$subscription_id = wp_insert_post($subscription_data);
 
-			gn_log($this->verifica_status($initial_status));
 			// Adicionar metadados específicos da assinatura
 			Gerencianet_Hpos::update_meta($subscription_id, '_status', $this->verifica_status($initial_status));
 			Gerencianet_Hpos::update_meta($subscription_id, '_id_da_assinatura', $id_assinatura); // Usando o próprio ID como exemplo
@@ -473,6 +496,25 @@ function init_gerencianet_assinaturas_cartao() {
 			$newStatus['expired'] = '<mark class="order-status status-completed tips"><span>Expirada</span></mark>';
 
 			return $newStatus[$status];
+		}
+
+		public static function assinatura_retry(){
+			$order_id = isset($_POST['order_id']) ? sanitize_text_field($_POST['order_id']) : '';
+			$payment_token = isset($_POST['payment_token']) ? sanitize_text_field($_POST['payment_token']) : '';
+
+			try {
+				$gerencianetSDK = new Gerencianet_Integration();
+				$response = $gerencianetSDK->card_retry($order_id, $payment_token, GERENCIANET_ASSINATURAS_CARTAO_ID);
+				$charge = json_decode( $response, true );
+
+				if ( isset( $charge['data']['status'] ) ) {
+					Gerencianet_Hpos::update_meta( $order_id, '_gn_status_card', $charge['data']['status'] );
+					Gerencianet_Hpos::update_meta( $order_id, '_gn_can_retry', "no");
+					Gerencianet_Hpos::update_meta( $order_id, '_gn_retry_body', "");
+				}
+			} catch (Exception $e) {
+				gn_log($e, GERENCIANET_ASSINATURAS_CARTAO_ID);
+			}
 		}
 
 	}

@@ -35,39 +35,41 @@ jQuery(document).ready(function ($) {
                 title: 'Por favor, aguarde...',
                 text: '',
                 showConfirmButton: false,
+                didOpen: async () => {
+                    Swal.showLoading();
+                    EfiJs.CreditCard
+                        // .debugger(true)
+                        .setCardNumber(jQuery("#gn_cartao_number").val())
+                        .verifyCardBrand()
+                        .then(brand => {
+                            if (brand !== 'undefined') {
+                                EfiJs.CreditCard
+                                    //.debugger(true)
+                                    .setAccount(options.payeeCode)
+                                    .setEnvironment(options.enviroment) // 'production' or 'homologation'
+                                    .setCreditCardData({
+                                        brand: brand,
+                                        number: jQuery("#gn_cartao_number").val(),
+                                        cvv: jQuery("#gn_cartao_cvv").val(),
+                                        expirationMonth: cardExpiration[0],
+                                        expirationYear: getFullYear(cardExpiration[1])
+                                    })
+                                    .getPaymentToken()
+                                    .then(data => {
+                                        // Trata a resposta
+                                        jQuery('#gn_payment_token').val(data.payment_token);
+                                        swal.close()
+                                    }).catch(err => {
+                                        swalError(err);
+                                        throw new Error(`Something went wrong in getPaymentToken(.\n ${err}`);
+                                    });
+                            }
+                        }).catch(err => {
+                            swalError(err);
+                            throw new Error(`Something went wrong in verifyCardBrand(.\n ${err}`);
+                        });
+                }
             })
-
-            EfiJs.CreditCard
-                // .debugger(true)
-                .setCardNumber(jQuery("#gn_cartao_number").val())
-                .verifyCardBrand()
-                .then(brand => {
-                    if (brand !== 'undefined') {
-                        EfiJs.CreditCard
-                            //.debugger(true)
-                            .setAccount(options.payeeCode)
-                            .setEnvironment(options.enviroment) // 'production' or 'homologation'
-                            .setCreditCardData({
-                                brand: brand,
-                                number: jQuery("#gn_cartao_number").val(),
-                                cvv: jQuery("#gn_cartao_cvv").val(),
-                                expirationMonth: cardExpiration[0],
-                                expirationYear: getFullYear(cardExpiration[1])
-                            })
-                            .getPaymentToken()
-                            .then(data => {
-                                // Trata a resposta
-                                jQuery('#gn_payment_token').val(data.payment_token);
-                                swal.close()
-                            }).catch(err => {
-                                swalError(err);
-                                throw new Error(`Something went wrong in getPaymentToken(.\n ${err}`);
-                            });
-                    }
-                }).catch(err => {
-                    swalError(err);
-                    throw new Error(`Something went wrong in verifyCardBrand(.\n ${err}`);
-                });
         }
 
     });

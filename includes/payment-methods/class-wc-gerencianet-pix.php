@@ -421,7 +421,7 @@ function init_gerencianet_pix() {
 					$this->successful_webhook( file_get_contents( 'php://input' ) );
 				} else {
 					header('HTTP/1.1 403 Forbidden');
-					gn_log("Não foi possível receber a notificação do Pix");
+					gn_log("Não foi possível receber a notificação do Pix. HMAC INVÁLIDO.", GERENCIANET_PIX_ID);
 				}
 			}
 
@@ -435,7 +435,7 @@ function init_gerencianet_pix() {
 				$url      = strtolower( $woocommerce->api_request_url( GERENCIANET_PIX_ID ));
 				$response = $this->gerencianetSDK->update_webhook( $pix_key, $url );
 			} catch ( \Throwable $th ) {
-				gn_log( $th );
+				gn_log( $th, GERENCIANET_PIX_ID);
 			}
 		}
 
@@ -464,7 +464,6 @@ function init_gerencianet_pix() {
 				if ( isset( $pix[0]['txid'] ) && $pix[0]['txid'] != '' && ( Gerencianet_Hpos::get_meta( $order->get_id(), '_gn_pix_txid', true ) == $pix[0]['txid'] ) ) {
 					Gerencianet_Hpos::update_meta( intval( $order->get_id() ), '_gn_pix_E2EID', $pix[0]['endToEndId'], true );
 
-					gn_log( $pix[0] );
 					if ( isset( $pix[0]['devolucoes'] ) && $pix[0]['devolucoes'][0]['status'] == 'DEVOLVIDO' ) {
 						$order->update_status( 'refund' );
 					} else {

@@ -181,12 +181,24 @@ function init_gerencianet_cartao() {
 
 		public function payment_scripts() {
 
+			if ( $this->enabled != 'yes' ) {
+				return;
+			}
+
 			if ( ! is_cart() && ! is_checkout() && ! isset( $_GET['pay_for_order'] ) ) {
 				return;
 			}
 
-			if ( $this->enabled != 'yes' ) {
-				return;
+			if ( is_order_received_page() ) {
+				// Enfileira o script JavaScript
+				wp_enqueue_script( 'gn_retry_cartao', plugins_url( '../assets/js/retry-cartao.js', plugin_dir_path( __FILE__ ) ), array('jquery'), null, true );
+				wp_enqueue_script( 'gn_payment_token', plugins_url( '../assets/js/payment-token-efi.min.js', plugin_dir_path( __FILE__ ) ), array('jquery'), null, true );
+				
+				// Passa a URL do AJAX para o script
+				wp_localize_script( 'gn_retry_cartao', 'retry_cartao', array(
+					'ajax_url' => admin_url( 'admin-ajax.php' ),
+					'security' => wp_create_nonce('woocommerce_gerencianet_card_retry'),
+				));
 			}
 
 			wp_enqueue_script( 'gn-sweetalert', plugins_url( '../assets/js/sweetalert.js', plugin_dir_path( __FILE__ ) ), '11.0.0', true );
@@ -399,7 +411,8 @@ function init_gerencianet_cartao() {
 							break;
 					}
 				} else {
-					gn_log( 'Notification Request : FAIL ' );
+					gn_log( 'Notification Request : FAIL ', GERENCIANET_CARTAO_ID);
+					gn_log( $notification, GERENCIANET_CARTAO_ID);
 				}
 
 				exit();
@@ -413,5 +426,23 @@ function init_gerencianet_cartao() {
 			return self::$id;
 		}
 
+		public static function card_retry(){
+			$order_id = isset($_POST['order_id']) ? sanitize_text_field($_POST['order_id']) : '';
+			$payment_token = isset($_POST['payment_token']) ? sanitize_text_field($_POST['payment_token']) : '';
+
+			try {
+				$gerencianetSDK = new Gerencianet_Integration();
+				$response = $gerencianetSDK->card_retry($order_id, $payment_token, GERENCIANET_CARTAO_ID);
+				$charge = json_decode( $response, true );
+				if ( isset( $charge['data']['status'] ) ) {
+					Gerencianet_Hpos::update_meta( $order_id, '_gn_status_card', $charge['data']['status'] );
+					Gerencianet_Hpos::update_meta( $order_id, '_gn_can_retry', "no");
+					Gerencianet_Hpos::update_meta( $order_id, '_gn_retry_body', "");
+				}
+			} catch (Exception $e) {
+				gn_log($e, GERENCIANET_CARTAO_ID);
+			}
+		}
+		
 	}
 }

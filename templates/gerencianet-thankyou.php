@@ -13,6 +13,12 @@
 $order          = new WC_Order( $order_id );
 $payment_method = $order->get_payment_method();
 
+$wcSettings = maybe_unserialize( get_option( 'woocommerce_' . GERENCIANET_CARTAO_ID . '_settings' ) );
+$isSandbox  = $wcSettings['gn_sandbox'] == 'yes' ? true : false;
+$payeeCode  = $wcSettings['gn_payee_code'];
+$body = Gerencianet_Hpos::get_meta( $order_id, '_gn_retry_body');
+
+
 switch ( $payment_method ) {
 	case GERENCIANET_CARTAO_ID:
 		$status = Gerencianet_Hpos::get_meta( $order_id, '_gn_status_card', true );
@@ -22,10 +28,27 @@ switch ( $payment_method ) {
         			<p>Obrigado pela sua compra. Seu pedido está sendo processado.</p>
     			</div>';
 		} elseif ($status == "unpaid") {
-			echo '<div id="denial-screen" class="result-screen">
+			?><div id="denial-screen" class="result-screen">
         		<h3>Compra Recusada</h3>
         		<p>Infelizmente, sua compra não foi aprovada. Por favor, tente novamente ou entre em contato com o prorietário da loja.</p>
-    		</div>';
+				<link rel="stylesheet" href="<?php echo GERENCIANET_OFICIAL_PLUGIN_URL ?>assets/css/thankyou-page.css">
+				<?php
+					if(Gerencianet_Hpos::get_meta( $order_id, '_gn_can_retry') == "yes"){
+						$installments = $body['payment']['credit_card']['installments'];
+						echo '<button type="button" class="woocommerce-button button" id="gn-btn-retry">Tentar novamente</button>';
+						echo '<input type="hidden" id="order_id" value="'.$order_id.'">';
+						echo '<input id="gn_installments" name="gn_installments" type="hidden" value="'.$installments.'">';
+					}
+				?>
+				<input id="gn_payment_total" name="gn_payment_total" type="hidden" value="<?php echo $order->get_total(); ?>">
+    		</div> 
+			<script>
+				var options = {
+					payeeCode: '<?php echo $payeeCode; ?>',
+					enviroment:'<?php echo $isSandbox ? 'sandbox' : 'production'; ?>'
+				}
+			</script>
+			<?php
 		} 
 		break;
 	case GERENCIANET_BOLETO_ID:
