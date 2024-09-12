@@ -14,10 +14,12 @@ require_once __DIR__ . '/payment-methods/subscriptions/class-wc-gerencianet-assi
 require_once __DIR__ . '/payment-methods/subscriptions/class-wc-gerencianet-assinaturas-cartao.php';
 require_once __DIR__ . '/utils/class-gerencianet-hpos.php';
 require_once __DIR__ . '/class-gerencianet-i18n.php';
+require_once __DIR__ . '/lib/zipstream/vendor/autoload.php';
 
 use Gerencianet_Assinaturas;
 use Gerencianet_Planos;
 use Gerencianet_Hpos;
+use ZipStream;
 
 /**
  * The file that defines the core plugin class
@@ -88,12 +90,16 @@ class Gerencianet_Oficial
 		add_action('plugins_loaded', 'init_gerencianet_assinaturas_cartao');
 		add_action('plugins_loaded', 'init_gerencianet_assinaturas_boleto');
 
-		
-
-			
+		// Ajax card retry
+		add_action( 'wp_ajax_woocommerce_gerencianet_card_retry', array('WC_Gerencianet_Cartao', 'card_retry'));
+		add_action( 'wp_ajax_woocommerce_gerencianet_assinatura_retry', array('WC_Gerencianet_Assinaturas_Cartao', 'assinatura_retry'));
 
 		// Add gateway to woocommerce options
 		$this->loader->add_filter('woocommerce_payment_gateways', $this, 'gerencianet_add_gateway_class');
+		$this->loader->add_filter('plugin_action_links_woo-gerencianet-official/gerencianet-oficial.php', $this, 'gn_settings_link' );
+
+		// Hook download logs
+		add_action('admin_post_gn_download_logs', array($this, 'gn_download_logs'));
 
 		$settingsAssinaturasBoleto = maybe_unserialize(get_option('woocommerce_WC_Gerencianet_Assinaturas_Boleto_settings'));
         $settingsAssinaturasCartao = maybe_unserialize(get_option('woocommerce_WC_Gerencianet_Assinaturas_Cartao_settings'));
@@ -298,4 +304,80 @@ class Gerencianet_Oficial
 		return $available_gateways;
 	}
 
+	// Adiciona links a Efi na página de plugins
+	function gn_settings_link( $links ) {
+		// Link Configurações
+		$url = esc_url( add_query_arg(
+			array(
+				'page' => 'wc-settings',
+				'tab' => 'checkout'
+			),
+			get_admin_url() . 'admin.php'
+		));
+		// Create the link.
+		$settings_link = "<a href='$url'>" . __( 'Settings', Gerencianet_I18n::getTextDomain() ) . '</a>';
+		
+		// Link Baixar Logs.
+		$urlLogs = esc_url(add_query_arg(
+			array(
+				'action' => 'gn_download_logs'
+			),
+			admin_url('admin-post.php?action=gn_download_logs')
+		));
+		// Create the link.
+		$logs_link = "<a href='$urlLogs'>" . __( 'Baixar Logs', Gerencianet_I18n::getTextDomain() ) . '</a>';
+		
+		// Adds the link to the end of the array.
+		array_push(
+			$links,
+			$settings_link,
+			$logs_link
+		);
+		return $links;
+	}
+
+	function gn_download_logs(){
+		$zipFileName = WP_CONTENT_DIR.'/Efi-logs.zip';
+
+		if (file_exists($zipFileName)) {
+			unlink($zipFileName);
+		}
+
+		$log_files = array(
+			'efi-versions.log',
+			'efi-boletos.log',
+			'efi-pix.log',
+			'efi-cartao.log',
+			'efi-open-finance.log',
+			'efi-assinaturas-boleto.log',
+			'efi-assinaturas-cartao.log'
+		);
+
+		$logs_location = WP_CONTENT_DIR.'/';
+
+		try {
+
+			// create a new zipstream object
+			$zip = new ZipStream\ZipStream();
+
+			foreach ($log_files as $log) {
+				if (file_exists($logs_location.$log)) {
+					$zip->addFileFromPath(
+						name: $log,
+						path: $logs_location.$log,
+					);
+				}
+			}
+
+			$completedZip = $zip->finish();
+
+			header('Content-Description: File Transfer');
+			header('Content-Type: application/zip');
+			header('Content-Disposition: attachment; filename="efi-logs.zip"');
+			header('Content-Length: ' . filesize($completedZip));
+			exit;
+		} catch (\Throwable $th) {
+			gn_log($th);
+		}
+	}
 }
