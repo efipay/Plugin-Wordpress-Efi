@@ -522,7 +522,7 @@ class Gerencianet_Integration {
 			$data = array( 'message' => $e->getMessage() );
 		}
 
-		return self::result_api( $payment_method, $data, $response );
+		return self::result_api( GERENCIANET_OPEN_FINANCE_ID, $data, $response );
 	}
 
 	public function pay_open_finance($body) {
