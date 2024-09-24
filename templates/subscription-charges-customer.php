@@ -4,9 +4,9 @@
         return;
     }
 
-            if (isset($_GET['view-order'])) {
-                $order_id = $_GET['view-order'];
-            }
+            global $wp;
+            $order_id = isset( $wp->query_vars['view-order'] ) ? $wp->query_vars['view-order'] : null;
+
 
             $subscription_id = Gerencianet_Hpos::get_meta($order_id, '_subscription_id', true);
 
@@ -50,7 +50,7 @@
                     <?php
                         if ($order->get_status() != 'cancelled' && $order->get_status() != 'completed') {
                     ?>
-                            <button type="button" class="woocommerce-button button" onclick="areYouSure()">Cancelar Assinatura</button>
+                            <button type="button" class='btn-efi' onclick="areYouSure()">Cancelar Assinatura</button>
                     <?php
                         }else{
                             echo "Sem ações disponíveis";
@@ -200,6 +200,7 @@
 			$newStatus['cancelled'] = 'Cancelado';
             $newStatus['canceled'] = 'Cancelado';
 			$newStatus['settled'] = 'Marcado como Pago';
+            $newStatus['refunded'] = 'Reembolsado';
 
 			return $newStatus[$status];
 		}

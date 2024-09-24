@@ -103,6 +103,15 @@
                         'MMMM/YYYY'
                     );
 
+                $formatter_date = new IntlDateFormatter(
+                        'pt_BR',
+                        IntlDateFormatter::FULL,
+                        IntlDateFormatter::NONE,
+                        'America/Sao_Paulo',
+                        IntlDateFormatter::GREGORIAN,
+                        'dd/MM/yyyy'
+                    );
+
 
                 if(isset($notification->data)){
                     foreach ($notification->data as $notification_data) {
@@ -204,6 +213,7 @@
 			$newStatus['unpaid'] = 'Inadimplente';
 			$newStatus['canceled'] = 'Cancelado';
 			$newStatus['settled'] = 'Marcado como Pago';
+            $newStatus['refunded'] = 'Reembolsado';
 
 			return $newStatus[$status];
 		}
