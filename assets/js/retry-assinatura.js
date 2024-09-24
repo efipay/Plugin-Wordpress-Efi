@@ -121,7 +121,7 @@ function generatePaymentToken(cardData) {
 async function getParcels(payment_data) {
 
     Swal.fire({
-        title: "Deseja tentar pagar sua assinatura nocamente?",
+        title: "Deseja tentar pagar sua assinatura novamente?",
         showCancelButton: true,
 
     }).then((result) => {
