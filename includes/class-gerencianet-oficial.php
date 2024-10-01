@@ -315,7 +315,7 @@ class Gerencianet_Oficial
 			get_admin_url() . 'admin.php'
 		));
 		// Create the link.
-		$settings_link = "<a href='$url'>" . __( 'Settings', Gerencianet_I18n::getTextDomain() ) . '</a>';
+		$settings_link = "<a href='$url'>" . __( 'Configurações', Gerencianet_I18n::getTextDomain() ) . '</a>';
 		
 		// Link Baixar Logs.
 		$urlLogs = esc_url(add_query_arg(
