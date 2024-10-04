@@ -4,9 +4,8 @@
         return;
     }
 
-            if (isset($_GET['view-order'])) {
-                $order_id = $_GET['view-order'];
-            }
+            global $wp;
+            $order_id = isset( $wp->query_vars['view-order'] ) ? $wp->query_vars['view-order'] : null;
 
             $subscription_id = Gerencianet_Hpos::get_meta($order_id, '_subscription_id', true);
 

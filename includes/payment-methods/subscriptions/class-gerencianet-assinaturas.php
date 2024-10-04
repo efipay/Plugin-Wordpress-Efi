@@ -42,7 +42,14 @@ class Gerencianet_Assinaturas
 
         if(isset($payment_method) && ($payment_method == GERENCIANET_ASSINATURAS_BOLETO_ID || $payment_method == GERENCIANET_ASSINATURAS_CARTAO_ID)) {
             $gerencianetSDK = new Gerencianet_Integration();
-            $gerencianetSDK->cancel_subscription($payment_method, $subscription_id);
+            $response = $gerencianetSDK->get_subscription($payment_method, $subscription_id);
+
+            if(isset($response)){
+                $status = json_decode($response, true);
+                if($status['data']['status'] != 'canceled' && $status['data']['status'] != 'cancelled') {
+                    $gerencianetSDK->cancel_subscription($payment_method, $subscription_id);
+                } 
+            }
         }
     }
 

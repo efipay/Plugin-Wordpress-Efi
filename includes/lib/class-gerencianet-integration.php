@@ -759,4 +759,31 @@ class Gerencianet_Integration {
         }
     }
 
+	public function get_subscription ($paymentMethod, $subscription_id) {
+
+        $params = [
+            "id" => $subscription_id
+        ];
+
+        try {
+            $api      = new Gerencianet( $this->get_credentials( $paymentMethod ) );
+            $response = $api->detailSubscription($params);
+            return self::result_api( $payment_method, $response, true );
+        } catch ( GerencianetException $e ) {
+			gn_log($e);
+            $errorResponse = array(
+                'code'    => $e->getCode(),
+                'error'   => $e->error,
+                'message' => $e->errorDescription,
+            );
+            return self::result_api( $payment_method, $errorResponse, false );
+        } catch ( Exception $e ) {
+			gn_log($e);
+            $errorResponse = array(
+                'message' => $e->getMessage(),
+            );
+            return self::result_api( $payment_method, $errorResponse, false );
+        }
+    }
+
 }
