@@ -88,12 +88,16 @@ class Gerencianet_Oficial
 		add_action('plugins_loaded', 'init_gerencianet_assinaturas_cartao');
 		add_action('plugins_loaded', 'init_gerencianet_assinaturas_boleto');
 
-		
-
-			
+		// Ajax card retry
+		add_action( 'wp_ajax_woocommerce_gerencianet_card_retry', array('WC_Gerencianet_Cartao', 'card_retry'));
+		add_action( 'wp_ajax_woocommerce_gerencianet_assinatura_retry', array('WC_Gerencianet_Assinaturas_Cartao', 'assinatura_retry'));
 
 		// Add gateway to woocommerce options
 		$this->loader->add_filter('woocommerce_payment_gateways', $this, 'gerencianet_add_gateway_class');
+		$this->loader->add_filter('plugin_action_links_woo-gerencianet-official/gerencianet-oficial.php', $this, 'gn_settings_link' );
+
+		// Hook download logs
+		add_action('admin_post_gn_download_logs', array($this, 'gn_download_logs'));
 
 		$settingsAssinaturasBoleto = maybe_unserialize(get_option('woocommerce_WC_Gerencianet_Assinaturas_Boleto_settings'));
         $settingsAssinaturasCartao = maybe_unserialize(get_option('woocommerce_WC_Gerencianet_Assinaturas_Cartao_settings'));
@@ -236,6 +240,8 @@ class Gerencianet_Oficial
 			return;
 		}
 
+		$cardEnabled = '';
+
 		$boletoSettings = maybe_unserialize(get_option('woocommerce_' . GERENCIANET_BOLETO_ID . '_settings'));
 		$cardSettings = maybe_unserialize(get_option('woocommerce_' . GERENCIANET_CARTAO_ID . '_settings'));
 
@@ -260,17 +266,10 @@ class Gerencianet_Oficial
 			}
 		}
 
-		if (isset(WC()->cart->subtotal) && ((WC()->cart->subtotal + $shippingCost) < 5)) {
+		if (isset(WC()->cart->subtotal) && ((WC()->cart->subtotal + $shippingCost) < 3) && isset($cardEnabled)) {
 			wc_clear_notices();
-			if ($boletoEnabled == 'yes' && $cardEnabled == 'yes') {
-				wc_add_notice('O pagamento via Boleto ou Cartão de Crédito só está disponível em pedidos acima de R$5,00', 'notice');
-				unset($available_gateways[GERENCIANET_BOLETO_ID]);
-				unset($available_gateways[GERENCIANET_CARTAO_ID]);
-			} elseif ($boletoEnabled == 'yes') {
-				wc_add_notice('O pagamento via Boleto só está disponível em pedidos acima de R$5,00', 'notice');
-				unset($available_gateways[GERENCIANET_BOLETO_ID]);
-			} elseif ($cardEnabled == 'yes') {
-				wc_add_notice('O pagamento via Cartão de Crédito só está disponível em pedidos acima de R$5,00', 'notice');
+			if ($cardEnabled == 'yes') {
+				wc_add_notice('O pagamento via Cartão de Crédito só está disponível em pedidos acima de R$3,00', 'notice');
 				unset($available_gateways[GERENCIANET_CARTAO_ID]);
 			}
 		}
@@ -298,4 +297,73 @@ class Gerencianet_Oficial
 		return $available_gateways;
 	}
 
+	// Adiciona links a Efi na página de plugins
+	function gn_settings_link( $links ) {
+		// Link Configurações
+		$url = esc_url( add_query_arg(
+			array(
+				'page' => 'wc-settings',
+				'tab' => 'checkout'
+			),
+			get_admin_url() . 'admin.php'
+		));
+		// Create the link.
+		$settings_link = "<a href='$url'>" . __( 'Configurações', Gerencianet_I18n::getTextDomain() ) . '</a>';
+		
+		// Link Baixar Logs.
+		$urlLogs = esc_url(add_query_arg(
+			array(
+				'action' => 'gn_download_logs'
+			),
+			admin_url('admin-post.php?action=gn_download_logs&log=versions')
+		));
+		// Create the link.
+		$logs_link = "<a href='$urlLogs'>" . __( 'Baixar Logs', Gerencianet_I18n::getTextDomain() ) . '</a>';
+		
+		// Adds the link to the end of the array.
+		array_push(
+			$links,
+			$settings_link,
+			$logs_link
+		);
+		return $links;
+	}
+
+	function gn_download_logs($log){
+
+		if(isset($_GET['log'])){
+			$log = sanitize_text_field($_GET['log']);
+		}
+
+		$log_files = array(
+			'versions' => 'efi-versions.log',
+			'WC_Gerencianet_Boleto' => 'efi-boletos.log',
+			'WC_Gerencianet_Pix' => 'efi-pix.log',
+			'WC_Gerencianet_Cartao' => 'efi-cartao.log',
+			'WC_Gerencianet_Open_Finance' => 'efi-open-finance.log',
+			'WC_Gerencianet_Assinaturas_Boleto' => 'efi-assinaturas-boleto.log',
+			'WC_Gerencianet_Assinaturas_Cartao' => 'efi-assinaturas-cartao.log'
+		);
+
+		$logs_location = WP_CONTENT_DIR.'/';
+
+		try {
+			if (file_exists($logs_location.$log_files[$log])) {
+				$this->send_download_log($logs_location, $log_files[$log]);
+			} else {
+				gn_log('Sem logs Registrados', $log);
+				$this->send_download_log($logs_location, $log_files[$log]);
+			}
+		} catch (\Throwable $th) {
+			gn_log($th);
+		}
+	}
+
+	function send_download_log($logs_location, $log_file ){
+		header('Content-Description: File Transfer');
+		header('Content-Type: text/plain');
+		header('Content-Disposition: attachment; filename="'.$log_file.'"');
+		readfile($logs_location.$log_file);
+		exit;
+	}
 }

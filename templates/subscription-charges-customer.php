@@ -7,6 +7,7 @@
             global $wp;
             $order_id = isset( $wp->query_vars['view-order'] ) ? $wp->query_vars['view-order'] : null;
 
+
             $subscription_id = Gerencianet_Hpos::get_meta($order_id, '_subscription_id', true);
 
 
@@ -49,7 +50,7 @@
                     <?php
                         if ($order->get_status() != 'cancelled' && $order->get_status() != 'completed') {
                     ?>
-                            <button type="button" class="woocommerce-button button" onclick="areYouSure()">Cancelar Assinatura</button>
+                            <button type="button" class='btn-efi' onclick="areYouSure()">Cancelar Assinatura</button>
                     <?php
                         }else{
                             echo "Sem ações disponíveis";
@@ -112,8 +113,6 @@
                                 $charges[$notification_data->identifiers->charge_id]['pagamento'] = isset($notification_data->received_by_bank_at) ? $notification_data->received_by_bank_at : $notification_data->created_at;
                                 $timezone = new DateTimeZone('America/Sao_Paulo');
                                 $charges[$notification_data->identifiers->charge_id]['pagamento'] = $formatter_date->format(new DateTime($charges[$notification_data->identifiers->charge_id]['pagamento'], $timezone));
-                                
-                                gn_log($charges[$notification_data->identifiers->charge_id]['pagamento']);
                             } else {
                                 $charges[$notification_data->identifiers->charge_id]['pagamento'] = "---";
                             }
@@ -125,7 +124,6 @@
             foreach ($charges as $charge) {
                 if ($charge['status'] == 'waiting' && $paymentMethod == GERENCIANET_ASSINATURAS_BOLETO_ID) {
                     $response = $gerencianetSDK->get_charge(GERENCIANET_ASSINATURAS_BOLETO_ID, $charge['charge_id']);
-                    gn_log($response);
                     $cobranca = json_decode($response);
                     
                     $link = $cobranca->data->payment->banking_billet->pdf->charge;
@@ -149,7 +147,13 @@
                                     <a onClick="gncopy('<?php echo $barcode; ?>')" style="text-decoration:none;" title="Clique para copiar o código de barras"><img style="height: 20px; cursor: pointer;" src="<?php echo GERENCIANET_OFICIAL_PLUGIN_URL . 'assets/img/barcode-copy.png'; ?>" alt="Copiar Código de Barras"> </a>
                                     <a onClick="gncopy('<?php echo $pixCopia; ?>')" style="text-decoration:none;" title="Clique para copiar o Pix Copia e Cola"><img style="height: 20px; cursor: pointer;" src="<?php echo GERENCIANET_OFICIAL_PLUGIN_URL . 'assets/img/pix-icon.png'; ?>" alt="Copiar Pix"> </a>
                                     <?php
-                                }else{
+                                } elseif ($charge['status'] == 'unpaid' && $paymentMethod == GERENCIANET_ASSINATURAS_CARTAO_ID) {
+                                    ?>
+                                        <link rel="stylesheet" href="<?php echo GERENCIANET_OFICIAL_PLUGIN_URL ?>assets/css/thankyou-page.css">
+                                        <button type="button" class="woocommerce-button button" id="gn-btn-retry">Tentar pagar novamente</button>
+                                        <input type="hidden" id="charge_id" value="<?php echo $charge['charge_id']?>">
+                                    <?php
+                                } else{
                                     echo "Sem ações disponíveis";
                                 }
                             ?>
@@ -196,6 +200,7 @@
 			$newStatus['cancelled'] = 'Cancelado';
             $newStatus['canceled'] = 'Cancelado';
 			$newStatus['settled'] = 'Marcado como Pago';
+            $newStatus['refunded'] = 'Reembolsado';
 
 			return $newStatus[$status];
 		}

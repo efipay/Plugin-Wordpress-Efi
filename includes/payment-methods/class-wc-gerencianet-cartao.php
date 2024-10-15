@@ -119,6 +119,15 @@ function init_gerencianet_cartao() {
 					'desc_tip'    => false,
 					'default'     => '',
 				),
+				'download_button' => array(
+					'title'             => __( 'Baixar Logs', Gerencianet_I18n::getTextDomain() ),
+					'type'              => 'button',
+					'description'       => __( 'Clique para baixar os logs de emissão de cobranças via Cartão.', Gerencianet_I18n::getTextDomain() ),
+					'default'           => __( 'Baixar Logs', Gerencianet_I18n::getTextDomain() ),
+					'custom_attributes' => array(
+						'onclick' => 'location.href="' . admin_url('admin-post.php?action=gn_download_logs&log=WC_Gerencianet_Cartao') . '";',
+					),
+				),
 			);
 		}
 
@@ -140,11 +149,11 @@ function init_gerencianet_cartao() {
 
 			?>
 				<div id="gn_row_cpf_birth">
-					<div class="form-row form-row-first" id="gn_field_cpf_cnpj">
+					<div class="form-row form-row-wide" id="gn_field_cpf_cnpj">
 						<label>CPF/CNPJ <span class="required">*</span></label>
 						<input id="gn_cartao_cpf_cnpj" class="input-text" inputmode="numeric" name="gn_cartao_cpf_cnpj" type="text" placeholder="___.___.___-__" autocomplete="off" onkeypress="return event.charCode >= 48 && event.charCode <= 57">
 					</div>
-					<div class="form-row form-row-last" id="gn_field_birth">
+					<div class="form-row form-row-wide" id="gn_field_birth">
 						<label><?php echo __( 'Data de Nasc.', Gerencianet_I18n::getTextDomain() ); ?><span class="required">*</span></label>
 						<input id="gn_cartao_birth" class="input-text" inputmode="numeric" name="gn_cartao_birth" placeholder="__/__/____" type="text" autocomplete="off">
 					</div>
@@ -152,11 +161,11 @@ function init_gerencianet_cartao() {
 				<div class="form-row form-row-wide"><label><?php echo __( 'Número do Cartão', Gerencianet_I18n::getTextDomain() ); ?><span class="required">*</span></label>
 					<input id="gn_cartao_number" class="input-text" inputmode="numeric" name="gn_cartao_number" type="text" autocomplete="off" style="width: 100%;">
 				</div>
-				<div class="form-row form-row-first"><label>CVV<span class="required">*</span></label>
+				<div class="form-row form-row-wide"><label>CVV<span class="required">*</span></label>
 					<input id="gn_cartao_cvv" class="input-text" inputmode="numeric" name="gn_cartao_cvv" type="text" autocomplete="off">
 				</div>
-				<div class="form-row form-row-last"><label><?php echo __( 'Expiração (MM/AAAA)', Gerencianet_I18n::getTextDomain() ); ?><span class="required">*</span></label>
-					<input id="gn_cartao_expiration" class="input-text" inputmode="numeric" placeholder="__/____" name="gn_cartao_expiration" type="text" autocomplete="off">
+				<div class="form-row form-row-wide"><label><?php echo __( 'Expiração (MM/AA)', Gerencianet_I18n::getTextDomain() ); ?><span class="required">*</span></label>
+					<input id="gn_cartao_expiration" class="input-text" inputmode="numeric" placeholder="__/__" name="gn_cartao_expiration" type="text" autocomplete="off">
 				</div>
 				<div class="clear"></div>
 				<div class="form-row form-row-wide"><label><?php echo __( 'Parcelas', Gerencianet_I18n::getTextDomain() ); ?><span class="required">*</span></label>
@@ -181,12 +190,24 @@ function init_gerencianet_cartao() {
 
 		public function payment_scripts() {
 
+			if ( $this->enabled != 'yes' ) {
+				return;
+			}
+
 			if ( ! is_cart() && ! is_checkout() && ! isset( $_GET['pay_for_order'] ) ) {
 				return;
 			}
 
-			if ( $this->enabled != 'yes' ) {
-				return;
+			if ( is_order_received_page() ) {
+				// Enfileira o script JavaScript
+				wp_enqueue_script( 'gn_retry_cartao', plugins_url( '../assets/js/retry-cartao.js', plugin_dir_path( __FILE__ ) ), array('jquery'), null, true );
+				wp_enqueue_script( 'gn_payment_token', plugins_url( '../assets/js/payment-token-efi.min.js', plugin_dir_path( __FILE__ ) ), array('jquery'), null, true );
+				
+				// Passa a URL do AJAX para o script
+				wp_localize_script( 'gn_retry_cartao', 'retry_cartao', array(
+					'ajax_url' => admin_url( 'admin-ajax.php' ),
+					'security' => wp_create_nonce('woocommerce_gerencianet_card_retry'),
+				));
 			}
 
 			wp_enqueue_script( 'gn-sweetalert', plugins_url( '../assets/js/sweetalert.js', plugin_dir_path( __FILE__ ) ), '11.0.0', true );
@@ -303,16 +324,31 @@ function init_gerencianet_cartao() {
 			$birth             = explode( '/', sanitize_text_field( $_POST['gn_cartao_birth'] ) );
 			$customer['birth'] = $birth[2] . '-' . $birth[1] . '-' . $birth[0];
 
+			if(!isset($_POST['gn_payment_token']) || $_POST['gn_payment_token'] == ""){
+				wc_add_notice( "Não foi possível validar os dados do cartão. Atualize a página e tente novamente.", 'error' );
+				return;
+			}
 			$paymentToken = sanitize_text_field( $_POST['gn_payment_token'] );
 
 			$installments = intval( sanitize_text_field( $_POST['gn_cartao_installments'] ) );
 
-			$number = sanitize_text_field( $_POST['billing_number'] ) != null ? sanitize_text_field( $_POST['billing_number'] ) : sanitize_text_field( $_POST['gn_billing_number'] );
+			if(isset($_POST['billing_number']) && $_POST['billing_number'] != null){
+				$number =  sanitize_text_field( $_POST['billing_number']);
+			}else{
+				$number = sanitize_text_field( $_POST['gn_billing_number'] );
+			}
+
+			if(isset($_POST['billing_neighborhood']) && $_POST['billing_neighborhood'] != null){
+				$neighborhood = sanitize_text_field( $_POST['billing_neighborhood'] );
+			}else{
+				$neighborhood = sanitize_text_field( $_POST['gn_billing_neighborhood'] );
+			}
+
 
 			$billingAddress = array(
 				'street'       => $order->get_billing_address_1(),
 				'number'       => $number,
-				'neighborhood' => sanitize_text_field( $_POST['billing_neighborhood'] ) != null ? sanitize_text_field( $_POST['billing_neighborhood'] ) : sanitize_text_field( $_POST['gn_billing_neighborhood'] ),
+				'neighborhood' => $neighborhood,
 				'zipcode'      => str_replace( '-', '', $order->get_billing_postcode() ),
 				'city'         => $order->get_billing_city(),
 				'state'        => $order->get_billing_state(),
@@ -384,7 +420,8 @@ function init_gerencianet_cartao() {
 							break;
 					}
 				} else {
-					gn_log( 'Notification Request : FAIL ' );
+					gn_log( 'Notification Request : FAIL ', GERENCIANET_CARTAO_ID);
+					gn_log( $notification, GERENCIANET_CARTAO_ID);
 				}
 
 				exit();
@@ -398,5 +435,23 @@ function init_gerencianet_cartao() {
 			return self::$id;
 		}
 
+		public static function card_retry(){
+			$order_id = isset($_POST['order_id']) ? sanitize_text_field($_POST['order_id']) : '';
+			$payment_token = isset($_POST['payment_token']) ? sanitize_text_field($_POST['payment_token']) : '';
+
+			try {
+				$gerencianetSDK = new Gerencianet_Integration();
+				$response = $gerencianetSDK->card_retry($order_id, $payment_token, GERENCIANET_CARTAO_ID);
+				$charge = json_decode( $response, true );
+				if ( isset( $charge['data']['status'] ) ) {
+					Gerencianet_Hpos::update_meta( $order_id, '_gn_status_card', $charge['data']['status'] );
+					Gerencianet_Hpos::update_meta( $order_id, '_gn_can_retry', "no");
+					Gerencianet_Hpos::update_meta( $order_id, '_gn_retry_body', "");
+				}
+			} catch (Exception $e) {
+				gn_log($e, GERENCIANET_CARTAO_ID);
+			}
+		}
+		
 	}
 }

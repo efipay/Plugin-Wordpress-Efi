@@ -25,7 +25,7 @@ class Request
             'base_uri' => $this->config['baseUri'],
             'headers' => [
                 'Content-Type' => 'application/json',
-                'api-sdk' => 'wordpress-' . GERENCIANET_OFICIAL_VERSION
+                'api-sdk' => 'efi-wordpress-' . GERENCIANET_OFICIAL_VERSION
             ]
         ];
 

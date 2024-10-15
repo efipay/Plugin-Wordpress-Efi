@@ -218,6 +218,15 @@ function init_gerencianet_pix() {
 					'description' => __( 'Entenda os riscos de não configurar o mTLS <a href="https://dev.gerencianet.com.br/docs/api-pix-endpoints#webhooks" target="_blank">clicando aqui.</a>', Gerencianet_I18n::getTextDomain() ),
 					'default'     => 'no',
 				),
+				'download_button' => array(
+					'title'             => __( 'Baixar Logs', Gerencianet_I18n::getTextDomain() ),
+					'type'              => 'button',
+					'description'       => __( 'Clique para baixar os logs de emissão de cobranças via Pix.', Gerencianet_I18n::getTextDomain() ),
+					'default'           => __( 'Baixar Logs', Gerencianet_I18n::getTextDomain() ),
+					'custom_attributes' => array(
+						'onclick' => 'location.href="' . admin_url('admin-post.php?action=gn_download_logs&log=WC_Gerencianet_Pix') . '";',
+					),
+				),
 			);
 		}
 
@@ -363,22 +372,27 @@ function init_gerencianet_pix() {
 				return false;
 			}
 
+			
+
 			$body = array(
 				'calendario'     => array( 'expiracao' => intval( $this->get_option( 'gn_pix_number_hours' ) ) * 3600 ),
 				'devedor'        => $customer,
 				'valor'          => array( 'original' => sprintf( '%0.2f', $value ) ),
 				'chave'          => $this->get_option( 'gn_pix_key' ),
-				'infoAdicionais' => array(
+			);
+
+			$body['infoAdicionais'] = [];
+
+			if(get_bloginfo() != ""){
+				$body['infoAdicionais'] = array(
 					array(
 						'nome'  => 'Pagamento em',
 						'valor' => get_bloginfo(),
-					),
-					array(
-						'nome'  => 'Numero do Pedido',
-						'valor' => '#' . $order_id,
-					),
-				),
-			);
+					)
+				);
+			}
+			
+			array_push($body['infoAdicionais'],array('nome'  => 'Numero do Pedido','valor' => '#' . $order_id));
 
 			try {
 				$chargeResponse = $this->gerencianetSDK->pay_pix( $body );
@@ -416,7 +430,7 @@ function init_gerencianet_pix() {
 					$this->successful_webhook( file_get_contents( 'php://input' ) );
 				} else {
 					header('HTTP/1.1 403 Forbidden');
-					gn_log("Não foi possível receber a notificação do Pix");
+					gn_log("Não foi possível receber a notificação do Pix. HMAC INVÁLIDO.", GERENCIANET_PIX_ID);
 				}
 			}
 
@@ -430,7 +444,7 @@ function init_gerencianet_pix() {
 				$url      = strtolower( $woocommerce->api_request_url( GERENCIANET_PIX_ID ));
 				$response = $this->gerencianetSDK->update_webhook( $pix_key, $url );
 			} catch ( \Throwable $th ) {
-				gn_log( $th );
+				gn_log( $th, GERENCIANET_PIX_ID);
 			}
 		}
 
@@ -459,7 +473,6 @@ function init_gerencianet_pix() {
 				if ( isset( $pix[0]['txid'] ) && $pix[0]['txid'] != '' && ( Gerencianet_Hpos::get_meta( $order->get_id(), '_gn_pix_txid', true ) == $pix[0]['txid'] ) ) {
 					Gerencianet_Hpos::update_meta( intval( $order->get_id() ), '_gn_pix_E2EID', $pix[0]['endToEndId'], true );
 
-					gn_log( $pix[0] );
 					if ( isset( $pix[0]['devolucoes'] ) && $pix[0]['devolucoes'][0]['status'] == 'DEVOLVIDO' ) {
 						$order->update_status( 'refund' );
 					} else {

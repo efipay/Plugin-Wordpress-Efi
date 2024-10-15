@@ -90,7 +90,6 @@
                         <tbody>
                 <?php
 
-                gn_log(Gerencianet_Hpos::get_meta( $order_id, '_notification_subscription', true));
                 $notification = json_decode(Gerencianet_Hpos::get_meta( $order_id, '_notification_subscription', true));
 
                 $charges = [];
@@ -102,6 +101,15 @@
                         'America/Sao_Paulo',
                         IntlDateFormatter::GREGORIAN,
                         'MMMM/YYYY'
+                    );
+
+                $formatter_date = new IntlDateFormatter(
+                        'pt_BR',
+                        IntlDateFormatter::FULL,
+                        IntlDateFormatter::NONE,
+                        'America/Sao_Paulo',
+                        IntlDateFormatter::GREGORIAN,
+                        'dd/MM/yyyy'
                     );
 
 
@@ -153,7 +161,7 @@
                                     <a onClick="gncopy('<?php echo $barcode; ?>')" title="Clique para copiar o código de barras" ><img style="height: 20px; cursor: pointer;" src="<?php echo GERENCIANET_OFICIAL_PLUGIN_URL . 'assets/img/barcode-copy.png'; ?>" alt="Copiar Código de Barras"> </a>
                                     <a onClick="gncopy('<?php echo $pixCopia; ?>')" title="Clique para copiar o Pix Copia e Cola"><img style="height: 20px; cursor: pointer;" src="<?php echo GERENCIANET_OFICIAL_PLUGIN_URL . 'assets/img/pix-icon.png'; ?>" alt="Copiar Pix"> </a>
                                     <?php
-                                }else{
+                                } else {
                                     echo "Sem ações disponíveis";
                                 }
                             ?>
@@ -205,6 +213,7 @@
 			$newStatus['unpaid'] = 'Inadimplente';
 			$newStatus['canceled'] = 'Cancelado';
 			$newStatus['settled'] = 'Marcado como Pago';
+            $newStatus['refunded'] = 'Reembolsado';
 
 			return $newStatus[$status];
 		}

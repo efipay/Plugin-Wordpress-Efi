@@ -70,7 +70,7 @@ function init_gerencianet_open_finance() {
         }
 		
  
-       public function title_order_received( $title, $id ) {
+       	public function title_order_received( $title, $id ) {
         	if ( function_exists( 'is_order_received_page' ) && is_order_received_page() && get_the_ID() === $id && isset($_GET['erro'])) {
         		$title = "<b>Falha ao concluir pagamento: </b>".$_GET['erro'];
         	}
@@ -108,7 +108,6 @@ function init_gerencianet_open_finance() {
 		    include dirname( __file__ ) . '/../templates/failed-page.php';
 		}
 		
-
 		public function saveOpenFinanceCertificate() {
 			$file_name = $_FILES['woocommerce_WC_Gerencianet_Open_Finance_gn_certificate_file']['name'];
 			
@@ -246,7 +245,16 @@ function init_gerencianet_open_finance() {
 					'desc_tip'    => false,
 					'placeholder' => '',
 					'default'     => '',
-				)
+				),
+				'download_button' => array(
+					'title'             => __( 'Baixar Logs', Gerencianet_I18n::getTextDomain() ),
+					'type'              => 'button',
+					'description'       => __( 'Clique para baixar os logs de emissão de cobranças via Open Finance.', Gerencianet_I18n::getTextDomain() ),
+					'default'           => __( 'Baixar Logs', Gerencianet_I18n::getTextDomain() ),
+					'custom_attributes' => array(
+						'onclick' => 'location.href="' . admin_url('admin-post.php?action=gn_download_logs&log=WC_Gerencianet_Open_Finance') . '";',
+					),
+				),
 			);
 		}
 
@@ -412,7 +420,7 @@ function init_gerencianet_open_finance() {
 					$this->successful_webhook( file_get_contents( 'php://input' ) );
 				} else {
 					header('HTTP/1.1 403 Forbidden');
-					gn_log("Não foi possível receber a notificação do Open Finance");
+					gn_log("Não foi possível receber a notificação do Open Finance. HMAC INVÁLIDO", GERENCIANET_OPEN_FINANCE_ID);
 				}
 			}
 		}
@@ -429,7 +437,7 @@ function init_gerencianet_open_finance() {
 			} catch ( \Throwable $th ) {
 				WC_Admin_Settings::add_error( 'Configurações inválidas. Verifique as informações e tente novamente.' );
 			    $this->update_option( 'gn_open_finance', 'no' );
-				gn_log( $th );
+				gn_log( $th, GERENCIANET_OPEN_FINANCE_ID);
 			}
 		}
 
@@ -439,7 +447,6 @@ function init_gerencianet_open_finance() {
 
 		public function successful_webhook( $posted ) {
 			$payment = json_decode( $posted, true );
-			gn_log($payment);
 			// Percorre lista de notificações
 			$args = array(
 				'limit'        => -1,
@@ -458,8 +465,6 @@ function init_gerencianet_open_finance() {
 
 				if ( isset( $payment['identificadorPagamento'] ) && $payment['identificadorPagamento'] != '' && ( Gerencianet_Hpos::get_meta( $order->get_id(), '_gn_of_identificador_pagamento', true ) == $payment['identificadorPagamento'] ) ) {
 					
-					gn_log( $payment);
-
 					if ( isset( $payment['identificadorDevolucao'] ) && $payment['tipo'] == 'devolucao' && $payment['status'] == 'aceito') {
 						Gerencianet_Hpos::update_meta( intval( $order->get_id() ), '_gn_open_finance_identificadorDevolucao', $payment['identificadorDevolucao'], true );
 						$order->update_status( 'refunded' );
