@@ -10,6 +10,8 @@ class Gerencianet_Planos
         add_action('save_post_product', array($this, 'salvar_metabox_produto'));
         add_filter('woocommerce_get_price_html', array($this, 'custom_price_message'));
         add_filter('woocommerce_add_to_cart_validation', array($this, 'validate_cart'), 10, 3);
+        add_action('woocommerce_check_cart_items', array($this, 'restrict_subscription_quantity_in_cart'));
+
     }
 
 
@@ -57,6 +59,39 @@ class Gerencianet_Planos
                 break;
         }
         return $textafter;
+    }
+
+    /*
+       Valida o carrinho antes da finalização da compra
+    */
+    public function restrict_subscription_quantity_in_cart(){
+        // Variável para verificar se já existe um plano de assinatura no carrinho
+        $subscription_exists = false;
+
+        // Percorre os itens do carrinho
+        foreach (WC()->cart->get_cart() as $cart_item_key => $cart_item) {
+            $product = $cart_item['data'];
+
+            // Verifica se o item no carrinho é um plano de assinatura
+            $is_subscription = Gerencianet_Hpos::get_meta($product->get_id(), '_habilitar_recorrencia', true);
+            if ($is_subscription === 'yes') {
+
+                // Se um plano de assinatura já foi encontrado, ajustar a quantidade para 1
+                if ($subscription_exists) {
+                    wc_add_notice(__('Você só pode comprar um único plano de assinatura por pedido. A quantidade foi ajustada para 1.', 'woocommerce'), 'error');
+                    WC()->cart->set_quantity($cart_item_key, 1); // Ajusta a quantidade para 1
+                } else {
+                    // Define a flag indicando que já existe um plano de assinatura no carrinho
+                    $subscription_exists = true;
+
+                    // Se a quantidade for maior que 1, ajusta para 1
+                    if ($cart_item['quantity'] > 1) {
+                        wc_add_notice(__('Você só pode comprar um único plano de assinatura por pedido. A quantidade do plano de assinatura foi ajustada para 1.', 'woocommerce'), 'error');
+                        WC()->cart->set_quantity($cart_item_key, 1); // Ajusta a quantidade para 1
+                    }
+                }
+            }
+        }
     }
 
     /**
