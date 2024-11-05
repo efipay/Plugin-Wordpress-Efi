@@ -36,7 +36,7 @@ function init_gerencianet_boleto() {
 			if ( $this->get_option( 'gn_billet_discount' ) != '' && $this->get_option( 'gn_billet_discount' ) != '0' && $this->get_option( 'gn_billet_discount' ) != null && intval($this->get_option( 'gn_billet_discount' )) > 0) {
 				$discountText = ' - ' . esc_html( $this->get_option( 'gn_billet_discount' ) ) . '% de Desconto';
 			}
-
+			
 			// Load the settings.
 			$this->init_settings();
 			$this->title                         = __( 'Boleto', Gerencianet_I18n::getTextDomain() ) . $discountText;
@@ -51,7 +51,8 @@ function init_gerencianet_boleto() {
 			$this->gn_client_id_homologation     = sanitize_text_field( $this->get_option( 'gn_client_id_homologation' ) );
 			$this->gn_client_secret_homologation = sanitize_text_field( $this->get_option( 'gn_client_secret_homologation' ) );
 			$this->gn_sandbox                    = sanitize_text_field( $this->get_option( 'gn_sandbox' ) );
-
+			$this->gn_order_status_after_payment = sanitize_text_field($this->get_option('gn_order_status_after_payment'));
+			
 			// // This action hook saves the settings
 			add_action( 'woocommerce_update_options_payment_gateways_' . GERENCIANET_BOLETO_ID, array( $this, 'process_admin_options' ) );
 
@@ -153,7 +154,14 @@ function init_gerencianet_boleto() {
 					'placeholder' => '0',
 					'default'     => '5',
 				),
-				
+				'gn_order_status_after_payment' => array(
+					'title'       => __( 'Status do pedido após pagamento', 'text-domain' ),
+					'type'        => 'select',
+					'description' => __( 'Selecione o status do pedido após a confirmação do pagamento.', 'text-domain' ),
+					'desc_tip'    => true,
+					'options'     => wc_get_order_statuses(), // Obtém os status de pedido disponíveis
+					'default'     => 'wc-processing', // Define um status padrão, ex: 'wc-processing'
+				),
 				'download_button' => array(
 					'title'             => __( 'Baixar Logs', Gerencianet_I18n::getTextDomain() ),
 					'type'              => 'button',
@@ -414,7 +422,7 @@ function init_gerencianet_boleto() {
 
 					switch ( $orderStatusFromNotification ) {
 						case 'paid':
-							$order->update_status( 'processing' );
+							$order->update_status($this->gn_order_status_after_payment);
 							$order->payment_complete();
 							break;
 						case 'unpaid':
@@ -544,6 +552,6 @@ function init_gerencianet_boleto() {
 			return $actions;
 		}
 
-
+		
 	}
 }

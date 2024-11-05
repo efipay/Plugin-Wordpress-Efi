@@ -43,6 +43,7 @@ function init_gerencianet_assinaturas_cartao() {
 			$this->gn_client_secret_homologation = sanitize_text_field( $this->get_option( 'gn_client_secret_homologation' ) );
 			$this->gn_sandbox                    = sanitize_text_field( $this->get_option( 'gn_sandbox' ) );
 			$this->gn_trial_days                 = sanitize_text_field( $this->get_option( 'gn_trial_days' ) );
+			$this->gn_order_status_after_payment = sanitize_text_field($this->get_option('gn_order_status_after_payment'));
 
 			// // This action hook saves the settings
 			add_action( 'woocommerce_update_options_payment_gateways_' . GERENCIANET_ASSINATURAS_CARTAO_ID, array( $this, 'process_admin_options' ) );
@@ -131,6 +132,14 @@ function init_gerencianet_assinaturas_cartao() {
                             'min'	=> '1',
                             'max'   => '365'
                         )
+				),
+				'gn_order_status_after_payment' => array(
+					'title'       => __( 'Status do pedido após pagamento', 'text-domain' ),
+					'type'        => 'select',
+					'description' => __( 'Selecione o status do pedido após a confirmação do pagamento.', 'text-domain' ),
+					'desc_tip'    => true,
+					'options'     => wc_get_order_statuses(), // Obtém os status de pedido disponíveis
+					'default'     => 'wc-processing', // Define um status padrão, ex: 'wc-processing'
 				),
 				'download_button' => array(
 					'title'             => __( 'Baixar Logs', Gerencianet_I18n::getTextDomain() ),
@@ -428,7 +437,7 @@ function init_gerencianet_assinaturas_cartao() {
 
 					switch ( $orderStatusFromNotification ) {
 						case 'paid':
-							$order->update_status( 'processing' );
+							$order->update_status($this->gn_order_status_after_payment);
 							$order->payment_complete();
 							break;
 						case 'unpaid':

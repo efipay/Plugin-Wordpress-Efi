@@ -42,13 +42,14 @@ function init_gerencianet_pix() {
 			$this->description = __( 'Pagando por Pix, seu pagamento será confirmado em poucos segundos.', Gerencianet_I18n::getTextDomain() );
 			$this->enabled     = $this->get_option( 'gn_pix' );
 
-			$this->gn_pix_key               = sanitize_text_field( $this->get_option( 'gn_pix_key' ) );
-			$this->gn_certificate_file              = sanitize_text_field( $this->get_option( 'gn_certificate_file' ) );
-			$this->gn_pix_discount          = sanitize_text_field( $this->get_option( 'gn_pix_discount' ) );
-			$this->gn_pix_discount_shipping = sanitize_text_field( $this->get_option( 'gn_pix_discount_shipping' ) );
-			$this->gn_pix_number_hours      = sanitize_text_field( $this->get_option( 'gn_pix_number_hours' ) );
-			$this->gn_pix_mtls              = sanitize_text_field( $this->get_option( 'gn_pix_mtls' ) );
-			$this->gn_sandbox               = sanitize_text_field( $this->get_option( 'gn_sandbox' ) );
+			$this->gn_pix_key                    = sanitize_text_field( $this->get_option( 'gn_pix_key' ) );
+			$this->gn_certificate_file           = sanitize_text_field( $this->get_option( 'gn_certificate_file' ) );
+			$this->gn_pix_discount          	 = sanitize_text_field( $this->get_option( 'gn_pix_discount' ) );
+			$this->gn_pix_discount_shipping 	 = sanitize_text_field( $this->get_option( 'gn_pix_discount_shipping' ) );
+			$this->gn_pix_number_hours      	 = sanitize_text_field( $this->get_option( 'gn_pix_number_hours' ) );
+			$this->gn_pix_mtls              	 = sanitize_text_field( $this->get_option( 'gn_pix_mtls' ) );
+			$this->gn_sandbox               	 = sanitize_text_field( $this->get_option( 'gn_sandbox' ) );
+			$this->gn_order_status_after_payment = sanitize_text_field($this->get_option('gn_order_status_after_payment'));
 
 			// // This action hook saves the settings
 			add_action( 'woocommerce_update_options_payment_gateways_' . GERENCIANET_PIX_ID, array( $this, 'process_admin_options' ) );
@@ -217,6 +218,14 @@ function init_gerencianet_pix() {
 					'type'        => 'checkbox',
 					'description' => __( 'Entenda os riscos de não configurar o mTLS <a href="https://dev.gerencianet.com.br/docs/api-pix-endpoints#webhooks" target="_blank">clicando aqui.</a>', Gerencianet_I18n::getTextDomain() ),
 					'default'     => 'no',
+				),
+				'gn_order_status_after_payment' => array(
+					'title'       => __( 'Status do pedido após pagamento', 'text-domain' ),
+					'type'        => 'select',
+					'description' => __( 'Selecione o status do pedido após a confirmação do pagamento.', 'text-domain' ),
+					'desc_tip'    => true,
+					'options'     => wc_get_order_statuses(), // Obtém os status de pedido disponíveis
+					'default'     => 'wc-processing', // Define um status padrão, ex: 'wc-processing'
 				),
 				'download_button' => array(
 					'title'             => __( 'Baixar Logs', Gerencianet_I18n::getTextDomain() ),
@@ -476,7 +485,7 @@ function init_gerencianet_pix() {
 					if ( isset( $pix[0]['devolucoes'] ) && $pix[0]['devolucoes'][0]['status'] == 'DEVOLVIDO' ) {
 						$order->update_status( 'refund' );
 					} else {
-						$order->update_status( 'processing' );
+						$order->update_status($this->gn_order_status_after_payment);
 						$order->payment_complete();
 					}
 				}

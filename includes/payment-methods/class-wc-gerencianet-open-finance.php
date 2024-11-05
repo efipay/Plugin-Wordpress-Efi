@@ -43,6 +43,7 @@ function init_gerencianet_open_finance() {
 			$this->gn_certificate_file              = sanitize_text_field( $this->get_option( 'gn_certificate_file' ) );
 			$this->gn_open_finance_mtls             = sanitize_text_field( $this->get_option( 'gn_open_finance_mtls  ' ) );
 			$this->gn_sandbox              			= sanitize_text_field( $this->get_option( 'gn_sandbox' ) );
+			$this->gn_order_status_after_payment    = sanitize_text_field($this->get_option('gn_order_status_after_payment'));
 
 			// // This action hook saves the settings
 			add_action( 'woocommerce_update_options_payment_gateways_' . GERENCIANET_OPEN_FINANCE_ID, array( $this, 'process_admin_options' ));
@@ -68,8 +69,8 @@ function init_gerencianet_open_finance() {
         	}
         	return $str;
         }
+
 		
- 
        	public function title_order_received( $title, $id ) {
         	if ( function_exists( 'is_order_received_page' ) && is_order_received_page() && get_the_ID() === $id && isset($_GET['erro'])) {
         		$title = "<b>Falha ao concluir pagamento: </b>".$_GET['erro'];
@@ -245,6 +246,14 @@ function init_gerencianet_open_finance() {
 					'desc_tip'    => false,
 					'placeholder' => '',
 					'default'     => '',
+				),
+				'gn_order_status_after_payment' => array(
+					'title'       => __( 'Status do pedido após pagamento', 'text-domain' ),
+					'type'        => 'select',
+					'description' => __( 'Selecione o status do pedido após a confirmação do pagamento.', 'text-domain' ),
+					'desc_tip'    => true,
+					'options'     => wc_get_order_statuses(), // Obtém os status de pedido disponíveis
+					'default'     => 'wc-processing', // Define um status padrão, ex: 'wc-processing'
 				),
 				'download_button' => array(
 					'title'             => __( 'Baixar Logs', Gerencianet_I18n::getTextDomain() ),
@@ -476,7 +485,7 @@ function init_gerencianet_open_finance() {
 					}
 					else if ($payment['status'] == 'aceito' && $payment['tipo'] == 'pagamento') {
 						Gerencianet_Hpos::update_meta( intval( $order->get_id() ), '_gn_open_finance_E2EID', $payment['endToEndId'], true );
-						$order->update_status( 'processing' );
+						$order->update_status($this->gn_order_status_after_payment);
 						$order->payment_complete();
 					}
 				}
