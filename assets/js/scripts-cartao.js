@@ -26,10 +26,13 @@ jQuery(document).ready(function ($) {
 
 
     // Gerar Payment Token
-    jQuery("#gn_cartao_expiration").on('keyup', function () {
+    jQuery("#gn_cartao_number, #gn_cartao_expiration, #gn_cartao_cvv").on('keyup', function () {
+
         let cardExpiration = jQuery("#gn_cartao_expiration").val().split("/");
 
-        if (jQuery("#gn_cartao_expiration").val().length >= 5) {
+        if (jQuery("#gn_cartao_expiration").val().length >= 5
+            && jQuery("#gn_cartao_number").val().length >= 15
+            && jQuery("#gn_cartao_cvv").val().length >= 3) {
 
             Swal.fire({
                 title: 'Por favor, aguarde...',
