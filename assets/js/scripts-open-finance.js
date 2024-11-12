@@ -82,9 +82,9 @@ if (document.getElementById('gn_open_finance_cpf_cnpj')) {
     jQuery('#gn_open_finance_cpf_cnpj').blur(
         function () {
             var cpf_cnpj = jQuery('#gn_open_finance_cpf_cnpj').val();
-            
-            if(cpf_cnpj != "") {
-    
+
+            if (cpf_cnpj != "") {
+
                 if (!validate_cpf_cnpj(cpf_cnpj)) {
                     jQuery('#gn_open_finance_cpf_cnpj').css('border', '1px solid red');
                     toastError("CPF/CNPJ Inválido");
@@ -227,7 +227,7 @@ if (document.getElementById('gn_open_finance_cpf_cnpj')) {
 
 
 jQuery('form[name="checkout"]').submit(function () {
-    if (jQuery('#payment_method_WC_Gerencianet_Open_Finance').is(':checked')) {
+    if (jQuery('#payment_method_wc_gerencianet_open_finance').is(':checked')) {
         let participant = jQuery('<div id="conteudo" class="gn-default-participant"></div>')
         let participantLogo = jQuery("<img class='gn-participant-logo' src='" + jQuery("#gn-participant-logo").attr('src') + "' />")
         let participantName = jQuery("<label class='gn-participant-name'>" + jQuery("#gn-default-name").html() + "</label>")
@@ -252,7 +252,7 @@ jQuery('form[name="checkout"]').submit(function () {
 });
 
 jQuery('input[name="payment_method"]').click(function () {
-    if (jQuery('#payment_method_WC_Gerencianet_Open_Finance').is(':checked') && jQuery("#gn_of_participant").val() == '') {
+    if (jQuery('#payment_method_wc_gerencianet_open_finance').is(':checked') && jQuery("#gn_of_participant").val() == '') {
         jQuery("#place_order").prop("disabled", true)
 
     } else {

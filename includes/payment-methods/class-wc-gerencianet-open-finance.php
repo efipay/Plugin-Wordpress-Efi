@@ -110,15 +110,15 @@ function init_gerencianet_open_finance() {
 		}
 		
 		public function saveOpenFinanceCertificate() {
-			$file_name = $_FILES['woocommerce_WC_Gerencianet_Open_Finance_gn_certificate_file']['name'];
+			$file_name = $_FILES['woocommerce_wc_gerencianet_open_finance_gn_certificate_file']['name'];
 			
-			if (empty( $_FILES['woocommerce_WC_Gerencianet_Open_Finance_gn_certificate_file']['name'] ) ) {
+			if (empty( $_FILES['woocommerce_wc_gerencianet_open_finance_gn_certificate_file']['name'] ) ) {
                 WC_Admin_Settings::add_error("É necessário realizar o upload do certificado para salvar as configurações.");
                 $this->update_option( 'gn_open_finance', 'no' );
                 return;
             }
             
-            if ( $_FILES['woocommerce_WC_Gerencianet_Open_Finance_gn_certificate_file']['error'] != 0 ) {
+            if ( $_FILES['woocommerce_wc_gerencianet_open_finance_gn_certificate_file']['error'] != 0 ) {
 				return;
 			}
 			
@@ -129,14 +129,14 @@ function init_gerencianet_open_finance() {
 			
 			switch ($fileActualExt) {
 				case 'pem':
-					if ( ! $file_read = file_get_contents( $_FILES['woocommerce_WC_Gerencianet_Open_Finance_gn_certificate_file']['tmp_name'] ) ) { // Pega o conteúdo do arquivo
+					if ( ! $file_read = file_get_contents( $_FILES['woocommerce_wc_gerencianet_open_finance_gn_certificate_file']['tmp_name'] ) ) { // Pega o conteúdo do arquivo
 						WC_Admin_Settings::add_error('Falha ao ler arquivo o Certificado Open Finance!');
 						$this->update_option( 'gn_open_finance', 'no' );
 						return;
 					}
 					break;
 				case 'p12':
-					if ( ! $cert_file_p12 = file_get_contents( $_FILES['woocommerce_WC_Gerencianet_Open_Finance_gn_certificate_file']['tmp_name'] ) ) { // Pega o conteúdo do arquivo
+					if ( ! $cert_file_p12 = file_get_contents( $_FILES['woocommerce_wc_gerencianet_open_finance_gn_certificate_file']['tmp_name'] ) ) { // Pega o conteúdo do arquivo
 						WC_Admin_Settings::add_error('Falha ao ler arquivo o Certificado Open Finance!');
 						$this->update_option( 'gn_open_finance', 'no' );
 						return;
@@ -261,7 +261,7 @@ function init_gerencianet_open_finance() {
 					'description'       => __( 'Clique para baixar os logs de emissão de cobranças via Open Finance.', Gerencianet_I18n::getTextDomain() ),
 					'default'           => __( 'Baixar Logs', Gerencianet_I18n::getTextDomain() ),
 					'custom_attributes' => array(
-						'onclick' => 'location.href="' . admin_url('admin-post.php?action=gn_download_logs&log=WC_Gerencianet_Open_Finance') . '";',
+						'onclick' => 'location.href="' . admin_url('admin-post.php?action=gn_download_logs&log=wc_gerencianet_open_finance') . '";',
 					),
 				),
 			);

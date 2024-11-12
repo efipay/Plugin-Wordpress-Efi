@@ -168,7 +168,7 @@ function init_gerencianet_boleto() {
 					'description'       => __( 'Clique para baixar os logs de emissão de cobranças via Boletos.', Gerencianet_I18n::getTextDomain() ),
 					'default'           => __( 'Baixar Logs', Gerencianet_I18n::getTextDomain() ),
 					'custom_attributes' => array(
-						'onclick' => 'location.href="' . admin_url('admin-post.php?action=gn_download_logs&log=WC_Gerencianet_Boleto') . '";',
+						'onclick' => 'location.href="' . admin_url('admin-post.php?action=gn_download_logs&log=wc_gerencianet_boleto') . '";',
 					),
 				),	
 			);

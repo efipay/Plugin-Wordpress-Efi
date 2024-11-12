@@ -134,7 +134,7 @@ function init_gerencianet_cartao() {
 					'description'       => __( 'Clique para baixar os logs de emissão de cobranças via Cartão.', Gerencianet_I18n::getTextDomain() ),
 					'default'           => __( 'Baixar Logs', Gerencianet_I18n::getTextDomain() ),
 					'custom_attributes' => array(
-						'onclick' => 'location.href="' . admin_url('admin-post.php?action=gn_download_logs&log=WC_Gerencianet_Cartao') . '";',
+						'onclick' => 'location.href="' . admin_url('admin-post.php?action=gn_download_logs&log=wc_gerencianet_cartao') . '";',
 					),
 				),
 			);

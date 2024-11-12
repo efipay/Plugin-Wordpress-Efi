@@ -18,6 +18,7 @@ require_once __DIR__ . '/class-gerencianet-i18n.php';
 use Gerencianet_Assinaturas;
 use Gerencianet_Planos;
 use Gerencianet_Hpos;
+use Gerencianet_Integration;
 
 /**
  * The file that defines the core plugin class
@@ -75,6 +76,7 @@ class Gerencianet_Oficial
 		 * The class responsible for orchestrating the actions and filters of the core plugin.
 		 */
 		$this->loader = new Gerencianet_Loader();
+		$this->gerencianetSDK = new Gerencianet_Integration();
 
 		$this->set_locale();
 		$this->define_admin_hooks();
@@ -89,8 +91,8 @@ class Gerencianet_Oficial
 		add_action('plugins_loaded', 'init_gerencianet_assinaturas_boleto');
 
 		// Ajax card retry
-		add_action( 'wp_ajax_woocommerce_gerencianet_card_retry', array('WC_Gerencianet_Cartao', 'card_retry'));
-		add_action( 'wp_ajax_woocommerce_gerencianet_assinatura_retry', array('WC_Gerencianet_Assinaturas_Cartao', 'assinatura_retry'));
+		add_action( 'wp_ajax_woocommerce_gerencianet_card_retry', array('wc_gerencianet_cartao', 'card_retry'));
+		add_action( 'wp_ajax_woocommerce_gerencianet_assinatura_retry', array('wc_gerencianet_assinaturas_cartao', 'assinatura_retry'));
 
 		// Add gateway to woocommerce options
 		$this->loader->add_filter('woocommerce_payment_gateways', $this, 'gerencianet_add_gateway_class');
@@ -99,8 +101,13 @@ class Gerencianet_Oficial
 		// Hook download logs
 		add_action('admin_post_gn_download_logs', array($this, 'gn_download_logs'));
 
-		$settingsAssinaturasBoleto = maybe_unserialize(get_option('woocommerce_WC_Gerencianet_Assinaturas_Boleto_settings'));
-        $settingsAssinaturasCartao = maybe_unserialize(get_option('woocommerce_WC_Gerencianet_Assinaturas_Cartao_settings'));
+		// Hook register webhook
+		add_action('admin_post_register_webhook', array($this, 'registerWebhook'));
+
+		add_action('admin_enqueue_scripts', array($this, 'setting_enqueue_scripts'));
+
+		$settingsAssinaturasBoleto = maybe_unserialize(get_option('woocommerce_wc_gerencianet_assinaturas_boleto_settings'));
+        $settingsAssinaturasCartao = maybe_unserialize(get_option('woocommerce_wc_gerencianet_assinaturas_cartao_settings'));
 
         $hasBoleto = false;
         $hasCartao = false;
@@ -337,12 +344,12 @@ class Gerencianet_Oficial
 
 		$log_files = array(
 			'versions' => 'efi-versions.log',
-			'WC_Gerencianet_Boleto' => 'efi-boletos.log',
-			'WC_Gerencianet_Pix' => 'efi-pix.log',
-			'WC_Gerencianet_Cartao' => 'efi-cartao.log',
-			'WC_Gerencianet_Open_Finance' => 'efi-open-finance.log',
-			'WC_Gerencianet_Assinaturas_Boleto' => 'efi-assinaturas-boleto.log',
-			'WC_Gerencianet_Assinaturas_Cartao' => 'efi-assinaturas-cartao.log'
+			'wc_gerencianet_boleto' => 'efi-boletos.log',
+			'wc_gerencianet_pix' => 'efi-pix.log',
+			'wc_gerencianet_cartao' => 'efi-cartao.log',
+			'wc_gerencianet_open_finance' => 'efi-open-finance.log',
+			'wc_gerencianet_assinaturas_boleto' => 'efi-assinaturas-boleto.log',
+			'wc_gerencianet_assinaturas_cartao' => 'efi-assinaturas-cartao.log'
 		);
 
 		$logs_location = WP_CONTENT_DIR.'/';
@@ -366,4 +373,36 @@ class Gerencianet_Oficial
 		readfile($logs_location.$log_file);
 		exit;
 	}
+
+	
+
+	function setting_enqueue_scripts($hook) {
+		// Verifica se estamos na página de configurações do WooCommerce
+		if (!isset($_GET['page']) || $_GET['page'] !== 'wc-settings' || !isset($_GET['tab']) || $_GET['tab'] !== 'checkout') {
+			return;
+		}
+
+		// Verifica se é o nosso gateway específico
+		if (!isset($_GET['section']) || !in_array($_GET['section'], ['wc_gerencianet_pix', 'wc_gerencianet_boleto', 'wc_gerencianet_cartao', 'wc_gerencianet_open_finance', 'wc_gerencianet_assinaturas_boleto', 'wc_gerencianet_assinaturas_cartao'])) {
+			return;
+		}
+
+		// Enfileira o estilo CSS personalizado
+		wp_enqueue_style(
+			'efi-settings-css',
+			plugin_dir_url(__FILE__) . '../assets/css/settings.css', // Caminho para o arquivo CSS
+			array(),
+			'1.0.0'
+		);
+
+		// Enfileira o script JavaScript personalizado
+		wp_enqueue_script(
+			'efi-settings-js',
+			plugin_dir_url(__FILE__) . '../assets/js/settings.js', // Caminho para o arquivo JS
+			array('jquery'), // Dependência do jQuery (opcional)
+			'1.0.0',
+			true // Carregar no final da página
+		);
+	}
+
 }

@@ -165,7 +165,7 @@ function init_gerencianet_assinaturas_boleto()
 					'type'              => 'button',
 					'description'       => __( 'Clique para baixar os logs de emissão de Assinaturas via Boleto.', Gerencianet_I18n::getTextDomain() ),
 					'custom_attributes' => array(
-						'onclick' => 'location.href="' . admin_url('admin-post.php?action=gn_download_logs&log=WC_Gerencianet_Assinaturas_Boleto') . '";',
+						'onclick' => 'location.href="' . admin_url('admin-post.php?action=gn_download_logs&log=wc_gerencianet_assinaturas_boleto') . '";',
 					),
 				),
 			);
