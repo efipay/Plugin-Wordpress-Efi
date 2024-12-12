@@ -51,6 +51,14 @@ if ( ! function_exists( 'gn_log' ) ) {
 		// Criar arquivo de versões
 		create_versions_file($upload_dir);
 
+		if (is_array($entry)) {
+			// Se for um array, converta para string antes de salvar
+			$entry = print_r($entry, true); 
+		} else {
+			// Caso contrário, apenas trate como string
+			$entry = (string) $entry;
+		}
+
 		$fileName  = fopen( $filePath, $mode );
 		$bytes = fwrite( $fileName, "------------------- \n" );
 		$bytes = fwrite( $fileName, current_time( 'mysql' ) . ' Efi-Log:: ' . $entry . "\n" );
