@@ -61,7 +61,7 @@ function init_gerencianet_boleto() {
 			wp_enqueue_script( 'gn_sweetalert', GERENCIANET_OFICIAL_PLUGIN_URL . 'assets/js/sweetalert.js', array( 'jquery' ), GERENCIANET_OFICIAL_VERSION, false );
 			add_action( 'woocommerce_api_' . strtolower( GERENCIANET_BOLETO_ID ), array( $this, 'webhook' ) );
 			add_filter( 'woocommerce_my_account_my_orders_actions', array($this, 'substituir_link_pagar'), 10, 2 );
-
+			
 		}
 
 		public function init_form_fields() {
@@ -81,7 +81,7 @@ function init_gerencianet_boleto() {
 				),
 				'gn_client_secret_production'   => array(
 					'title'       => __( 'Client_secret Produção', Gerencianet_I18n::getTextDomain() ),
-					'type'        => 'text',
+					'type'        => 'password',
 					'description' => __( 'Por favor, insira seu Client_secret. Isso é necessário para receber o pagamento.', Gerencianet_I18n::getTextDomain() ),
 					'desc_tip'    => false,
 					'default'     => '',
@@ -95,7 +95,7 @@ function init_gerencianet_boleto() {
 				),
 				'gn_client_secret_homologation' => array(
 					'title'       => __( 'Client_secret Homologação', Gerencianet_I18n::getTextDomain() ),
-					'type'        => 'text',
+					'type'        => 'password',
 					'description' => __( 'Por favor, insira seu Client_secret de Homologação. Isso é necessário para testar os pagamentos.', Gerencianet_I18n::getTextDomain() ),
 					'desc_tip'    => false,
 					'default'     => '',
@@ -174,6 +174,19 @@ function init_gerencianet_boleto() {
 			);
 		}
 
+		public function process_admin_options() {
+			// Chama o método pai para processar as opções padrão
+			parent::process_admin_options();
+		
+			if ($this->get_option('gn_client_secret_production')) {
+				$this->update_option('gn_client_secret_production', Efi_Cypher::encrypt_data($this->get_option('gn_client_secret_production')));
+			}
+		
+			if ($this->get_option('gn_client_secret_homologation')) {
+				$this->update_option('gn_client_secret_homologation', Efi_Cypher::encrypt_data($this->get_option('gn_client_secret_homologation')));
+			}
+		}
+		
 		public function gn_price_format($value){
 			$value = number_format($value, 2, "", "");
 			return $value;
@@ -551,6 +564,44 @@ function init_gerencianet_boleto() {
 			}
 			return $actions;
 		}
+
+		public function validate_gn_client_id_production_field( $key, $value ) {
+        	if ( ! preg_match( '/^Client_Id_[a-zA-Z0-9]{40}$/', $value ) ) {
+        		WC_Admin_Settings::add_error( 'Insira o Client_Id de Produção.' );
+        		$this->update_option( 'gn_billet_banking', 'no' );
+        		$value = ''; // empty it because it is not correct
+        	}
+        
+        	return $value;
+        }
+        
+        public function validate_gn_client_secret_production_field( $key, $value ) {
+        	if ( ! preg_match( '/^Client_Secret_[a-zA-Z0-9]{40}$/', $value ) ) {
+        		WC_Admin_Settings::add_error( 'Insira o Client_Secret de Produção.' );
+        		$this->update_option( 'gn_billet_banking', 'no' );
+        		$value = ''; // empty it because it is not correct
+        	}
+        
+        	return $value;
+        }
+        
+        public function validate_gn_client_id_homologation_field( $key, $value ) {
+        	if ( ! preg_match( '/^Client_Id_[a-zA-Z0-9]{40}$/', $value ) ) {
+        		WC_Admin_Settings::add_error( 'Insira o Client_Id de Homologação.' );
+        		$this->update_option( 'gn_billet_banking', 'no' );
+        		$value = ''; // empty it because it is not correct
+        	}
+        	return $value;
+        }
+        
+        public function validate_gn_client_secret_homologation_field( $key, $value ) {
+        	if ( ! preg_match( '/^Client_Secret_[a-zA-Z0-9]{40}$/', $value ) ) {
+        		WC_Admin_Settings::add_error( 'Insira o Client_Secret de Homologação.' );
+        		$this->update_option( 'gn_billet_banking', 'no' );
+        		$value = ''; // empty it because it is not correct
+        	}
+        	return $value;
+        }
 
 		
 	}

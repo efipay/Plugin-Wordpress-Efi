@@ -62,6 +62,19 @@ function init_gerencianet_open_finance() {
 	        add_filter('woocommerce_thankyou_order_received_text', array($this, 'change_order_received_text'), 10, 2 );
 
 		}
+
+		public function process_admin_options() {
+			// Chama o método pai para processar as opções padrão
+			parent::process_admin_options();
+		
+			if ($this->get_option('gn_client_secret_production')) {
+				$this->update_option('gn_client_secret_production', Efi_Cypher::encrypt_data($this->get_option('gn_client_secret_production')));
+			}
+		
+			if ($this->get_option('gn_client_secret_homologation')) {
+				$this->update_option('gn_client_secret_homologation', Efi_Cypher::encrypt_data($this->get_option('gn_client_secret_homologation')));
+			}
+		}
 		
         public function change_order_received_text( $str, $order ) {
             if ( function_exists( 'is_order_received_page' ) && is_order_received_page() && isset($_GET['erro'])) {
@@ -180,7 +193,7 @@ function init_gerencianet_open_finance() {
 				),
 				'gn_client_secret_production'   => array(
 					'title'       => __( 'Client_secret Produção', Gerencianet_I18n::getTextDomain() ),
-					'type'        => 'text',
+					'type'        => 'password',
 					'description' => __( 'Por favor, insira seu Client_secret. Isso é necessário para receber o pagamento.', Gerencianet_I18n::getTextDomain() ),
 					'default'     => '',
 				),
@@ -192,7 +205,7 @@ function init_gerencianet_open_finance() {
 				),
 				'gn_client_secret_homologation' => array(
 					'title'       => __( 'Client_secret Homologação', Gerencianet_I18n::getTextDomain() ),
-					'type'        => 'text',
+					'type'        => 'password',
 					'description' => __( 'Por favor, insira seu Client_secret de Homologação. Isso é necessário para testar os pagamentos.', Gerencianet_I18n::getTextDomain() ),
 					'default'     => '',
 				),
@@ -254,6 +267,15 @@ function init_gerencianet_open_finance() {
 					'desc_tip'    => true,
 					'options'     => wc_get_order_statuses(), // Obtém os status de pedido disponíveis
 					'default'     => 'wc-processing', // Define um status padrão, ex: 'wc-processing'
+				),
+				'webhook_button' => array(
+					'title'             => __( 'Webhook', Gerencianet_I18n::getTextDomain() ),
+					'type'              => 'button',
+					'description'       => __( $this->get_option('webhook_status'), Gerencianet_I18n::getTextDomain() ),
+					'default'           => __( 'Cadastrar Webhook', Gerencianet_I18n::getTextDomain() ),
+					'custom_attributes' => array(
+						'onclick' => 'location.href="' . admin_url('admin-post.php?action=register_webhook&method='.GERENCIANET_OPEN_FINANCE_ID) . '";',
+					),
 				),
 				'download_button' => array(
 					'title'             => __( 'Baixar Logs', Gerencianet_I18n::getTextDomain() ),
@@ -443,6 +465,7 @@ function init_gerencianet_open_finance() {
 				$url      = strtolower( $woocommerce->api_request_url( GERENCIANET_OPEN_FINANCE_ID ));
 				// hmac criado dentro da SDK
 				$response = $this->gerencianetSDK->update_webhook_open_finance($url, $redirectUrl);
+				WC_Admin_Settings::add_message("O webhook foi cadastrado com sucessol!");
 			} catch ( \Throwable $th ) {
 				WC_Admin_Settings::add_error( 'Configurações inválidas. Verifique as informações e tente novamente.' );
 			    $this->update_option( 'gn_open_finance', 'no' );
@@ -580,7 +603,7 @@ function init_gerencianet_open_finance() {
 	
 	    public function validate_gn_client_id_production_field( $key, $value ) {
         	if ( ! preg_match( '/^Client_Id_[a-zA-Z0-9]{40}$/', $value ) ) {
-        		WC_Admin_Settings::add_error( 'Você não inseriu o Client_Id de Produção corretamente.' );
+        		WC_Admin_Settings::add_error( 'Insira o Client_Id de Produção.' );
         		$this->update_option( 'gn_open_finance', 'no' );
         		$value = ''; // empty it because it is not correct
         	}
@@ -590,7 +613,7 @@ function init_gerencianet_open_finance() {
         
         public function validate_gn_client_secret_production_field( $key, $value ) {
         	if ( ! preg_match( '/^Client_Secret_[a-zA-Z0-9]{40}$/', $value ) ) {
-        		WC_Admin_Settings::add_error( 'Você não inseriu o Client_Secret de Produção corretamente.' );
+        		WC_Admin_Settings::add_error( 'Insira o Client_Secret de Produção.' );
         		$this->update_option( 'gn_open_finance', 'no' );
         		$value = ''; // empty it because it is not correct
         	}
@@ -600,7 +623,7 @@ function init_gerencianet_open_finance() {
         
         public function validate_gn_client_id_homologation_field( $key, $value ) {
         	if ( ! preg_match( '/^Client_Id_[a-zA-Z0-9]{40}$/', $value ) ) {
-        		WC_Admin_Settings::add_error( 'Você não inseriu o Client_Id de Homologação corretamente.' );
+        		WC_Admin_Settings::add_error( 'Insira o Client_Id de Homologação.' );
         		$this->update_option( 'gn_open_finance', 'no' );
         		$value = ''; // empty it because it is not correct
         	}
@@ -609,7 +632,7 @@ function init_gerencianet_open_finance() {
         
         public function validate_gn_client_secret_homologation_field( $key, $value ) {
         	if ( ! preg_match( '/^Client_Secret_[a-zA-Z0-9]{40}$/', $value ) ) {
-        		WC_Admin_Settings::add_error( 'Você não inseriu o Client_Secret de Homologação corretamente.' );
+        		WC_Admin_Settings::add_error( 'Insira o Client_Secret de Homologação.' );
         		$this->update_option( 'gn_open_finance', 'no' );
         		$value = ''; // empty it because it is not correct
         	}

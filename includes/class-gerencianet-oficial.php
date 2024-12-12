@@ -13,12 +13,14 @@ require_once __DIR__ . '/payment-methods/subscriptions/class-gerencianet-assinat
 require_once __DIR__ . '/payment-methods/subscriptions/class-wc-gerencianet-assinaturas-boleto.php';
 require_once __DIR__ . '/payment-methods/subscriptions/class-wc-gerencianet-assinaturas-cartao.php';
 require_once __DIR__ . '/utils/class-gerencianet-hpos.php';
+require_once __DIR__ . '/utils/class-efi-cypher.php';
 require_once __DIR__ . '/class-gerencianet-i18n.php';
 
 use Gerencianet_Assinaturas;
 use Gerencianet_Planos;
 use Gerencianet_Hpos;
 use Gerencianet_Integration;
+use Efi_Cypher;
 
 /**
  * The file that defines the core plugin class
@@ -387,14 +389,6 @@ class Gerencianet_Oficial
 			return;
 		}
 
-		// Enfileira o estilo CSS personalizado
-		wp_enqueue_style(
-			'efi-settings-css',
-			plugin_dir_url(__FILE__) . '../assets/css/settings.css', // Caminho para o arquivo CSS
-			array(),
-			'1.0.0'
-		);
-
 		// Enfileira o script JavaScript personalizado
 		wp_enqueue_script(
 			'efi-settings-js',
@@ -404,5 +398,55 @@ class Gerencianet_Oficial
 			true // Carregar no final da página
 		);
 	}
+
+	public function registerWebhook($method) {
+			global $woocommerce;
+
+			if(isset($_GET['method'])){
+				$method = sanitize_text_field($_GET['method']);
+			}
+
+			$url = add_query_arg(
+					array(
+						'page' => 'wc-settings',
+						'tab' => 'checkout',
+						'section' => $method
+					),
+					get_admin_url() . 'admin.php'
+				);
+
+			try {
+
+				$webhook_url      = strtolower( $woocommerce->api_request_url( $method ));
+				$options  = maybe_unserialize( get_option( 'woocommerce_' . $method . '_settings' ) );
+				switch ($method) {
+					case GERENCIANET_PIX_ID:
+						$pix_key = $options['gn_pix_key'];
+						$response = $this->gerencianetSDK->update_webhook( $pix_key, $webhook_url );
+						break;
+
+					case GERENCIANET_OPEN_FINANCE_ID:
+							$redirectUrl = strtolower( $woocommerce->api_request_url( GERENCIANET_OPEN_FINANCE_ID.'-order-received') );
+							$url_webhook      = strtolower( $woocommerce->api_request_url( GERENCIANET_OPEN_FINANCE_ID ));
+							$response = $this->gerencianetSDK->update_webhook_open_finance($url_webhook, $redirectUrl);
+							$options["gn_open_finance"] = "no";
+						break;
+					default:
+						break;
+				}
+
+				$options["webhook_status"] = "O webhook foi cadastrado com sucesso!";
+				\WC_Admin_Settings::add_message("O webhook foi cadastrado com sucessol!");
+				update_option( 'woocommerce_' . $method . '_settings', $options );
+				wp_redirect($url);
+
+			} catch ( \Throwable $th ) {
+				$options["webhook_status"] = "O webhook ainda não foi cadastrado.";
+				update_option( 'woocommerce_' . $method . '_settings', $options );
+				gn_log($th, $method);
+
+				wp_redirect($url);
+			}
+		}
 
 }

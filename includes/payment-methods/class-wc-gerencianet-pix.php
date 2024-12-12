@@ -78,9 +78,9 @@ function init_gerencianet_pix() {
 		}
 
 		public function savePixCertificate() {
-			$file_name = $_FILES['woocommerce_WC_Gerencianet_Pix_gn_certificate_file']['name'];
+			$file_name = $_FILES['woocommerce_wc_gerencianet_pix_gn_certificate_file']['name'];
 			
-			if ( $_FILES['woocommerce_WC_Gerencianet_Pix_gn_certificate_file']['error'] != 0 ) {
+			if ( $_FILES['woocommerce_wc_gerencianet_pix_gn_certificate_file']['error'] != 0 ) {
 				return;
 			}
 			
@@ -91,13 +91,13 @@ function init_gerencianet_pix() {
 			
 			switch ($fileActualExt) {
 				case 'pem':
-					if ( ! $file_read = file_get_contents( $_FILES['woocommerce_WC_Gerencianet_Pix_gn_certificate_file']['tmp_name'] ) ) { // Pega o conteúdo do arquivo
+					if ( ! $file_read = file_get_contents( $_FILES['woocommerce_wc_gerencianet_pix_gn_certificate_file']['tmp_name'] ) ) { // Pega o conteúdo do arquivo
 						echo '<div class="error"><p><strong> Falha ao ler arquivo o Certificado Pix! </strong></div>';
 						return;
 					}
 					break;
 				case 'p12':
-					if ( ! $cert_file_p12 = file_get_contents( $_FILES['woocommerce_WC_Gerencianet_Pix_gn_certificate_file']['tmp_name'] ) ) { // Pega o conteúdo do arquivo
+					if ( ! $cert_file_p12 = file_get_contents( $_FILES['woocommerce_wc_gerencianet_pix_gn_certificate_file']['tmp_name'] ) ) { // Pega o conteúdo do arquivo
 						echo '<div class="error"><p><strong> Falha ao ler arquivo o Certificado Pix! </strong></div>';
 						return;
 					}
@@ -117,12 +117,15 @@ function init_gerencianet_pix() {
 			if ( isset( $file_read ) ) {
 				$this->update_option( 'gn_certificate_file_name', str_replace('p12', 'pem', $file_name) );
 				$this->update_option( 'gn_certificate_file', $file_read );
+			} else{
+				$this->update_option( 'gn_certificate_file_name', 'Nenhum certificado salvo');
 			}
 
 		}
 
 		public function init_form_fields() {
-			$certificateLabel = $this->get_option( 'gn_certificate_file' ) != '' ? 'Certificado Pix salvo:<code>'.$this->get_option( 'gn_certificate_file_name' ).'</code>' : 'Nenhum certificado salvo';
+			
+			$certificateLabel = $this->get_option( 'gn_certificate_file_name') != 'Nenhum certificado salvo' ? 'Certificado salvo: '.$this->get_option( 'gn_certificate_file_name' ) : $this->get_option( 'gn_certificate_file_name' );
 
 			$this->form_fields = array(
 				'gn_api_section'                => array(
@@ -138,7 +141,7 @@ function init_gerencianet_pix() {
 				),
 				'gn_client_secret_production'   => array(
 					'title'       => __( 'Client_secret Produção', Gerencianet_I18n::getTextDomain() ),
-					'type'        => 'text',
+					'type'        => 'password',
 					'description' => __( 'Por favor, insira seu Client_secret. Isso é necessário para receber o pagamento.', Gerencianet_I18n::getTextDomain() ),
 					'default'     => '',
 				),
@@ -150,7 +153,7 @@ function init_gerencianet_pix() {
 				),
 				'gn_client_secret_homologation' => array(
 					'title'       => __( 'Client_secret Homologação', Gerencianet_I18n::getTextDomain() ),
-					'type'        => 'text',
+					'type'        => 'password',
 					'description' => __( 'Por favor, insira seu Client_secret de Homologação. Isso é necessário para testar os pagamentos.', Gerencianet_I18n::getTextDomain() ),
 					'default'     => '',
 				),
@@ -227,16 +230,39 @@ function init_gerencianet_pix() {
 					'options'     => wc_get_order_statuses(), // Obtém os status de pedido disponíveis
 					'default'     => 'wc-processing', // Define um status padrão, ex: 'wc-processing'
 				),
+				'webhook_button' => array(
+					'title'             => __( 'Webhook', Gerencianet_I18n::getTextDomain() ),
+					'type'              => 'button',
+					'description'       => __( $this->get_option('webhook_status'), Gerencianet_I18n::getTextDomain() ),
+					'default'           => __( 'Cadastrar Webhook', Gerencianet_I18n::getTextDomain() ),
+					'custom_attributes' => array(
+						'onclick' => 'location.href="' . admin_url('admin-post.php?action=register_webhook&method='.GERENCIANET_PIX_ID) . '";',
+					),
+				),
 				'download_button' => array(
 					'title'             => __( 'Baixar Logs', Gerencianet_I18n::getTextDomain() ),
 					'type'              => 'button',
 					'description'       => __( 'Clique para baixar os logs de emissão de cobranças via Pix.', Gerencianet_I18n::getTextDomain() ),
 					'default'           => __( 'Baixar Logs', Gerencianet_I18n::getTextDomain() ),
 					'custom_attributes' => array(
-						'onclick' => 'location.href="' . admin_url('admin-post.php?action=gn_download_logs&log=WC_Gerencianet_Pix') . '";',
+						'onclick' => 'location.href="' . admin_url('admin-post.php?action=gn_download_logs&log=wc_gerencianet_pix') . '";',
 					),
 				),
 			);
+			
+		}
+
+		public function process_admin_options() {
+			// Chama o método pai para processar as opções padrão
+			parent::process_admin_options();
+		
+			if ($this->get_option('gn_client_secret_production')) {
+				$this->update_option('gn_client_secret_production', Efi_Cypher::encrypt_data($this->get_option('gn_client_secret_production')));
+			}
+		
+			if ($this->get_option('gn_client_secret_homologation')) {
+				$this->update_option('gn_client_secret_homologation', Efi_Cypher::encrypt_data($this->get_option('gn_client_secret_homologation')));
+			}
 		}
 
 		public function payment_fields() {
@@ -452,7 +478,11 @@ function init_gerencianet_pix() {
 				$pix_key  = $this->get_option( 'gn_pix_key' );
 				$url      = strtolower( $woocommerce->api_request_url( GERENCIANET_PIX_ID ));
 				$response = $this->gerencianetSDK->update_webhook( $pix_key, $url );
+				$this->update_option("webhook_status", "O webhook foi cadastrado com sucesso!");
+				WC_Admin_Settings::add_message("O webhook foi cadastrado com sucessol!");
 			} catch ( \Throwable $th ) {
+				$this->update_option("webhook_status", "O webhook ainda não foi cadastrado.");
+				WC_Admin_Settings::add_error("Não foi possível cadastrar o webhook.");
 				gn_log( $th, GERENCIANET_PIX_ID);
 			}
 		}
@@ -574,5 +604,43 @@ function init_gerencianet_pix() {
 			}
 			return $actions;
 		}
+
+		public function validate_gn_client_id_production_field( $key, $value ) {
+        	if ( ! preg_match( '/^Client_Id_[a-zA-Z0-9]{40}$/', $value ) ) {
+        		WC_Admin_Settings::add_error( 'Insira o Client_Id de Produção.' );
+        		$this->update_option( 'gn_pix', 'no' );
+        		$value = ''; // empty it because it is not correct
+        	}
+        
+        	return $value;
+        }
+        
+        public function validate_gn_client_secret_production_field( $key, $value ) {
+        	if ( ! preg_match( '/^Client_Secret_[a-zA-Z0-9]{40}$/', $value ) ) {
+        		WC_Admin_Settings::add_error( 'Insira o Client_Secret de Produção.' );
+        		$this->update_option( 'gn_pix', 'no' );
+        		$value = ''; // empty it because it is not correct
+        	}
+        
+        	return $value;
+        }
+        
+        public function validate_gn_client_id_homologation_field( $key, $value ) {
+        	if ( ! preg_match( '/^Client_Id_[a-zA-Z0-9]{40}$/', $value ) ) {
+        		WC_Admin_Settings::add_error( 'Insira o Client_Id de Homologação.' );
+        		$this->update_option( 'gn_pix', 'no' );
+        		$value = ''; // empty it because it is not correct
+        	}
+        	return $value;
+        }
+        
+        public function validate_gn_client_secret_homologation_field( $key, $value ) {
+        	if ( ! preg_match( '/^Client_Secret_[a-zA-Z0-9]{40}$/', $value ) ) {
+        		WC_Admin_Settings::add_error( 'Insira o Client_Secret de Homologação.' );
+        		$this->update_option( 'gn_pix', 'no' );
+        		$value = ''; // empty it because it is not correct
+        	}
+        	return $value;
+        }
 	}
 }

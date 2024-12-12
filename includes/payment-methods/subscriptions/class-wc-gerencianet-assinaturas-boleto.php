@@ -6,8 +6,7 @@ function init_gerencianet_assinaturas_boleto()
 {
 	if (!class_exists('WC_Payment_Gateway')) {
 		return;
-	}
-	;
+	};
 
 	class WC_Gerencianet_Assinaturas_Boleto extends WC_Payment_Gateway
 	{
@@ -85,7 +84,7 @@ function init_gerencianet_assinaturas_boleto()
 				),
 				'gn_client_secret_production' => array(
 					'title' => __('Client_secret Produção', Gerencianet_I18n::getTextDomain()),
-					'type' => 'text',
+					'type' => 'password',
 					'description' => __('Por favor, insira seu Client_secret. Isso é necessário para receber o pagamento.', Gerencianet_I18n::getTextDomain()),
 					'desc_tip' => false,
 					'default' => '',
@@ -99,7 +98,7 @@ function init_gerencianet_assinaturas_boleto()
 				),
 				'gn_client_secret_homologation' => array(
 					'title' => __('Client_secret Homologação', Gerencianet_I18n::getTextDomain()),
-					'type' => 'text',
+					'type' => 'password',
 					'description' => __('Por favor, insira seu Client_secret de Homologação. Isso é necessário para testar os pagamentos.', Gerencianet_I18n::getTextDomain()),
 					'desc_tip' => false,
 					'default' => '',
@@ -169,6 +168,19 @@ function init_gerencianet_assinaturas_boleto()
 					),
 				),
 			);
+		}
+
+		public function process_admin_options() {
+			// Chama o método pai para processar as opções padrão
+			parent::process_admin_options();
+		
+			if ($this->get_option('gn_client_secret_production')) {
+				$this->update_option('gn_client_secret_production', Efi_Cypher::encrypt_data($this->get_option('gn_client_secret_production')));
+			}
+		
+			if ($this->get_option('gn_client_secret_homologation')) {
+				$this->update_option('gn_client_secret_homologation', Efi_Cypher::encrypt_data($this->get_option('gn_client_secret_homologation')));
+			}
 		}
 
 		public function gn_price_format($value)
@@ -501,7 +513,7 @@ function init_gerencianet_assinaturas_boleto()
 		{
 			return self::$id;
 		}
-
+		
 
 		public function criar_assinatura($nome_cliente, $initial_status, $id_assinatura, $plano, $periodo_de_teste, $data_inicio, $data_fim, $order_id)
 		{
@@ -535,6 +547,44 @@ function init_gerencianet_assinaturas_boleto()
 			// Retornar o ID da nova assinatura para referência
 			return $subscription_id;
 		}
+
+		public function validate_gn_client_id_production_field( $key, $value ) {
+        	if ( ! preg_match( '/^Client_Id_[a-zA-Z0-9]{40}$/', $value ) ) {
+        		WC_Admin_Settings::add_error( 'Insira o Client_Id de Produção.' );
+        		$this->update_option( 'gn_billet_banking', 'no' );
+        		$value = ''; // empty it because it is not correct
+        	}
+        
+        	return $value;
+        }
+        
+        public function validate_gn_client_secret_production_field( $key, $value ) {
+        	if ( ! preg_match( '/^Client_Secret_[a-zA-Z0-9]{40}$/', $value ) ) {
+        		WC_Admin_Settings::add_error( 'Insira o Client_Secret de Produção.' );
+        		$this->update_option( 'gn_billet_banking', 'no' );
+        		$value = ''; // empty it because it is not correct
+        	}
+        
+        	return $value;
+        }
+        
+        public function validate_gn_client_id_homologation_field( $key, $value ) {
+        	if ( ! preg_match( '/^Client_Id_[a-zA-Z0-9]{40}$/', $value ) ) {
+        		WC_Admin_Settings::add_error( 'Insira o Client_Id de Homologação.' );
+        		$this->update_option( 'gn_billet_banking', 'no' );
+        		$value = ''; // empty it because it is not correct
+        	}
+        	return $value;
+        }
+        
+        public function validate_gn_client_secret_homologation_field( $key, $value ) {
+        	if ( ! preg_match( '/^Client_Secret_[a-zA-Z0-9]{40}$/', $value ) ) {
+        		WC_Admin_Settings::add_error( 'Insira o Client_Secret de Homologação.' );
+        		$this->update_option( 'gn_billet_banking', 'no' );
+        		$value = ''; // empty it because it is not correct
+        	}
+        	return $value;
+        }
 
 
 	}

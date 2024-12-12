@@ -25,11 +25,40 @@ class Gerencianet_Integration {
 		$wcSettings = maybe_unserialize( get_option( 'woocommerce_' . $paymentMethod . '_settings' ) );
 
 		$isSandbox      = $wcSettings['gn_sandbox'] == 'yes' ? true : false;
+
+
+		// Obtemos as credenciais de acordo com o ambiente (Sandbox ou Produção)
+		$client_id = $isSandbox ? $wcSettings['gn_client_id_homologation'] : $wcSettings['gn_client_id_production'];
+		$client_secret = $isSandbox ? $wcSettings['gn_client_secret_homologation'] : $wcSettings['gn_client_secret_production'];
+
+		// Regex para validação das credenciais
+		$client_id_pattern = '/^Client_Id_[a-zA-Z0-9]{40}$/';
+		$client_secret_pattern = '/^Client_Secret_[a-zA-Z0-9]{40}$/';
+
+		$final_client_id 	 = '';
+		$final_client_secret = '';
+
+		// Validação e recuperação do Client ID
+		if (preg_match($client_id_pattern, $client_id)) {
+			$final_client_id = $client_id; // Credencial já está no formato correto
+		} else {
+			$final_client_id = Efi_Cypher::decrypt_data($client_id); // Realiza a descriptografia
+		}
+
+		// Validação e recuperação do Client Secret
+		if (preg_match($client_secret_pattern, $client_secret)) {
+			$final_client_secret = $client_secret; // Credencial já está no formato correto
+		} else {
+			$final_client_secret = Efi_Cypher::decrypt_data($client_secret); // Realiza a descriptografia
+		}
+
+		// Construção do array de credenciais
 		$gn_credentials = array(
-			'client_id'     => $isSandbox ? $wcSettings['gn_client_id_homologation'] : $wcSettings['gn_client_id_production'],
-			'client_secret' => $isSandbox ? $wcSettings['gn_client_secret_homologation'] : $wcSettings['gn_client_secret_production'],
-			'sandbox'       => $isSandbox,
+			'client_id' => $final_client_id,
+			'client_secret' => $final_client_secret,
+			'sandbox' => $isSandbox,
 		);
+
 
 		if ( $paymentMethod == GERENCIANET_PIX_ID || $paymentMethod == GERENCIANET_OPEN_FINANCE_ID ) {
 
