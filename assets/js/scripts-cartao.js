@@ -40,13 +40,13 @@ jQuery(document).ready(function ($) {
                 showConfirmButton: false,
                 didOpen: async () => {
                     Swal.showLoading();
-                    EfiJs.CreditCard
+                    EfiPay.CreditCard
                         // .debugger(true)
                         .setCardNumber(jQuery("#gn_cartao_number").val())
                         .verifyCardBrand()
                         .then(brand => {
                             if (brand !== 'undefined') {
-                                EfiJs.CreditCard
+                                EfiPay.CreditCard
                                     //.debugger(true)
                                     .setAccount(options.payeeCode)
                                     .setEnvironment(options.enviroment) // 'production' or 'homologation'
@@ -87,13 +87,13 @@ jQuery(document).ready(function ($) {
 
         if (jQuery("#gn_cartao_number").val().length >= 15) {
 
-            EfiJs.CreditCard
+            EfiPay.CreditCard
                 // .debugger(true)
                 .setCardNumber(jQuery("#gn_cartao_number").val())
                 .verifyCardBrand()
                 .then(brand => {
                     if (brand !== 'undefined') {
-                        EfiJs.CreditCard
+                        EfiPay.CreditCard
                             //.debugger(true)
                             .setAccount(options.payeeCode)
                             .setEnvironment(options.enviroment) // 'production' or 'homologation'

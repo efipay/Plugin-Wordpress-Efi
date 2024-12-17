@@ -78,13 +78,13 @@ function generatePaymentToken(cardData) {
         showConfirmButton: false,
         didOpen: async () => {
             Swal.showLoading();
-            await EfiJs.CreditCard
+            await EfiPay.CreditCard
                 // .debugger(true)
                 .setCardNumber(cardData[0])
                 .verifyCardBrand()
                 .then(async (brand) => {
                     if (brand !== 'undefined') {
-                        await EfiJs.CreditCard
+                        await EfiPay.CreditCard
                             //.debugger(true)
                             .setAccount(options.payeeCode)
                             .setEnvironment(options.enviroment) // 'production' or 'sandbox'
@@ -127,7 +127,7 @@ async function getParcels(brand, payment_data) {
 
     console.log('Numero de parcelas: ', num_parcelas);
 
-    EfiJs.CreditCard
+    EfiPay.CreditCard
         //.debugger(true)
         .setAccount(options.payeeCode)
         .setEnvironment(options.enviroment) // 'production' or 'homologation'
