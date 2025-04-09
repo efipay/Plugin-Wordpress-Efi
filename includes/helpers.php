@@ -5,6 +5,35 @@
  * @package  Gerencianet_Oficial
  */
 
+add_action( 'wp_ajax_gn_check_order_status', 'gn_check_order_status' );
+add_action( 'wp_ajax_nopriv_gn_check_order_status', 'gn_check_order_status' );
+
+/**
+ * Retorna o status atual do pedido.
+ */
+function gn_check_order_status() {
+    // Verifica se veio um order_id via POST
+    if ( ! isset( $_POST['order_id'] ) ) {
+        wp_send_json_error( [ 'message' => 'Parâmetros inválidos.' ], 400 );
+    }
+
+    $order_id = absint( $_POST['order_id'] );
+    $order    = new WC_Order( $order_id );
+
+    if ( ! $order ) {
+        wp_send_json_error( [ 'message' => 'Pedido não encontrado.' ], 404 );
+    }
+
+    // Pega status atual do pedido (sem "wc-")
+    $current_status = $order->get_status();
+
+    // Se quiser retornar também o status completo e qualquer info adicional
+    // Ex.: $order_data = $order->get_data();
+    // mas aqui vamos só mandar o status
+    wp_send_json_success( [ 'current_status' => $current_status ] );
+}
+
+
 /**
  * Register autoloader
  *

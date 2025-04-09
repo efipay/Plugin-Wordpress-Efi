@@ -15,6 +15,16 @@ function init_gerencianet_pix() {
 		public $method_title;
 		public $method_description;
 		public $supports;
+		// evitando falhas
+		public $gerencianetSDK;
+		public $gn_pix_key;
+		public $gn_certificate_file;
+		public $gn_pix_discount;
+		public $gn_pix_discount_shipping;
+		public $gn_pix_number_hours;
+		public $gn_pix_mtls;
+		public $gn_sandbox;
+		public $gn_order_status_after_payment;
 
 		public function __construct() {
 			$this->id                 = GERENCIANET_PIX_ID; // payment gateway plugin ID
@@ -296,7 +306,7 @@ function init_gerencianet_pix() {
 
 			?>
 			<div class="form-row form-row-wide" id="gn_field_pix">
-				<label>CPF/CNPJ <span class="required">*</span></label>
+				<label>CPF/CNPJ</label>
 				<input id="gn_pix_cpf_cnpj" class="input-text" inputmode="numeric" name="gn_pix_cpf_cnpj" type="text" placeholder="___.___.___-__" autocomplete="off" onkeypress="return event.charCode >= 48 && event.charCode <= 57">
 			</div>
 			<div class="clear"></div>
@@ -308,8 +318,7 @@ function init_gerencianet_pix() {
 
 		public function validate_fields() {
 			if ( empty( sanitize_text_field( $_POST['gn_pix_cpf_cnpj'] ) ) ) {
-				wc_add_notice( __( 'O CPF é obrigatório', Gerencianet_I18n::getTextDomain() ), 'error' );
-				return false;
+				return true;
 			} else {
 				$cpf_cnpj = sanitize_text_field( $_POST['gn_pix_cpf_cnpj'] );
 				if ( strlen( $cpf_cnpj ) == 11 ) {
@@ -392,29 +401,37 @@ function init_gerencianet_pix() {
 			$cpf_cnpj = str_replace( '.', '', sanitize_text_field( $_POST['gn_pix_cpf_cnpj'] ) );
 			$cpf_cnpj = str_replace( '-', '', $cpf_cnpj );
 			$cpf_cnpj = str_replace( '/', '', $cpf_cnpj );
-			if ( Gerencianet_Validate::cpf( $cpf_cnpj ) ) {
+			
+			if ( empty($cpf_cnpj) ) {
+				$customer = null;
+			} else {
+				if ( Gerencianet_Validate::cpf( $cpf_cnpj ) ) {
 				$customer = array(
 					'nome' => $order->get_formatted_billing_full_name(),
 					'cpf'  => $cpf_cnpj,
 				);
-			} elseif ( Gerencianet_Validate::cnpj( $cpf_cnpj ) ) {
-				$customer = array(
-					'nome' => $order->get_billing_company() != '' ? $order->get_billing_company() : $order->get_formatted_billing_full_name(),
-					'cnpj' => $cpf_cnpj,
-				);
-			} else {
-				wc_add_notice( __( 'CPF/CNPJ inválido.', Gerencianet_I18n::getTextDomain() ), 'error' );
-				return false;
+				} elseif ( Gerencianet_Validate::cnpj( $cpf_cnpj ) ) {
+					$customer = array(
+						'nome' => $order->get_billing_company() != '' ? $order->get_billing_company() : $order->get_formatted_billing_full_name(),
+						'cnpj' => $cpf_cnpj,
+					);
+				} else {
+					wc_add_notice( __( 'CPF/CNPJ inválido.', Gerencianet_I18n::getTextDomain() ), 'error' );
+					return false;
+				}
 			}
 
 			
 
 			$body = array(
 				'calendario'     => array( 'expiracao' => intval( $this->get_option( 'gn_pix_number_hours' ) ) * 3600 ),
-				'devedor'        => $customer,
 				'valor'          => array( 'original' => sprintf( '%0.2f', $value ) ),
 				'chave'          => $this->get_option( 'gn_pix_key' ),
 			);
+
+			if ($customer != null) {
+				$body['devedor'] = $customer;
+			}
 
 			$body['infoAdicionais'] = [];
 

@@ -15,6 +15,17 @@ function init_gerencianet_cartao() {
 		public $method_title;
 		public $method_description;
 		public $supports;
+		// evitando falhas
+		public $gerencianetSDK;
+		public $gn_payee_code;
+		public $gn_client_id_production;
+		public $gn_billet_number_days;
+		public $gn_client_secret_production;
+		public $gn_client_id_homologation;
+		public $gn_client_secret_homologation;
+		public $gn_sandbox;
+		public $gn_order_status_after_payment;
+
 
 		public function __construct() {
 

@@ -56,15 +56,101 @@ switch ( $payment_method ) {
 		break;
 	case GERENCIANET_PIX_ID:
 		$pixCopy = Gerencianet_Hpos::get_meta( $order_id, '_gn_pix_copy', true );
-		echo "<h2>Escaneie o QrCode abaixo para pagar</h2>
-                <div style='float:left'>
-                    <img src='" . esc_html(Gerencianet_Hpos::get_meta( $order_id, '_gn_pix_qrcode', true )) . "' />
-                </div>
-                <div style='padding: 10px;'>
-                    <p style='font-weight: bold;'>Ou copie o Pix Copia e Cola clicando no botão abaixo!</p>
-                    <a onclick='gncopy()' id='gnbtncopy' class='button gnbtn'>Copiar Pix Copia e Cola</a>
-                </div>
-                ";
+		$qrcode  = Gerencianet_Hpos::get_meta( $order_id, '_gn_pix_qrcode', true );
+
+		// Importante: envolva o conteúdo num container com ID
+		echo "<div id='pix-container'>
+				<h2>Escaneie o QrCode abaixo para pagar</h2>
+				<div style='float:left'>
+					<img src='" . esc_html( $qrcode ) . "' />
+				</div>
+				<div style='padding: 10px;'>
+					<p style='font-weight: bold;'>Ou copie o Pix Copia e Cola clicando no botão abaixo!</p>
+					<a onclick='gncopy()' id='gnbtncopy' class='button gnbtn'>Copiar Pix Copia e Cola</a>
+				</div>
+			</div>";
+
+		// Supondo que deseja checar a cada 5 segundos por no máximo 5 minutos
+		$interval_ms = 5000; // 5 segundos
+		$max_minutes = 5;
+
+		$available_gateways = WC()->payment_gateways->get_available_payment_gateways();
+		$pix_gateway        = isset( $available_gateways['wc_gerencianet_pix'] ) ? $available_gateways['wc_gerencianet_pix'] : null;
+
+		$desired_status = $pix_gateway->gn_order_status_after_payment;
+
+		?>
+		<script type="text/javascript">
+
+			var desiredStatus = "<?php echo str_replace('wc-', '', $desired_status); ?>";
+
+			(function($){
+				var intervalMs   = <?php echo $interval_ms; ?>;
+				var maxMinutes   = <?php echo $max_minutes; ?>;
+				var maxAttempts  = (maxMinutes * 60 * 1000) / intervalMs;
+				var currentTry   = 0;
+
+				var checkInterval = setInterval(function(){
+					currentTry++;
+					if (currentTry >= maxAttempts) {
+						clearInterval(checkInterval);
+						// console.log("Tempo máximo de tentativa atingido");
+						return;
+					}
+
+					$.ajax({
+						url: "<?php echo admin_url('admin-ajax.php'); ?>",
+						method: "POST",
+						dataType: "json",
+						data: {
+							action: "gn_check_order_status",
+							order_id: "<?php echo $order_id; ?>"
+						},
+						success: function(response) {
+							if (response.success) {
+								var status = response.data.current_status;
+								// console.log("Status atual do pedido: " + status);
+								// console.log("Status esperado é: " + desiredStatus)
+
+								if (status === desiredStatus) {
+									clearInterval(checkInterval);
+									exibirResultadoPixPago();
+								}
+							}
+						},
+						error: function(xhr) {
+							console.log("Erro ao checar status: ", xhr);
+						}
+					});
+				}, intervalMs);
+
+				// Função que atualiza o DOM quando detectamos pagamento
+				function exibirResultadoPixPago() {
+					// Localiza o container que exibe o QR Code
+					var container = document.getElementById("pix-container");
+					
+					if(container){
+						// Substitui o conteúdo pelo que você deseja
+						container.innerHTML = "<h2 style='color:green;'>Pagamento confirmado!</h2>"
+											+ "<p>Obrigado! Seu pedido foi pago com sucesso.</p>";
+					} else {
+						// Fallback caso a div não exista
+						alert("Pagamento confirmado!");
+					}
+				}
+
+
+			})(jQuery);
+
+			function gncopy() {
+				document.getElementById('gnbtncopy').innerHTML = 'Copiado!';
+				navigator.clipboard.writeText('<?php if(isset($pixCopy)) echo esc_html($pixCopy); ?>');
+				setTimeout(() => {
+					document.getElementById('gnbtncopy').innerHTML = 'Copiar Pix Copia e Cola';
+				}, 1000);
+			}
+		</script>
+		<?php
 		break;
 	case GERENCIANET_ASSINATURAS_BOLETO_ID:
 		echo '<iframe  src=' . esc_url( Gerencianet_Hpos::get_meta( $order_id, '_gn_link_responsive', true ) ) . " width='900' height='400'></iframe>";

@@ -15,6 +15,15 @@ function init_gerencianet_open_finance() {
 		public $method_title;
 		public $method_description;
 		public $supports;
+		// evitando falhas
+		public $gerencianetSDK;
+		public $gn_open_finance_document;
+		public $gn_open_finance_account;
+		public $gn_certificate_file;
+		public $gn_open_finance_mtls;
+		public $gn_sandbox;
+		public $gn_order_status_after_payment;
+		public $gn_open_finance_name;
 
 		public function __construct() {
 			$this->id                 = GERENCIANET_OPEN_FINANCE_ID; // payment gateway plugin ID
@@ -92,7 +101,7 @@ function init_gerencianet_open_finance() {
         }
 
 		public function redirectPage() {
-		    $args = array(
+			$args = array(
 				'limit'        => -1,
 				'orderby'      => 'date',
 				'order'        => 'DESC',
@@ -100,27 +109,32 @@ function init_gerencianet_open_finance() {
 				'meta_compare' => '=',
 				'meta_value'   => sanitize_text_field($_GET['identificadorPagamento']),
 			);
-			
-			$params = '';
-			foreach($_GET as $key => $param){
-				if($key != 'order-received')
-                	$params = $params.'&'. $key . '=' . urlencode($param);
-            }
 
 			// Busca pedidos
 			$orders = wc_get_orders( $args );
-		   
-		   if(isset($_GET['erro'])){
-		        wp_redirect($this->get_return_url( $orders[0] ));     
-		   }else{
-		        wp_redirect($this->get_return_url( $orders[0] ));   
-		   }
-		   
+
+			if ( isset($_GET['erro']) ) {
+				// Se houver erro, chama a tela de falha
+				$this->failedPage();
+				exit; 
+			} else {
+				// Caso contrário, direciona para a página de obrigado
+				wp_redirect( $this->get_return_url( $orders[0] ) );
+				exit;
+			}
 		}
-		
-		public function failedPage(){
-		    include dirname( __file__ ) . '/../templates/failed-page.php';
+
+		public function failedPage() {
+			$erro = isset($_GET['erro']) ? sanitize_text_field($_GET['erro']) : '';
+			$nome = isset($_GET['nome']) ? sanitize_text_field($_GET['nome']) : '';
+			$mensagem = isset($_GET['mensagem']) ? sanitize_text_field($_GET['mensagem']) : '';
+
+			include plugin_dir_path( __FILE__ ) . '../../templates/open-finance-failed-page.php';
+			exit;
 		}
+
+
+
 		
 		public function saveOpenFinanceCertificate() {
 			$file_name = $_FILES['woocommerce_wc_gerencianet_open_finance_gn_certificate_file']['name'];

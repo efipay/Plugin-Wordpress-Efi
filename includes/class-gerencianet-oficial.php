@@ -36,6 +36,7 @@ use Efi_Cypher;
  */
 class Gerencianet_Oficial
 {
+	private $gerencianetSDK;
 
 	/**
 	 * The loader that's responsible for maintaining and registering all hooks that power
@@ -96,6 +97,10 @@ class Gerencianet_Oficial
 		add_action( 'wp_ajax_woocommerce_gerencianet_card_retry', array('wc_gerencianet_cartao', 'card_retry'));
 		add_action( 'wp_ajax_woocommerce_gerencianet_assinatura_retry', array('wc_gerencianet_assinaturas_cartao', 'assinatura_retry'));
 
+        // (1) INSIRA AQUI OS NOVOS HOOKS DE AJAX PARA CHECK_PIX_PAYMENT
+        add_action('wp_ajax_check_pix_payment', [ $this, 'check_pix_payment' ]);
+        add_action('wp_ajax_nopriv_check_pix_payment', [ $this, 'check_pix_payment' ]);
+
 		// Add gateway to woocommerce options
 		$this->loader->add_filter('woocommerce_payment_gateways', $this, 'gerencianet_add_gateway_class');
 		$this->loader->add_filter('plugin_action_links_woo-gerencianet-official/gerencianet-oficial.php', $this, 'gn_settings_link' );
@@ -125,6 +130,7 @@ class Gerencianet_Oficial
 		}
 
 	}
+
 
 	/**
 	 * Define the locale for this plugin for internationalization.
@@ -244,13 +250,27 @@ class Gerencianet_Oficial
 
 	function show_hide_payment_methods($available_gateways)
 	{
-
 		if (!is_checkout()) {
-			return;
+			return $available_gateways;
 		}
 
-		$cardEnabled = '';
+		// Obtém a moeda ativa (compatível com plugins de múltiplas moedas)
+		if (class_exists('WOOCS')) { // Suporte para WooCommerce Currency Switcher (WOOCS)
+			$current_currency = get_woocommerce_currency(); // API do plugin
+		} else {
+			$current_currency = get_option('woocommerce_currency'); // Padrão
+		}
 
+		$allowed_currency = 'BRL'; // Define a moeda permitida
+
+		// Verifica se todos os itens no carrinho têm a moeda permitida
+		if ($current_currency !== $allowed_currency) {
+			// Retorna sem métodos de pagamento caso a moeda não seja BRL
+			return [];
+		}
+
+		// Verificações de métodos de pagamento existentes
+		$cardEnabled = '';
 		$boletoSettings = maybe_unserialize(get_option('woocommerce_' . GERENCIANET_BOLETO_ID . '_settings'));
 		$cardSettings = maybe_unserialize(get_option('woocommerce_' . GERENCIANET_CARTAO_ID . '_settings'));
 
@@ -261,7 +281,6 @@ class Gerencianet_Oficial
 		if (isset($cardSettings['gn_credit_card'])) {
 			$cardEnabled = $cardSettings['gn_credit_card'];
 		}
-
 
 		$current_shipping_method = WC()->session->get('chosen_shipping_methods');
 		$shippingCost = 0;
@@ -285,12 +304,13 @@ class Gerencianet_Oficial
 
 		$found = false;
 		if (isset(WC()->cart)) {
-
 			foreach (WC()->cart->get_cart() as $cart_item_key => $values) {
 				$product = $values['data'];
-				if (Gerencianet_Hpos::get_meta($product->get_id(), '_habilitar_recorrencia', true) == 'yes')
+				if (Gerencianet_Hpos::get_meta($product->get_id(), '_habilitar_recorrencia', true) == 'yes') {
 					$found = true;
+				}
 			}
+
 			if ($found) {
 				foreach ($available_gateways as $key) {
 					if (($key->id != GERENCIANET_ASSINATURAS_CARTAO_ID) && ($key->id != GERENCIANET_ASSINATURAS_BOLETO_ID)) {
@@ -305,6 +325,7 @@ class Gerencianet_Oficial
 
 		return $available_gateways;
 	}
+
 
 	// Adiciona links a Efi na página de plugins
 	function gn_settings_link( $links ) {

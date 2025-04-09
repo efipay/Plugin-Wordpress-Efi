@@ -17,7 +17,18 @@ function init_gerencianet_assinaturas_boleto()
 		public $method_title;
 		public $method_description;
 		public $supports;
-
+		// evitando falhas
+		public $gerencianetSDK;
+		public $gn_billet_unpaid;
+		public $gn_billet_discount;
+		public $gn_billet_number_days;
+		public $gn_client_id_production;
+		public $gn_client_secret_production;
+		public $gn_client_id_homologation;
+		public $gn_client_secret_homologation;
+		public $gn_sandbox;
+		public $gn_order_status_after_payment;
+		public $gn_billet_discount_shipping;
 		public $discountMessage;
 
 		public function __construct()
