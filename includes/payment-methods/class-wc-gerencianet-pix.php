@@ -141,30 +141,30 @@ function init_gerencianet_pix() {
 				'gn_api_section'                => array(
 					'title'       => __( 'Credenciais Efí', Gerencianet_I18n::getTextDomain() ),
 					'type'        => 'title',
-					'description' => __( "<a href='https://gerencianet.com.br/artigo/como-obter-chaves-client-id-e-client-secret-na-api/#versao-7' target='_blank'>Clique aqui para obter seu Client_id e Client_secret! </a>", Gerencianet_I18n::getTextDomain() ),
+					'description' => __( "<a href='https://gerencianet.com.br/artigo/como-obter-chaves-client-id-e-client-secret-na-api/#versao-7' target='_blank'>Clique aqui para obter seu Client_Id e Client_Secret! </a>", Gerencianet_I18n::getTextDomain() ),
 				),
 				'gn_client_id_production'       => array(
 					'title'       => __( 'Client_Id Produção', Gerencianet_I18n::getTextDomain() ),
 					'type'        => 'text',
-					'description' => __( 'Por favor, insira seu Client_id. Isso é necessário para receber o pagamento.', Gerencianet_I18n::getTextDomain() ),
+					'description' => __( 'Por favor, insira seu Client_Id. Isso é necessário para receber o pagamento.', Gerencianet_I18n::getTextDomain() ),
 					'default'     => '',
 				),
 				'gn_client_secret_production'   => array(
-					'title'       => __( 'Client_secret Produção', Gerencianet_I18n::getTextDomain() ),
-					'type'        => 'password',
-					'description' => __( 'Por favor, insira seu Client_secret. Isso é necessário para receber o pagamento.', Gerencianet_I18n::getTextDomain() ),
+					'title'       => __( 'Client_Secret Produção', Gerencianet_I18n::getTextDomain() ),
+					'type'        => 'text',
+					'description' => __( 'Por favor, insira seu Client_Secret. Isso é necessário para receber o pagamento.', Gerencianet_I18n::getTextDomain() ),
 					'default'     => '',
 				),
 				'gn_client_id_homologation'     => array(
-					'title'       => __( 'Client_id Homologação', Gerencianet_I18n::getTextDomain() ),
+					'title'       => __( 'Client_Id Homologação', Gerencianet_I18n::getTextDomain() ),
 					'type'        => 'text',
-					'description' => __( 'Por favor, insira seu Client_id de Homologação. Isso é necessário para testar os pagamentos.', Gerencianet_I18n::getTextDomain() ),
+					'description' => __( 'Por favor, insira seu Client_Id de Homologação. Isso é necessário para testar os pagamentos.', Gerencianet_I18n::getTextDomain() ),
 					'default'     => '',
 				),
 				'gn_client_secret_homologation' => array(
-					'title'       => __( 'Client_secret Homologação', Gerencianet_I18n::getTextDomain() ),
-					'type'        => 'password',
-					'description' => __( 'Por favor, insira seu Client_secret de Homologação. Isso é necessário para testar os pagamentos.', Gerencianet_I18n::getTextDomain() ),
+					'title'       => __( 'Client_Secret Homologação', Gerencianet_I18n::getTextDomain() ),
+					'type'        => 'text',
+					'description' => __( 'Por favor, insira seu Client_Secret de Homologação. Isso é necessário para testar os pagamentos.', Gerencianet_I18n::getTextDomain() ),
 					'default'     => '',
 				),
 				'gn_sandbox_section'            => array(
@@ -263,16 +263,7 @@ function init_gerencianet_pix() {
 		}
 
 		public function process_admin_options() {
-			// Chama o método pai para processar as opções padrão
 			parent::process_admin_options();
-		
-			if ($this->get_option('gn_client_secret_production')) {
-				$this->update_option('gn_client_secret_production', Efi_Cypher::encrypt_data($this->get_option('gn_client_secret_production')));
-			}
-		
-			if ($this->get_option('gn_client_secret_homologation')) {
-				$this->update_option('gn_client_secret_homologation', Efi_Cypher::encrypt_data($this->get_option('gn_client_secret_homologation')));
-			}
 		}
 
 		public function payment_fields() {
@@ -473,19 +464,31 @@ function init_gerencianet_pix() {
 		}
 
 		public function webhook() {
+			if ( isset( $_GET['hmac'] ) ) {
+				$received_hmac = $_GET['hmac'];
 
-			if(isset($_GET['hmac'])) {
-				$hmac = $_GET['hmac'];
-				$credential = md5($this->gn_sandbox  == 'yes' ? $this->get_option( 'gn_client_id_homologation') : $this->get_option( 'gn_client_id_production')); 
-				if($hmac == $credential) {
+				// Determina se está em ambiente de homologação ou produção
+				$client_secret = $this->gn_sandbox === 'yes'
+					? $this->get_option( 'gn_client_secret_homologation' )
+					: $this->get_option( 'gn_client_secret_production' );
+
+				// Gera o HMAC esperado (últimos 8 caracteres do segredo + IP do servidor)
+				$ip_address   = $_SERVER['SERVER_ADDR'] ?? '127.0.0.1';
+				$last_8_chars = substr( $client_secret, -8 );
+				$expected_hmac = hash( 'sha256', $last_8_chars . $ip_address );
+
+				// Valida o HMAC
+				if ( hash_equals( $expected_hmac, $received_hmac ) ) {
 					header( 'HTTP/1.0 200 OK' );
 					$this->successful_webhook( file_get_contents( 'php://input' ) );
 				} else {
-					header('HTTP/1.1 403 Forbidden');
-					gn_log("Não foi possível receber a notificação do Pix. HMAC INVÁLIDO.", GERENCIANET_PIX_ID);
+					header( 'HTTP/1.1 403 Forbidden' );
+					gn_log( 'Não foi possível receber a notificação do Pix. HMAC INVÁLIDO.', GERENCIANET_PIX_ID );
 				}
+			} else {
+				header( 'HTTP/1.1 400 Bad Request' );
+				gn_log( 'Chamada de webhook sem HMAC.', GERENCIANET_PIX_ID );
 			}
-
 		}
 
 		public function registerWebhook() {
@@ -633,13 +636,12 @@ function init_gerencianet_pix() {
         }
         
         public function validate_gn_client_secret_production_field( $key, $value ) {
-        	if ( ! preg_match( '/^Client_Secret_[a-zA-Z0-9]{40}$/', $value ) ) {
-        		WC_Admin_Settings::add_error( 'Insira o Client_Secret de Produção.' );
-        		$this->update_option( 'gn_pix', 'no' );
-        		$value = ''; // empty it because it is not correct
-        	}
-        
-        	return $value;
+            if ( ! preg_match( '/^Client_Secret_[a-zA-Z0-9]{40}$/', $value ) ) {
+                WC_Admin_Settings::add_error( 'Insira o Client_Secret de Produção.' );
+                $this->update_option( 'gn_pix', 'no' );
+                $value = '';
+            }
+            return $value;
         }
         
         public function validate_gn_client_id_homologation_field( $key, $value ) {
@@ -652,12 +654,12 @@ function init_gerencianet_pix() {
         }
         
         public function validate_gn_client_secret_homologation_field( $key, $value ) {
-        	if ( ! preg_match( '/^Client_Secret_[a-zA-Z0-9]{40}$/', $value ) ) {
-        		WC_Admin_Settings::add_error( 'Insira o Client_Secret de Homologação.' );
-        		$this->update_option( 'gn_pix', 'no' );
-        		$value = ''; // empty it because it is not correct
-        	}
-        	return $value;
+            if ( ! preg_match( '/^Client_Secret_[a-zA-Z0-9]{40}$/', $value ) ) {
+                WC_Admin_Settings::add_error( 'Insira o Client_Secret de Homologação.' );
+                $this->update_option( 'gn_pix', 'no' );
+                $value = '';
+            }
+            return $value;
         }
 	}
 }

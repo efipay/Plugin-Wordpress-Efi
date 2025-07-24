@@ -36,6 +36,7 @@ function init_gerencianet_cartao() {
 
 			$this->supports = array(
 				'products',
+				'refunds',
 			);
 
 			$this->init_form_fields();
@@ -62,6 +63,19 @@ function init_gerencianet_cartao() {
 			add_action( 'wp_enqueue_scripts', array( $this, 'payment_scripts' ) );
 		}
 
+		public function process_refund( $order_id, $amount = null, $reason = '' ) {
+
+			try {
+				$res   = $this->gerencianetSDK->card_refund( $order_id, $amount );
+				$order = wc_get_order( $order_id );
+				$order->update_status( 'refund' );
+				return $res;
+			} catch ( Error $e ) {
+				throw $e;
+			}
+
+		}
+
 		public function gn_price_format($value){
 			$value = number_format($value, 2, "", "");
 			return $value;
@@ -73,33 +87,33 @@ function init_gerencianet_cartao() {
 				'gn_api_section'                => array(
 					'title'       => __( 'Credenciais Efí', Gerencianet_I18n::getTextDomain() ),
 					'type'        => 'title',
-					'description' => __( "<a href='https://gerencianet.com.br/artigo/como-obter-chaves-client-id-e-client-secret-na-api/#versao-7' target='_blank'>Clique aqui para obter seu Client_id e Client_secret! </a>", Gerencianet_I18n::getTextDomain() ),
+					'description' => __( "<a href='https://gerencianet.com.br/artigo/como-obter-chaves-client-id-e-client-secret-na-api/#versao-7' target='_blank'>Clique aqui para obter seu Client_Id e Client_Secret! </a>", Gerencianet_I18n::getTextDomain() ),
 				),
 				'gn_client_id_production'       => array(
-					'title'       => __( 'Client_id Produção', Gerencianet_I18n::getTextDomain() ),
+					'title'       => __( 'Client_Id Produção', Gerencianet_I18n::getTextDomain() ),
 					'type'        => 'text',
-					'description' => __( 'Por favor, insira seu Client_id. Isso é necessário para receber o pagamento.', Gerencianet_I18n::getTextDomain() ),
+					'description' => __( 'Por favor, insira seu Client_Id. Isso é necessário para receber o pagamento.', Gerencianet_I18n::getTextDomain() ),
 					'desc_tip'    => false,
 					'default'     => '',
 				),
 				'gn_client_secret_production'   => array(
-					'title'       => __( 'Client_secret Produção', Gerencianet_I18n::getTextDomain() ),
-					'type'        => 'password',
-					'description' => __( 'Por favor, insira seu Client_secret. Isso é necessário para receber o pagamento.', Gerencianet_I18n::getTextDomain() ),
+					'title'       => __( 'Client_Secret Produção', Gerencianet_I18n::getTextDomain() ),
+					'type'        => 'text',
+					'description' => __( 'Por favor, insira seu Client_Secret. Isso é necessário para receber o pagamento.', Gerencianet_I18n::getTextDomain() ),
 					'desc_tip'    => false,
 					'default'     => '',
 				),
 				'gn_client_id_homologation'     => array(
-					'title'       => __( 'Client_id Homologação', Gerencianet_I18n::getTextDomain() ),
+					'title'       => __( 'Client_Id Homologação', Gerencianet_I18n::getTextDomain() ),
 					'type'        => 'text',
-					'description' => __( 'Por favor, insira seu Client_id de Homologação. Isso é necessário para testar os pagamentos.', Gerencianet_I18n::getTextDomain() ),
+					'description' => __( 'Por favor, insira seu Client_Id de Homologação. Isso é necessário para testar os pagamentos.', Gerencianet_I18n::getTextDomain() ),
 					'desc_tip'    => false,
 					'default'     => '',
 				),
 				'gn_client_secret_homologation' => array(
-					'title'       => __( 'Client_secret Homologação', Gerencianet_I18n::getTextDomain() ),
-					'type'        => 'password',
-					'description' => __( 'Por favor, insira seu Client_secret de Homologação. Isso é necessário para testar os pagamentos.', Gerencianet_I18n::getTextDomain() ),
+					'title'       => __( 'Client_Secret Homologação', Gerencianet_I18n::getTextDomain() ),
+					'type'        => 'text',
+					'description' => __( 'Por favor, insira seu Client_Secret de Homologação. Isso é necessário para testar os pagamentos.', Gerencianet_I18n::getTextDomain() ),
 					'desc_tip'    => false,
 					'default'     => '',
 				),
@@ -152,16 +166,7 @@ function init_gerencianet_cartao() {
 		}
 
 		public function process_admin_options() {
-			// Chama o método pai para processar as opções padrão
 			parent::process_admin_options();
-		
-			if ($this->get_option('gn_client_secret_production')) {
-				$this->update_option('gn_client_secret_production', Efi_Cypher::encrypt_data($this->get_option('gn_client_secret_production')));
-			}
-		
-			if ($this->get_option('gn_client_secret_homologation')) {
-				$this->update_option('gn_client_secret_homologation', Efi_Cypher::encrypt_data($this->get_option('gn_client_secret_homologation')));
-			}
 		}
 
 		public function payment_fields() {
@@ -395,6 +400,8 @@ function init_gerencianet_cartao() {
 					Gerencianet_Hpos::update_meta( $order_id, '_gn_status_card', $charge['data']['status'] );
 				}
 
+				Gerencianet_Hpos::update_meta( $order_id, '_gn_charge_id', $charge['data']['charge_id'] );
+
 				$order->update_status( 'pending-payment' );
 				wc_reduce_stock_levels( $order_id );
 				$woocommerce->cart->empty_cart();
@@ -497,13 +504,12 @@ function init_gerencianet_cartao() {
         }
         
         public function validate_gn_client_secret_production_field( $key, $value ) {
-        	if ( ! preg_match( '/^Client_Secret_[a-zA-Z0-9]{40}$/', $value ) ) {
-        		WC_Admin_Settings::add_error( 'Insira o Client_Secret de Produção.' );
-        		$this->update_option( 'gn_credit_card', 'no' );
-        		$value = ''; // empty it because it is not correct
-        	}
-        
-        	return $value;
+            if ( ! preg_match( '/^Client_Secret_[a-zA-Z0-9]{40}$/', $value ) ) {
+                WC_Admin_Settings::add_error( 'Insira o Client_Secret de Produção.' );
+                $this->update_option( 'gn_credit_card', 'no' );
+                $value = '';
+            }
+            return $value;
         }
         
         public function validate_gn_client_id_homologation_field( $key, $value ) {
@@ -516,12 +522,12 @@ function init_gerencianet_cartao() {
         }
         
         public function validate_gn_client_secret_homologation_field( $key, $value ) {
-        	if ( ! preg_match( '/^Client_Secret_[a-zA-Z0-9]{40}$/', $value ) ) {
-        		WC_Admin_Settings::add_error( 'Insira o Client_Secret de Homologação.' );
-        		$this->update_option( 'gn_credit_card', 'no' );
-        		$value = ''; // empty it because it is not correct
-        	}
-        	return $value;
+            if ( ! preg_match( '/^Client_Secret_[a-zA-Z0-9]{40}$/', $value ) ) {
+                WC_Admin_Settings::add_error( 'Insira o Client_Secret de Homologação.' );
+                $this->update_option( 'gn_credit_card', 'no' );
+                $value = '';
+            }
+            return $value;
         }
 		
 	}

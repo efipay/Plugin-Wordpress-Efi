@@ -73,16 +73,7 @@ function init_gerencianet_open_finance() {
 		}
 
 		public function process_admin_options() {
-			// Chama o método pai para processar as opções padrão
 			parent::process_admin_options();
-		
-			if ($this->get_option('gn_client_secret_production')) {
-				$this->update_option('gn_client_secret_production', Efi_Cypher::encrypt_data($this->get_option('gn_client_secret_production')));
-			}
-		
-			if ($this->get_option('gn_client_secret_homologation')) {
-				$this->update_option('gn_client_secret_homologation', Efi_Cypher::encrypt_data($this->get_option('gn_client_secret_homologation')));
-			}
 		}
 		
         public function change_order_received_text( $str, $order ) {
@@ -139,13 +130,7 @@ function init_gerencianet_open_finance() {
 		public function saveOpenFinanceCertificate() {
 			$file_name = $_FILES['woocommerce_wc_gerencianet_open_finance_gn_certificate_file']['name'];
 			
-			if (empty( $_FILES['woocommerce_wc_gerencianet_open_finance_gn_certificate_file']['name'] ) ) {
-                WC_Admin_Settings::add_error("É necessário realizar o upload do certificado para salvar as configurações.");
-                $this->update_option( 'gn_open_finance', 'no' );
-                return;
-            }
-            
-            if ( $_FILES['woocommerce_wc_gerencianet_open_finance_gn_certificate_file']['error'] != 0 ) {
+			if ( $_FILES['woocommerce_wc_gerencianet_open_finance_gn_certificate_file']['error'] != 0 ) {
 				return;
 			}
 			
@@ -157,20 +142,17 @@ function init_gerencianet_open_finance() {
 			switch ($fileActualExt) {
 				case 'pem':
 					if ( ! $file_read = file_get_contents( $_FILES['woocommerce_wc_gerencianet_open_finance_gn_certificate_file']['tmp_name'] ) ) { // Pega o conteúdo do arquivo
-						WC_Admin_Settings::add_error('Falha ao ler arquivo o Certificado Open Finance!');
-						$this->update_option( 'gn_open_finance', 'no' );
+						echo '<div class="error"><p><strong> Falha ao ler arquivo o Certificado Pix! </strong></div>';
 						return;
 					}
 					break;
 				case 'p12':
 					if ( ! $cert_file_p12 = file_get_contents( $_FILES['woocommerce_wc_gerencianet_open_finance_gn_certificate_file']['tmp_name'] ) ) { // Pega o conteúdo do arquivo
-						WC_Admin_Settings::add_error('Falha ao ler arquivo o Certificado Open Finance!');
-						$this->update_option( 'gn_open_finance', 'no' );
+						echo '<div class="error"><p><strong> Falha ao ler arquivo o Certificado Pix! </strong></div>';
 						return;
 					}
 					if ( ! openssl_pkcs12_read( $cert_file_p12, $cert_info_pem, '' ) ) { // Converte o conteúdo para .pem
-						WC_Admin_Settings::add_error('Falha ao converter o arquivo .p12!');
-						$this->update_option( 'gn_open_finance', 'no' );
+						echo '<div class="error"><p><strong> Falha ao converter o arquivo .p12! </strong></div>';
 						return;
 					}
 					$file_read  = "";
@@ -179,13 +161,14 @@ function init_gerencianet_open_finance() {
 					$file_read .= $cert_info_pem['pkey'];
 					break;
 				default:
-					WC_Admin_Settings::add_error('Certificado inválido!');
-					$this->update_option( 'gn_open_finance', 'no' );
+					echo '<div class="error"><p><strong> Certificado Pix inválido! </strong></div>';
 					return;
 			}
 			if ( isset( $file_read ) ) {
 				$this->update_option( 'gn_certificate_file_name', str_replace('p12', 'pem', $file_name) );
 				$this->update_option( 'gn_certificate_file', $file_read );
+			} else{
+				$this->update_option( 'gn_certificate_file_name', 'Nenhum certificado salvo');
 			}
 
 		}
@@ -197,30 +180,30 @@ function init_gerencianet_open_finance() {
 				'gn_api_section'                => array(
 					'title'       => __( 'Credenciais Efí', Gerencianet_I18n::getTextDomain() ),
 					'type'        => 'title',
-					'description' => __( "<a href='https://gerencianet.com.br/artigo/como-obter-chaves-client-id-e-client-secret-na-api/#versao-7' target='_blank'>Clique aqui para obter seu Client_id e Client_secret! </a>", Gerencianet_I18n::getTextDomain() ),
+					'description' => __( "<a href='https://gerencianet.com.br/artigo/como-obter-chaves-client-id-e-client-secret-na-api/#versao-7' target='_blank'>Clique aqui para obter seu Client_Id e Client_Secret! </a>", Gerencianet_I18n::getTextDomain() ),
 				),
 				'gn_client_id_production'       => array(
 					'title'       => __( 'Client_Id Produção', Gerencianet_I18n::getTextDomain() ),
 					'type'        => 'text',
-					'description' => __( 'Por favor, insira seu Client_id. Isso é necessário para receber o pagamento.', Gerencianet_I18n::getTextDomain() ),
+					'description' => __( 'Por favor, insira seu Client_Id. Isso é necessário para receber o pagamento.', Gerencianet_I18n::getTextDomain() ),
 					'default'     => '',
 				),
 				'gn_client_secret_production'   => array(
-					'title'       => __( 'Client_secret Produção', Gerencianet_I18n::getTextDomain() ),
-					'type'        => 'password',
-					'description' => __( 'Por favor, insira seu Client_secret. Isso é necessário para receber o pagamento.', Gerencianet_I18n::getTextDomain() ),
+					'title'       => __( 'Client_Secret Produção', Gerencianet_I18n::getTextDomain() ),
+					'type'        => 'text',
+					'description' => __( 'Por favor, insira seu Client_Secret. Isso é necessário para receber o pagamento.', Gerencianet_I18n::getTextDomain() ),
 					'default'     => '',
 				),
 				'gn_client_id_homologation'     => array(
-					'title'       => __( 'Client_id Homologação', Gerencianet_I18n::getTextDomain() ),
+					'title'       => __( 'Client_Id Homologação', Gerencianet_I18n::getTextDomain() ),
 					'type'        => 'text',
-					'description' => __( 'Por favor, insira seu Client_id de Homologação. Isso é necessário para testar os pagamentos.', Gerencianet_I18n::getTextDomain() ),
+					'description' => __( 'Por favor, insira seu Client_Id de Homologação. Isso é necessário para testar os pagamentos.', Gerencianet_I18n::getTextDomain() ),
 					'default'     => '',
 				),
 				'gn_client_secret_homologation' => array(
-					'title'       => __( 'Client_secret Homologação', Gerencianet_I18n::getTextDomain() ),
-					'type'        => 'password',
-					'description' => __( 'Por favor, insira seu Client_secret de Homologação. Isso é necessário para testar os pagamentos.', Gerencianet_I18n::getTextDomain() ),
+					'title'       => __( 'Client_Secret Homologação', Gerencianet_I18n::getTextDomain() ),
+					'type'        => 'text',
+					'description' => __( 'Por favor, insira seu Client_Secret de Homologação. Isso é necessário para testar os pagamentos.', Gerencianet_I18n::getTextDomain() ),
 					'default'     => '',
 				),
 				'gn_certificate_file'    => array(
@@ -458,9 +441,20 @@ function init_gerencianet_open_finance() {
 
 		public function webhook() {
 			if(isset($_GET['hmac'])) {
-				$hmac = $_GET['hmac'];
-				$credential = md5($this->gn_sandbox  == 'yes' ? $this->get_option( 'gn_client_id_homologation') : $this->get_option( 'gn_client_id_production')); 
-				if($hmac == $credential) {
+				$received_hmac = $_GET['hmac'];
+
+				// Determina se está em ambiente de homologação ou produção
+				$client_secret = $this->gn_sandbox === 'yes'
+					? $this->get_option( 'gn_client_secret_homologation' )
+					: $this->get_option( 'gn_client_secret_production' );
+
+				// Gera o HMAC esperado (últimos 8 caracteres do segredo + IP do servidor)
+				$ip_address   = $_SERVER['SERVER_ADDR'] ?? '127.0.0.1';
+				$last_8_chars = substr( $client_secret, -8 );
+				$expected_hmac = hash( 'sha256', $last_8_chars . $ip_address );
+
+				// Valida o HMAC
+				if ( hash_equals( $expected_hmac, $received_hmac ) ) {
 					header( 'HTTP/1.0 200 OK' );
 					$this->successful_webhook( file_get_contents( 'php://input' ) );
 				} else {
@@ -626,13 +620,12 @@ function init_gerencianet_open_finance() {
         }
         
         public function validate_gn_client_secret_production_field( $key, $value ) {
-        	if ( ! preg_match( '/^Client_Secret_[a-zA-Z0-9]{40}$/', $value ) ) {
-        		WC_Admin_Settings::add_error( 'Insira o Client_Secret de Produção.' );
-        		$this->update_option( 'gn_open_finance', 'no' );
-        		$value = ''; // empty it because it is not correct
-        	}
-        
-        	return $value;
+            if ( ! preg_match( '/^Client_Secret_[a-zA-Z0-9]{40}$/', $value ) ) {
+                WC_Admin_Settings::add_error( 'Insira o Client_Secret de Produção.' );
+                $this->update_option( 'gn_open_finance', 'no' );
+                $value = '';
+            }
+            return $value;
         }
         
         public function validate_gn_client_id_homologation_field( $key, $value ) {
@@ -645,12 +638,12 @@ function init_gerencianet_open_finance() {
         }
         
         public function validate_gn_client_secret_homologation_field( $key, $value ) {
-        	if ( ! preg_match( '/^Client_Secret_[a-zA-Z0-9]{40}$/', $value ) ) {
-        		WC_Admin_Settings::add_error( 'Insira o Client_Secret de Homologação.' );
-        		$this->update_option( 'gn_open_finance', 'no' );
-        		$value = ''; // empty it because it is not correct
-        	}
-        	return $value;
+            if ( ! preg_match( '/^Client_Secret_[a-zA-Z0-9]{40}$/', $value ) ) {
+                WC_Admin_Settings::add_error( 'Insira o Client_Secret de Homologação.' );
+                $this->update_option( 'gn_open_finance', 'no' );
+                $value = '';
+            }
+            return $value;
         }
         
         public function validate_gn_open_finance_document_field( $key, $value ){

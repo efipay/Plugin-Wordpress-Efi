@@ -12,6 +12,7 @@ require_once __DIR__ . '/payment-methods/subscriptions/class-gerencianet-planos.
 require_once __DIR__ . '/payment-methods/subscriptions/class-gerencianet-assinaturas.php';
 require_once __DIR__ . '/payment-methods/subscriptions/class-wc-gerencianet-assinaturas-boleto.php';
 require_once __DIR__ . '/payment-methods/subscriptions/class-wc-gerencianet-assinaturas-cartao.php';
+require_once __DIR__ . '/payment-methods/subscriptions/class-wc-gerencianet-assinaturas-pix.php';
 require_once __DIR__ . '/utils/class-gerencianet-hpos.php';
 require_once __DIR__ . '/utils/class-efi-cypher.php';
 require_once __DIR__ . '/class-gerencianet-i18n.php';
@@ -92,6 +93,7 @@ class Gerencianet_Oficial
 		add_action('plugins_loaded', 'init_gerencianet_open_finance');
 		add_action('plugins_loaded', 'init_gerencianet_assinaturas_cartao');
 		add_action('plugins_loaded', 'init_gerencianet_assinaturas_boleto');
+		add_action('plugins_loaded', 'init_gerencianet_assinaturas_pix');
 
 		// Ajax card retry
 		add_action( 'wp_ajax_woocommerce_gerencianet_card_retry', array('wc_gerencianet_cartao', 'card_retry'));
@@ -115,16 +117,20 @@ class Gerencianet_Oficial
 
 		$settingsAssinaturasBoleto = maybe_unserialize(get_option('woocommerce_wc_gerencianet_assinaturas_boleto_settings'));
         $settingsAssinaturasCartao = maybe_unserialize(get_option('woocommerce_wc_gerencianet_assinaturas_cartao_settings'));
+		$settingsAssinaturasPix = maybe_unserialize(get_option('woocommerce_wc_gerencianet_assinaturas_pix_settings'));
 
         $hasBoleto = false;
         $hasCartao = false;
+		$hasPix = false;
 
         if(isset($settingsAssinaturasBoleto['gn_billet_banking']))
             $hasBoleto = $settingsAssinaturasBoleto['gn_billet_banking'] == 'yes' ? true : false;
         if(isset($settingsAssinaturasCartao['gn_credit_card']))
             $hasCartao = $settingsAssinaturasCartao['gn_credit_card'] == 'yes' ? true : false;
-
-        if ($hasBoleto || $hasCartao) {
+		if(isset($settingsAssinaturasPix['gn_pix']))
+			$hasPix = $settingsAssinaturasPix['gn_pix'] == 'yes' ? true : false;
+			
+        if ($hasBoleto || $hasCartao || $hasPix) {
 			new Gerencianet_Assinaturas();
 			new Gerencianet_Planos();
 		}
@@ -240,6 +246,7 @@ class Gerencianet_Oficial
 		$gateways[] = GERENCIANET_OPEN_FINANCE_ID;
 		$gateways[] = GERENCIANET_ASSINATURAS_BOLETO_ID;
 		$gateways[] = GERENCIANET_ASSINATURAS_CARTAO_ID;
+		$gateways[] = GERENCIANET_ASSINATURAS_PIX_ID;
 		return $gateways;
 	}
 
@@ -282,6 +289,8 @@ class Gerencianet_Oficial
 			$cardEnabled = $cardSettings['gn_credit_card'];
 		}
 
+		
+
 		$current_shipping_method = WC()->session->get('chosen_shipping_methods');
 		$shippingCost = 0;
 		foreach (WC()->cart->get_shipping_packages() as $package_id => $package) {
@@ -302,6 +311,10 @@ class Gerencianet_Oficial
 			}
 		}
 
+		if (WC()->cart->is_empty()) {
+			return $available_gateways;
+		}
+
 		$found = false;
 		if (isset(WC()->cart)) {
 			foreach (WC()->cart->get_cart() as $cart_item_key => $values) {
@@ -313,13 +326,15 @@ class Gerencianet_Oficial
 
 			if ($found) {
 				foreach ($available_gateways as $key) {
-					if (($key->id != GERENCIANET_ASSINATURAS_CARTAO_ID) && ($key->id != GERENCIANET_ASSINATURAS_BOLETO_ID)) {
+					if (($key->id != GERENCIANET_ASSINATURAS_CARTAO_ID) && ($key->id != GERENCIANET_ASSINATURAS_BOLETO_ID) && ($key->id != GERENCIANET_ASSINATURAS_PIX_ID)) {
+						// Se o gateway não for Assinaturas, remove-o
 						unset($available_gateways[$key->id]);
 					}
 				}
 			} else {
 				unset($available_gateways[GERENCIANET_ASSINATURAS_CARTAO_ID]);
 				unset($available_gateways[GERENCIANET_ASSINATURAS_BOLETO_ID]);
+				unset($available_gateways[GERENCIANET_ASSINATURAS_PIX_ID]);
 			}
 		}
 
@@ -372,7 +387,8 @@ class Gerencianet_Oficial
 			'wc_gerencianet_cartao' => 'efi-cartao.log',
 			'wc_gerencianet_open_finance' => 'efi-open-finance.log',
 			'wc_gerencianet_assinaturas_boleto' => 'efi-assinaturas-boleto.log',
-			'wc_gerencianet_assinaturas_cartao' => 'efi-assinaturas-cartao.log'
+			'wc_gerencianet_assinaturas_cartao' => 'efi-assinaturas-cartao.log',
+			'wc_gerencianet_assinaturas_pix' => 'efi-assinaturas-pix.log'
 		);
 
 		$logs_location = WP_CONTENT_DIR.'/';
@@ -406,7 +422,7 @@ class Gerencianet_Oficial
 		}
 
 		// Verifica se é o nosso gateway específico
-		if (!isset($_GET['section']) || !in_array($_GET['section'], ['wc_gerencianet_pix', 'wc_gerencianet_boleto', 'wc_gerencianet_cartao', 'wc_gerencianet_open_finance', 'wc_gerencianet_assinaturas_boleto', 'wc_gerencianet_assinaturas_cartao'])) {
+		if (!isset($_GET['section']) || !in_array($_GET['section'], ['wc_gerencianet_pix', 'wc_gerencianet_boleto', 'wc_gerencianet_cartao', 'wc_gerencianet_open_finance', 'wc_gerencianet_assinaturas_boleto', 'wc_gerencianet_assinaturas_cartao', 'wc_gerencianet_assinaturas_pix'])) {
 			return;
 		}
 
@@ -452,6 +468,10 @@ class Gerencianet_Oficial
 							$response = $this->gerencianetSDK->update_webhook_open_finance($url_webhook, $redirectUrl);
 							$options["gn_open_finance"] = "no";
 						break;
+					case GERENCIANET_ASSINATURAS_PIX_ID:
+						$pix_key = $options['gn_pix_key'];
+						$webhook_url_assinatura      = strtolower( $woocommerce->api_request_url( GERENCIANET_ASSINATURAS_PIX_ID ));
+						$response = $this->gerencianetSDK->update_webhooks_recurrency( $pix_key, $webhook_url );	
 					default:
 						break;
 				}

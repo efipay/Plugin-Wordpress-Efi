@@ -10,11 +10,13 @@
   white-space: nowrap;
   max-width: 100%;
 }
+
 .order-status.status-processing {
   background: #c6e1c6;
   color: #5b841b;
 }
-.order-status > span {
+
+.order-status>span {
   margin: 0 1em;
   overflow: hidden;
   text-overflow: ellipsis;
@@ -49,55 +51,57 @@
   width: 100%;
 }
 
-body{
+body {
   background-color: #f0f0f1 !important;
 }
 
-.custom-panel{
-    background-color: #ffff;
-    border: 1px #C3C4C7 solid;
-	padding: 10px;
+.custom-panel {
+  background-color: #ffff;
+  border: 1px #C3C4C7 solid;
+  padding: 10px;
 }
 
-.custom-panel h2{
-	font-size: 25px !important;
+.custom-panel h2 {
+  font-size: 25px !important;
   margin-bottom: 5px;
 }
 
-.custom-panel h3{
-	font-size: 20px !important;
+.custom-panel h3 {
+  font-size: 20px !important;
   border-bottom: 1px #C3C4C7 solid;
 }
 
-.custom-panel-container{
-	display: flex;
-	width: 100%;
+.custom-panel-container {
+  display: flex;
+  width: 100%;
 }
 
-.custom-panel-column{
-	flex: 1; /* Cada coluna ocupa 50% do espaço */
-	padding: 20px;
-	box-sizing: border-box;
+.custom-panel-column {
+  flex: 1;
+  /* Cada coluna ocupa 50% do espaço */
+  padding: 20px;
+  box-sizing: border-box;
 }
 
 .btn-efi {
-    color: #fff;
-    background: #EB6608;
-    border-color: none;
+  color: #fff;
+  background: #EB6608;
+  display: flex;
+  align-items: center;
 }
 
 .btn-efi:hover {
-    color: #fff;
+  color: #fff;
 }
 
-#title{
+#title {
   display: none;
 }
 
-.subscription-label{
+.subscription-label {
   display: block;
 }
 
-.subscription-label span{
+.subscription-label span {
   font-weight: bold;
 }

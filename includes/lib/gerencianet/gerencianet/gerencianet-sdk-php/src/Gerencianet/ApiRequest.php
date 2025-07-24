@@ -34,20 +34,20 @@ class ApiRequest
             $clientData['headers']['partner-token'] = isset($this->options['partner_token']) ? $this->options['partner_token'] : $this->options['partner-token'];
         }
 
+        $requestOptions = [
+            'timeout' => $requestTimeout,
+            'headers' => $requestHeaders
+        ];
+        if (!empty($body)) {
+            $requestOptions['json'] = $body;
+        }
+
         try {
-            return $this->request->send($method, $route, [
-                'json' => $body,
-                'timeout' => $requestTimeout,
-                'headers' => $requestHeaders
-            ]);
+            return $this->request->send($method, $route, $requestOptions);
         } catch (AuthorizationException $e) {
             $this->auth->authorize();
 
-            return $this->request->send($method, $route, [
-                'json' => $body,
-                'timeout' => $requestTimeout,
-                'headers' => $requestHeaders
-            ]);
+            return $this->request->send($method, $route, $requestOptions);
         }
     }
 

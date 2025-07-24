@@ -1,15 +1,18 @@
 <?php
+
 /**
  * Gerencianet Integration Class.
  */
 
 require_once 'gerencianet/autoload.php';
 require 'gerencianet-logger.php';
+
 use Gerencianet\Exception\GerencianetException;
 use Gerencianet\Gerencianet;
 use GN_Includes\Gerencianet_I18n;
 
-class Gerencianet_Integration {
+class Gerencianet_Integration
+{
 
 	public $client_id_production;
 	public $client_secret_production;
@@ -19,10 +22,27 @@ class Gerencianet_Integration {
 	public $payee_code;
 	public $wcSettings;
 
-	public function __construct(){}
+	public function __construct() {}
 
-	public function get_credentials( $paymentMethod ) {
-		$wcSettings = maybe_unserialize( get_option( 'woocommerce_' . $paymentMethod . '_settings' ) );
+	private function get_cert_storage_secret()
+	{
+		$option_name = '_efi_cert_storage_secret';
+
+		$secret = get_option($option_name);
+
+		if (! $secret) {
+			$secret = bin2hex(random_bytes(32)); // 64 caracteres aleatórios
+			add_option($option_name, $secret, '', 'no'); // 'no' = não carregar automaticamente
+		}
+
+		return $secret;
+	}
+
+
+
+	public function get_credentials($paymentMethod)
+	{
+		$wcSettings = maybe_unserialize(get_option('woocommerce_' . $paymentMethod . '_settings'));
 
 		$isSandbox      = $wcSettings['gn_sandbox'] == 'yes' ? true : false;
 
@@ -60,104 +80,117 @@ class Gerencianet_Integration {
 		);
 
 
-		if ( $paymentMethod == GERENCIANET_PIX_ID || $paymentMethod == GERENCIANET_OPEN_FINANCE_ID ) {
+		if ($paymentMethod == GERENCIANET_PIX_ID || $paymentMethod == GERENCIANET_OPEN_FINANCE_ID || $paymentMethod == GERENCIANET_ASSINATURAS_PIX_ID) {
 
-			if ( $paymentMethod == GERENCIANET_PIX_ID) {
-				$gn_credentials['headers']  = array( 'x-skip-mtls-checking' => $wcSettings['gn_pix_mtls'] == 'yes' ? 'false' : 'true' );
+			if ($paymentMethod == GERENCIANET_PIX_ID || $paymentMethod == GERENCIANET_ASSINATURAS_PIX_ID) {
+				$gn_credentials['headers'] = array(
+					'x-skip-mtls-checking' => $wcSettings['gn_pix_mtls'] === 'yes' ? 'false' : 'true'
+				);
 			}
-			
-			$certsFolder = md5($gn_credentials['client_id'].$gn_credentials['client_secret']);
-			
-			$certsFolder = plugin_dir_path( __FILE__ ).'../../'.$certsFolder.'/'.$paymentMethod.'/';
 
-			
-			$certificatePath = $certsFolder.$wcSettings['gn_certificate_file_name'];
+			// Geração de pasta com hash estável e seguro, sem usar client_id ou client_secret
+			$server_ip    = $_SERVER['SERVER_ADDR'] ?? '127.0.0.1';
+			$local_secret = $this->get_cert_storage_secret();
+			$raw_seed     = 'efi_plugin_cert' . $server_ip . $paymentMethod . $local_secret;
+			$certsFolderHash = substr(hash('sha256', $raw_seed), 0, 32);
 
-			if(!file_exists($certificatePath)){
+			// Caminho final para o certificado
+			$certsFolder = plugin_dir_path(__FILE__) . '../../' . $certsFolderHash . '/' . $paymentMethod . '/';
+			$certificatePath = $certsFolder . $wcSettings['gn_certificate_file_name'];
+
+			if (! file_exists($certificatePath)) {
 				try {
-						if(!is_dir($certsFolder)){
-							mkdir($certsFolder, 0777, true);
-						}
-
-					$file = fopen( $certificatePath, 'w+' );
-					if ( $file ) {
-						$a = fwrite( $file, $wcSettings['gn_certificate_file'] );
-						$b = fclose( $file );
+					if (! is_dir($certsFolder)) {
+						mkdir($certsFolder, 0777, true);
 					}
 
-
+					$file = fopen($certificatePath, 'w+');
+					if ($file) {
+						fwrite($file, $wcSettings['gn_certificate_file']);
+						fclose($file);
+					}
 				} catch (Error $e) {
 					gn_log('Falha ao recriar certificado', $paymentMethod);
 					gn_log($e, $paymentMethod);
-					return self::result_api( $paymentMethod,'<div class="error"><p><strong> Falha ao encontrar Certificado, entre em contato com o administrador da loja. </strong></div>', false);
+					return self::result_api(
+						$paymentMethod,
+						'<div class="error"><p><strong> Falha ao encontrar Certificado, entre em contato com o administrador da loja. </strong></div>',
+						false
+					);
 				}
-				
 			}
+
 			$gn_credentials['certificate'] = $certificatePath;
 
-			if ( $paymentMethod == GERENCIANET_OPEN_FINANCE_ID) {
-				$gn_credentials['headers']  = array( 'x-idempotency-key' => substr(uniqid(rand(), true), 0, 72) );
+			if ($paymentMethod == GERENCIANET_OPEN_FINANCE_ID) {
+				$gn_credentials['headers'] = array(
+					'x-idempotency-key' => substr(uniqid(rand(), true), 0, 72)
+				);
 			}
 		}
+
 		return $gn_credentials;
 	}
 
-	public function max_installments( $total ) {
+	public function max_installments($total)
+	{
 		$params = array(
 			'total' => $total,
 			'brand' => 'visa',
 		);
 
 		try {
-			$api              = new Gerencianet( $this->get_credentials( GERENCIANET_CARTAO_ID ) );
-			$installments     = $api->getInstallments( $params, array() );
-			$max_installments = end( $installments['data']['installments'] )['installment'] . 'x de ' . self::formatCurrencyBRL( end( $installments['data']['installments'] )['value'] );
+			$api              = new Gerencianet($this->get_credentials(GERENCIANET_CARTAO_ID));
+			$installments     = $api->getInstallments($params, array());
+			$max_installments = end($installments['data']['installments'])['installment'] . 'x de ' . self::formatCurrencyBRL(end($installments['data']['installments'])['value']);
 
 			return $max_installments;
-		} catch ( GerencianetException $e ) {
+		} catch (GerencianetException $e) {
 			$errorResponse = array(
 				'code'    => $e->getCode(),
 				'error'   => $e->error,
 				'message' => $e->errorDescription,
 			);
-			return self::result_api( GERENCIANET_CARTAO_ID, $errorResponse, false );
-		} catch ( Exception $e ) {
+			return self::result_api(GERENCIANET_CARTAO_ID, $errorResponse, false);
+		} catch (Exception $e) {
 			$errorResponse = array(
 				'code'    => 0,
 				'message' => $e->getMessage(),
 			);
-			return self::result_api( GERENCIANET_CARTAO_ID, $errorResponse, false );
+			return self::result_api(GERENCIANET_CARTAO_ID, $errorResponse, false);
 		}
 	}
 
-	public function get_installments( $total, $brand ) {
+	public function get_installments($total, $brand)
+	{
 		$params = array(
 			'total' => $total,
 			'brand' => $brand,
 		);
 
 		try {
-			$api          = new Gerencianet( $this->get_credentials( GERENCIANET_CARTAO_ID ) );
-			$installments = $api->getInstallments( $params, array() );
+			$api          = new Gerencianet($this->get_credentials(GERENCIANET_CARTAO_ID));
+			$installments = $api->getInstallments($params, array());
 
-			return self::result_api(GERENCIANET_CARTAO_ID, $installments, true );
-		} catch ( GerencianetException $e ) {
+			return self::result_api(GERENCIANET_CARTAO_ID, $installments, true);
+		} catch (GerencianetException $e) {
 			$errorResponse = array(
 				'code'    => $e->getCode(),
 				'error'   => $e->error,
 				'message' => $e->errorDescription,
 			);
-			return self::result_api( GERENCIANET_CARTAO_ID, $errorResponse, false );
-		} catch ( Exception $e ) {
+			return self::result_api(GERENCIANET_CARTAO_ID, $errorResponse, false);
+		} catch (Exception $e) {
 			$errorResponse = array(
 				'code'    => 0,
 				'message' => $e->getMessage(),
 			);
-			return self::result_api( GERENCIANET_CARTAO_ID, $errorResponse, false );
+			return self::result_api(GERENCIANET_CARTAO_ID, $errorResponse, false);
 		}
 	}
 
-	public function one_step_billet( $order_id, $items, $shipping, $notification_url, $customer, $expirationDate, $discount = false ) {
+	public function one_step_billet($order_id, $items, $shipping, $notification_url, $customer, $expirationDate, $discount = false)
+	{
 		$payment = array(
 			'banking_billet' => array(
 				'expire_at' => $expirationDate,
@@ -165,132 +198,312 @@ class Gerencianet_Integration {
 			),
 		);
 
-		if ( $discount['value'] > 0 ) {
-			$discount['value']                     = intval( $discount['value'] );
+		if ($discount['value'] > 0) {
+			$discount['value']                     = intval($discount['value']);
 			$payment['banking_billet']['discount'] = $discount;
 		}
 
 		$body = array(
 			'items'    => $items,
 			'metadata' => array(
-				'custom_id'        => strval( $order_id ),
+				'custom_id'        => strval($order_id),
 				'notification_url' => $notification_url,
 			),
 			'payment'  => $payment,
 		);
 
-		if ( $shipping ) {
-			$body ['shippings'] = $shipping;
+		if ($shipping) {
+			$body['shippings'] = $shipping;
 		}
 
 		try {
-			$api      = new Gerencianet( $this->get_credentials( GERENCIANET_BOLETO_ID ) );
-			$response = $api->createOneStepCharge( array(), $body );
-			return self::result_api( GERENCIANET_BOLETO_ID, $response, true );
-		} catch ( GerencianetException $e ) {
+			$api      = new Gerencianet($this->get_credentials(GERENCIANET_BOLETO_ID));
+			$response = $api->createOneStepCharge(array(), $body);
+			return self::result_api(GERENCIANET_BOLETO_ID, $response, true);
+		} catch (GerencianetException $e) {
 			$errorResponse = array(
 				'code'    => $e->getCode(),
 				'error'   => $e->error,
 				'message' => $e->errorDescription,
 			);
-			return self::result_api( GERENCIANET_BOLETO_ID, $errorResponse, false );
-		} catch ( Exception $e ) {
-			$errorResponse = array(
-				'message' => $e->getMessage(),
-			);
-			return self::result_api( GERENCIANET_BOLETO_ID, $errorResponse, false );
-		}
-	}
-
-	public function cancel_charge( $charge_id ) {
-		$params = array( 'id' => $charge_id );
-
-		try {
-			$api    = new Gerencianet( $this->get_credentials( GERENCIANET_BOLETO_ID ) );
-			$charge = $api->cancelCharge( $params, array() );
-
-			return self::result_api( GERENCIANET_BOLETO_ID, $charge, true );
-		} catch ( GerencianetException $e ) {
-			$errorResponse = array(
-				'code'    => $e->getCode(),
-				'error'   => $e->error,
-				'message' => $e->errorDescription,
-			);
-			return self::result_api( GERENCIANET_BOLETO_ID, $errorResponse, false );
-		} catch ( Exception $e ) {
+			return self::result_api(GERENCIANET_BOLETO_ID, $errorResponse, false);
+		} catch (Exception $e) {
 			$errorResponse = array(
 				'message' => $e->getMessage(),
 			);
-			return self::result_api( GERENCIANET_BOLETO_ID, $errorResponse, false );
+			return self::result_api(GERENCIANET_BOLETO_ID, $errorResponse, false);
 		}
 	}
 
-	public function pay_pix( $body ) {
+	public function cancel_charge($charge_id)
+	{
+		$params = array('id' => $charge_id);
+
+		try {
+			$api    = new Gerencianet($this->get_credentials(GERENCIANET_BOLETO_ID));
+			$charge = $api->cancelCharge($params, array());
+
+			return self::result_api(GERENCIANET_BOLETO_ID, $charge, true);
+		} catch (GerencianetException $e) {
+			$errorResponse = array(
+				'code'    => $e->getCode(),
+				'error'   => $e->error,
+				'message' => $e->errorDescription,
+			);
+			return self::result_api(GERENCIANET_BOLETO_ID, $errorResponse, false);
+		} catch (Exception $e) {
+			$errorResponse = array(
+				'message' => $e->getMessage(),
+			);
+			return self::result_api(GERENCIANET_BOLETO_ID, $errorResponse, false);
+		}
+	}
+
+	public function pay_pix($body, $paymentMethod = GERENCIANET_PIX_ID)
+	{
 		$response = false;
 		try {
-			$api      = new Gerencianet( $this->get_credentials( GERENCIANET_PIX_ID ) );
-			$data     = $api->pixCreateImmediateCharge( array(), $body );
+			$api      = new Gerencianet($this->get_credentials($paymentMethod));
+			$data     = $api->pixCreateImmediateCharge(array(), $body);
 			$response = true;
-		} catch ( GerencianetException $e ) {
+		} catch (GerencianetException $e) {
 			$data = array(
 				'code'    => $e->getCode(),
 				'error'   => $e->error,
 				'message' => $e->errorDescription,
 			);
-		} catch ( Exception $e ) {
-			$data = array( 'message' => $e->getMessage() );
+		} catch (Exception $e) {
+			$data = array('message' => $e->getMessage());
 		}
-		return self::result_api( GERENCIANET_PIX_ID, $data, $response );
+		return self::result_api($paymentMethod, $data, $response);
 	}
 
-	public function generate_qrcode( $locationId ) {
+	public function generate_qrcode($locationId)
+	{
 		$response = false;
-		$params   = array( 'id' => $locationId );
+		$params   = array('id' => $locationId);
 
 		try {
-			$api      = new Gerencianet( $this->get_credentials( GERENCIANET_PIX_ID ) );
-			$data     = $api->pixGenerateQRCode( $params, array() );
+			$api      = new Gerencianet($this->get_credentials(GERENCIANET_PIX_ID));
+			$data     = $api->pixGenerateQRCode($params, array());
 			$response = true;
-		} catch ( GerencianetException $e ) {
+		} catch (GerencianetException $e) {
 			$data = array(
 				'code'    => $e->getCode(),
 				'error'   => $e->error,
 				'message' => $e->errorDescription,
 			);
-		} catch ( Exception $e ) {
-			$data = array( 'message' => $e->getMessage() );
+		} catch (Exception $e) {
+			$data = array('message' => $e->getMessage());
 		}
-		return self::result_api( GERENCIANET_PIX_ID, $data, $response );
+		return self::result_api(GERENCIANET_PIX_ID, $data, $response);
 	}
 
-	public function update_webhook( $pix_key, $url ) {
-		$response = false;
-		$params   = array( 'chave' => $pix_key );
-		$credentials = $this->get_credentials( GERENCIANET_PIX_ID );
+	public function update_webhook($pix_key, $url)
+	{
+		$response    = false;
+		$params      = array('chave' => $pix_key);
+		$credentials = $this->get_credentials(GERENCIANET_PIX_ID);
 
 		try {
-			$api      = new Gerencianet( $credentials );
-			$body     = array( 'webhookUrl' => strval( $url ).'?hmac='.md5($credentials['client_id']).'&ignore=' );
-			$data     = $api->pixConfigWebhook( $params, $body );
+			// 1. Recupera os dados necessários
+			$client_secret = $credentials['client_secret'];
+			$server_ip     = $_SERVER['SERVER_ADDR'] ?? '127.0.0.1';
+
+
+			$last_8_chars = substr($client_secret, -8);
+			$hmac_input   = $last_8_chars . $server_ip;
+			$hmac         = hash('sha256', $hmac_input);
+
+			// 3. Constrói a URL com o hmac
+			$webhook_url  = strval($url) . '?hmac=' . $hmac . '&ignore=';
+
+			// 4. Envia a requisição para configurar o webhook
+			$api  = new Gerencianet($credentials);
+			$body = array('webhookUrl' => $webhook_url);
+			$data = $api->pixConfigWebhook($params, $body);
 			$response = true;
-		} catch ( GerencianetException $e ) {
+		} catch (GerencianetException $e) {
 			$data = array(
 				'code'    => $e->getCode(),
 				'error'   => $e->error,
 				'message' => $e->errorDescription,
 			);
-		} catch ( Exception $e ) {
-			$data = array( 'message' => $e->getMessage() );
+		} catch (Exception $e) {
+			$data = array('message' => $e->getMessage());
 		}
 
-		return self::result_api( GERENCIANET_PIX_ID, $data, $response );
+		return self::result_api(GERENCIANET_PIX_ID, $data, $response);
 	}
 
-	public function one_step_card( $order_id, $items, $shipping, $notification_url, $customer, $paymentToken, $installments, $billingAddress, $discount = false ) {
+	public function update_webhooks_recurrency($pix_key, $url)
+	{
+		$responses = array(
+			'cob'  => false,
+			'rec'  => false,
+			'cobr' => false,
+		);
+
+		$results = array(
+			'cob'  => null,
+			'rec'  => null,
+			'cobr' => null,
+		);
+
+		$params = array('chave' => $pix_key);
+		$credentials = $this->get_credentials(GERENCIANET_ASSINATURAS_PIX_ID);
+
+		try {
+			/**
+			 * 1. Gera o HMAC no formato que você usa hoje
+			 */
+			$client_secret = $credentials['client_secret'];
+			$server_ip     = $_SERVER['SERVER_ADDR'] ?? '127.0.0.1';
+
+			$last_8_chars = substr($client_secret, -8);
+			$hmac_input   = $last_8_chars . $server_ip;
+			$hmac         = hash('sha256', $hmac_input);
+
+			/**
+			 * 2. Monta URLs com ?hmac=...&type=...&ignore= para cada chamada
+			 */
+			$webhook_cob_url  = strval($url) . '?hmac=' . $hmac . '&type=cob'  . '&ignore=';
+			$webhook_rec_url  = strval($url) . '?hmac=' . $hmac . '&type=rec'  . '&ignore=';
+			$webhook_cobr_url = strval($url) . '?hmac=' . $hmac . '&type=cobr' . '&ignore=';
+
+			/**
+			 * 3. Envia as requisições para cada endpoint de webhook
+			 */
+			$api = new Gerencianet($credentials);
+
+			// cob
+			try {
+				$results['cob']   = $api->pixConfigWebhook($params, array('webhookUrl' => $webhook_cob_url));
+				$responses['cob'] = true;
+			} catch (GerencianetException $e) {
+				$results['cob'] = array(
+					'code'    => $e->getCode(),
+					'error'   => $e->error,
+					'message' => $e->errorDescription,
+				);
+			} catch (Exception $e) {
+				$results['cob'] = array('message' => $e->getMessage());
+			}
+
+
+			// rec
+			try {
+				$results['rec']   = $api->pixConfigWebhookRecurrenceAutomatic(array(), array('webhookUrl' => $webhook_rec_url));
+				$responses['rec'] = true;
+			} catch (GerencianetException $e) {
+				$results['rec'] = array(
+					'code'    => $e->getCode(),
+					'error'   => $e->error,
+					'message' => $e->errorDescription,
+				);
+			} catch (Exception $e) {
+				$results['rec'] = array('message' => $e->getMessage());
+			}
+
+
+			// cobr
+			try {
+				$results['cobr']   = $api->pixConfigWebhookAutomaticCharge(array(), array('webhookUrl' => $webhook_cobr_url));
+				$responses['cobr'] = true;
+			} catch (GerencianetException $e) {
+				$results['cobr'] = array(
+					'code'    => $e->getCode(),
+					'error'   => $e->error,
+					'message' => $e->errorDescription,
+				);
+			} catch (Exception $e) {
+				$results['cobr'] = array('message' => $e->getMessage());
+			}
+
+			/**
+			 * 4. Usa a função múltipla para processar resultados e erros
+			 */
+			return self::result_api_multiple(GERENCIANET_ASSINATURAS_PIX_ID, $results, $responses);
+		} catch (Exception $e) {
+			// Fallback geral se algo estourar fora dos blocos acima
+			return json_encode(array(
+				'code'    => 0,
+				'message' => $e->getMessage(),
+			));
+		}
+	}
+
+	public function generate_location_rec()
+	{
+		$response = false;
+
+		try {
+			$api      = new Gerencianet($this->get_credentials(GERENCIANET_ASSINATURAS_PIX_ID));
+			$data     = $api->pixCreateLocationRecurrenceAutomatic();
+			$response = true;
+		} catch (GerencianetException $e) {
+			$data = array(
+				'code'    => $e->getCode(),
+				'error'   => $e->error,
+				'message' => $e->errorDescription,
+			);
+		} catch (Exception $e) {
+			$data = array('message' => $e->getMessage());
+		}
+		return self::result_api(GERENCIANET_ASSINATURAS_PIX_ID, $data, $response);
+	}
+
+	public function pay_pix_subscription($body, $txid)
+	{
+		$response = false;
+		$responseRec = false;
+		try {
+			$api      = new Gerencianet($this->get_credentials(GERENCIANET_ASSINATURAS_PIX_ID));
+			$dataRec     = $api->pixCreateRecurrenceAutomatic(array(), $body);
+			$responseRec = true;
+			$data = $api->pixDetailRecurrenceAutomatic(array(
+				'idRec' => json_decode(self::result_api(GERENCIANET_ASSINATURAS_PIX_ID, $dataRec, $responseRec))->idRec,
+				'txid' => $txid
+			));
+			$response = true;
+		} catch (GerencianetException $e) {
+			$data = array(
+				'code'    => $e->getCode(),
+				'error'   => $e->error,
+				'message' => $e->errorDescription,
+			);
+		} catch (Exception $e) {
+			$data = array('message' => $e->getMessage());
+		}
+		return self::result_api(GERENCIANET_ASSINATURAS_PIX_ID, $data, $response);
+	}
+
+	public function generate_cobr_to_pix_rec($body)
+	{
+		$response = false;
+
+		try {
+			$api      = new Gerencianet($this->get_credentials(GERENCIANET_ASSINATURAS_PIX_ID));
+			$data     = $api->pixCreateAutomaticCharge([], $body);
+			$response = true;
+		} catch (GerencianetException $e) {
+			$data = array(
+				'code'    => $e->getCode(),
+				'error'   => $e->error,
+				'message' => $e->errorDescription,
+			);
+		} catch (Exception $e) {
+			$data = array('message' => $e->getMessage());
+		}
+		return self::result_api(GERENCIANET_ASSINATURAS_PIX_ID, $data, $response);
+	}
+
+	public function one_step_card($order_id, $items, $shipping, $notification_url, $customer, $paymentToken, $installments, $billingAddress, $discount = false)
+	{
 		$body = array(
 			'items'    => $items,
 			'metadata' => array(
-				'custom_id'        => strval( $order_id ),
+				'custom_id'        => strval($order_id),
 				'notification_url' => $notification_url,
 			),
 			'payment'  => array(
@@ -303,117 +516,120 @@ class Gerencianet_Integration {
 			),
 		);
 
-		if ( $discount ) {
+		if ($discount) {
 			$body['payment']['credit_card']['discount'] = $discount;
 		}
 
-		if ( $shipping ) {
-			$body ['shippings'] = $shipping;
+		if ($shipping) {
+			$body['shippings'] = $shipping;
 		}
 
 		try {
-			$api         = new Gerencianet( $this->get_credentials( GERENCIANET_CARTAO_ID ) );
-			$card_charge = $api->createOneStepCharge( array(), $body );
+			$api         = new Gerencianet($this->get_credentials(GERENCIANET_CARTAO_ID));
+			$card_charge = $api->createOneStepCharge(array(), $body);
 
-			if($card_charge['data']['status'] == "unpaid"){
-				Gerencianet_Hpos::update_meta( $order_id, '_gn_can_retry', "yes");
-				Gerencianet_Hpos::update_meta( $order_id, '_gn_retry_body', $body);
-				Gerencianet_Hpos::update_meta( $order_id, '_gn_charge_id_card', $card_charge['data']['charge_id']);
+			if ($card_charge['data']['status'] == "unpaid") {
+				Gerencianet_Hpos::update_meta($order_id, '_gn_can_retry', "yes");
+				Gerencianet_Hpos::update_meta($order_id, '_gn_retry_body', $body);
+				Gerencianet_Hpos::update_meta($order_id, '_gn_charge_id_card', $card_charge['data']['charge_id']);
 			}
-			return self::result_api( GERENCIANET_CARTAO_ID, $card_charge, true );
-		} catch ( GerencianetException $e ) {
+			return self::result_api(GERENCIANET_CARTAO_ID, $card_charge, true);
+		} catch (GerencianetException $e) {
 			$errorResponse = array(
 				'code'    => $e->getCode(),
 				'error'   => $e->error,
 				'message' => $e->errorDescription,
 			);
-			return self::result_api( GERENCIANET_CARTAO_ID, $errorResponse, false );
-		} catch ( Exception $e ) {
+			return self::result_api(GERENCIANET_CARTAO_ID, $errorResponse, false);
+		} catch (Exception $e) {
 			$errorResponse = array(
 				'message' => $e->getMessage(),
 			);
-			return self::result_api( GERENCIANET_CARTAO_ID, $errorResponse, false );
+			return self::result_api(GERENCIANET_CARTAO_ID, $errorResponse, false);
 		}
 	}
 
-	public function card_retry($order_id, $payment_token, $paymentMethod){
-		$body = Gerencianet_Hpos::get_meta( $order_id, '_gn_retry_body');
+	public function card_retry($order_id, $payment_token, $paymentMethod)
+	{
+		$body = Gerencianet_Hpos::get_meta($order_id, '_gn_retry_body');
 
 		try {
-			$api         = new Gerencianet( $this->get_credentials( $paymentMethod ) );
-			$body = Gerencianet_Hpos::get_meta( $order_id, '_gn_retry_body');
+			$api         = new Gerencianet($this->get_credentials($paymentMethod));
+			$body = Gerencianet_Hpos::get_meta($order_id, '_gn_retry_body');
 			unset($body['items']);
 			unset($body['metadata']);
 			unset($body['installments']);
 			$body['payment']['credit_card']['payment_token'] = $payment_token;
 			$charge_id = '';
-			if($paymentMethod == GERENCIANET_ASSINATURAS_CARTAO_ID) {
+			if ($paymentMethod == GERENCIANET_ASSINATURAS_CARTAO_ID) {
 				$body['payment']['credit_card']['update_card'] = true;
 				$charge_id = isset($_POST['charge_id']) ? sanitize_text_field($_POST['charge_id']) : '';
 			} else {
-				$charge_id = Gerencianet_Hpos::get_meta( $order_id, '_gn_charge_id_card');
+				$charge_id = Gerencianet_Hpos::get_meta($order_id, '_gn_charge_id_card');
 			}
 			$params = array(
 				'id' => intval($charge_id)
 			);
-			$card_charge = $api->cardPaymentRetry( $params, $body );
+			$card_charge = $api->cardPaymentRetry($params, $body);
 
-			Gerencianet_Hpos::update_meta( $order_id, '_gn_can_retry', "no");
-			Gerencianet_Hpos::update_meta( $order_id, '_gn_retry_body', "");
+			Gerencianet_Hpos::update_meta($order_id, '_gn_can_retry', "no");
+			Gerencianet_Hpos::update_meta($order_id, '_gn_retry_body', "");
 
-			return self::result_api( $paymentMethod, $card_charge, true );
-		} catch ( GerencianetException $e ) {
+			return self::result_api($paymentMethod, $card_charge, true);
+		} catch (GerencianetException $e) {
 			$errorResponse = array(
 				'code'    => $e->getCode(),
 				'error'   => $e->error,
 				'message' => $e->errorDescription,
 			);
-			return self::result_api( $paymentMethod, $errorResponse, false );
-		} catch ( Exception $e ) {
+			return self::result_api($paymentMethod, $errorResponse, false);
+		} catch (Exception $e) {
 			$errorResponse = array(
 				'message' => $e->getMessage(),
 			);
-			return self::result_api( $paymentMethod, $errorResponse, false );
+			return self::result_api($paymentMethod, $errorResponse, false);
 		}
 	}
 
-	public function getNotification( $paymentMethod, $notificationToken ) {
+	public function getNotification($paymentMethod, $notificationToken)
+	{
 		$params = array(
 			'token' => $notificationToken,
 		);
 
 		try {
-			$api          = new Gerencianet( $this->get_credentials( $paymentMethod ) );
-			$notification = $api->getNotification( $params, array() );
+			$api          = new Gerencianet($this->get_credentials($paymentMethod));
+			$notification = $api->getNotification($params, array());
 
-			return self::result_api( $paymentMethod, $notification, true );
-		} catch ( GerencianetException $e ) {
+			return self::result_api($paymentMethod, $notification, true);
+		} catch (GerencianetException $e) {
 			$errorResponse = array(
 				'message' => 'Error retrieving notification: ' . $notificationToken,
 			);
-			return self::result_api( $paymentMethod, $errorResponse, false );
-		} catch ( Exception $e ) {
+			return self::result_api($paymentMethod, $errorResponse, false);
+		} catch (Exception $e) {
 			$errorResponse = array(
 				'message' => 'Error retrieving notification: ' . $notificationToken,
 			);
-			return self::result_api( $paymentMethod, $errorResponse, false );
+			return self::result_api($paymentMethod, $errorResponse, false);
 		}
 	}
 
-	public function pix_refund( $order_id, $amount = null ) {
-		$order = new WC_Order( $order_id );
+	public function pix_refund($order_id, $amount = null, $paymentMethod = GERENCIANET_PIX_ID)
+	{
+		$order = new WC_Order($order_id);
 
-		if ( ! $order ) {
-			return self::result_api( GERENCIANET_PIX_ID, "Pedido #{$order_id} não encontrado", false );
+		if (! $order) {
+			return self::result_api($paymentMethod, "Pedido #{$order_id} não encontrado", false);
 		}
 
-			$e2eid = Gerencianet_Hpos::get_meta( $order_id, '_gn_pix_E2EID', true );
-			$txid  = Gerencianet_Hpos::get_meta( $order_id, '_gn_pix_txid', true );
+		$e2eid = Gerencianet_Hpos::get_meta($order_id, '_gn_pix_E2EID', true);
+		$txid  = Gerencianet_Hpos::get_meta($order_id, '_gn_pix_txid', true);
 
-		if ( isset( $e2eid ) && $e2eid != '' ) {
+		if (isset($e2eid) && $e2eid != '') {
 
-			if ( ! is_null( $amount ) ) {
-				$value = str_replace( ',', '.', $amount );
+			if (! is_null($amount)) {
+				$value = str_replace(',', '.', $amount);
 			}
 
 			$params = array(
@@ -426,36 +642,68 @@ class Gerencianet_Integration {
 			);
 
 			try {
-				$api = new Gerencianet( $this->get_credentials( GERENCIANET_PIX_ID ) );
-				$pix = $api->pixDevolution( $params, $body );
-				$order->update_status( 'refund' );
+				$api = new Gerencianet($this->get_credentials($paymentMethod));
+				$pix = $api->pixDevolution($params, $body);
+				$order->update_status('refund');
 
-				return self::result_api( GERENCIANET_PIX_ID, true, true );
-			} catch ( Exception $e ) {
-				return self::result_api( GERENCIANET_PIX_ID, false, false );
+				return self::result_api($paymentMethod, true, true);
+			} catch (Exception $e) {
+				return self::result_api($paymentMethod, false, false);
 			}
-		} elseif ( isset( $txid ) ) {
-			gn_log( "Tentativa de reembolso sem e2eid pedido {$order_id} valor {$amount}", GERENCIANET_PIX_ID);
-			return self::result_api( GERENCIANET_PIX_ID, false, false );
+		} elseif (isset($txid)) {
+			gn_log("Tentativa de reembolso sem e2eid pedido {$order_id} valor {$amount}", $paymentMethod);
+			return self::result_api($paymentMethod, false, false);
 		} else {
-			gn_log( 'Não foi encontrado E2EID ou TXID nesse pedido. Ele pode ter sido pago por outro meio de pagamento.', GERENCIANET_PIX_ID );
-			return self::result_api( GERENCIANET_PIX_ID, false, false );
+			gn_log('Não foi encontrado E2EID ou TXID nesse pedido. Ele pode ter sido pago por outro meio de pagamento.', $paymentMethod);
+			return self::result_api($paymentMethod, false, false);
 		}
 	}
 
-	public function result_api( $paymentMethod, $result, $success ) {
-		if ( $success ) {
-			return json_encode( $result );
+	public function card_refund($order_id, $amount = null)
+	{
+		$order = new WC_Order($order_id);
+
+		if (! $order) {
+			return self::result_api(GERENCIANET_CARTAO_ID, "Pedido #{$order_id} não encontrado", false);
+		}
+
+		if (! is_null($amount)) {
+			$value = str_replace(',', '', $amount);
+		}
+
+		$params = array(
+			'id'    => Gerencianet_Hpos::get_meta($order_id, '_gn_charge_id', true)
+		);
+
+		$body = array(
+			'amount' => $value,
+		);
+
+		try {
+			$api = new Gerencianet($this->get_credentials(GERENCIANET_CARTAO_ID));
+			$card = $api->refundCard($params, $body);
+			$order->update_status('refund');
+
+			return self::result_api(GERENCIANET_CARTAO_ID, true, true);
+		} catch (Exception $e) {
+			return self::result_api(GERENCIANET_CARTAO_ID, false, false);
+		}
+	}
+
+	public function result_api($paymentMethod, $result, $success)
+	{
+		if ($success) {
+			return json_encode($result);
 		} else {
 			gn_log($result, $paymentMethod);
-			if ( isset( $result['code'] ) ) {
-				$messageShow = $this->getErrorMessage( intval( $result['code'] ) );
+			if (isset($result['code'])) {
+				$messageShow = $this->getErrorMessage(intval($result['code']));
 			} else {
-				if ( isset( $result['message'] ) ) {
+				if (isset($result['message'])) {
 					$messageShow['message'] = $result['message'];
 					$messageShow['code']    = 0;
 				} else {
-					$messageShow = $this->getErrorMessage( 4699999 );
+					$messageShow = $this->getErrorMessage(4699999);
 				}
 			}
 
@@ -463,158 +711,226 @@ class Gerencianet_Integration {
 				'code'    => $messageShow['code'],
 				'message' => $messageShow['message'],
 			);
-			gn_log( $errorResponse, $paymentMethod );
-			throw new Exception( $errorResponse['message'], 1 );
+			gn_log($errorResponse, $paymentMethod);
+			throw new Exception($errorResponse['message'], 1);
 		}
 	}
-	
-	public function generateRandomId() {
+
+	public function result_api_multiple($paymentMethod, $data, $success_flags)
+	{
+		$finalResults = array();
+		$errors = array();
+
+		foreach ($data as $label => $result) {
+			$success = isset($success_flags[$label]) ? $success_flags[$label] : false;
+
+			try {
+				/**
+				 * Usa a função result_api já existente para cada item individual.
+				 * Passa SEMPRE o $paymentMethod para manter log consistente.
+				 */
+				$finalResults[$label] = json_decode(
+					$this->result_api($paymentMethod, $result, $success),
+					true
+				);
+			} catch (Exception $e) {
+				/**
+				 * Também podemos logar o erro específico aqui para cada chamada com $paymentMethod
+				 */
+				gn_log(array(
+					'label'   => $label,
+					'error'   => $e->getMessage(),
+				), $paymentMethod);
+
+				/**
+				 * Acumula mensagem para exception agrupada
+				 */
+				$errors[] = array(
+					'label'   => $label,
+					'message' => $e->getMessage(),
+				);
+			}
+		}
+
+		if (!empty($errors)) {
+			$errorMessages = array_map(function ($e) {
+				return "{$e['label']}: {$e['message']}";
+			}, $errors);
+
+			$joined = implode(' | ', $errorMessages);
+
+			throw new Exception("Erro(s) nas chamadas: {$joined}", 1);
+		}
+
+		return json_encode($finalResults);
+	}
+
+	public function generateRandomId()
+	{
 		$length           = 6;
 		$characters       = '0123456789abcdefghijklmnopqrstuvwxyzABCDEFGHIJKLMNOPQRSTUVWXYZ';
-		$charactersLength = strlen( $characters );
+		$charactersLength = strlen($characters);
 		$randomString     = '';
-		for ( $i = 0; $i < $length; $i++ ) {
-			$randomString .= $characters[ rand( 0, $charactersLength - 1 ) ];
+		for ($i = 0; $i < $length; $i++) {
+			$randomString .= $characters[rand(0, $charactersLength - 1)];
 		}
 		return $randomString;
 	}
 
-	public function getErrorMessage( $error_code ) {
+	public function getErrorMessage($error_code)
+	{
 		// $message = 'O campo ' . $this->getFieldName( $property ) . ' não está preenchido corretamente.';
 		$message = array();
 		try {
-			$messagesJson = file_get_contents( plugin_dir_path( __FILE__ ) . '/gerencianet/errors.json' );
-			$messages     = json_decode( $messagesJson, true );
+			$messagesJson = file_get_contents(plugin_dir_path(__FILE__) . '/gerencianet/errors.json');
+			$messages     = json_decode($messagesJson, true);
 
-			$messageIndex       = array_search( $error_code, array_column( $messages, 'code' ) );
-			$message['message'] = $messages[ $messageIndex ]['message'];
-			$message['code']    = $messages[ $messageIndex ]['code'];
-		} catch ( \Throwable $th ) {
-			$message['message'] = __( 'Ocorreu um erro ao tentar realizar a sua requisição. Entre em contato com o proprietário da loja.', Gerencianet_I18n::getTextDomain() );
+			$messageIndex       = array_search($error_code, array_column($messages, 'code'));
+			$message['message'] = $messages[$messageIndex]['message'];
+			$message['code']    = $messages[$messageIndex]['code'];
+		} catch (\Throwable $th) {
+			$message['message'] = __('Ocorreu um erro ao tentar realizar a sua requisição. Entre em contato com o proprietário da loja.', Gerencianet_I18n::getTextDomain());
 			$message['code']    = 0;
 		}
 		return $message;
 	}
 
-	public function formatMoney( $value, $gnFormat ) {
-		$cleanString       = preg_replace( '/([^0-9\.,])/i', '', $value );
-		$onlyNumbersString = preg_replace( '/([^0-9])/i', '', $value );
+	public function formatMoney($value, $gnFormat)
+	{
+		$cleanString       = preg_replace('/([^0-9\.,])/i', '', $value);
+		$onlyNumbersString = preg_replace('/([^0-9])/i', '', $value);
 
-		$separatorsCountToBeErased = strlen( $cleanString ) - strlen( $onlyNumbersString ) - 1;
+		$separatorsCountToBeErased = strlen($cleanString) - strlen($onlyNumbersString) - 1;
 
-		$stringWithCommaOrDot     = preg_replace( '/([,\.])/', '', $cleanString, $separatorsCountToBeErased );
-		$removedThousendSeparator = preg_replace( '/(\.|,)(?=[0-9]{3,}$)/', '', $stringWithCommaOrDot );
+		$stringWithCommaOrDot     = preg_replace('/([,\.])/', '', $cleanString, $separatorsCountToBeErased);
+		$removedThousendSeparator = preg_replace('/(\.|,)(?=[0-9]{3,}$)/', '', $stringWithCommaOrDot);
 
-		if ( $gnFormat ) {
-			return (int) ( ( (float) str_replace( ',', '.', $removedThousendSeparator ) ) * 100 );
+		if ($gnFormat) {
+			return (int) (((float) str_replace(',', '.', $removedThousendSeparator)) * 100);
 		} else {
-			return ( (float) str_replace( ',', '.', $removedThousendSeparator ) );
+			return ((float) str_replace(',', '.', $removedThousendSeparator));
 		}
 	}
 
-	public static function formatCurrencyBRL( $value ) {
-		$formated = 'R$' . number_format( $value / 100, 2, ',', '.' );
+	public static function formatCurrencyBRL($value)
+	{
+		$formated = 'R$' . number_format($value / 100, 2, ',', '.');
 
 		return $formated;
 	}
 
-	public function get_participants() {
+	public function get_participants()
+	{
 		$response = false;
 		$arrayParticipantes = [];
 		try {
-			$api      = new Gerencianet( $this->get_credentials( GERENCIANET_OPEN_FINANCE_ID ) );
+			$api      = new Gerencianet($this->get_credentials(GERENCIANET_OPEN_FINANCE_ID));
 			$data     = $api->ofListParticipants();
 			$arrayParticipantes = $data['participantes'];
 			$identificadorEfi =  "ebbed125-5cd7-42e3-965d-2e7af8e3b7ae";
 			$objEfi = null;
 
-			foreach($arrayParticipantes as $participante) {
-				if($participante["identificador"] === $identificadorEfi){
+			foreach ($arrayParticipantes as $participante) {
+				if ($participante["identificador"] === $identificadorEfi) {
 					$objEfi = $participante;
 					break;
 				}
 			}
 			$indice = array_search($objEfi, $arrayParticipantes);
-			if($indice !== false) {
+			if ($indice !== false) {
 				array_splice($arrayParticipantes, $indice, 1);
-				array_splice($arrayParticipantes, 0, 0 , (object) array($objEfi));
+				array_splice($arrayParticipantes, 0, 0, (object) array($objEfi));
 			}
 			$response = true;
 			$data = $arrayParticipantes;
-		} catch ( GerencianetException $e ) {
+		} catch (GerencianetException $e) {
 			$data = array(
 				'code'    => $e->getCode(),
 				'error'   => $e->error,
 				'message' => $e->errorDescription,
 			);
-		} catch ( Exception $e ) {
-			$data = array( 'message' => $e->getMessage() );
+		} catch (Exception $e) {
+			$data = array('message' => $e->getMessage());
 		}
 
-		return self::result_api( GERENCIANET_OPEN_FINANCE_ID, $data, $response );
+		return self::result_api(GERENCIANET_OPEN_FINANCE_ID, $data, $response);
 	}
 
-	public function pay_open_finance($body) {
+	public function pay_open_finance($body)
+	{
 		$response = false;
 		try {
-			$api      = new Gerencianet( $this->get_credentials( GERENCIANET_OPEN_FINANCE_ID ) );
+			$api      = new Gerencianet($this->get_credentials(GERENCIANET_OPEN_FINANCE_ID));
 			$data     = $api->ofStartPixPayment($params = [], $body);
 			$response = true;
-		} catch ( GerencianetException $e ) {
+		} catch (GerencianetException $e) {
 			$data = array(
 				'code'    => $e->getCode(),
 				'error'   => $e->error,
 				'message' => $e->errorDescription,
 			);
-		} catch ( Exception $e ) {
-			$data = array( 'message' => $e->getMessage() );
+		} catch (Exception $e) {
+			$data = array('message' => $e->getMessage());
 		}
-		return self::result_api( GERENCIANET_OPEN_FINANCE_ID, $data, $response );
+		return self::result_api(GERENCIANET_OPEN_FINANCE_ID, $data, $response);
 	}
 
-	public function update_webhook_open_finance( $url, $redirectUrl ) {
+	public function update_webhook_open_finance($url, $redirectUrl)
+	{
 		$response = false;
 
 		try {
-			$credentials = $this->get_credentials( GERENCIANET_OPEN_FINANCE_ID );
-			$api      = new Gerencianet($credentials);
-			$body     = array( 
-				'webhookURL' => strval( $url ), 
+			$credentials = $this->get_credentials(GERENCIANET_OPEN_FINANCE_ID);
+			$server_ip   = $_SERVER['SERVER_ADDR'] ?? '127.0.0.1';
+			$client_secret = $credentials['client_secret'];
+
+			// Gera o HMAC seguro
+			$last_8_chars = substr($client_secret, -8);
+			$hmac_input   = $last_8_chars . $server_ip;
+			$hmac         = hash('sha256', $hmac_input);
+
+			// Monta o corpo da requisição
+			$api  = new Gerencianet($credentials);
+			$body = array(
+				'webhookURL' => strval($url),
 				'redirectURL' => $redirectUrl,
-				'webhookSecurity'=> array(
+				'webhookSecurity' => array(
 					'type' => 'hmac',
-					'hash' =>  md5($credentials['client_id'])
-  				),
+					'hash' => $hmac,
+				),
 			);
+
 			$data     = $api->ofConfigUpdate($params = [], $body);
 			$response = true;
-		} catch ( GerencianetException $e ) {
+		} catch (GerencianetException $e) {
 			$data = array(
 				'code'    => $e->getCode(),
 				'error'   => $e->error,
 				'message' => $e->errorDescription,
 			);
-		} catch ( Exception $e ) {
-			$data = array( 'message' => $e->getMessage() );
+		} catch (Exception $e) {
+			$data = array('message' => $e->getMessage());
 		}
 
-		return self::result_api( GERENCIANET_OPEN_FINANCE_ID, $data, $response );
+		return self::result_api(GERENCIANET_OPEN_FINANCE_ID, $data, $response);
 	}
 
-    public function open_finance_refund( $order_id, $amount = null ) {
-		$order = new WC_Order( $order_id );
 
-		if ( ! $order ) {
-			return self::result_api( GERENCIANET_OPEN_FINANCE_ID, "Pedido #{$order_id} não encontrado", false );
+	public function open_finance_refund($order_id, $amount = null)
+	{
+		$order = new WC_Order($order_id);
+
+		if (! $order) {
+			return self::result_api(GERENCIANET_OPEN_FINANCE_ID, "Pedido #{$order_id} não encontrado", false);
 		}
 
-			$e2eid = Gerencianet_Hpos::get_meta( $order_id, '_gn_open_finance_E2EID', true );
-			$identificadorPagamento  = Gerencianet_Hpos::get_meta( $order_id, '_gn_of_identificador_pagamento', true );
+		$e2eid = Gerencianet_Hpos::get_meta($order_id, '_gn_open_finance_E2EID', true);
+		$identificadorPagamento  = Gerencianet_Hpos::get_meta($order_id, '_gn_of_identificador_pagamento', true);
 
-		if ( isset( $e2eid ) && $e2eid != '' ) {
+		if (isset($e2eid) && $e2eid != '') {
 
-			if ( ! is_null( $amount ) ) {
-				$value = str_replace( ',', '.', $amount );
+			if (! is_null($amount)) {
+				$value = str_replace(',', '.', $amount);
 			}
 
 			$params = array(
@@ -626,51 +942,53 @@ class Gerencianet_Integration {
 			);
 
 			try {
-				$api = new Gerencianet( $this->get_credentials( GERENCIANET_OPEN_FINANCE_ID ) );
-				$devolution = $api->ofDevolutionPix( $params, $body );
-				return self::result_api( GERENCIANET_OPEN_FINANCE_ID, true, true );
-			} catch ( Exception $e ) {
-				return self::result_api( GERENCIANET_OPEN_FINANCE_ID, false, false );
+				$api = new Gerencianet($this->get_credentials(GERENCIANET_OPEN_FINANCE_ID));
+				$devolution = $api->ofDevolutionPix($params, $body);
+				return self::result_api(GERENCIANET_OPEN_FINANCE_ID, true, true);
+			} catch (Exception $e) {
+				return self::result_api(GERENCIANET_OPEN_FINANCE_ID, false, false);
 			}
-		} elseif ( isset( $identificadorPagamento ) ) {
-			gn_log( "Tentativa de reembolso sem e2eid pedido {$order_id} valor {$amount}", GERENCIANET_OPEN_FINANCE_ID);
-			return self::result_api( GERENCIANET_OPEN_FINANCE_ID, false, false );
+		} elseif (isset($identificadorPagamento)) {
+			gn_log("Tentativa de reembolso sem e2eid pedido {$order_id} valor {$amount}", GERENCIANET_OPEN_FINANCE_ID);
+			return self::result_api(GERENCIANET_OPEN_FINANCE_ID, false, false);
 		} else {
-			gn_log( 'Não foi encontrado E2EID ou Identificador de Pagamento nesse pedido. Ele pode ter sido pago por outro meio de pagamento.', GERENCIANET_OPEN_FINANCE_ID);
-			return self::result_api( GERENCIANET_OPEN_FINANCE_ID, false, false );
+			gn_log('Não foi encontrado E2EID ou Identificador de Pagamento nesse pedido. Ele pode ter sido pago por outro meio de pagamento.', GERENCIANET_OPEN_FINANCE_ID);
+			return self::result_api(GERENCIANET_OPEN_FINANCE_ID, false, false);
 		}
 	}
 
-	public function create_plan( $paymentMethod, $name, $interval, $repeats ) {
+	public function create_plan($paymentMethod, $name, $interval, $repeats)
+	{
 
-		if($repeats == 1)
+		if ($repeats == 1)
 			$repeats = null;
-		
+
 		$body = [
 			"name" => $name,
 			"interval" => $interval,
 			"repeats" => $repeats
 		];
 		try {
-			$api      = new Gerencianet( $this->get_credentials( $paymentMethod ) );
+			$api      = new Gerencianet($this->get_credentials($paymentMethod));
 			$response = $api->createPlan($params = [], $body);
-			return self::result_api( $paymentMethod, $response, true );
-		} catch ( GerencianetException $e ) {
+			return self::result_api($paymentMethod, $response, true);
+		} catch (GerencianetException $e) {
 			$errorResponse = array(
 				'code'    => $e->getCode(),
 				'error'   => $e->error,
 				'message' => $e->errorDescription,
 			);
-			return self::result_api( $paymentMethod, $errorResponse, false );
-		} catch ( Exception $e ) {
+			return self::result_api($paymentMethod, $errorResponse, false);
+		} catch (Exception $e) {
 			$errorResponse = array(
 				'message' => $e->getMessage(),
 			);
-			return self::result_api( $paymentMethod, $errorResponse, false );
+			return self::result_api($paymentMethod, $errorResponse, false);
 		}
 	}
 
-	public function create_subscription_billet($plan_id, $order_id, $items, $shipping, $notification_url, $customer, $expirationDate, $discount = false ){
+	public function create_subscription_billet($plan_id, $order_id, $items, $shipping, $notification_url, $customer, $expirationDate, $discount = false)
+	{
 
 		$params = [
 			"id" => $plan_id  // plan_id
@@ -683,44 +1001,45 @@ class Gerencianet_Integration {
 			),
 		);
 
-		if ( $discount['value'] > 0 ) {
-			$discount['value']                     = intval( $discount['value'] );
+		if ($discount['value'] > 0) {
+			$discount['value']                     = intval($discount['value']);
 			$payment['banking_billet']['discount'] = $discount;
 		}
 
 		$body = array(
 			'items'    => $items,
 			'metadata' => array(
-				'custom_id'        => strval( $order_id ),
+				'custom_id'        => strval($order_id),
 				'notification_url' => $notification_url,
 			),
 			'payment'  => $payment,
 		);
 
-		if ( $shipping ) {
-			$body ['shippings'] = $shipping;
+		if ($shipping) {
+			$body['shippings'] = $shipping;
 		}
 
 		try {
-			$api      = new Gerencianet( $this->get_credentials( GERENCIANET_ASSINATURAS_BOLETO_ID ) );
+			$api      = new Gerencianet($this->get_credentials(GERENCIANET_ASSINATURAS_BOLETO_ID));
 			$response = $api->createOneStepSubscription($params, $body);
-			return self::result_api( GERENCIANET_ASSINATURAS_BOLETO_ID, $response, true );
-		} catch ( GerencianetException $e ) {
+			return self::result_api(GERENCIANET_ASSINATURAS_BOLETO_ID, $response, true);
+		} catch (GerencianetException $e) {
 			$errorResponse = array(
 				'code'    => $e->getCode(),
 				'error'   => $e->error,
 				'message' => $e->errorDescription,
 			);
-			return self::result_api( GERENCIANET_ASSINATURAS_BOLETO_ID, $errorResponse, false );
-		} catch ( Exception $e ) {
+			return self::result_api(GERENCIANET_ASSINATURAS_BOLETO_ID, $errorResponse, false);
+		} catch (Exception $e) {
 			$errorResponse = array(
 				'message' => $e->getMessage(),
 			);
-			return self::result_api( GERENCIANET_ASSINATURAS_BOLETO_ID, $errorResponse, false );
+			return self::result_api(GERENCIANET_ASSINATURAS_BOLETO_ID, $errorResponse, false);
 		}
 	}
 
-	public function create_subscription_card($plan_id, $order_id, $items, $shipping, $notification_url, $customer, $paymentToken, $billingAddress, $trial_days, $discount = false){
+	public function create_subscription_card($plan_id, $order_id, $items, $shipping, $notification_url, $customer, $paymentToken, $billingAddress, $trial_days, $discount = false)
+	{
 
 		$params = [
 			"id" => $plan_id  // plan_id
@@ -729,7 +1048,7 @@ class Gerencianet_Integration {
 		$body = array(
 			'items'    => $items,
 			'metadata' => array(
-				'custom_id'        => strval( $order_id ),
+				'custom_id'        => strval($order_id),
 				'notification_url' => $notification_url,
 			),
 			'payment'  => array(
@@ -741,12 +1060,12 @@ class Gerencianet_Integration {
 			),
 		);
 
-		if ( $discount['value'] > 0 ) {
-			$discount['value']                     = intval( $discount['value'] );
+		if ($discount['value'] > 0) {
+			$discount['value']                     = intval($discount['value']);
 			$body['payment']['credit_card']['discount'] = $discount;
 		}
 
-		if ( $shipping ) {
+		if ($shipping) {
 			$body['shippings'] = $shipping;
 		}
 
@@ -755,102 +1074,115 @@ class Gerencianet_Integration {
 		}
 
 		try {
-			$api      = new Gerencianet( $this->get_credentials( GERENCIANET_ASSINATURAS_CARTAO_ID ) );
+			$api      = new Gerencianet($this->get_credentials(GERENCIANET_ASSINATURAS_CARTAO_ID));
 			$card_charge = $api->createOneStepSubscription($params, $body);
 
-			Gerencianet_Hpos::update_meta( $order_id, '_gn_can_retry', "yes");
-			Gerencianet_Hpos::update_meta( $order_id, '_gn_retry_body', $body);
+			Gerencianet_Hpos::update_meta($order_id, '_gn_can_retry', "yes");
+			Gerencianet_Hpos::update_meta($order_id, '_gn_retry_body', $body);
 
-			return self::result_api( GERENCIANET_ASSINATURAS_CARTAO_ID, $card_charge, true );
-		} catch ( GerencianetException $e ) {
+			return self::result_api(GERENCIANET_ASSINATURAS_CARTAO_ID, $card_charge, true);
+		} catch (GerencianetException $e) {
 			$errorResponse = array(
 				'code'    => $e->getCode(),
 				'error'   => $e->error,
 				'message' => $e->errorDescription,
 			);
-			return self::result_api( GERENCIANET_ASSINATURAS_CARTAO_ID, $errorResponse, false );
-		} catch ( Exception $e ) {
+			return self::result_api(GERENCIANET_ASSINATURAS_CARTAO_ID, $errorResponse, false);
+		} catch (Exception $e) {
 			$errorResponse = array(
 				'message' => $e->getMessage(),
 			);
-			return self::result_api( GERENCIANET_ASSINATURAS_CARTAO_ID, $errorResponse, false );
+			return self::result_api(GERENCIANET_ASSINATURAS_CARTAO_ID, $errorResponse, false);
 		}
 	}
 
-	public function cancel_subscription ($paymentMethod, $subscription_id) {
+	public function cancel_subscription($paymentMethod, $subscription_id)
+	{
+
+
+		try {
+			$api      = new Gerencianet($this->get_credentials($paymentMethod));
+			if ($paymentMethod == GERENCIANET_ASSINATURAS_PIX_ID) {
+				$params = [
+					"idRec" => $subscription_id
+				];
+				$body = ["status" => "CANCELADA"];
+				gn_log($body, $paymentMethod);
+				gn_log($params, $paymentMethod);
+				$response = $api->pixUpdateRecurrenceAutomatic($params, $body);
+			} else {
+				$params = [
+					"id" => $subscription_id
+				];
+				$response = $api->cancelSubscription($params);
+			}
+
+			return self::result_api($paymentMethod, $response, true);
+		} catch (GerencianetException $e) {
+			$errorResponse = array(
+				'code'    => $e->getCode(),
+				'error'   => $e->error,
+				'message' => $e->errorDescription,
+			);
+
+			return self::result_api($paymentMethod, $errorResponse, false);
+		} catch (Exception $e) {
+			$errorResponse = array(
+				'message' => $e->getMessage(),
+			);
+			return self::result_api($paymentMethod, $errorResponse, false);
+		}
+	}
+
+	public function get_charge($paymentMethod, $charge_id)
+	{
+
+		$params = [
+			"id" => $charge_id
+		];
+
+		try {
+			$api      = new Gerencianet($this->get_credentials($paymentMethod));
+			$response = $api->detailCharge($params);
+			return self::result_api($paymentMethod, $response, true);
+		} catch (GerencianetException $e) {
+			$errorResponse = array(
+				'code'    => $e->getCode(),
+				'error'   => $e->error,
+				'message' => $e->errorDescription,
+			);
+			return self::result_api($paymentMethod, $errorResponse, false);
+		} catch (Exception $e) {
+			$errorResponse = array(
+				'message' => $e->getMessage(),
+			);
+			return self::result_api($paymentMethod, $errorResponse, false);
+		}
+	}
+
+	public function get_subscription($paymentMethod, $subscription_id)
+	{
 
 		$params = [
 			"id" => $subscription_id
 		];
 
 		try {
-			$api      = new Gerencianet( $this->get_credentials( $paymentMethod ) );
-			$response = $api->cancelSubscription($params);
-			return self::result_api( $paymentMethod, $response, true );
-		} catch ( GerencianetException $e ) {
+			$api      = new Gerencianet($this->get_credentials($paymentMethod));
+			$response = $api->detailSubscription($params);
+			return self::result_api($paymentMethod, $response, true);
+		} catch (GerencianetException $e) {
 			$errorResponse = array(
 				'code'    => $e->getCode(),
 				'error'   => $e->error,
 				'message' => $e->errorDescription,
 			);
-
-			return self::result_api( $paymentMethod, $errorResponse, false );
-		} catch ( Exception $e ) {
+			return self::result_api($paymentMethod, $errorResponse, false);
+		} catch (Exception $e) {
 			$errorResponse = array(
 				'message' => $e->getMessage(),
 			);
-			return self::result_api( $paymentMethod, $errorResponse, false );
+			return self::result_api($paymentMethod, $errorResponse, false);
 		}
 	}
-
-	public function get_charge ($paymentMethod, $charge_id) {
-
-        $params = [
-            "id" => $charge_id
-        ];
-
-        try {
-            $api      = new Gerencianet( $this->get_credentials( $paymentMethod ) );
-            $response = $api->detailCharge($params);
-            return self::result_api( $paymentMethod, $response, true );
-        } catch ( GerencianetException $e ) {
-            $errorResponse = array(
-                'code'    => $e->getCode(),
-                'error'   => $e->error,
-                'message' => $e->errorDescription,
-            );
-            return self::result_api( $paymentMethod, $errorResponse, false );
-        } catch ( Exception $e ) {
-            $errorResponse = array(
-                'message' => $e->getMessage(),
-            );
-            return self::result_api( $paymentMethod, $errorResponse, false );
-        }
-    }
-
-	public function get_subscription ($paymentMethod, $subscription_id) {
-
-        $params = [
-            "id" => $subscription_id
-        ];
-
-        try {
-            $api      = new Gerencianet( $this->get_credentials( $paymentMethod ) );
-            $response = $api->detailSubscription($params);
-            return self::result_api( $paymentMethod, $response, true );
-        } catch ( GerencianetException $e ) {
-            $errorResponse = array(
-                'code'    => $e->getCode(),
-                'error'   => $e->error,
-                'message' => $e->errorDescription,
-            );
-            return self::result_api( $paymentMethod, $errorResponse, false );
-        } catch ( Exception $e ) {
-            $errorResponse = array(
-                'message' => $e->getMessage(),
-            );
-            return self::result_api( $paymentMethod, $errorResponse, false );
-        }
-    }
-
 }

@@ -185,6 +185,10 @@
                 "cardPaymentRetry": {
                     "route": "/v1/charge/:id/retry",
                     "method": "post"
+                },
+                "refundCard": {
+                    "route": "/v1/charge/card/:id/refund",
+                    "method": "post"
                 }
             }
         },
@@ -365,6 +369,98 @@
                 "detailReport": {
                     "route": "/v2/gn/relatorios/:id",
                     "method": "get"
+                },
+                "pixDetailRecurrenceAutomatic": {
+                    "route": "/v2/rec/:idRec",
+                    "method": "get"
+                },
+                "pixUpdateRecurrenceAutomatic": {
+                    "route": "/v2/rec/:idRec",
+                    "method": "patch"
+                },
+                "pixListRecurrenceAutomatic": {
+                    "route": "/v2/rec",
+                    "method": "get"
+                },
+                "pixCreateRecurrenceAutomatic": {
+                    "route": "/v2/rec",
+                    "method": "post"
+                },
+                "pixCreateRequestRecurrenceAutomatic": {
+                    "route": "/v2/solicrec",
+                    "method": "post"
+                },
+                "pixDetailRequestRecurrenceAutomatic": {
+                    "route": "/v2/solicrec/:idSolicRec",
+                    "method": "get"
+                },
+                "pixUpdateRequestRecurrenceAutomatic": {
+                    "route": "/v2/solicrec/:idSolicRec",
+                    "method": "patch"
+                },
+                "pixCreateAutomaticChargeTxid": {
+                    "route": "/v2/cobr/:txid",
+                    "method": "put"
+                },
+                "pixUpdateAutomaticCharge": {
+                    "route": "/v2/cobr/:txid",
+                    "method": "patch"
+                },
+                "pixDetailAutomaticCharge": {
+                    "route": "/v2/cobr/:txid",
+                    "method": "get"
+                },
+                "pixCreateAutomaticCharge": {
+                    "route": "/v2/cobr",
+                    "method": "post"
+                },
+                "pixListAutomaticCharge": {
+                    "route": "/v2/cobr",
+                    "method": "get"
+                },
+                "pixRetryRequestAutomaticCharge": {
+                    "route": "/v2/cobr/:txid/retentativa/:data",
+                    "method": "post"
+                },
+                "pixCreateLocationRecurrenceAutomatic": {
+                    "route": "/v2/locrec",
+                    "method": "post"
+                },
+                "pixListLocationRecurrenceAutomatic": {
+                    "route": "/v2/locrec",
+                    "method": "get"
+                },
+                "pixDetailLocationRecurrenceAutomatic": {
+                    "route": "/v2/locrec/:id",
+                    "method": "get"
+                },
+                "pixUnlinkLocationRecurrenceAutomatic": {
+                    "route": "/v2/locrec/:id/:idRec",
+                    "method": "delete"
+                },
+                "pixConfigWebhookRecurrenceAutomatic": {
+                    "route": "/v2/webhookrec",
+                    "method": "put"
+                },
+                "pixListWebhookRecurrenceAutomatic": {
+                    "route": "/v2/webhookrec",
+                    "method": "get"
+                },
+                "pixDeleteWebhookRecurrenceAutomatic": {
+                    "route": "/v2/webhookrec",
+                    "method": "delete"
+                },
+                "pixConfigWebhookAutomaticCharge": {
+                    "route": "/v2/webhookcobr",
+                    "method": "put"
+                },
+                "pixListWebhookAutomaticCharge": {
+                    "route": "/v2/webhookcobr",
+                    "method": "get"
+                },
+                "pixDeleteWebhookAutomaticCharge": {
+                    "route": "/v2/webhookcobr",
+                    "method": "delete"
                 }
             }
         },

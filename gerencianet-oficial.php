@@ -9,7 +9,7 @@ use GN_Includes\Gerencianet_Deactivator;
  * Plugin Name:       Efí Bank
  * Plugin URI:        https://wordpress.org/plugins/woo-gerencianet-official/
  * Description:       Gateway de pagamento Efi Bank para WooCommerce
- * Version:           3.0.2
+ * Version:           3.1.0
  * Author:            Efi Bank
  * Author URI:        https://www.sejaefi.com.br
  * License:           GPL-2.0+
@@ -25,13 +25,14 @@ if ( ! defined( 'WPINC' ) ) {
 	die;
 }
 
-define( 'GERENCIANET_OFICIAL_VERSION', '3.0.2' );
+define( 'GERENCIANET_OFICIAL_VERSION', '3.1.0' );
 define( 'GERENCIANET_BOLETO_ID', 'wc_gerencianet_boleto' );
 define( 'GERENCIANET_CARTAO_ID', 'wc_gerencianet_cartao' );
 define( 'GERENCIANET_PIX_ID', 'wc_gerencianet_pix' );
 define( 'GERENCIANET_OPEN_FINANCE_ID', 'wc_gerencianet_open_finance' );
 define( 'GERENCIANET_ASSINATURAS_BOLETO_ID', 'wc_gerencianet_assinaturas_boleto' );
 define( 'GERENCIANET_ASSINATURAS_CARTAO_ID', 'wc_gerencianet_assinaturas_cartao' );
+define( 'GERENCIANET_ASSINATURAS_PIX_ID', 'wc_gerencianet_assinaturas_pix' );
 
 
 
@@ -43,6 +44,7 @@ define( 'GERENCIANET_OFICIAL_PLUGIN_PATH', plugin_dir_path( __FILE__ ) );
 define( 'GERENCIANET_OFICIAL_PLUGIN_URL', plugin_dir_url( __FILE__ ) );
 
 require_once GERENCIANET_OFICIAL_PLUGIN_PATH . 'includes/helpers.php';
+// require_once GERENCIANET_OFICIAL_PLUGIN_PATH . 'includes/payment-methods/subscriptions/class-wc-gerencianet-assinaturas-pix.php';
 
 /**
  * The code that runs during plugin activation.

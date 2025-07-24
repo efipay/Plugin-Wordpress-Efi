@@ -33,6 +33,7 @@ document.addEventListener('DOMContentLoaded', function () {
             '#woocommerce_' + section + '_gn_sandbox',
             '#woocommerce_' + section + '_gn_pix',
             '#woocommerce_' + section + '_gn_pix_key',
+            '#woocommerce_' + section + '_gn_pix_account',
             '#woocommerce_' + section + '_gn_certificate_file',
             '#woocommerce_' + section + '_gn_pix_discount',
             '#woocommerce_' + section + '_gn_pix_discount_shipping',
@@ -48,6 +49,7 @@ document.addEventListener('DOMContentLoaded', function () {
         // Função para desabilitar o botão
         function disableWebhookButton() {
             $('#woocommerce_wc_gerencianet_pix_webhook_button').prop('disabled', true);
+            $('#woocommerce_wc_gerencianet_assinaturas_pix_webhook_button').prop('disabled', true);
         }
 
         // Adiciona listeners para alteração nos campos

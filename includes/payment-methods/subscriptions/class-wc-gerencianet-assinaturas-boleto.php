@@ -84,33 +84,33 @@ function init_gerencianet_assinaturas_boleto()
 				'gn_api_section' => array(
 					'title' => __('Credenciais Efí', Gerencianet_I18n::getTextDomain()),
 					'type' => 'title',
-					'description' => __("<a href='https://gerencianet.com.br/artigo/como-obter-chaves-client-id-e-client-secret-na-api/#versao-7' target='_blank'>Clique aqui para obter seu Client_id e Client_secret! </a>", Gerencianet_I18n::getTextDomain()),
+					'description' => __("<a href='https://gerencianet.com.br/artigo/como-obter-chaves-client-id-e-client-secret-na-api/#versao-7' target='_blank'>Clique aqui para obter seu Client_Id e Client_Secret! </a>", Gerencianet_I18n::getTextDomain()),
 				),
 				'gn_client_id_production' => array(
-					'title' => __('Client_id Produção', Gerencianet_I18n::getTextDomain()),
+					'title' => __('Client_Id Produção', Gerencianet_I18n::getTextDomain()),
 					'type' => 'text',
-					'description' => __('Por favor, insira seu Client_id. Isso é necessário para receber o pagamento.', Gerencianet_I18n::getTextDomain()),
+					'description' => __('Por favor, insira seu Client_Id. Isso é necessário para receber o pagamento.', Gerencianet_I18n::getTextDomain()),
 					'desc_tip' => false,
 					'default' => '',
 				),
 				'gn_client_secret_production' => array(
-					'title' => __('Client_secret Produção', Gerencianet_I18n::getTextDomain()),
-					'type' => 'password',
-					'description' => __('Por favor, insira seu Client_secret. Isso é necessário para receber o pagamento.', Gerencianet_I18n::getTextDomain()),
+					'title' => __('Client_Secret Produção', Gerencianet_I18n::getTextDomain()),
+					'type' => 'text',
+					'description' => __('Por favor, insira seu Client_Secret. Isso é necessário para receber o pagamento.', Gerencianet_I18n::getTextDomain()),
 					'desc_tip' => false,
 					'default' => '',
 				),
 				'gn_client_id_homologation' => array(
-					'title' => __('Client_id Homologação', Gerencianet_I18n::getTextDomain()),
+					'title' => __('Client_Id Homologação', Gerencianet_I18n::getTextDomain()),
 					'type' => 'text',
-					'description' => __('Por favor, insira seu Client_id de Homologação. Isso é necessário para testar os pagamentos.', Gerencianet_I18n::getTextDomain()),
+					'description' => __('Por favor, insira seu Client_Id de Homologação. Isso é necessário para testar os pagamentos.', Gerencianet_I18n::getTextDomain()),
 					'desc_tip' => false,
 					'default' => '',
 				),
 				'gn_client_secret_homologation' => array(
-					'title' => __('Client_secret Homologação', Gerencianet_I18n::getTextDomain()),
-					'type' => 'password',
-					'description' => __('Por favor, insira seu Client_secret de Homologação. Isso é necessário para testar os pagamentos.', Gerencianet_I18n::getTextDomain()),
+					'title' => __('Client_Secret Homologação', Gerencianet_I18n::getTextDomain()),
+					'type' => 'text',
+					'description' => __('Por favor, insira seu Client_Secret de Homologação. Isso é necessário para testar os pagamentos.', Gerencianet_I18n::getTextDomain()),
 					'desc_tip' => false,
 					'default' => '',
 				),
@@ -182,16 +182,7 @@ function init_gerencianet_assinaturas_boleto()
 		}
 
 		public function process_admin_options() {
-			// Chama o método pai para processar as opções padrão
 			parent::process_admin_options();
-		
-			if ($this->get_option('gn_client_secret_production')) {
-				$this->update_option('gn_client_secret_production', Efi_Cypher::encrypt_data($this->get_option('gn_client_secret_production')));
-			}
-		
-			if ($this->get_option('gn_client_secret_homologation')) {
-				$this->update_option('gn_client_secret_homologation', Efi_Cypher::encrypt_data($this->get_option('gn_client_secret_homologation')));
-			}
 		}
 
 		public function gn_price_format($value)

@@ -192,9 +192,9 @@ class Gerencianet_Planos
 
         echo '<br><small>Determina o intervalo, em meses, que a cobrança da assinatura deve ser gerada.</small>';
 
-        echo '<br><hr><label for="gerencianet_repeats">Duração da assinatura (em meses): </label><br>
+        echo '<br><hr><label for="gerencianet_repeats">Duração da assinatura: </label><br>
             <input id="gerencianet_repeats" type="number" min="1" max="120" name="gerencianet_repeats" value="' . $repeats . '" style="width:100%;">
-            <br><small>Determina o número de vezes que a cobrança deve ser gerada. <b>Obs.: Defina como 1 caso queira que a cobrança ocorra até que o plano seja cancelado.</b></small>';
+            <br><small>Determina o número de vezes, <b>em ciclos do tempo de recorrência</b>, que a cobrança deve ser gerada. <b>Obs.: Defina como 1 caso queira que a cobrança ocorra até que o plano seja cancelado.</b></small>';
     }
 
     /**
