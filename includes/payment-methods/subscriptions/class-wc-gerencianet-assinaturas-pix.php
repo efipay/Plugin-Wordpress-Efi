@@ -68,7 +68,6 @@ function init_gerencianet_assinaturas_pix()
 
 			add_action('woocommerce_api_' . strtolower(GERENCIANET_ASSINATURAS_PIX_ID), array($this, 'webhook'));
 
-			add_action('woocommerce_admin_order_data_after_billing_address', array($this, 'add_view_payment_methods'));
 		}
 
 		public function savePixCertificate()

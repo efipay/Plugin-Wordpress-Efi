@@ -9,7 +9,7 @@ use GN_Includes\Gerencianet_Deactivator;
  * Plugin Name:       Efí Bank
  * Plugin URI:        https://wordpress.org/plugins/woo-gerencianet-official/
  * Description:       Gateway de pagamento Efi Bank para WooCommerce
- * Version:           3.1.0
+ * Version:           3.1.1
  * Author:            Efi Bank
  * Author URI:        https://www.sejaefi.com.br
  * License:           GPL-2.0+
@@ -25,7 +25,7 @@ if ( ! defined( 'WPINC' ) ) {
 	die;
 }
 
-define( 'GERENCIANET_OFICIAL_VERSION', '3.1.0' );
+define( 'GERENCIANET_OFICIAL_VERSION', '3.1.1' );
 define( 'GERENCIANET_BOLETO_ID', 'wc_gerencianet_boleto' );
 define( 'GERENCIANET_CARTAO_ID', 'wc_gerencianet_cartao' );
 define( 'GERENCIANET_PIX_ID', 'wc_gerencianet_pix' );
